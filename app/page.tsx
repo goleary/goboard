@@ -91,7 +91,7 @@ async function getData() {
   };
 }
 
-export const LakeTemp = async () => {
+const LakeTemp: React.FC = async () => {
   const lakeStats = await getData();
   if (!lakeStats) {
     return null;
