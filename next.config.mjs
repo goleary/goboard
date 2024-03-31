@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: "/lake-stats",
-  assetPrefix: "/lake-stats",
+  // basePath: "/lake-stats",
+  // assetPrefix: "/lake-stats",
   // redirects: async () => {
   //   return [
   //     {
