@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  assetPrefix:
-    process.env.NODE_ENV === "production" ? "/lake-stats" : undefined,
+  basePath: "/lake-stats",
+  assetPrefix: "/lake-stats",
 };
 
 export default nextConfig;
