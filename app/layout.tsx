@@ -19,7 +19,6 @@ export default function RootLayout({
           src="https://umami-production-9fe7.up.railway.app/script.js"
           data-website-id="3bb05bc8-9b50-4ed9-9a15-313979906ae2"
         ></Script>
-        <base href="/lake-stats" />
       </head>
       <body className={classNames(inter.className, "bg-slate-100")}>
         {children}

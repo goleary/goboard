@@ -124,7 +124,7 @@ const LakeTemp: React.FC = async () => {
           ></StatCard>
         </div>
         <p className="">
-          by{" "}
+          Created by{" "}
           <a
             className="text-blue-600 hover:text-blue-500"
             href="https://goleary.com"
