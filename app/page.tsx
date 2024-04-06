@@ -109,6 +109,7 @@ const LakeTemp: React.FC = async () => {
           <a
             href="https://green2.kingcounty.gov/lake-buoy/default.aspx"
             className="text-blue-600 hover:text-blue-500"
+            target="_blank"
           >
             King County Lake Buoy data
           </a>
@@ -129,6 +130,7 @@ const LakeTemp: React.FC = async () => {
           <a
             className="text-blue-600 hover:text-blue-500"
             href="https://goleary.com"
+            target="_blank"
           >
             {"Gabe O'Leary"}
           </a>
