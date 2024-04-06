@@ -13,6 +13,9 @@ import {
   metersPerSecondToMph,
 } from "@/lib/utils";
 import { ThermometerIcon, WavesIcon, WindIcon } from "lucide-react";
+import { PrismaClient } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+const db = new PrismaClient();
 
 // TODO: add this
 // function getHistoricalData() {
@@ -46,31 +49,79 @@ import { ThermometerIcon, WavesIcon, WindIcon } from "lucide-react";
 // }
 
 type BuoyStats = {
-  waterTempCelsius: number;
+  weatherDateTime: Date;
   airTempCelsius: number;
   windSpeedMps: number;
+  windDirection: string;
+  waterDateTime: Date;
+  waterTempCelsius: number;
 };
 
 function extractLakeStats(dataString: string, lakeName: string): BuoyStats {
   // Dynamically include the lakeName in the regex pattern
   const pattern = new RegExp(
     lakeName +
-      `(?:\\|[^\|]+)(?:\\|\\s+(?<air>\\d+\\.\\d+))(?:\\|\\s+(?<wind>\\d+\\.\\d+))(?:\\|[^\|]+)(?:\\|\\s+(?<water>\\d+\\.\\d+))\\|`,
+      `(?:\\|(?<weatherDateTime>[^\|]+))(?:\\|\\s+(?<air>\\d+\\.\\d+))(?:\\|\\s+(?<windSpeed>\\d+\\.\\d+))(?:\\|(?<windDirection>[^\|]+))(?:\\|\\s+(?<water>\\d+\\.\\d+))(?:\\|(?<waterDateTime>[^\|]+))`,
     "i"
   );
 
   const match = dataString.match(pattern);
 
   if (match && match.groups) {
-    const air = parseFloat(match.groups.air);
-    const wind = parseFloat(match.groups.wind);
-    const water = parseFloat(match.groups.water);
+    const weatherDateTime = new Date(match.groups.weatherDateTime);
 
-    return { airTempCelsius: air, windSpeedMps: wind, waterTempCelsius: water };
+    const air = parseFloat(match.groups.air);
+    const wind = parseFloat(match.groups.windSpeed);
+    const windDirection = match.groups.windDirection;
+    const waterDateTime = new Date(match.groups.waterDateTime);
+    const water = parseFloat(match.groups.water);
+    return {
+      weatherDateTime,
+      airTempCelsius: air,
+      windSpeedMps: wind,
+      windDirection,
+      waterDateTime,
+      waterTempCelsius: water,
+    };
   } else {
     throw new Error("Failed to extract data");
   }
 }
+
+const recordStats = async (stats: BuoyStats, lakeName: string) => {
+  try {
+    await db.weatherRecord.create({
+      data: {
+        location: lakeName,
+        airTempFarenheit: stats.airTempCelsius,
+        windSpeedMph: stats.windSpeedMps,
+        windDirection: stats.windDirection,
+        dateTime: stats.weatherDateTime,
+      },
+    });
+  } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
+      // This is a duplicate error, so we can ignore it
+    } else {
+      throw e;
+    }
+  }
+  try {
+    await db.waterRecord.create({
+      data: {
+        location: lakeName,
+        waterTempFarenheit: stats.waterTempCelsius,
+        dateTime: stats.waterDateTime,
+      },
+    });
+  } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
+      // This is a duplicate error, so we can ignore it
+    } else {
+      throw e;
+    }
+  }
+};
 
 async function getData() {
   const res = await fetch(
@@ -85,6 +136,8 @@ async function getData() {
   const data = await res.text();
   const washingtonStats = extractLakeStats(data, "washington");
   const sammamishStats = extractLakeStats(data, "sammamish");
+  await recordStats(washingtonStats, "washington");
+  await recordStats(sammamishStats, "sammamish");
 
   return {
     washington: washingtonStats,
