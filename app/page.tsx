@@ -74,7 +74,8 @@ function extractLakeStats(dataString: string, lakeName: string): BuoyStats {
 
 async function getData() {
   const res = await fetch(
-    "https://green2.kingcounty.gov/lake-buoy/GenerateMapData.aspx"
+    "https://green2.kingcounty.gov/lake-buoy/GenerateMapData.aspx",
+    { cache: "no-store" }
   );
 
   if (!res.ok) {
