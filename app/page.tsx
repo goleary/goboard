@@ -90,36 +90,41 @@ function extractLakeStats(dataString: string, lakeName: string): BuoyStats {
 
 const recordStats = async (stats: BuoyStats, lakeName: string) => {
   try {
-    await db.weatherRecord.create({
-      data: {
-        location: lakeName,
-        airTempFarenheit: stats.airTempCelsius,
-        windSpeedMph: stats.windSpeedMps,
-        windDirection: stats.windDirection,
-        dateTime: stats.weatherDateTime,
-      },
-    });
-  } catch (e) {
-    if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
-      // This is a duplicate error, so we can ignore it
-    } else {
-      throw e;
+    try {
+      await db.weatherRecord.create({
+        data: {
+          location: lakeName,
+          airTempCelsius: stats.airTempCelsius,
+          windSpeedMps: stats.windSpeedMps,
+          windDirection: stats.windDirection,
+          dateTime: stats.weatherDateTime,
+        },
+      });
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
+        // This is a duplicate error, so we can ignore it
+      } else {
+        throw e;
+      }
     }
-  }
-  try {
-    await db.waterRecord.create({
-      data: {
-        location: lakeName,
-        waterTempFarenheit: stats.waterTempCelsius,
-        dateTime: stats.waterDateTime,
-      },
-    });
-  } catch (e) {
-    if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
-      // This is a duplicate error, so we can ignore it
-    } else {
-      throw e;
+    try {
+      await db.waterRecord.create({
+        data: {
+          location: lakeName,
+          waterTempCelsius: stats.waterTempCelsius,
+          dateTime: stats.waterDateTime,
+        },
+      });
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
+        // This is a duplicate error, so we can ignore it
+      } else {
+        throw e;
+      }
     }
+  } catch (e) {
+    // Don't want the storing of historical data to break the displaying of the current data.
+    console.error(e);
   }
 };
 
@@ -239,72 +244,72 @@ export default LakeTemp;
 
 // TODO: would be better to use d3 for this
 const getWaterTempColor = (temperature: number, unit: "f" | "c" = "f") => {
-  const temperatureFarenheit =
+  const temperatureFahrenheit =
     unit === "f" ? temperature : celsiusToFahrenheit(temperature);
-  if (temperatureFarenheit < 45) {
+  if (temperatureFahrenheit < 45) {
     return "text-blue-500";
   }
-  if (temperatureFarenheit <= 50) {
+  if (temperatureFahrenheit <= 50) {
     return "text-sky-500";
   }
-  if (temperatureFarenheit <= 55) {
+  if (temperatureFahrenheit <= 55) {
     return "text-cyan-500";
   }
-  if (temperatureFarenheit <= 60) {
+  if (temperatureFahrenheit <= 60) {
     return "text-teal-500";
   }
-  if (temperatureFarenheit <= 65) {
+  if (temperatureFahrenheit <= 65) {
     return "text-emerald-500";
   }
-  if (temperatureFarenheit <= 70) {
+  if (temperatureFahrenheit <= 70) {
     return "text-green-500";
   }
-  if (temperatureFarenheit <= 75) {
+  if (temperatureFahrenheit <= 75) {
     return "text-yellow-500";
   }
-  if (temperatureFarenheit <= 80) {
+  if (temperatureFahrenheit <= 80) {
     return "text-amber-500";
   }
-  if (temperatureFarenheit <= 85) {
+  if (temperatureFahrenheit <= 85) {
     return "text-orange-500";
   }
-  if (temperatureFarenheit <= 90) {
+  if (temperatureFahrenheit <= 90) {
     return "text-red-500";
   }
   return "text-slate-800";
 };
 
 const getAirTempColor = (temperature: number, unit: "f" | "c" = "f") => {
-  const temperatureFarenheit =
+  const temperatureFahrenheit =
     unit === "f" ? temperature : celsiusToFahrenheit(temperature);
-  if (temperatureFarenheit < 20) {
+  if (temperatureFahrenheit < 20) {
     return "text-blue-500";
   }
-  if (temperatureFarenheit <= 32) {
+  if (temperatureFahrenheit <= 32) {
     return "text-sky-500";
   }
-  if (temperatureFarenheit <= 40) {
+  if (temperatureFahrenheit <= 40) {
     return "text-cyan-500";
   }
-  if (temperatureFarenheit <= 50) {
+  if (temperatureFahrenheit <= 50) {
     return "text-teal-500";
   }
-  if (temperatureFarenheit <= 60) {
+  if (temperatureFahrenheit <= 60) {
     return "text-emerald-500";
   }
-  if (temperatureFarenheit <= 70) {
+  if (temperatureFahrenheit <= 70) {
     return "text-green-500";
   }
-  if (temperatureFarenheit <= 80) {
+  if (temperatureFahrenheit <= 80) {
     return "text-yellow-500";
   }
-  if (temperatureFarenheit <= 90) {
+  if (temperatureFahrenheit <= 90) {
     return "text-amber-500";
   }
-  if (temperatureFarenheit <= 95) {
+  if (temperatureFahrenheit <= 95) {
     return "text-orange-500";
   }
-  if (temperatureFarenheit <= 100) {
+  if (temperatureFahrenheit <= 100) {
     return "text-red-500";
   }
   return "text-slate-800";

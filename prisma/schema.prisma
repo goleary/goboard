@@ -11,12 +11,12 @@ datasource db {
 }
 
 model WeatherRecord {
-  id               Int      @id @default(autoincrement())
-  location         String
-  dateTime         DateTime
-  windSpeedMph     Float
-  windDirection    String
-  airTempFarenheit Float
+  id             Int      @id @default(autoincrement())
+  location       String
+  dateTime       DateTime
+  windSpeedMps   Float
+  windDirection  String
+  airTempCelsius Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -25,10 +25,10 @@ model WeatherRecord {
 }
 
 model WaterRecord {
-  id                 Int      @id @default(autoincrement())
-  location           String
-  dateTime           DateTime
-  waterTempFarenheit Float
+  id               Int      @id @default(autoincrement())
+  location         String
+  dateTime         DateTime
+  waterTempCelsius Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
