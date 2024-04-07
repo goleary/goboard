@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,6 +16,7 @@ import {
 import { ThermometerIcon, WavesIcon, WindIcon } from "lucide-react";
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import History from "@/components/history";
 const db = new PrismaClient();
 
 // TODO: add this
@@ -49,6 +51,7 @@ const db = new PrismaClient();
 // }
 
 type BuoyStats = {
+  location: string;
   weatherDateTime: Date;
   airTempCelsius: number;
   windSpeedMps: number;
@@ -76,6 +79,7 @@ function extractLakeStats(dataString: string, lakeName: string): BuoyStats {
     const waterDateTime = new Date(match.groups.waterDateTime);
     const water = parseFloat(match.groups.water);
     return {
+      location: lakeName,
       weatherDateTime,
       airTempCelsius: air,
       windSpeedMps: wind,
@@ -215,26 +219,32 @@ const StatCard = ({ title, stats }: StatCardProps): React.ReactElement => {
       <CardHeader className="pb-2">
         <CardDescription></CardDescription>
         <CardTitle className="text-slate-800">{title}</CardTitle>
-        <CardContent className={"text-4x flex justify-start gap-4 pt-4"}>
-          <div className="flex gap-2 items-center">
-            <WavesIcon className="inline-block w-8 h-8 " />{" "}
-            <span className={getWaterTempColor(stats.waterTempCelsius, "c")}>
-              {formatNumber(celsiusToFahrenheit(stats.waterTempCelsius), 1)} °F
-            </span>
-          </div>
-          <div className="flex gap-2 items-center">
-            <ThermometerIcon className="inline-block w-8 h-8 mr-2" />{" "}
-            <span className={getAirTempColor(stats.airTempCelsius, "c")}>
-              {formatNumber(celsiusToFahrenheit(stats.airTempCelsius), 1)} °F
-            </span>
-          </div>
-          <div className="flex gap-2 items-center">
-            <WindIcon className="inline-block w-8 h-8 mr-2" />{" "}
-            <span className={getWindSpeedColor(stats.windSpeedMps, "mps")}>
-              {formatNumber(metersPerSecondToMph(stats.windSpeedMps), 1)} mph
-            </span>
+        <CardContent>
+          <div className={"text-4x flex justify-start gap-4 pt-4"}>
+            <div className="flex gap-2 items-center">
+              <WavesIcon className="inline-block w-8 h-8 " />{" "}
+              <span className={getWaterTempColor(stats.waterTempCelsius, "c")}>
+                {formatNumber(celsiusToFahrenheit(stats.waterTempCelsius), 1)}{" "}
+                °F
+              </span>
+            </div>
+            <div className="flex gap-2 items-center">
+              <ThermometerIcon className="inline-block w-8 h-8 mr-2" />{" "}
+              <span className={getAirTempColor(stats.airTempCelsius, "c")}>
+                {formatNumber(celsiusToFahrenheit(stats.airTempCelsius), 1)} °F
+              </span>
+            </div>
+            <div className="flex gap-2 items-center">
+              <WindIcon className="inline-block w-8 h-8 mr-2" />{" "}
+              <span className={getWindSpeedColor(stats.windSpeedMps, "mps")}>
+                {formatNumber(metersPerSecondToMph(stats.windSpeedMps), 1)} mph
+              </span>
+            </div>
           </div>
         </CardContent>
+        <CardFooter className="px-4">
+          <History location={stats.location} />
+        </CardFooter>
       </CardHeader>
     </Card>
   );
