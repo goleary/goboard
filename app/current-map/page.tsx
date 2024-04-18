@@ -1,15 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
 
 import dateFormat from "dateformat";
 
 import { StationWithPrediction } from "./types";
-import StationMarker from "./components/StationMarker";
 import Controls from "./components/Controls";
 import Legend from "./components/Legend";
 import Title from "./components/Title";
+import dynamic from "next/dynamic";
 
+const Map = dynamic(() => import("./components/Map"), {
+  ssr: false,
+});
+const StationMarker = dynamic(() => import("./components/StationMarker"), {
+  ssr: false,
+});
 function App() {
   const [stations, setStations] = useState<StationWithPrediction[]>([]);
 
@@ -43,17 +48,12 @@ function App() {
 
   return (
     <div className="App" style={{ width: "100%", height: "100%" }}>
-      <MapContainer center={[48, -123]} zoom={8} style={{ height: "100%" }}>
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution={`&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>,
-            &copy;<a href="https://carto.com/attributions" target="_blank">CARTO</a>`}
-        />
+      <Map>
         {/* TODO: could memoize this or the stations themselves */}
         {stations.map((s) => (
           <StationMarker key={s.id} {...s} index={sliderValue} />
         ))}
-      </MapContainer>
+      </Map>
       <Title />
       <Legend />
       <Controls
