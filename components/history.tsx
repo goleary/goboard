@@ -21,6 +21,10 @@ async function getHistoricalData(
       },
       body: `{ buoy: '${buoy}' }`,
       method: "POST",
+      next: {
+        // This only updates a couple times a day
+        revalidate: 60 * 60 * 12,
+      },
     }
   );
 
