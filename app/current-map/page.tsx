@@ -34,10 +34,7 @@ function App() {
         end_date: dateFormat(threeDaysInTheFuture, mask),
         interval: "30",
       });
-      const response = await fetch(
-        "http://localhost:3000/api/predictions?" + params.toString(),
-        {}
-      );
+      const response = await fetch("/api/predictions?" + params.toString(), {});
       const stationsResult = (await response.json()) as StationWithPrediction[];
       setStations(stationsResult);
 
