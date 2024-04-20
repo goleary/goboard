@@ -14,41 +14,7 @@ import {
   metersPerSecondToMph,
 } from "@/lib/utils";
 import { ThermometerIcon, WavesIcon, WindIcon } from "lucide-react";
-import { PrismaClient } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import History from "@/components/history";
-const db = new PrismaClient();
-
-// TODO: add this
-// function getHistoricalData() {
-//   const response = fetch(
-//     "https://green2.kingcounty.gov/lake-buoy/HistoricalTemperature.aspx/GetData",
-//     {
-//       headers: {
-//         accept: "application/json, text/javascript, */*; q=0.01",
-//         "accept-language": "en-US,en;q=0.9",
-//         "cache-control": "no-cache",
-//         "content-type": "application/json; charset=UTF-8",
-//         pragma: "no-cache",
-//         "sec-ch-ua":
-//           '"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
-//         "sec-ch-ua-mobile": "?0",
-//         "sec-ch-ua-platform": '"macOS"',
-//         "sec-fetch-dest": "empty",
-//         "sec-fetch-mode": "cors",
-//         "sec-fetch-site": "same-origin",
-//         "x-requested-with": "XMLHttpRequest",
-//         cookie:
-//           "_ga=GA1.1.1900066909.1710301966; nmstat=2aa22028-2bbd-739b-8418-6439f63739ec; ASP.NET_SessionId=di0ptwhx4lseeyvcsoe2phkp; WCMS_ASP.NET_SessionId=rfif4ccrkknz4dyjj0rxs4o5; _ga_87SLBPDRY7=GS1.1.1711831754.1.1.1711831969.0.0.0; TS0126a747=017eac84075cb9c8310cb6260ce7d060ab18c6809b5e44b989f73cbf19770d37e565dd58db1be0473b3d5f6902761f63308208c2dc5fd4c0f7d17c0295e9828e8b0788f3e083bc67f86de74980c54246f9f4e78105; TS01d0cb72=017eac84072b5623a4087555f10f81cb83dc7de13232f34ea80c3aec426b8046cf9b7289ba9b97f7dbfaf19c42cd2413686efc4fede3bd401bb4f11c35e1b8757b2373d329306e6d234542de60f24e1d050688626748e72173311313faf0938f8da1a60481c3dcac4cee5a91da140e7fa3fd84ed75; _ga_W2BH6TXD2Z=GS1.1.1711835467.3.1.1711835517.0.0.0",
-//         Referer:
-//           "https://green2.kingcounty.gov/lake-buoy/HistoricalTemperature.aspx",
-//         "Referrer-Policy": "strict-origin-when-cross-origin",
-//       },
-//       body: "{ buoy: 'washington'}",
-//       method: "POST",
-//     }
-//   );
-// }
 
 type BuoyStats = {
   location: string;
@@ -92,46 +58,6 @@ function extractLakeStats(dataString: string, lakeName: string): BuoyStats {
   }
 }
 
-const recordStats = async (stats: BuoyStats, lakeName: string) => {
-  try {
-    try {
-      await db.weatherRecord.create({
-        data: {
-          location: lakeName,
-          airTempCelsius: stats.airTempCelsius,
-          windSpeedMps: stats.windSpeedMps,
-          windDirection: stats.windDirection,
-          dateTime: stats.weatherDateTime,
-        },
-      });
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
-        // This is a duplicate error, so we can ignore it
-      } else {
-        throw e;
-      }
-    }
-    try {
-      await db.waterRecord.create({
-        data: {
-          location: lakeName,
-          waterTempCelsius: stats.waterTempCelsius,
-          dateTime: stats.waterDateTime,
-        },
-      });
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
-        // This is a duplicate error, so we can ignore it
-      } else {
-        throw e;
-      }
-    }
-  } catch (e) {
-    // Don't want the storing of historical data to break the displaying of the current data.
-    console.error(e);
-  }
-};
-
 async function getData() {
   const res = await fetch(
     "https://green2.kingcounty.gov/lake-buoy/GenerateMapData.aspx",
@@ -145,8 +71,6 @@ async function getData() {
   const data = await res.text();
   const washingtonStats = extractLakeStats(data, "washington");
   const sammamishStats = extractLakeStats(data, "sammamish");
-  await recordStats(washingtonStats, "washington");
-  await recordStats(sammamishStats, "sammamish");
 
   return {
     washington: washingtonStats,
