@@ -74,11 +74,11 @@ async function getData() {
   }
   const data = await res.text();
   const washingtonStats = extractLakeStats(data, "washington");
-  const sammamishStats = extractLakeStats(data, "sammamish");
+  // const sammamishStats = extractLakeStats(data, "sammamish");
 
   return {
     washington: washingtonStats,
-    sammamish: sammamishStats,
+    // sammamish: sammamishStats,
   };
 }
 
@@ -110,10 +110,11 @@ const LakeTemp: React.FC = async () => {
             title="Lake Washington"
             stats={lakeStats.washington}
           ></StatCard>
+          {/*
           <StatCard
             title="Lake Sammamish"
             stats={lakeStats.sammamish}
-          ></StatCard>
+          ></StatCard> */}
         </div>
         <p className="">
           Created by{" "}
