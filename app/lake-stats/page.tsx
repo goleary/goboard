@@ -54,6 +54,10 @@ function extractLakeStats(dataString: string, lakeName: string): BuoyStats {
       waterTempCelsius: water,
     };
   } else {
+    console.log("Failed to extract data");
+    console.log("dataString", dataString);
+    console.log("lakeName", lakeName);
+    console.log("match", match);
     throw new Error("Failed to extract data");
   }
 }
