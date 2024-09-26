@@ -26,6 +26,11 @@ const HomePage: React.FC = () => {
             Seattle Lake Stats
           </Link>
         </li>
+        <li>
+          <Link className="hover:text-blue-500" href="/sakna">
+            Sauna finder
+          </Link>
+        </li>
         {/* <li>
           <Link className="hover:text-blue-500" href="/resume">
             Resume
