@@ -171,7 +171,7 @@ const StatCard = ({ title, stats }: StatCardProps): React.ReactElement => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="px-4">
+        <CardFooter className="p-0 -mx-6">
           <History location={stats.location} />
         </CardFooter>
       </CardHeader>

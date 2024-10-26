@@ -1,10 +1,11 @@
+import React from "react";
 import { celsiusToFahrenheit } from "@/lib/utils";
-import { LineChart } from "@tremor/react";
-import Chart from "./chart";
+
+import HistoryChart from "./chart";
 
 type HistoricalRecord = {
   date: string;
-  "Water Temperature": number;
+  waterTemperature: number;
 };
 
 async function getHistoricalData(
@@ -41,7 +42,7 @@ async function getHistoricalData(
         day: "numeric",
       }
     ),
-    "Water Temperature": celsiusToFahrenheit(Value),
+    waterTemperature: celsiusToFahrenheit(Value),
   }));
 }
 
@@ -51,7 +52,9 @@ type HistoryProps = {
 
 const History: React.FC<HistoryProps> = async ({ location }) => {
   const historicalData = await getHistoricalData(location);
-  return <Chart data={historicalData} />;
+  // gets rid of some erratic data.
+  const filteredData = historicalData.filter((d) => d.waterTemperature > 32);
+  return <HistoryChart historicalData={filteredData} />;
 };
 
 export default History;
