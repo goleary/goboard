@@ -14,8 +14,11 @@ const Posts: React.FC = () => {
       <ul className="flex flex-col gap-4">
         {posts.map((post) => (
           <li key={post.id}>
-            <Link href={`/posts/${post.id}`} className="grid grid-cols-5 group">
-              <sub className="text-sm text-gray-500">
+            <Link
+              href={`/posts/${post.id}`}
+              className="grid grid-cols-5 group gap-4"
+            >
+              <sub className="text-sm text-gray-500 text-right">
                 {dayjs(post.date).format("MMMM D, YYYY")}
               </sub>
               <h1 className="text-lg font-bold col-span-4 group-hover:underline text-slate-900">

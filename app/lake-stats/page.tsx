@@ -118,11 +118,7 @@ const LakeTemp: React.FC = async () => {
         </div>
         <p className="">
           Created by{" "}
-          <a
-            className="text-blue-600 hover:text-blue-500"
-            href="https://goleary.com"
-            target="_blank"
-          >
+          <a className="text-blue-600 hover:text-blue-500" href="/">
             {"Gabe O'Leary"}
           </a>
         </p>

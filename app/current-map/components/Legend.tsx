@@ -49,7 +49,7 @@ const Legend: React.FC = () => {
       ))}
       <div style={{ fontSize: 16, padding: "12px 0 8px", textAlign: "center" }}>
         built by{" "}
-        <a href="/" style={{ whiteSpace: "nowrap" }}>
+        <a href="/" className="underline text-nowrap">
           {"Gabe O'Leary"}
         </a>
       </div>
