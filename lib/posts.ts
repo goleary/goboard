@@ -8,6 +8,11 @@ import { z } from "zod";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
+const postSchema = z.object({
+  title: z.string(),
+  date: z.string(),
+});
+
 export function getSortedPostsData() {
   // Get file names under /posts
   const fileNames = fs.readdirSync(postsDirectory);
@@ -22,12 +27,7 @@ export function getSortedPostsData() {
     // Use gray-matter to parse the post metadata section
     const matterResult = matter(fileContents);
 
-    const postData = z
-      .object({
-        title: z.string(),
-        date: z.string(),
-      })
-      .parse(matterResult.data);
+    const postData = postSchema.parse(matterResult.data);
 
     // Combine the data with the id
     return {
@@ -50,12 +50,8 @@ export async function getPostData(id: string) {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const matterResult = matter(fileContents);
 
-  const postData = z
-    .object({
-      title: z.string(),
-      date: z.string(),
-    })
-    .parse(matterResult.data);
+  const postData = postSchema.parse(matterResult.data);
+
   // Use remark to convert markdown into HTML string
   const processedContent = await remark()
     .use(html)
