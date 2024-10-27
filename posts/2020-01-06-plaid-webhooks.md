@@ -3,7 +3,7 @@ title: "My experience with Plaid webhooks"
 date: "2020-01-06"
 ---
 
-I’ve been working on an application that makes use of Plaid to fetch users' financial transactions on their behalf. Their REST endpoint enables passing a window of time (start and end date) and returns all transactions for an account within that window. I store all of these transactions in a DB (Firebase Firestore to be exact) so that they don’t need to be fetched from Plaid every time my users access the App.
+I’ve been working on an application that makes use of [Plaid](https://plaid.com/) to fetch users' financial transactions on their behalf. Their REST endpoint enables passing a window of time (start and end date) and returns all transactions for an account within that window. I store all of these transactions in a DB (Firebase Firestore to be exact) so that they don’t need to be fetched from Plaid every time my users access the App.
 
 I was planning to implement a record for each user maintaing which dates their transactions had been fetch for, but then I realized Plaid offers webhooks where they will actually notify you in realtime once they have new transactions available to fetch.
 
@@ -11,7 +11,8 @@ It just requires building an endpoint in order to receive these requests and per
 
 I figured this would be the perfect solution and enable me to reduce the complexity of my server code, and minimize duplicated work (storing & processing of already fetched transactions).
 
-Complaints
+### Complaints
+
 Webhook requests don’t come with a unique id that allows me to ensure I haven’t already seen them. Plaid’s system will resend requests if they don’t get a 200 response within 10 seconds. I’ve noticed numerous instances of requests being resent even when my server responded within a few seconds.
 
 I ended up creating a workaround on my end to address this situation. Two transaction webhooks are responsible for the bulk of fetching, HISTORICAL_UPDATE & INITIAL_UPDATE. These are triggered when a user first links their account. They both should only be triggered a single time for a specific account, so I just store the time when the triggered work is completed, and if this time is present I will ignore all future requests of those types.
