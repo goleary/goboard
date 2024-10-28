@@ -7,21 +7,24 @@ import html from "remark-html";
 import { z } from "zod";
 
 const postsDirectory = path.join(process.cwd(), "posts");
+const worksDirectory = path.join(process.cwd(), "works");
 
 const postSchema = z.object({
   title: z.string(),
+  link: z.string().optional(),
   date: z.string(),
+  description: z.string().optional(),
 });
 
-export function getSortedPostsData() {
+function getSortedData(directory: string) {
   // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
+  const fileNames = fs.readdirSync(directory);
   const allPostsData = fileNames.map((fileName) => {
     // Remove ".md" from file name to get id
     const id = fileName.replace(/\.md$/, "");
 
     // Read markdown file as string
-    const fullPath = path.join(postsDirectory, fileName);
+    const fullPath = path.join(directory, fileName);
     const fileContents = fs.readFileSync(fullPath, "utf8");
 
     // Use gray-matter to parse the post metadata section
@@ -45,8 +48,17 @@ export function getSortedPostsData() {
   });
 }
 
-export async function getPostData(id: string) {
-  const fullPath = path.join(postsDirectory, `${id}.md`);
+export function getSortedPostsData() {
+  return getSortedData(postsDirectory);
+}
+
+export function getSortedWorksData() {
+  return getSortedData(worksDirectory);
+}
+
+async function getFileData(directory: string, slug: string) {
+  const fullPath = path.join(directory, `${slug}.md`);
+  console.log("fullPath: ", fullPath);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const matterResult = matter(fileContents);
 
@@ -59,8 +71,15 @@ export async function getPostData(id: string) {
   const contentHtml = processedContent.toString();
 
   return {
-    id,
+    id: slug,
     ...postData,
     contentHtml,
   };
+}
+
+export async function getPostData(slug: string) {
+  return getFileData(postsDirectory, slug);
+}
+export async function getWorkData(slug: string) {
+  return getFileData(worksDirectory, slug);
 }
