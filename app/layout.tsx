@@ -17,7 +17,12 @@ export default function RootLayout({
           async
           src="https://umami-production-9fe7.up.railway.app/script.js"
           data-website-id="3bb05bc8-9b50-4ed9-9a15-313979906ae2"
-        ></Script>
+        />
+        <Script
+          defer
+          data-site-id="goleary.com"
+          src="https://assets.onedollarstats.com/tracker.js"
+        />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
