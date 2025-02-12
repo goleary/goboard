@@ -24,6 +24,11 @@ export default function RootLayout({
           </Link>
         </li>
         <li>
+          <Link className="hover:text-blue-500" href="/travel">
+            Travel
+          </Link>
+        </li>
+        <li>
           <Link className="hover:text-blue-500" href="/current-map">
             PNW Current Map
           </Link>

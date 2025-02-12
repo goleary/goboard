@@ -8,7 +8,7 @@ import { z } from "zod";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 const worksDirectory = path.join(process.cwd(), "works");
-
+const travelDirectory = path.join(process.cwd(), "travel");
 const postSchema = z.object({
   title: z.string(),
   link: z.string().optional(),
@@ -52,6 +52,10 @@ export function getSortedPostsData() {
   return getSortedData(postsDirectory);
 }
 
+export function getSortedTravelData() {
+  return getSortedData(travelDirectory);
+}
+
 export function getSortedWorksData() {
   return getSortedData(worksDirectory);
 }
@@ -84,4 +88,8 @@ export async function getPostData(slug: string) {
 }
 export async function getWorkData(slug: string) {
   return getFileData(worksDirectory, slug);
+}
+
+export async function getTravelData(slug: string) {
+  return getFileData(travelDirectory, slug);
 }
