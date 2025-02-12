@@ -56,7 +56,7 @@ There are a couple other thermal baths in Furnas that people recommend checking 
 
 We dined at the hotel restaunt which was tasty.
 
-# Day 4 - Road trip
+# Day 4 - Nordeste Road trip
 
 We enjoyed our hotel breakfast and headed out for a little road trip of the eastern part of the island with a hike out of Faial da Terra. The hike took us first to [Cascata do Salto do Prego](https://maps.app.goo.gl/UdRzMJZ9BvpJMNhk6), which was cool, but if you continue on for another couple miles you get to a second waterfall, [Salto do Cagarrão](https://maps.app.goo.gl/LXXEXPJeBb62KSu39), that I found to be far cooler. There was a log you could climb partway up to jump off and the waterfall feels like it's in a cave because of how the cliffs surround it and the pool below. If you take the high route back to the starting spot there's a [cool old village](https://maps.app.goo.gl/gQd9MXkh4WZWsZPD9) in the hills with a cafe you can stop at.
 
