@@ -12,7 +12,7 @@ export default function RootLayout({
         {`Gabe O'Leary`}
       </Link>
 
-      <ul className="text-blue-600 flex flex-row gap-3 m-auto items-center justify-center">
+      <ul className="text-blue-600 flex flex-col gap-3 m-auto items-center justify-center md:flex-row">
         <li>
           <Link className="hover:text-blue-500" href="/about">
             About
@@ -36,6 +36,14 @@ export default function RootLayout({
         <li>
           <Link className="hover:text-blue-500" href="/lake-stats">
             Seattle Lake Stats
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="hover:text-blue-500"
+            href="/tools/marriage-tax-calculator"
+          >
+            Marriage Tax Calculator
           </Link>
         </li>
       </ul>
