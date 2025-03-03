@@ -177,7 +177,7 @@ const TaxCalculator = () => {
           <p className="text-muted-foreground">
             Find out if you&apos;ll pay more or less in taxes when you get
             married. This calculator uses {taxYear} tax brackets and standard
-            deductions. This tool was built entirely by lovable.dev
+            deductions.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
