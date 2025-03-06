@@ -2,7 +2,7 @@
 title: "TerraLog"
 link: "https://terralog.app"
 date: "2024-06-17"
-description: "An iPhone app to share location based satellite messages with friends and family while off the grid."
+description: "An iPhone app to share location based satellite messages with friends and family while off the grid - it supports weather forecasts over satellite too."
 ---
 
 <style>
