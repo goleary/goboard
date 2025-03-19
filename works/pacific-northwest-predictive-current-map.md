@@ -1,6 +1,6 @@
 ---
 title: "Pacific Northwest Predictive Current Map"
-link: "/current-map"
+link: "/tools/current-map"
 date: "2022-3-14"
 description: "NOAA provides wonderful predictions of sea current strength & direction at many stations around the Puget Sound (and rest of the US), but they don't do the best job of presenting the data in a consumable form. I took their data & built an improved experience around it."
 ---
@@ -19,7 +19,7 @@ At the suggestion of my partner, Angela, I decided to take their data & present 
 
 I've included a time scrubber, so the user can look at what the currents will be doing over time.
 
-Check it out [here](/current-map).
+Check it out [here](/tools/current-map).
 
 This data is sure to be useful for open water swimmers, stand up paddlers, kayakers sailors & other types of boaters.
 

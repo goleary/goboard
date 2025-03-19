@@ -29,12 +29,12 @@ export default function RootLayout({
           </Link>
         </li>
         <li>
-          <Link className="hover:text-blue-500" href="/current-map">
+          <Link className="hover:text-blue-500" href="/tools/current-map">
             PNW Current Map
           </Link>
         </li>
         <li>
-          <Link className="hover:text-blue-500" href="/lake-stats">
+          <Link className="hover:text-blue-500" href="/tools/lake-stats">
             Seattle Lake Stats
           </Link>
         </li>
