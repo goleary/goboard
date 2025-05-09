@@ -38,6 +38,14 @@ export default function RootLayout({
           <DropdownMenuTrigger>Tools</DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
+              <Link
+                className="hover:text-blue-500"
+                href="https://discoverevs.com"
+              >
+                Discover EVs
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
               <Link className="hover:text-blue-500" href="/tools/current-map">
                 PNW Current Map
               </Link>
