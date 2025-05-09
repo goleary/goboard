@@ -1,4 +1,10 @@
 import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export default function RootLayout({
   children,
@@ -12,7 +18,7 @@ export default function RootLayout({
         {`Gabe O'Leary`}
       </Link>
 
-      <ul className="text-blue-600 flex flex-col gap-3 m-auto items-center justify-center md:flex-row">
+      <ul className="text-blue-600 flex  gap-5 m-auto items-center justify-center md:flex-row">
         <li>
           <Link className="hover:text-blue-500" href="/about">
             About
@@ -28,24 +34,29 @@ export default function RootLayout({
             Travel
           </Link>
         </li>
-        <li>
-          <Link className="hover:text-blue-500" href="/tools/current-map">
-            PNW Current Map
-          </Link>
-        </li>
-        <li>
-          <Link className="hover:text-blue-500" href="/tools/lake-stats">
-            Seattle Lake Stats
-          </Link>
-        </li>
-        <li>
-          <Link
-            className="hover:text-blue-500"
-            href="/tools/marriage-tax-calculator"
-          >
-            Marriage Tax Calculator
-          </Link>
-        </li>
+        <DropdownMenu>
+          <DropdownMenuTrigger>Tools</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Link className="hover:text-blue-500" href="/tools/current-map">
+                PNW Current Map
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link className="hover:text-blue-500" href="/tools/lake-stats">
+                Seattle Lake Stats
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                className="hover:text-blue-500"
+                href="/tools/marriage-tax-calculator"
+              >
+                Marriage Tax Calculator
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </ul>
       <div className="w-full px-4 md:px-0">{children}</div>
     </div>

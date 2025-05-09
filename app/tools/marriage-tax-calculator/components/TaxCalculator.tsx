@@ -147,7 +147,7 @@ const TaxCalculator = () => {
     <div className="w-full max-w-4xl mx-auto">
       <Card className="bg-white border-none shadow-sm overflow-hidden">
         <CardContent className="p-6 space-y-8">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between gap-4 items-start flex-col md:flex-row md:items-center">
             <div className="flex items-center gap-3">
               <Calculator className="h-6 w-6 text-primary" />
               <h2 className="text-2xl font-medium">
