@@ -19,7 +19,7 @@ Afterwards we headed to [Monte Palace](https://maps.app.goo.gl/jpDpw4eaYDVYsHdz7
 
 After doing a bit of wandering we headed down into the Caldera, stopping at another viewport or two along the way. On the outskirts of town, we stopped for lunch at [Quinta Da Queiró](https://maps.app.goo.gl/qEA36u48f8BPTHDy7), a cozy hotel that I'd been unable to book, but heard had a nice attached tea room and good food.
 
-We were thinking about kayaking in one of the lakes, but it was super windy with a consistent ~10mph wind - not ideal for enjoyable kayaking. Instead we parked the car between the lakes and walked to a little park at the tip of a peninsula jutting out into Lagoa Azul. I'd read about this spot in [a random comment on Reddit](https://www.reddit.com/r/CampingandHiking/comments/xjnmhl/comment/ipcerne):
+We were thinking about kayaking in one of the lakes, but it was super windy with a consistent ~10mph wind - not ideal for enjoyable kayaking. Instead we parked the car between the lakes and walked to [a little park at the tip of a peninsula jutting out into Lagoa Azul](https://maps.app.goo.gl/543zY1NxvBqXStjr8). I'd read about this spot in [a random comment on Reddit](https://www.reddit.com/r/CampingandHiking/comments/xjnmhl/comment/ipcerne):
 
 > If you look at the map of Sete Cidades, look for the bridge that divides Lagoa Verde and Lagoa Azul. You’ll see a peninsula that sticks out right by the bridge. There’s a dirt road that goes around the edge of that peninsula. It’s used for the excursion groups. You can walk it easily. At the very tip of the peninsula is a sloped garden tucked away. It was my favorite spot on the whole island.
 
