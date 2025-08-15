@@ -22,8 +22,10 @@ interface TaxInputProps {
   personNumber: number;
   income: number;
   itemizedDeductions: ItemizedDeductions;
+  useItemized: boolean;
   onIncomeChange: (value: number) => void;
   onItemizedDeductionsChange: (deductions: ItemizedDeductions) => void;
+  onUseItemizedChange: (checked: boolean) => void;
   taxYear: TaxYear;
 }
 
@@ -32,11 +34,12 @@ const TaxInput = ({
   personNumber,
   income,
   itemizedDeductions,
+  useItemized,
   onIncomeChange,
   onItemizedDeductionsChange,
+  onUseItemizedChange,
   taxYear,
 }: TaxInputProps) => {
-  const [useItemized, setUseItemized] = useState(false);
   const saltCap = SALT_DEDUCTION_CAP[taxYear].single;
   const standardDeduction = STANDARD_DEDUCTION[taxYear].single;
 
@@ -67,7 +70,7 @@ const TaxInput = ({
   };
 
   const handleToggleChange = (checked: boolean) => {
-    setUseItemized(checked);
+    onUseItemizedChange(checked);
     if (!checked) {
       // Reset deductions when toggling off
       onItemizedDeductionsChange({

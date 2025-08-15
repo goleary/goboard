@@ -20,7 +20,7 @@ import {
   MORTGAGE_LOAN_LIMIT,
 } from "../taxCalculations";
 import { Separator } from "@/components/ui/separator";
-import { AlertCircle, Calculator } from "lucide-react";
+import { AlertCircle, Calculator, RotateCcw } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { ItemizedDeductions } from "../taxCalculations";
 import {
@@ -29,6 +29,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
+// Local storage key for persisting calculator state
+const STORAGE_KEY = "marriage-tax-calculator-state";
+
+// Interface for the complete state to save
+interface CalculatorState {
+  person1: TaxPerson;
+  person2: TaxPerson;
+  taxYear: TaxYear;
+  person1UseItemized: boolean;
+  person2UseItemized: boolean;
+}
 
 const TaxCalculator = () => {
   const [person1, setPerson1] = useState<TaxPerson>({
@@ -54,6 +66,47 @@ const TaxCalculator = () => {
   const [result, setResult] = useState<TaxCalculationResult | null>(null);
   const [isCalculated, setIsCalculated] = useState(false);
   const [taxYear, setTaxYear] = useState<TaxYear>("2024");
+  const [person1UseItemized, setPerson1UseItemized] = useState(false);
+  const [person2UseItemized, setPerson2UseItemized] = useState(false);
+
+  // Load state from local storage on component mount
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      const savedState = localStorage.getItem(STORAGE_KEY);
+      if (savedState) {
+        try {
+          const parsedState: CalculatorState = JSON.parse(savedState);
+          setPerson1(parsedState.person1);
+          setPerson2(parsedState.person2);
+          setTaxYear(parsedState.taxYear);
+          setPerson1UseItemized(parsedState.person1UseItemized);
+          setPerson2UseItemized(parsedState.person2UseItemized);
+        } catch (error) {
+          console.error("Failed to parse saved state:", error);
+          // If parsing fails, use default values
+        }
+      }
+    }
+  }, []);
+
+  // Save state to local storage whenever relevant state changes
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      const stateToSave: CalculatorState = {
+        person1,
+        person2,
+        taxYear,
+        person1UseItemized,
+        person2UseItemized,
+      };
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+      } catch (error) {
+        console.error("Failed to save state to local storage:", error);
+      }
+    }
+  }, [person1, person2, taxYear, person1UseItemized, person2UseItemized]);
 
   // Calculate combined itemized deductions for married filing
   const calculateCombinedItemizedDeductions = (): ItemizedDeductions => {
@@ -84,7 +137,7 @@ const TaxCalculator = () => {
   }, [person1, person2, taxYear]);
 
   const handleReset = () => {
-    setPerson1({
+    const defaultPerson1: TaxPerson = {
       income: 0,
       deductions: 0,
       itemizedDeductions: {
@@ -93,8 +146,8 @@ const TaxCalculator = () => {
         mortgageLoanAmount: 0,
         other: 0,
       },
-    });
-    setPerson2({
+    };
+    const defaultPerson2: TaxPerson = {
       income: 0,
       deductions: 0,
       itemizedDeductions: {
@@ -103,9 +156,19 @@ const TaxCalculator = () => {
         mortgageLoanAmount: 0,
         other: 0,
       },
-    });
+    };
+
+    setPerson1(defaultPerson1);
+    setPerson2(defaultPerson2);
+    setPerson1UseItemized(false);
+    setPerson2UseItemized(false);
     setResult(null);
     setIsCalculated(false);
+
+    // Clear from local storage
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.removeItem(STORAGE_KEY);
+    }
   };
 
   const handleYearChange = (year: TaxYear) => {
@@ -186,12 +249,14 @@ const TaxCalculator = () => {
               personNumber={1}
               income={person1.income}
               itemizedDeductions={person1.itemizedDeductions}
+              useItemized={person1UseItemized}
               onIncomeChange={(value) =>
                 setPerson1({ ...person1, income: value })
               }
               onItemizedDeductionsChange={(deductions) =>
                 setPerson1({ ...person1, itemizedDeductions: deductions })
               }
+              onUseItemizedChange={setPerson1UseItemized}
               taxYear={taxYear}
             />
 
@@ -200,12 +265,14 @@ const TaxCalculator = () => {
               personNumber={2}
               income={person2.income}
               itemizedDeductions={person2.itemizedDeductions}
+              useItemized={person2UseItemized}
               onIncomeChange={(value) =>
                 setPerson2({ ...person2, income: value })
               }
               onItemizedDeductionsChange={(deductions) =>
                 setPerson2({ ...person2, itemizedDeductions: deductions })
               }
+              onUseItemizedChange={setPerson2UseItemized}
               taxYear={taxYear}
             />
           </div>
@@ -343,6 +410,7 @@ const TaxCalculator = () => {
                   variant="outline"
                   className="w-full md:w-auto"
                 >
+                  <RotateCcw className="h-4 w-4 mr-2" />
                   Reset Calculator
                 </Button>
               </div>
