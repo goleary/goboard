@@ -1,29 +1,18 @@
-import { getPhotoFileNames } from "@/lib/photos";
-import Image from "next/image";
+import { getPhotoUrls } from "@/lib/photos-r2";
+// import Image from "next/image";
 const PhotosPage = () => {
-  const photoFileNames = getPhotoFileNames();
+  const photoUrls = getPhotoUrls().slice(0, 100);
   return (
-    <div>
+    <div className="bg-black">
       <h1>Photos</h1>
-      <ul>
-        {Object.entries(photoFileNames).map(([key, value]) => (
-          <li key={key}>
-            <h2>{key}</h2>
-            <ul>
-              {value.map((fileName) => (
-                <li key={fileName}>
-                  <Image
-                    src={`/photos/${key}/${fileName}`}
-                    alt={fileName}
-                    width={200}
-                    height={200}
-                  />
-                </li>
-              ))}
-            </ul>
-          </li>
+      <div style={{ columns: "300px" }}>
+        {photoUrls.map(({ fileName, url }) => (
+          <div key={url}>
+            {/* <Image src={url} alt={fileName} width={200} height={200} /> */}
+            <img src={url} alt={fileName} />
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
