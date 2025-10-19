@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
 import type { Slide } from "yet-another-react-lightbox";
@@ -34,33 +34,12 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  type AlbumPhoto = {
-    src: string;
-    width: number;
-    height: number;
-    alt?: string;
-  };
-
-  const [albumPhotos, setAlbumPhotos] = useState<AlbumPhoto[]>(() =>
-    photos.map((p) => ({
-      src: p.url,
-      alt: p.fileName,
-      width: p.width,
-      height: p.height,
-    }))
-  );
-
-  // Keep state in sync if the photos prop changes
-  useEffect(() => {
-    setAlbumPhotos(
-      photos.map((p) => ({
-        src: p.url,
-        alt: p.fileName,
-        width: p.width,
-        height: p.height,
-      }))
-    );
-  }, [photos]);
+  const albumPhotos = photos.map((p) => ({
+    src: p.url,
+    alt: p.fileName,
+    width: p.width,
+    height: p.height,
+  }));
 
   function renderNextImage(
     { alt = "", title, sizes }: RenderImageProps,
