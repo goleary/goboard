@@ -1,14 +1,22 @@
 import photos from "../photos.json";
+import photosWithDimensions from "../photos-with-dimensions.json";
 
 type PhotoItem = {
   fileName: string;
   url: string;
+  width: number;
+  height: number;
 };
 
 type PhotoGroup = {
   folderName: string;
   photos: PhotoItem[];
 };
+
+// Create a lookup map for dimensions
+const dimensionsMap = new Map(
+  photosWithDimensions.map((photo) => [photo.path, photo])
+);
 
 export function getPhotosGroupedByFolder(): PhotoGroup[] {
   const basePrefix = "papa/";
@@ -33,6 +41,9 @@ export function getPhotosGroupedByFolder(): PhotoGroup[] {
       fileName
     )}`;
 
+    // Get dimensions from the lookup map, fallback to 1:1 aspect ratio
+    const dimensions = dimensionsMap.get(fileName) || { width: 1, height: 1 };
+
     // Determine folder name as the first segment after "papa/"
     const withoutPrefix = fileName.startsWith(basePrefix)
       ? fileName.slice(basePrefix.length)
@@ -42,7 +53,12 @@ export function getPhotosGroupedByFolder(): PhotoGroup[] {
       slashIdx === -1 ? "root" : withoutPrefix.slice(0, slashIdx);
 
     if (!groupMap[folderName]) groupMap[folderName] = [];
-    groupMap[folderName].push({ fileName, url });
+    groupMap[folderName].push({
+      fileName,
+      url,
+      width: dimensions.width,
+      height: dimensions.height,
+    });
   }
 
   return Object.entries(groupMap).map(([folderName, items]) => ({

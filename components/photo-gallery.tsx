@@ -8,7 +8,7 @@ import Captions from "yet-another-react-lightbox/plugins/captions";
 import Counter from "yet-another-react-lightbox/plugins/counter";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import PhotoAlbum, {
-  RenderImageProps,
+  type RenderImageProps,
   type RenderImageContext,
 } from "react-photo-album";
 import "react-photo-album/rows.css";
@@ -20,35 +20,15 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 type PhotoItem = {
   url: string;
   fileName: string;
+  width: number;
+  height: number;
 };
 
 type PhotoGalleryProps = {
   photos: PhotoItem[];
 };
 
-function renderNextImage(
-  { alt = "", title, sizes }: RenderImageProps,
-  { photo, width, height }: RenderImageContext
-) {
-  return (
-    <div
-      style={{
-        width: "100%",
-        position: "relative",
-        aspectRatio: `${width} / ${height}`,
-      }}
-    >
-      <Image
-        fill
-        src={photo}
-        alt={alt}
-        title={title}
-        sizes={sizes}
-        placeholder={"blurDataURL" in photo ? "blur" : undefined}
-      />
-    </div>
-  );
-}
+// Renderer is created inside the component to capture the load handler
 
 export default function PhotoGallery({ photos }: PhotoGalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,38 +42,49 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
   };
 
   const [albumPhotos, setAlbumPhotos] = useState<AlbumPhoto[]>(() =>
-    photos.map((p) => ({ src: p.url, alt: p.fileName, width: 1, height: 1 }))
+    photos.map((p) => ({
+      src: p.url,
+      alt: p.fileName,
+      width: p.width,
+      height: p.height,
+    }))
   );
 
-  // Load intrinsic dimensions for layout and to avoid upscaling
+  // Keep state in sync if the photos prop changes
   useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      const results = await Promise.all(
-        photos.map(
-          (p) =>
-            new Promise<AlbumPhoto>((resolve) => {
-              const img = new window.Image();
-              img.src = p.url;
-              img.onload = () =>
-                resolve({
-                  src: p.url,
-                  alt: p.fileName,
-                  width: img.naturalWidth,
-                  height: img.naturalHeight,
-                });
-              img.onerror = () =>
-                resolve({ src: p.url, alt: p.fileName, width: 1, height: 1 });
-            })
-        )
-      );
-      if (!cancelled) setAlbumPhotos(results);
-    };
-    load();
-    return () => {
-      cancelled = true;
-    };
+    setAlbumPhotos(
+      photos.map((p) => ({
+        src: p.url,
+        alt: p.fileName,
+        width: p.width,
+        height: p.height,
+      }))
+    );
   }, [photos]);
+
+  function renderNextImage(
+    { alt = "", title, sizes }: RenderImageProps,
+    { photo, width, height }: RenderImageContext
+  ) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          position: "relative",
+          aspectRatio: `${width} / ${height}`,
+        }}
+      >
+        <Image
+          fill
+          src={photo}
+          alt={alt}
+          title={title}
+          sizes={sizes}
+          placeholder={"blurDataURL" in photo ? "blur" : undefined}
+        />
+      </div>
+    );
+  }
 
   const slides: Slide[] = albumPhotos.map((p) => ({ src: p.src, alt: p.alt }));
 
@@ -103,6 +94,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
         photos={albumPhotos}
         layout="rows"
         targetRowHeight={200}
+        spacing={0}
         onClick={({ index }: { index: number }) => {
           setCurrentIndex(index);
           setIsOpen(true);
