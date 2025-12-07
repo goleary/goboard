@@ -1,3 +1,4 @@
+import PhotosSlideshow from "@/components/photos-slideshow";
 import { getPhotosGroupedByFolder } from "@/lib/photos-r2";
 import PhotoGallery from "@/components/photo-gallery";
 const PhotosPage = () => {
@@ -6,6 +7,8 @@ const PhotosPage = () => {
     <div className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 py-6">
         <h1 className="text-3xl font-semibold mb-6">Photos</h1>
+
+        <PhotosSlideshow groups={groups} />
 
         <div className="grid grid-cols-12 gap-6">
           <aside className="col-span-12 md:col-span-3">
