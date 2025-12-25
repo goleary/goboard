@@ -1,7 +1,11 @@
 import { getTravelData } from "@/lib/posts";
 import Head from "next/head";
 import dayjs from "dayjs";
-import { PageProps } from "@/.next/types/app/page";
+
+type PageProps = {
+  params: Promise<{ slug: string }>;
+};
+
 export default async function Page(props: PageProps) {
   const { params } = props;
   const { slug } = await params;

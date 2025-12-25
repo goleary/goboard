@@ -1,7 +1,10 @@
 import { getWorkData } from "@/lib/posts";
 import Head from "next/head";
-import { PageProps } from "@/.next/types/app/page";
 import Link from "next/link";
+
+type PageProps = {
+  params: Promise<{ slug: string }>;
+};
 
 const isLocalLink = (link: string) => link.startsWith("/");
 
