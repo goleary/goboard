@@ -63,6 +63,11 @@ export default function RootLayout({
                 Marriage Tax Calculator
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link className="hover:text-blue-500" href="/seattle-saunas">
+                Seattle Saunas
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </ul>
