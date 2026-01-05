@@ -523,7 +523,7 @@ export const seattleSaunas: Sauna[] = [
     towelsIncluded: false,
     hours: "Sun-Thu 10am-8pm, Fri-Sat 10am-10pm",
     genderPolicy: "Co-ed",
-    clothingPolicy: "Swimsuit required",
+    clothingPolicy: "Clothing optional",
     notes:
       "Outdoor spa with hot pool, dry sauna, cold outdoor showers, and sundeck. Spa entry reduced to $30 with 60+ min bodywork. 10-visit punch card available for $350.",
     lat: 47.66521324757182,
