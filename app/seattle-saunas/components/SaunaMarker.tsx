@@ -27,7 +27,7 @@ const getMarkerIcon = () => {
         justify-content: center;
         cursor: pointer;
         font-size: 20px;
-      ">♨️</div>
+      ">🔥</div>
     `,
   });
 };

@@ -82,17 +82,10 @@ export default function SeattleSaunasPage() {
       />
 
       {/* Header section - constrained width */}
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
-        <header>
-          <h1 className="text-3xl font-bold mb-3">Seattle Saunas</h1>
-          <p className="text-muted-foreground leading-relaxed">
-            Looking for the best sauna experience in Seattle? This guide
-            compares local saunas and bathhouses across the city, from
-            traditional Russian banyas to modern Nordic-inspired spaces. Filter
-            by amenities like cold plunge, steam room, and private rooms to find
-            your perfect heat therapy destination.
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <header className="flex items-baseline justify-between gap-4">
+          <h1 className="text-3xl font-bold">Seattle Saunas</h1>
+          <p className="text-sm text-muted-foreground">
             Last updated: {formattedDate}
           </p>
         </header>
