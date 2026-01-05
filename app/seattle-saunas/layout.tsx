@@ -12,9 +12,9 @@ export default function SeattleSaunasLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       {/* Header - constrained width */}
-      <header className="border-b">
+      <header className="border-b shrink-0">
         <div className="max-w-2xl mx-auto py-4 px-4 flex flex-col gap-4 items-center">
           <Link className="text-3xl" href="/">
             {`Gabe O'Leary`}
@@ -63,9 +63,8 @@ export default function SeattleSaunasLayout({
         </div>
       </header>
 
-      {/* Content - full width available */}
-      <main className="flex-1">{children}</main>
+      {/* Content - full width available, fills remaining height */}
+      <main className="flex-1 overflow-hidden">{children}</main>
     </div>
   );
 }
-

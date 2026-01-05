@@ -1,7 +1,6 @@
 import { Metadata } from "next";
-import { seattleSaunas, getLatestUpdateDate, getSaunaBySlug } from "@/data/saunas/seattle-saunas";
+import { seattleSaunas, getSaunaBySlug } from "@/data/saunas/seattle-saunas";
 import { SaunasClient } from "./components/SaunasClient";
-import dayjs from "dayjs";
 
 type Props = {
   searchParams: Promise<{ sauna?: string }>;
@@ -68,9 +67,6 @@ function generateItemListSchema() {
 }
 
 export default function SeattleSaunasPage() {
-  const lastUpdated = getLatestUpdateDate();
-  const formattedDate = dayjs(lastUpdated).format("MMMM D, YYYY");
-
   return (
     <>
       {/* Schema.org JSON-LD */}
@@ -80,16 +76,6 @@ export default function SeattleSaunasPage() {
           __html: JSON.stringify(generateItemListSchema()),
         }}
       />
-
-      {/* Header section - constrained width */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <header className="flex items-baseline justify-between gap-4">
-          <h1 className="text-3xl font-bold">Seattle Saunas</h1>
-          <p className="text-sm text-muted-foreground">
-            Last updated: {formattedDate}
-          </p>
-        </header>
-      </div>
 
       {/* Interactive client component - full width */}
       <SaunasClient saunas={seattleSaunas} />
