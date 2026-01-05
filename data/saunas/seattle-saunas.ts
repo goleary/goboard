@@ -726,6 +726,30 @@ export const seattleSaunas: Sauna[] = [
     lng: -122.1812823,
     updatedAt: "2026-01-05",
   },
+  {
+    slug: "q-spa-lynnwood",
+    name: "Q Sauna & Spa",
+    address: "17420 Highway 99, Lynnwood, WA 98037",
+    website: "https://qspalynnwood.com/",
+    bookingUrl: "https://qspalynnwood.com/online-booking/",
+    googleMapsUrl: "https://www.google.com/maps/place/Q+Sauna+%26+Spa/@47.8406742,-122.2993405",
+    sessionPrice: 48, // Day pass, $30 with service
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true, // Hot tubs
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    hours: "Mon-Thu 9am-10pm, Fri-Sun 9am-11pm",
+    genderPolicy: "Separate men's and women's facilities",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Traditional Korean-inspired spa with themed sauna rooms (Charcoal, Jade, Rock & Salt), steam room, and hot tubs. Day pass $48, or $30 with service. Offers body scrubs, massages, facials, and spa packages.",
+    lat: 47.8406742,
+    lng: -122.2993405,
+    updatedAt: "2026-01-05",
+  },
   // {
   //   slug: "cedar-and-stone",
   //   name: "Cedar & Stone Nordic Sauna",
