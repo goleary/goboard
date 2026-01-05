@@ -22,28 +22,31 @@ type BuoyStats = {
   airTempCelsius: number;
   windSpeedMps: number;
   windDirection: string;
-  waterDateTime: Date;
-  waterTempCelsius: number;
+  waterDateTime: Date | null;
+  waterTempCelsius: number | null;
 };
 
 function extractLakeStats(dataString: string, lakeName: string): BuoyStats {
   // Dynamically include the lakeName in the regex pattern
+  // Water temp and water datetime are optional (may be empty)
   const pattern = new RegExp(
     lakeName +
-      `(?:\\|(?<weatherDateTime>[^\|]+))(?:\\|\\s+(?<air>\\d+\\.\\d+))(?:\\|\\s+(?<windSpeed>\\d+\\.\\d+))(?:\\|(?<windDirection>[^\|]+))(?:\\|\\s+(?<water>\\d+\\.\\d+))(?:\\|(?<waterDateTime>[^\|]+))`,
+      `(?:\\|(?<weatherDateTime>[^|]+))(?:\\|\\s*(?<air>\\d+\\.\\d+))(?:\\|\\s*(?<windSpeed>\\d+\\.\\d+))(?:\\|(?<windDirection>[^|]+))(?:\\|\\s*(?<water>\\d+\\.\\d+)?)(?:\\|(?<waterDateTime>[^|]*))`,
     "i"
   );
 
   const match = dataString.match(pattern);
 
-  if (match && match.groups) {
+  if (match?.groups) {
     const weatherDateTime = new Date(match.groups.weatherDateTime);
 
     const air = parseFloat(match.groups.air);
     const wind = parseFloat(match.groups.windSpeed);
     const windDirection = match.groups.windDirection;
-    const waterDateTime = new Date(match.groups.waterDateTime);
-    const water = parseFloat(match.groups.water);
+    const waterDateTimeStr = match.groups.waterDateTime?.trim();
+    const waterDateTime = waterDateTimeStr ? new Date(waterDateTimeStr) : null;
+    const waterStr = match.groups.water?.trim();
+    const water = waterStr ? parseFloat(waterStr) : null;
     return {
       location: lakeName,
       weatherDateTime,
@@ -74,11 +77,11 @@ async function getData() {
   }
   const data = await res.text();
   const washingtonStats = extractLakeStats(data, "washington");
-  // const sammamishStats = extractLakeStats(data, "sammamish");
+  const sammamishStats = extractLakeStats(data, "sammamish");
 
   return {
     washington: washingtonStats,
-    // sammamish: sammamishStats,
+    sammamish: sammamishStats,
   };
 }
 
@@ -100,6 +103,7 @@ const LakeTemp: React.FC = async () => {
             href="https://green2.kingcounty.gov/lake-buoy/default.aspx"
             className="text-blue-600 hover:text-blue-500"
             target="_blank"
+            rel="noopener noreferrer"
           >
             King County Lake Buoy data
           </a>
@@ -110,11 +114,10 @@ const LakeTemp: React.FC = async () => {
             title="Lake Washington"
             stats={lakeStats.washington}
           ></StatCard>
-          {/*
           <StatCard
             title="Lake Sammamish"
             stats={lakeStats.sammamish}
-          ></StatCard> */}
+          ></StatCard>
         </div>
         <p className="">
           Created by{" "}
@@ -148,10 +151,16 @@ const StatCard = ({ title, stats }: StatCardProps): React.ReactElement => {
           <div className={"text-4x flex justify-start gap-4 pt-4"}>
             <div className="flex gap-2 items-center">
               <WavesIcon className="inline-block w-8 h-8 " />{" "}
-              <span className={getWaterTempColor(stats.waterTempCelsius, "c")}>
-                {formatNumber(celsiusToFahrenheit(stats.waterTempCelsius), 1)}{" "}
-                °F
-              </span>
+              {stats.waterTempCelsius !== null ? (
+                <span
+                  className={getWaterTempColor(stats.waterTempCelsius, "c")}
+                >
+                  {formatNumber(celsiusToFahrenheit(stats.waterTempCelsius), 1)}{" "}
+                  °F
+                </span>
+              ) : (
+                <span className="text-slate-400">N/A</span>
+              )}
             </div>
             <div className="flex gap-2 items-center">
               <ThermometerIcon className="inline-block w-8 h-8 mr-2" />{" "}
