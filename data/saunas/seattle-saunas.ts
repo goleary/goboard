@@ -732,7 +732,7 @@ export const seattleSaunas: Sauna[] = [
     address: "17420 Highway 99, Lynnwood, WA 98037",
     website: "https://qspalynnwood.com/",
     bookingUrl: "https://qspalynnwood.com/online-booking/",
-    googleMapsUrl: "https://www.google.com/maps/place/Q+Sauna+%26+Spa/@47.8406742,-122.2993405",
+    googleMapsUrl: "https://maps.app.goo.gl/LQXGoWeVX991iM3L8",
     sessionPrice: 48, // Day pass, $30 with service
     steamRoom: true,
     coldPlunge: true,
