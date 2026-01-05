@@ -165,7 +165,7 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
           <SaunaMap 
             saunas={filteredSaunas} 
             onSaunaClick={handleSaunaClick} 
-            selectedSlug={selectedSlug}
+            selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={false}
           />
@@ -195,7 +195,7 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
                   saunas={filteredSaunas} 
                   compact 
                   onSaunaClick={handleSaunaClick}
-                  selectedSlug={selectedSlug}
+                  selectedSlug={selectedSlug ?? undefined}
                 />
               </div>
             </>
@@ -210,7 +210,7 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
           <SaunaMap 
             saunas={filteredSaunas} 
             onSaunaClick={handleSaunaClick}
-            selectedSlug={selectedSlug}
+            selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={true}
           />
@@ -259,7 +259,7 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
                     saunas={filteredSaunas} 
                     compact 
                     onSaunaClick={handleSaunaClick}
-                    selectedSlug={selectedSlug}
+                    selectedSlug={selectedSlug ?? undefined}
                   />
                 </div>
               </>

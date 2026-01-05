@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { seattleSaunas, getSaunaBySlug } from "@/data/saunas/seattle-saunas";
 import { SaunasClient } from "./components/SaunasClient";
 
@@ -78,7 +79,9 @@ export default function SeattleSaunasPage() {
       />
 
       {/* Interactive client component - full width */}
-      <SaunasClient saunas={seattleSaunas} />
+      <Suspense fallback={<div className="h-screen w-full flex items-center justify-center">Loading...</div>}>
+        <SaunasClient saunas={seattleSaunas} />
+      </Suspense>
     </>
   );
 }
