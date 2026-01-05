@@ -539,7 +539,7 @@ export const seattleSaunas: Sauna[] = [
     sessionPrice: 190, // Starting price for 90min weekday rental (up to 4 people)
     sessionLengthMinutes: 90,
     steamRoom: true,
-    coldPlunge: true, // Cold plunge shower
+    coldPlunge: false,
     soakingTub: true, // Tiled hot tub
     waterfront: false,
     naturalPlunge: false,
@@ -550,9 +550,176 @@ export const seattleSaunas: Sauna[] = [
     genderPolicy: "Gender inclusive",
     clothingPolicy: "Private rental",
     notes:
-      "Private rental spa on Capitol Hill with cedar sauna, herbal steam room, tiled hot tub, and cold plunge shower. Rates from $190 (weekday) to $240 (eve/weekend) for 90min, includes up to 4 people. Longer sessions available. $100 deposit required. Entrance on 11th Ave.",
+      "Private rental spa on Capitol Hill with cedar sauna, herbal steam room, and tiled hot tub. Rates from $190 (weekday) to $240 (eve/weekend) for 90min, includes up to 4 people. Longer sessions available. $100 deposit required. Entrance on 11th Ave.",
     lat: 47.61395512236991,
     lng: -122.31851450204844,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "yuan-spa-bellevue",
+    name: "Yuan Spa (Bellevue)",
+    address: "1032 106th Ave NE, Suite 125, Bellevue, WA 98004",
+    website: "https://yuanspa.com/",
+    bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
+    googleMapsUrl: "https://goo.gl/maps/UphkRHkShgbc5kMa8",
+    sessionPrice: 59, // Weekday price, $69 on weekends
+    sessionLengthMinutes: 60,
+    steamRoom: true, // Eucalyptus steam room with salt bar
+    coldPlunge: false, // Cool pool is 70-85°F, not cold enough
+    soakingTub: true, // Hot pool (100-105°F)
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 185, max: 195 }, // Cedar Chromatherapy Sauna
+    hours: "Hydrotherapy: Daily 10am-9pm (Spa: 9:30am-10pm)",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Luxury day spa in downtown Bellevue blending Asian healing philosophies with modern spa tech. Hydrotherapy includes hot pool, cool pool (70-85°F), eucalyptus steam room with salt bar, cold drench shower, and cedar chromatherapy sauna. $69 on weekends. $35 with same-day spa service of $165+. Cell phones not permitted in hydrotherapy area.",
+    lat: 47.6194628,
+    lng: -122.1989303,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "rainier-beach-pool",
+    name: "Rainier Beach Pool",
+    address: "8825 Rainier Ave S, Seattle, WA 98118",
+    website: "https://www.seattle.gov/parks/pools/rainier-beach-pool",
+    googleMapsUrl: "https://goo.gl/maps/wpkhqygV5s52",
+    sessionPrice: 8, // Adult drop-in 2026 pricing
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: true, // Hot tub/spa
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false, // $0.50 rental available
+    hours: "Varies by season - check website for lap swim + sauna times",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seattle Parks public pool with dry sauna and hot tub. Modern facility (2013 remodel) with lap pool, leisure pool, lazy river, and water slide. Sauna available during lap swim sessions. Youth/Senior/Adaptive $6. Best value sauna+spa combo in Seattle!",
+    lat: 47.524353,
+    lng: -122.2707338,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "medgar-evers-pool",
+    name: "Medgar Evers Pool",
+    address: "500 23rd Ave, Seattle, WA 98122",
+    website: "https://www.seattle.gov/parks/pools/medgar-evers-pool",
+    googleMapsUrl: "https://goo.gl/maps/XawzGx6FqND2",
+    sessionPrice: 8, // Adult drop-in 2026 pricing
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false, // $0.50 rental available
+    hours: "Varies by season - check website",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seattle Parks public pool with dry sauna. Located next to Garfield Community Center. Youth/Senior/Adaptive $6. 10-punch cards and monthly passes available. Currently closed for maintenance, anticipated reopening early 2026.",
+    lat: 47.606707,
+    lng: -122.302376,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "queen-anne-pool",
+    name: "Queen Anne Pool",
+    address: "1920 1st Ave W, Seattle, WA 98119",
+    website: "https://www.seattle.gov/parks/pools/queen-anne-pool",
+    googleMapsUrl: "https://goo.gl/maps/D3SbUfpwi6G2",
+    sessionPrice: 8, // Adult drop-in 2026 pricing
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false, // $0.50 rental available
+    hours: "Varies by season - check website",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seattle Parks public pool with dry sauna. Located on Queen Anne Hill. 25-yard pool with 1m and 3m diving boards, rope swing. Youth/Senior/Adaptive $6. Currently closed for emergency maintenance (water leak) until Jan 12, 2026.",
+    lat: 47.6363728,
+    lng: -122.3579254,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "southwest-pool",
+    name: "Southwest Pool",
+    address: "2801 SW Thistle St, Seattle, WA 98126",
+    website: "https://www.seattle.gov/parks/pools/southwest-pool",
+    googleMapsUrl: "https://goo.gl/maps/6qwS4wcf6N22",
+    sessionPrice: 8, // Adult drop-in 2026 pricing
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: true, // Spa mentioned in amenities
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false, // $0.50 rental available
+    hours: "Varies by season - check website",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seattle Parks public pool with dry sauna and spa. Located in Roxhill neighborhood of West Seattle. 25-yard pool with diving boards. Youth/Senior/Adaptive $6. Complimentary exercise machines available.",
+    lat: 47.5279301,
+    lng: -122.3687135,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "evans-pool",
+    name: "Evans Pool (Green Lake)",
+    address: "7201 East Green Lake Dr N, Seattle, WA 98115",
+    website: "https://www.seattle.gov/parks/pools/evans-pool",
+    googleMapsUrl: "https://goo.gl/maps/31vSzVJRTSt",
+    sessionPrice: 8, // Adult drop-in 2026 pricing
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false, // $0.50 rental available
+    hours: "Varies by season - check website",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seattle Parks public pool with dry sauna. Located at Green Lake Community Center. 25-yard multi-use pool with 6 lanes, 1-meter diving board. Youth/Senior/Adaptive $6.",
+    lat: 47.680392,
+    lng: -122.3279299,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "yuan-spa-totem-lake",
+    name: "Yuan Spa (Totem Lake)",
+    address: "11900 NE Village Plaza #176, Kirkland, WA 98034",
+    website: "https://yuanspa.com/",
+    bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
+    googleMapsUrl: "https://goo.gl/maps/HtTVeP2ihv92JdH36",
+    sessionPrice: 59, // Weekday price, $69 on weekends
+    sessionLengthMinutes: 60,
+    steamRoom: true, // Eucalyptus steam room with salt bar
+    coldPlunge: false, // Cool pool is 70-85°F, not cold enough; Ice Cave is cryotherapy not a plunge
+    soakingTub: true, // Hot pool (100-105°F)
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 155, max: 165 }, // Heated Himalayan Salt Room
+    hours: "Hydrotherapy: Daily 10am-9pm (Spa: 9:30am-10pm)",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Luxury day spa at The Village at Totem Lake blending Asian healing philosophies with modern spa tech. Hydrotherapy includes hot pool, cool pool (70-85°F), eucalyptus steam room with salt bar, Ice Cave (Italian imported), and Heated Himalayan Salt Room. $69 on weekends. $35 with same-day spa service of $165+. Cell phones not permitted in hydrotherapy area.",
+    lat: 47.7126696,
+    lng: -122.1812823,
     updatedAt: "2026-01-05",
   },
   // {
