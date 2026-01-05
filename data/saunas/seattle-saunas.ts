@@ -450,6 +450,7 @@ export const seattleSaunas: Sauna[] = [
     bookingUrl: "https://www.saunansoak.com/appointments",
     googleMapsUrl: "https://maps.app.goo.gl/BJZ2vLncQueWCy5V9",
     sessionPrice: 30,
+    sessionLengthMinutes: 60,
     steamRoom: false,
     coldPlunge: false,
     soakingTub: false,
