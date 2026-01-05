@@ -122,7 +122,7 @@ const TaxComparison = ({
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
-              {percentageDifference.toFixed(1)}%{" "}
+              {Math.abs(percentageDifference).toFixed(1)}%{" "}
               {isBeneficial ? "savings" : "increase"}
             </p>
           </div>

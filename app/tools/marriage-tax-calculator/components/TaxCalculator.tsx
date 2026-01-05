@@ -18,6 +18,7 @@ import {
   STANDARD_DEDUCTION,
   SALT_DEDUCTION_CAP,
   MORTGAGE_LOAN_LIMIT,
+  getEffectiveSaltCap,
 } from "../taxCalculations";
 import { Separator } from "@/components/ui/separator";
 import { AlertCircle, Calculator, RotateCcw } from "lucide-react";
@@ -65,7 +66,7 @@ const TaxCalculator = () => {
   });
   const [result, setResult] = useState<TaxCalculationResult | null>(null);
   const [isCalculated, setIsCalculated] = useState(false);
-  const [taxYear, setTaxYear] = useState<TaxYear>("2024");
+  const [taxYear, setTaxYear] = useState<TaxYear>("2025");
   const [person1UseItemized, setPerson1UseItemized] = useState(false);
   const [person2UseItemized, setPerson2UseItemized] = useState(false);
 
@@ -189,6 +190,7 @@ const TaxCalculator = () => {
   };
 
   const combinedItemizedDeductions = calculateCombinedItemizedDeductions();
+  const combinedIncome = person1.income + person2.income;
   const deductibleMortgageInterest = getDeductibleMortgageInterest(
     combinedItemizedDeductions.mortgageInterest,
     combinedItemizedDeductions.mortgageLoanAmount
@@ -196,15 +198,14 @@ const TaxCalculator = () => {
   const isLoanAboveLimit =
     combinedItemizedDeductions.mortgageLoanAmount > MORTGAGE_LOAN_LIMIT;
 
+  // Calculate effective SALT cap with phase-down for high earners (2025+)
+  const baseSaltCap = SALT_DEDUCTION_CAP[taxYear].married;
+  const saltCap = getEffectiveSaltCap(baseSaltCap, combinedIncome, taxYear);
+
   const totalMarriedItemizedDeductions =
-    Math.min(
-      combinedItemizedDeductions.salt,
-      SALT_DEDUCTION_CAP[taxYear].married
-    ) +
+    Math.min(combinedItemizedDeductions.salt, saltCap) +
     deductibleMortgageInterest +
     combinedItemizedDeductions.other;
-
-  const saltCap = SALT_DEDUCTION_CAP[taxYear].married;
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -232,6 +233,7 @@ const TaxCalculator = () => {
                   <SelectItem value="2023">2023</SelectItem>
                   <SelectItem value="2024">2024</SelectItem>
                   <SelectItem value="2025">2025</SelectItem>
+                  <SelectItem value="2026">2026</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -61,6 +61,27 @@ export const MARRIED_TAX_BRACKETS_2025 = [
   { min: 753101, max: Infinity, rate: 0.37 },
 ];
 
+// 2026 Tax brackets (estimated based on inflation adjustments)
+export const SINGLE_TAX_BRACKETS_2026 = [
+  { min: 0, max: 12400, rate: 0.1 },
+  { min: 12401, max: 50400, rate: 0.12 },
+  { min: 50401, max: 105700, rate: 0.22 },
+  { min: 105701, max: 201775, rate: 0.24 },
+  { min: 201776, max: 256225, rate: 0.32 },
+  { min: 256226, max: 640600, rate: 0.35 },
+  { min: 640601, max: Infinity, rate: 0.37 },
+];
+
+export const MARRIED_TAX_BRACKETS_2026 = [
+  { min: 0, max: 24800, rate: 0.1 },
+  { min: 24801, max: 100800, rate: 0.12 },
+  { min: 100801, max: 211400, rate: 0.22 },
+  { min: 211401, max: 403550, rate: 0.24 },
+  { min: 403551, max: 512450, rate: 0.32 },
+  { min: 512451, max: 768700, rate: 0.35 },
+  { min: 768701, max: Infinity, rate: 0.37 },
+];
+
 // Standard deductions by year
 export const STANDARD_DEDUCTION = {
   2023: {
@@ -74,6 +95,10 @@ export const STANDARD_DEDUCTION = {
   2025: {
     single: 15050,
     married: 30100,
+  },
+  2026: {
+    single: 15000,
+    married: 30000,
   },
 };
 
@@ -89,7 +114,11 @@ export const SALT_DEDUCTION_CAP = {
   },
   2025: {
     single: 40000,
-    married: 80000,
+    married: 40000,
+  },
+  2026: {
+    single: 40000,
+    married: 40000,
   },
 };
 
@@ -120,7 +149,7 @@ export interface TaxCalculationResult {
   optimalFilingMethod: "standard" | "itemized";
 }
 
-export type TaxYear = "2023" | "2024" | "2025";
+export type TaxYear = "2023" | "2024" | "2025" | "2026";
 
 // Get the appropriate tax brackets based on the selected year
 export const getSingleTaxBrackets = (year: TaxYear) => {
@@ -131,6 +160,8 @@ export const getSingleTaxBrackets = (year: TaxYear) => {
       return SINGLE_TAX_BRACKETS_2024;
     case "2025":
       return SINGLE_TAX_BRACKETS_2025;
+    case "2026":
+      return SINGLE_TAX_BRACKETS_2026;
     default:
       return SINGLE_TAX_BRACKETS_2023;
   }
@@ -144,6 +175,8 @@ export const getMarriedTaxBrackets = (year: TaxYear) => {
       return MARRIED_TAX_BRACKETS_2024;
     case "2025":
       return MARRIED_TAX_BRACKETS_2025;
+    case "2026":
+      return MARRIED_TAX_BRACKETS_2026;
     default:
       return MARRIED_TAX_BRACKETS_2023;
   }
@@ -170,15 +203,50 @@ export const calculateTaxFromBrackets = (
   return tax;
 };
 
+// Get SALT deduction cap with phase-down for high earners (2025+)
+export const getEffectiveSaltCap = (
+  baseCap: number,
+  magi: number,
+  year: TaxYear
+): number => {
+  // Phase-down only applies to 2025 and 2026 (years with increased SALT caps)
+  if (year !== "2025" && year !== "2026") {
+    return baseCap;
+  }
+
+  // Phase-down threshold: $500,000 MAGI
+  const PHASE_DOWN_THRESHOLD = 500000;
+  const PHASE_DOWN_RATE = 0.3; // 30% reduction per dollar over threshold
+  const MINIMUM_SALT_CAP = 10000; // Cannot go below $10,000
+
+  if (magi <= PHASE_DOWN_THRESHOLD) {
+    return baseCap;
+  }
+
+  // Calculate reduction: 30% of amount over $500k
+  const excessOverThreshold = magi - PHASE_DOWN_THRESHOLD;
+  const reduction = excessOverThreshold * PHASE_DOWN_RATE;
+  const adjustedCap = baseCap - reduction;
+
+  // Ensure cap doesn't fall below minimum
+  return Math.max(adjustedCap, MINIMUM_SALT_CAP);
+};
+
 // Get total itemized deductions with caps applied
 export const getTotalItemizedDeductions = (
   deductions: ItemizedDeductions,
   year: TaxYear,
-  filingStatus: "single" | "married"
+  filingStatus: "single" | "married",
+  magi: number // Modified Adjusted Gross Income for phase-down calculation
 ): number => {
-  // Apply SALT cap
-  const saltCap = SALT_DEDUCTION_CAP[year][filingStatus];
-  const cappedSalt = Math.min(deductions.salt, saltCap);
+  // Get base SALT cap
+  const baseSaltCap = SALT_DEDUCTION_CAP[year][filingStatus];
+  
+  // Apply phase-down for high earners (2025+)
+  const effectiveSaltCap = getEffectiveSaltCap(baseSaltCap, magi, year);
+  
+  // Apply effective SALT cap
+  const cappedSalt = Math.min(deductions.salt, effectiveSaltCap);
 
   // Apply mortgage interest cap based on loan amount
   let cappedMortgageInterest = deductions.mortgageInterest;
@@ -200,6 +268,7 @@ export const calculateSingleTax = (
   const standardDeduction = STANDARD_DEDUCTION[year].single;
 
   // Calculate total itemized deductions
+  // Use income as MAGI (Modified Adjusted Gross Income) for phase-down calculation
   const totalItemizedDeductions = getTotalItemizedDeductions(
     person.itemizedDeductions || {
       salt: 0,
@@ -208,7 +277,8 @@ export const calculateSingleTax = (
       other: 0,
     },
     year,
-    "single"
+    "single",
+    person.income
   );
 
   // Use the larger of standard deduction or itemized deductions
@@ -245,10 +315,12 @@ export const calculateMarriedTax = (
   };
 
   // Get total itemized deductions with caps applied
+  // Use combined income as MAGI (Modified Adjusted Gross Income) for phase-down calculation
   const totalItemizedDeductions = getTotalItemizedDeductions(
     combinedItemizedDeductions,
     year,
-    "married"
+    "married",
+    combinedIncome
   );
 
   // Calculate tax using standard deduction

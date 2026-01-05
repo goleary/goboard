@@ -8,6 +8,7 @@ import {
   STANDARD_DEDUCTION,
   TaxYear,
   MORTGAGE_LOAN_LIMIT,
+  getEffectiveSaltCap,
 } from "../taxCalculations";
 import { Info } from "lucide-react";
 import {
@@ -40,7 +41,9 @@ const TaxInput = ({
   onUseItemizedChange,
   taxYear,
 }: TaxInputProps) => {
-  const saltCap = SALT_DEDUCTION_CAP[taxYear].single;
+  const baseSaltCap = SALT_DEDUCTION_CAP[taxYear].single;
+  // Calculate effective SALT cap with phase-down for high earners (2025+)
+  const saltCap = getEffectiveSaltCap(baseSaltCap, income, taxYear);
   const standardDeduction = STANDARD_DEDUCTION[taxYear].single;
 
   // Format number for display in input
@@ -167,9 +170,15 @@ const TaxInput = ({
                         <TooltipContent>
                           <p className="max-w-xs text-xs">
                             State and local tax deductions are capped at $
-                            {saltCap.toLocaleString()}
-                            for both single filers and married couples filing
-                            jointly.
+                            {saltCap.toLocaleString()}.
+                            {taxYear === "2025" || taxYear === "2026" ? (
+                              <>
+                                {" "}
+                                For {taxYear}, the base cap is $
+                                {baseSaltCap.toLocaleString()}, but it's reduced
+                                by 30% of income over $500,000 (minimum $10,000).
+                              </>
+                            ) : null}
                           </p>
                         </TooltipContent>
                       </Tooltip>

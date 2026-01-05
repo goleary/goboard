@@ -7,7 +7,7 @@ const Index = () => {
       <div className="max-w-4xl mx-auto w-full">
         <header className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">
-            Marriage Tax Calculator
+            US Marriage Tax Calculator
           </h1>
 
           <p className="text-muted-foreground max-w-2xl mx-auto">
