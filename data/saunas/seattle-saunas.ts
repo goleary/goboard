@@ -452,7 +452,7 @@ export const seattleSaunas: Sauna[] = [
     sessionPrice: 30,
     sessionLengthMinutes: 60,
     steamRoom: false,
-    coldPlunge: false,
+    coldPlunge: true,
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
@@ -489,23 +489,26 @@ export const seattleSaunas: Sauna[] = [
   {
     slug: "svette-sauna",
     name: "Svette Sauna",
-    website: "https://svettesauna.com/",
-    sessionPrice: 35,
+    address: "5605 Owen Beach Rd, Tacoma, WA 98407",
+    website: "https://svettetacoma.com/",
+    sessionPrice: 35, // Peak pricing, $28 matinee
     sessionLengthMinutes: 75,
     steamRoom: false,
-    coldPlunge: true,
+    coldPlunge: true, // Puget Sound 46-58°F
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
-    showers: true,
+    showers: false, // No public showers at Owen Beach
     towelsIncluded: false,
+    temperatureRangeF: { min: 180, max: 180 }, // Average 180°F
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
-    notes: "Waterfront sauna in Tacoma with cold plunge into Puget Sound.",
+    notes:
+      "Tacoma's seaside sauna experience at Owen Beach. Mobile sauna with cold plunge into Puget Sound (46-58°F). Matinee $28, peak $35. Credit system booking. No public showers available.",
     lat: 47.31281390821457,
     lng: -122.52883465036992,
     googleMapsUrl: "https://maps.app.goo.gl/vZi2eZ2Mk1zFd8zu5",
-    updatedAt: "2025-01-04",
+    updatedAt: "2026-01-05",
   },
   {
     slug: "sacred-rain-healing-center",
