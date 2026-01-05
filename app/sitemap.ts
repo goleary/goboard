@@ -1,6 +1,10 @@
 import { MetadataRoute } from "next";
 import { seattleSaunas } from "@/data/saunas/seattle-saunas";
-import { getSortedWorksData, getSortedPostsData, getSortedTravelData } from "@/lib/posts";
+import {
+  getSortedWorksData,
+  getSortedPostsData,
+  getSortedTravelData,
+} from "@/lib/posts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://goleary.com";
@@ -77,12 +81,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  const saunaDetailPages: MetadataRoute.Sitemap = seattleSaunas.map((sauna) => ({
-    url: `${baseUrl}/seattle-saunas/${sauna.slug}`,
-    lastModified: new Date(sauna.updatedAt),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
+  const saunaDetailPages: MetadataRoute.Sitemap = seattleSaunas.map(
+    (sauna) => ({
+      url: `${baseUrl}/seattle-saunas?sauna=${sauna.slug}`,
+      lastModified: new Date(sauna.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })
+  );
 
   // Dynamic content pages
   const works = getSortedWorksData();
@@ -119,4 +125,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...travelPages,
   ];
 }
-

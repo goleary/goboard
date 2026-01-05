@@ -1,23 +1,54 @@
 import { Metadata } from "next";
-import { seattleSaunas, getLatestUpdateDate } from "@/data/saunas/seattle-saunas";
+import { seattleSaunas, getLatestUpdateDate, getSaunaBySlug } from "@/data/saunas/seattle-saunas";
 import { SaunasClient } from "./components/SaunasClient";
 import dayjs from "dayjs";
 
-export const metadata: Metadata = {
-  title: "Seattle Saunas - Compare Local Sauna & Bathhouse Options",
-  description:
-    "Compare Seattle saunas and bathhouses by price, amenities, and location. Find the perfect sauna experience with cold plunge, steam rooms, and private options.",
-  openGraph: {
+type Props = {
+  searchParams: Promise<{ sauna?: string }>;
+};
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { sauna: saunaSlug } = await searchParams;
+  
+  if (saunaSlug) {
+    const sauna = getSaunaBySlug(saunaSlug);
+    if (sauna) {
+      const title = `${sauna.name} - Seattle Sauna`;
+      const description = sauna.notes || 
+        `${sauna.name} in Seattle. ${sauna.sessionPrice ? `$${sauna.sessionPrice}` : ""} ${sauna.sessionLengthMinutes ? `for ${sauna.sessionLengthMinutes} minutes` : ""}. ${sauna.coldPlunge ? "Cold plunge available." : ""} ${sauna.steamRoom ? "Steam room available." : ""}`.trim();
+      
+      return {
+        title,
+        description,
+        openGraph: {
+          title,
+          description,
+          url: `https://goleary.com/seattle-saunas?sauna=${sauna.slug}`,
+          type: "website",
+        },
+        alternates: {
+          canonical: `https://goleary.com/seattle-saunas?sauna=${sauna.slug}`,
+        },
+      };
+    }
+  }
+
+  return {
     title: "Seattle Saunas - Compare Local Sauna & Bathhouse Options",
     description:
-      "Compare Seattle saunas and bathhouses by price, amenities, and location. Find the perfect sauna experience.",
-    url: "https://goleary.com/seattle-saunas",
-    type: "website",
-  },
-  alternates: {
-    canonical: "https://goleary.com/seattle-saunas",
-  },
-};
+      "Compare Seattle saunas and bathhouses by price, amenities, and location. Find the perfect sauna experience with cold plunge, steam rooms, and private options.",
+    openGraph: {
+      title: "Seattle Saunas - Compare Local Sauna & Bathhouse Options",
+      description:
+        "Compare Seattle saunas and bathhouses by price, amenities, and location. Find the perfect sauna experience.",
+      url: "https://goleary.com/seattle-saunas",
+      type: "website",
+    },
+    alternates: {
+      canonical: "https://goleary.com/seattle-saunas",
+    },
+  };
+}
 
 // Generate schema.org ItemList for SEO
 function generateItemListSchema() {
@@ -50,8 +81,8 @@ export default function SeattleSaunasPage() {
         }}
       />
 
-      <article className="space-y-6">
-        {/* SEO-first content */}
+      {/* Header section - constrained width */}
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
         <header>
           <h1 className="text-3xl font-bold mb-3">Seattle Saunas</h1>
           <p className="text-muted-foreground leading-relaxed">
@@ -65,30 +96,10 @@ export default function SeattleSaunasPage() {
             Last updated: {formattedDate}
           </p>
         </header>
+      </div>
 
-        {/* Interactive client component */}
-        <SaunasClient saunas={seattleSaunas} />
-
-        {/* Additional SEO content */}
-        <footer className="prose prose-sm max-w-none pt-6 border-t">
-          <h2 className="text-lg font-semibold">
-            About Seattle&apos;s Sauna Scene
-          </h2>
-          <p>
-            Seattle has embraced the global sauna renaissance, offering a
-            diverse range of heat therapy experiences. From the authentic
-            Russian banya tradition at Banya 5 in Georgetown to the
-            Finnish-inspired Löyly in Ballard, there&apos;s a sauna for every
-            preference and budget.
-          </p>
-          <p>
-            Most Seattle saunas offer contrast therapy with cold plunge pools,
-            and many provide day passes for drop-in visits. Whether you&apos;re
-            seeking a social bathhouse atmosphere or a private wellness
-            retreat, this guide helps you compare all your options.
-          </p>
-        </footer>
-      </article>
+      {/* Interactive client component - full width */}
+      <SaunasClient saunas={seattleSaunas} />
     </>
   );
 }

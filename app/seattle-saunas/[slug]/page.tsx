@@ -55,14 +55,14 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     };
   }
 
-  const description = `${sauna.name} in ${sauna.neighborhood}, Seattle. ${
-    sauna.dayPassAvailable ? "Day passes available." : ""
+  const description = `${sauna.name} in Seattle.${
+    sauna.sessionPrice ? ` $${sauna.sessionPrice}/session.` : ""
   } ${sauna.coldPlunge ? "Features cold plunge." : ""} ${
     sauna.steamRoom ? "Includes steam room." : ""
-  } Price range: ${sauna.priceRange}`;
+  }`.trim();
 
   return {
-    title: `${sauna.name} - Seattle Sauna in ${sauna.neighborhood}`,
+    title: `${sauna.name} - Seattle Sauna`,
     description: description.trim(),
     openGraph: {
       title: `${sauna.name} - Seattle Sauna`,
@@ -98,7 +98,7 @@ function generateLocalBusinessSchema(sauna: Sauna) {
       longitude: sauna.lng,
     },
     ...(sauna.hours && { openingHours: sauna.hours }),
-    priceRange: sauna.priceRange,
+    ...(sauna.sessionPrice && { priceRange: `$${sauna.sessionPrice}` }),
   };
 
   return schema;
@@ -184,14 +184,18 @@ export default async function SaunaDetailPage(props: PageProps) {
         <header>
           <div className="flex flex-wrap items-start gap-3 mb-3">
             <h1 className="text-3xl font-bold">{sauna.name}</h1>
-            <Badge variant="outline" className="text-base">
-              {sauna.priceRange}
-            </Badge>
+{sauna.sessionPrice > 0 && (
+              <Badge variant="outline" className="text-base">
+                ${sauna.sessionPrice}
+              </Badge>
+            )}
           </div>
-          <p className="text-muted-foreground flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            {sauna.neighborhood}, Seattle
-          </p>
+          {sauna.address && (
+            <p className="text-muted-foreground flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              {sauna.address}
+            </p>
+          )}
         </header>
 
         {/* Action Buttons */}
@@ -256,11 +260,6 @@ export default async function SaunaDetailPage(props: PageProps) {
                 label="Towels Included"
                 available={sauna.towelsIncluded}
               />
-              <AmenityItem
-                icon={<Users className="h-5 w-5" />}
-                label="Private Rooms"
-                available={sauna.privateRoomAvailable}
-              />
             </CardContent>
           </Card>
 
@@ -270,11 +269,11 @@ export default async function SaunaDetailPage(props: PageProps) {
               <CardTitle className="text-lg">Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {sauna.dayPassAvailable && (
-                <div>
-                  <Badge variant="secondary">Day Pass Available</Badge>
-                </div>
-              )}
+              <div>
+                {sauna.sessionPrice > 0 && (
+                  <Badge variant="secondary">${sauna.sessionPrice}/session</Badge>
+                )}
+              </div>
 
               {sauna.hours && (
                 <div>
@@ -362,9 +361,11 @@ export default async function SaunaDetailPage(props: PageProps) {
                   >
                     <div>
                       <p className="font-medium">{s.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {s.neighborhood} · {s.priceRange}
-                      </p>
+                      {s.sessionPrice > 0 && (
+                        <p className="text-sm text-muted-foreground">
+                          ${s.sessionPrice}/session
+                        </p>
+                      )}
                     </div>
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   </Link>
