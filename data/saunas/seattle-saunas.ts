@@ -530,6 +530,31 @@ export const seattleSaunas: Sauna[] = [
     lng: -122.37104683010173,
     updatedAt: "2026-01-05",
   },
+  {
+    slug: "hothouse-spa",
+    name: "Hothouse Spa & Sauna",
+    address: "1019 E Pike St, Seattle, WA 98122",
+    website: "https://www.hothousespa.com/",
+    googleMapsUrl: "https://maps.app.goo.gl/nWMgFkAafFz76Lc49",
+    sessionPrice: 190, // Starting price for 90min weekday rental (up to 4 people)
+    sessionLengthMinutes: 90,
+    steamRoom: true,
+    coldPlunge: true, // Cold plunge shower
+    soakingTub: true, // Tiled hot tub
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    capacity: 4,
+    hours: "Open 7 days a week for private use",
+    genderPolicy: "Gender inclusive",
+    clothingPolicy: "Private rental",
+    notes:
+      "Private rental spa on Capitol Hill with cedar sauna, herbal steam room, tiled hot tub, and cold plunge shower. Rates from $190 (weekday) to $240 (eve/weekend) for 90min, includes up to 4 people. Longer sessions available. $100 deposit required. Entrance on 11th Ave.",
+    lat: 47.61395512236991,
+    lng: -122.31851450204844,
+    updatedAt: "2026-01-05",
+  },
   // {
   //   slug: "cedar-and-stone",
   //   name: "Cedar & Stone Nordic Sauna",
