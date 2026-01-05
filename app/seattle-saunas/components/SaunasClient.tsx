@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Map, TableIcon, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { type Sauna } from "@/data/saunas/seattle-saunas";
 import {
   SaunaFilters,
@@ -28,13 +27,73 @@ interface SaunasClientProps {
   saunas: Sauna[];
 }
 
-type ViewMode = "table" | "map";
+const MIN_SHEET_HEIGHT = 200;
+const MAX_SHEET_PERCENT = 0.85;
 
 export function SaunasClient({ saunas }: SaunasClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<FilterState>(getDefaultFilters());
-  const [mobileViewMode, setMobileViewMode] = useState<ViewMode>("table");
+  const [sheetHeight, setSheetHeight] = useState(MIN_SHEET_HEIGHT);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartY = useRef(0);
+  const dragStartHeight = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Handle drag start
+  const handleDragStart = useCallback((clientY: number) => {
+    setIsDragging(true);
+    dragStartY.current = clientY;
+    dragStartHeight.current = sheetHeight;
+  }, [sheetHeight]);
+
+  // Handle drag move
+  const handleDragMove = useCallback((clientY: number) => {
+    if (!isDragging || !containerRef.current) return;
+    
+    const containerHeight = containerRef.current.parentElement?.clientHeight || window.innerHeight;
+    const maxHeight = containerHeight * MAX_SHEET_PERCENT;
+    const deltaY = dragStartY.current - clientY;
+    const newHeight = Math.max(MIN_SHEET_HEIGHT, Math.min(maxHeight, dragStartHeight.current + deltaY));
+    
+    setSheetHeight(newHeight);
+  }, [isDragging]);
+
+  // Handle drag end
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging || !containerRef.current) return;
+    setIsDragging(false);
+    
+    const containerHeight = containerRef.current.parentElement?.clientHeight || window.innerHeight;
+    const maxHeight = containerHeight * MAX_SHEET_PERCENT;
+    const midPoint = (MIN_SHEET_HEIGHT + maxHeight) / 2;
+    
+    // Snap to expanded or collapsed
+    if (sheetHeight > midPoint) {
+      setSheetHeight(maxHeight);
+    } else {
+      setSheetHeight(MIN_SHEET_HEIGHT);
+    }
+  }, [isDragging, sheetHeight]);
+
+  // Touch handlers
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    handleDragStart(e.touches[0].clientY);
+  }, [handleDragStart]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    handleDragMove(e.touches[0].clientY);
+  }, [handleDragMove]);
+
+  const handleTouchEnd = useCallback(() => {
+    handleDragEnd();
+  }, [handleDragEnd]);
+
+  // Mouse handlers (for testing on desktop)
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    handleDragStart(e.clientY);
+  }, [handleDragStart]);
 
   // Get selected sauna from URL
   const selectedSlug = searchParams.get("sauna");
@@ -48,11 +107,35 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
     [saunas, filters]
   );
 
+  // Global mouse handlers for desktop drag
+  useEffect(() => {
+    if (!isDragging) return;
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      handleDragMove(e.clientY);
+    };
+    
+    const handleMouseUp = () => {
+      handleDragEnd();
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, handleDragMove, handleDragEnd]);
+
   const handleSaunaClick = (sauna: Sauna) => {
     // Update URL with sauna slug
     const params = new URLSearchParams(searchParams.toString());
     params.set("sauna", sauna.slug);
     router.push(`/seattle-saunas?${params.toString()}`, { scroll: false });
+    // Expand sheet on mobile when selecting a sauna
+    const containerHeight = containerRef.current?.parentElement?.clientHeight || window.innerHeight;
+    setSheetHeight(containerHeight * MAX_SHEET_PERCENT);
   };
 
   const handleCloseDetail = () => {
@@ -63,20 +146,29 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
     router.push(queryString ? `/seattle-saunas?${queryString}` : "/seattle-saunas", { scroll: false });
   };
 
+  // Filters component for reuse
+  const filtersSection = (
+    <div className="px-3 py-2 border-b">
+      <h2 className="font-semibold text-base mb-2">Seattle&apos;s Public Saunas</h2>
+      <SaunaFilters
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
+    </div>
+  );
+
   return (
     <>
-      {/* Filters - constrained width */}
-      <div className="max-w-4xl mx-auto px-4 pb-4 space-y-4">
-        <SaunaFilters
-          filters={filters}
-          onFiltersChange={setFilters}
-        />
-      </div>
-
       {/* Desktop: Full-width map with panel overlay */}
-      <div className="hidden lg:block relative h-[calc(100vh-200px)] min-h-[500px]">
+      <div className="hidden lg:block relative h-full">
         <div className="absolute inset-0">
-          <SaunaMap saunas={filteredSaunas} onSaunaClick={handleSaunaClick} />
+          <SaunaMap 
+            saunas={filteredSaunas} 
+            onSaunaClick={handleSaunaClick} 
+            selectedSlug={selectedSlug ?? undefined}
+            selectedSauna={selectedSauna}
+            isMobile={false}
+          />
         </div>
         <div className="absolute top-4 left-4 bottom-4 w-[320px] z-[1000] bg-background/95 backdrop-blur-sm rounded-lg border shadow-lg overflow-hidden flex flex-col">
           {selectedSauna ? (
@@ -94,15 +186,16 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
             </>
           ) : (
             <>
-              <div className="p-3 border-b bg-background">
-                <p className="text-sm font-medium">{filteredSaunas.length} saunas</p>
+              {filtersSection}
+              <div className="px-3 py-2 border-b bg-background">
+                <p className="text-sm text-muted-foreground">{filteredSaunas.length} saunas</p>
               </div>
               <div className="flex-1 overflow-auto">
                 <SaunaTable 
                   saunas={filteredSaunas} 
                   compact 
                   onSaunaClick={handleSaunaClick}
-                  selectedSlug={selectedSauna?.slug}
+                  selectedSlug={selectedSlug ?? undefined}
                 />
               </div>
             </>
@@ -110,43 +203,69 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
         </div>
       </div>
 
-      {/* Mobile/Tablet: Toggle between views */}
-      <div className="lg:hidden px-4 space-y-4">
-        <div className="flex gap-2">
-          <Button
-            variant={mobileViewMode === "table" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setMobileViewMode("table")}
-          >
-            <TableIcon className="mr-2 h-4 w-4" />
-            Table
-          </Button>
-          <Button
-            variant={mobileViewMode === "map" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setMobileViewMode("map")}
-          >
-            <Map className="mr-2 h-4 w-4" />
-            Map
-          </Button>
+      {/* Mobile/Tablet: Full-screen map with bottom sheet */}
+      <div className="lg:hidden relative h-full" ref={containerRef}>
+        {/* Full-screen map */}
+        <div className="absolute inset-0">
+          <SaunaMap 
+            saunas={filteredSaunas} 
+            onSaunaClick={handleSaunaClick}
+            selectedSlug={selectedSlug ?? undefined}
+            selectedSauna={selectedSauna}
+            isMobile={true}
+          />
         </div>
 
-        {mobileViewMode === "table" ? (
-          <SaunaTable saunas={filteredSaunas} onSaunaClick={handleSaunaClick} />
-        ) : (
-          <div className="h-[400px] rounded-lg overflow-hidden border">
-            <SaunaMap saunas={filteredSaunas} onSaunaClick={handleSaunaClick} />
+        {/* Bottom sheet - always visible */}
+        <div 
+          className={`absolute left-0 right-0 bottom-0 z-[1000] bg-background rounded-t-2xl border-t shadow-2xl ${
+            isDragging ? "" : "transition-all duration-300"
+          }`}
+          style={{ height: sheetHeight }}
+        >
+          {/* Drag handle */}
+          <div 
+            className="w-full flex justify-center py-3 cursor-grab active:cursor-grabbing touch-none select-none"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+          >
+            <div className="w-10 h-1 bg-muted-foreground/40 rounded-full" />
           </div>
-        )}
-
-        {/* Mobile detail modal */}
-        {selectedSauna && (
-          <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-            <div className="fixed inset-x-4 top-20 bottom-4 bg-background rounded-lg border shadow-lg overflow-hidden">
-              <SaunaDetailPanel sauna={selectedSauna} onClose={handleCloseDetail} />
-            </div>
+          
+          <div className="flex flex-col h-[calc(100%-40px)] overflow-hidden">
+            {selectedSauna ? (
+              <>
+                <button
+                  onClick={handleCloseDetail}
+                  className="flex items-center gap-1 px-4 py-2 text-sm text-muted-foreground hover:text-foreground border-b shrink-0"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Back to list
+                </button>
+                <div className="flex-1 overflow-auto">
+                  <SaunaDetailPanel sauna={selectedSauna} onClose={handleCloseDetail} />
+                </div>
+              </>
+            ) : (
+              <>
+                {filtersSection}
+                <div className="px-3 py-1 border-b shrink-0">
+                  <p className="text-sm text-muted-foreground">{filteredSaunas.length} saunas</p>
+                </div>
+                <div className="flex-1 overflow-auto">
+                  <SaunaTable 
+                    saunas={filteredSaunas} 
+                    compact 
+                    onSaunaClick={handleSaunaClick}
+                    selectedSlug={selectedSlug ?? undefined}
+                  />
+                </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </>
   );

@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Waves, Droplets, Bath } from "lucide-react";
+import { Check, X, Waves, Leaf, Snowflake } from "lucide-react";
 import { type Sauna } from "@/data/saunas/seattle-saunas";
 
 interface SaunaTableProps {
@@ -50,24 +50,27 @@ function CompactSaunaList({
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <p className="font-medium text-sm truncate">{sauna.name}</p>
-              <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
                 {sauna.sessionLengthMinutes && (
                   <span>{sauna.sessionLengthMinutes} min</span>
                 )}
+                {sauna.coldPlunge && (
+                  <span title="Cold Plunge" className="flex items-center">
+                    <Snowflake className="h-3 w-3 text-sky-500" />
+                  </span>
+                )}
                 {sauna.waterfront && (
-                  <span className="flex items-center gap-0.5">
-                    <Waves className="h-3 w-3" />
+                  <span title="Waterfront" className="flex items-center">
+                    <Waves className="h-3 w-3 text-blue-500" />
                   </span>
                 )}
                 {sauna.naturalPlunge && (
-                  <span className="flex items-center gap-0.5">
-                    <Droplets className="h-3 w-3" />
+                  <span title="Natural Plunge" className="flex items-center">
+                    <Leaf className="h-3 w-3 text-green-600" />
                   </span>
                 )}
                 {sauna.soakingTub && (
-                  <span className="flex items-center gap-0.5">
-                    <Bath className="h-3 w-3" />
-                  </span>
+                  <span title="Soaking Tub">♨️</span>
                 )}
               </div>
             </div>

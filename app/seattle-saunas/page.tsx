@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import { seattleSaunas, getLatestUpdateDate, getSaunaBySlug } from "@/data/saunas/seattle-saunas";
+import { Suspense } from "react";
+import { seattleSaunas, getSaunaBySlug } from "@/data/saunas/seattle-saunas";
 import { SaunasClient } from "./components/SaunasClient";
-import dayjs from "dayjs";
 
 type Props = {
   searchParams: Promise<{ sauna?: string }>;
@@ -68,9 +68,6 @@ function generateItemListSchema() {
 }
 
 export default function SeattleSaunasPage() {
-  const lastUpdated = getLatestUpdateDate();
-  const formattedDate = dayjs(lastUpdated).format("MMMM D, YYYY");
-
   return (
     <>
       {/* Schema.org JSON-LD */}
@@ -81,25 +78,10 @@ export default function SeattleSaunasPage() {
         }}
       />
 
-      {/* Header section - constrained width */}
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
-        <header>
-          <h1 className="text-3xl font-bold mb-3">Seattle Saunas</h1>
-          <p className="text-muted-foreground leading-relaxed">
-            Looking for the best sauna experience in Seattle? This guide
-            compares local saunas and bathhouses across the city, from
-            traditional Russian banyas to modern Nordic-inspired spaces. Filter
-            by amenities like cold plunge, steam room, and private rooms to find
-            your perfect heat therapy destination.
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Last updated: {formattedDate}
-          </p>
-        </header>
-      </div>
-
       {/* Interactive client component - full width */}
-      <SaunasClient saunas={seattleSaunas} />
+      <Suspense fallback={<div className="h-screen w-full flex items-center justify-center">Loading...</div>}>
+        <SaunasClient saunas={seattleSaunas} />
+      </Suspense>
     </>
   );
 }
