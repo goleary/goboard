@@ -8,12 +8,12 @@ import {
   MapPin,
   Clock,
   Thermometer,
-  Droplets,
+  Snowflake,
   Waves,
   ShowerHead,
   Shirt,
-  Navigation,
-  Bath,
+  Leaf,
+  Flame,
 } from "lucide-react";
 
 interface SaunaDetailPanelProps {
@@ -24,15 +24,19 @@ function AmenityBadge({
   icon: Icon,
   label,
   available,
+  iconClassName,
+  emoji,
 }: {
-  icon: React.ElementType;
+  icon?: React.ElementType;
   label: string;
   available: boolean;
+  iconClassName?: string;
+  emoji?: string;
 }) {
   if (!available) return null;
   return (
     <Badge variant="secondary" className="gap-1">
-      <Icon className="h-3 w-3" />
+      {emoji ? <span>{emoji}</span> : Icon && <Icon className={`h-3 w-3 ${iconClassName || ""}`} />}
       {label}
     </Badge>
   );
@@ -85,12 +89,12 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
             Amenities
           </p>
           <div className="flex flex-wrap gap-1.5">
-            <AmenityBadge icon={Thermometer} label="Sauna" available={true} />
-            <AmenityBadge icon={Droplets} label="Cold Plunge" available={sauna.coldPlunge} />
-            <AmenityBadge icon={Bath} label="Soaking Tub" available={sauna.soakingTub} />
-            <AmenityBadge icon={Waves} label="Waterfront" available={sauna.waterfront} />
-            <AmenityBadge icon={Navigation} label="Natural Plunge" available={sauna.naturalPlunge} />
-            <AmenityBadge icon={Waves} label="Steam Room" available={sauna.steamRoom} />
+            <AmenityBadge icon={Flame} label="Sauna" available={true} iconClassName="text-orange-500" />
+            <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge} iconClassName="text-sky-500" />
+            <AmenityBadge emoji="♨️" label="Soaking Tub" available={sauna.soakingTub} />
+            <AmenityBadge icon={Waves} label="Waterfront" available={sauna.waterfront} iconClassName="text-blue-500" />
+            <AmenityBadge icon={Leaf} label="Natural Plunge" available={sauna.naturalPlunge} iconClassName="text-green-600" />
+            <AmenityBadge icon={Thermometer} label="Steam Room" available={sauna.steamRoom} />
             <AmenityBadge icon={ShowerHead} label="Showers" available={sauna.showers} />
             <AmenityBadge icon={Shirt} label="Towels" available={sauna.towelsIncluded} />
           </div>
