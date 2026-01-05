@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Waves, Leaf, Snowflake } from "lucide-react";
+import { Check, X, Waves, Leaf, Snowflake, Mail } from "lucide-react";
 import { type Sauna } from "@/data/saunas/seattle-saunas";
 
 interface SaunaTableProps {
@@ -82,6 +82,13 @@ function CompactSaunaList({
           </div>
         </button>
       ))}
+      <a
+        href="mailto:oleary.gabe@gmail.com?subject=Seattle%20Saunas%20-%20Missing%20or%20Incorrect%20Info"
+        className="flex items-center gap-2 p-3 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+      >
+        <Mail className="h-3 w-3" />
+        <span>Missing something? Let me know</span>
+      </a>
     </div>
   );
 }

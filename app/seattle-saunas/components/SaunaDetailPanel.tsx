@@ -4,7 +4,6 @@ import { type Sauna } from "@/data/saunas/seattle-saunas";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  X,
   ExternalLink,
   MapPin,
   Clock,
@@ -19,7 +18,6 @@ import {
 
 interface SaunaDetailPanelProps {
   sauna: Sauna;
-  onClose: () => void;
 }
 
 function AmenityBadge({
@@ -40,33 +38,28 @@ function AmenityBadge({
   );
 }
 
-export function SaunaDetailPanel({ sauna, onClose }: SaunaDetailPanelProps) {
+export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <h2 className="font-semibold text-lg truncate">
-            <a 
-              href={sauna.website} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:underline flex items-center gap-1"
-            >
-              {sauna.name}
-              <ExternalLink className="h-3 w-3 text-muted-foreground" />
-            </a>
-          </h2>
-          {sauna.address && (
-            <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-              <MapPin className="h-3 w-3 shrink-0" />
-              <span className="truncate">{sauna.address}</span>
-            </p>
-          )}
-        </div>
-        <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
-          <X className="h-4 w-4" />
-        </Button>
+      <div className="p-4 border-b">
+        <h2 className="font-semibold text-lg truncate">
+          <a 
+            href={sauna.website} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:underline flex items-center gap-1"
+          >
+            {sauna.name}
+            <ExternalLink className="h-3 w-3 text-muted-foreground" />
+          </a>
+        </h2>
+        {sauna.address && (
+          <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+            <MapPin className="h-3 w-3 shrink-0" />
+            <span className="truncate">{sauna.address}</span>
+          </p>
+        )}
       </div>
 
       {/* Content */}

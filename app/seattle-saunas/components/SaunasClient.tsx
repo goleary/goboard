@@ -181,7 +181,7 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
                 Back to list
               </button>
               <div className="flex-1 overflow-hidden">
-                <SaunaDetailPanel sauna={selectedSauna} onClose={handleCloseDetail} />
+                <SaunaDetailPanel sauna={selectedSauna} />
               </div>
             </>
           ) : (
@@ -245,7 +245,7 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
                   Back to list
                 </button>
                 <div className="flex-1 overflow-auto">
-                  <SaunaDetailPanel sauna={selectedSauna} onClose={handleCloseDetail} />
+                  <SaunaDetailPanel sauna={selectedSauna} />
                 </div>
               </>
             ) : (
