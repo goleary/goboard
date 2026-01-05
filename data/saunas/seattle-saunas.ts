@@ -247,7 +247,7 @@ export const seattleSaunas: Sauna[] = [
     sessionPrice: 35,
     sessionLengthMinutes: 75,
     steamRoom: false,
-    coldPlunge: false,
+    coldPlunge: true,
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
