@@ -1,10 +1,18 @@
 import { getWorkData } from "@/lib/posts";
-import Head from "next/head";
+import { Metadata } from "next";
 import Link from "next/link";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
+
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const { slug } = await props.params;
+  const work = await getWorkData(slug);
+  return {
+    title: `${work.title} | Gabe O'Leary`,
+  };
+}
 
 const isLocalLink = (link: string) => link.startsWith("/");
 
@@ -15,9 +23,6 @@ export default async function Page(props: PageProps) {
   const titleClassName = "mb-0 text-2xl font-bold";
   return (
     <article className="prose">
-      <Head>
-        <title>{work.title}</title>
-      </Head>
       {work.link ? (
         isLocalLink(work.link) ? (
           <Link className={titleClassName} href={work.link}>
