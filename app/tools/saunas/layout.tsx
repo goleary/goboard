@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function SeattleSaunasLayout({
+export default function SaunasLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -54,7 +54,7 @@ export default function SeattleSaunasLayout({
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href="/seattle-saunas">Seattle Saunas</Link>
+                    <Link href="/tools/saunas">Sauna Map</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -68,3 +68,4 @@ export default function SeattleSaunasLayout({
     </div>
   );
 }
+

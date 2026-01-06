@@ -30,6 +30,17 @@ const nextConfig = {
           "/posts/2022-05-04-segment-custom-domain-proxy-on-cloudflare",
         permanent: true,
       },
+      // Redirect old seattle-saunas routes to new tools/saunas/seattle
+      {
+        source: "/seattle-saunas",
+        destination: "/tools/saunas/seattle",
+        permanent: true,
+      },
+      {
+        source: "/seattle-saunas/:path*",
+        destination: "/tools/saunas/seattle",
+        permanent: true,
+      },
     ];
   },
   images: {

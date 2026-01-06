@@ -26,12 +26,16 @@ const SaunaMap = dynamic(() => import("./SaunaMap"), {
 
 interface SaunasClientProps {
   saunas: Sauna[];
+  title: string;
+  basePath: string;
+  center?: [number, number];
+  zoom?: number;
 }
 
 const MIN_SHEET_HEIGHT = 200;
 const MAX_SHEET_PERCENT = 0.85;
 
-export function SaunasClient({ saunas }: SaunasClientProps) {
+export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<FilterState>(getDefaultFilters());
@@ -147,7 +151,7 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
     // Update URL with sauna slug
     const params = new URLSearchParams(searchParams.toString());
     params.set("sauna", sauna.slug);
-    router.push(`/seattle-saunas?${params.toString()}`, { scroll: false });
+    router.push(`${basePath}?${params.toString()}`, { scroll: false });
     // Expand sheet on mobile when selecting a sauna
     const containerHeight = containerRef.current?.parentElement?.clientHeight || window.innerHeight;
     setSheetHeight(containerHeight * MAX_SHEET_PERCENT);
@@ -158,13 +162,13 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("sauna");
     const queryString = params.toString();
-    router.push(queryString ? `/seattle-saunas?${queryString}` : "/seattle-saunas", { scroll: false });
+    router.push(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
   };
 
   // Filters component for reuse
   const filtersSection = (
     <div className="px-3 py-2 border-b">
-      <h2 className="font-semibold text-base mb-2">Seattle&apos;s Public Saunas</h2>
+      <h2 className="font-semibold text-base mb-2">{title}</h2>
       <SaunaFilters
         filters={filters}
         onFiltersChange={setFilters}
@@ -180,10 +184,13 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
           <SaunaMap 
             saunas={filteredSaunas} 
             onSaunaClick={handleSaunaClick}
+            onMapClick={selectedSauna ? handleCloseDetail : undefined}
             onBoundsChange={handleBoundsChange}
             selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={false}
+            center={center}
+            zoom={zoom}
           />
         </div>
         <div className="absolute top-4 left-4 bottom-4 w-[320px] z-[1000] bg-background/95 backdrop-blur-sm rounded-lg border shadow-lg overflow-hidden flex flex-col">
@@ -226,10 +233,13 @@ export function SaunasClient({ saunas }: SaunasClientProps) {
           <SaunaMap 
             saunas={filteredSaunas} 
             onSaunaClick={handleSaunaClick}
+            onMapClick={selectedSauna ? handleCloseDetail : undefined}
             onBoundsChange={handleBoundsChange}
             selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={true}
+            center={center}
+            zoom={zoom}
           />
         </div>
 

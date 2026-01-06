@@ -1,4 +1,55 @@
 /**
+ * Supported city slugs for saunas
+ */
+export type CitySlug = "seattle" | "portland" | "san-francisco";
+
+/**
+ * City metadata for display and routing
+ */
+export interface City {
+  slug: CitySlug;
+  name: string;
+  state: string;
+  description: string;
+  center: { lat: number; lng: number };
+  zoom: number;
+}
+
+export const cities: City[] = [
+  {
+    slug: "seattle",
+    name: "Seattle",
+    state: "WA",
+    description:
+      "Discover Seattle's vibrant sauna scene, from waterfront wood-fired saunas with Puget Sound plunges to traditional Russian banyas.",
+    center: { lat: 47.6062, lng: -122.3321 },
+    zoom: 10,
+  },
+  {
+    slug: "portland",
+    name: "Portland",
+    state: "OR",
+    description:
+      "Portland's sauna culture blends Finnish traditions with Pacific Northwest wellness. Find cooperatives, forest retreats, and urban escapes.",
+    center: { lat: 45.5152, lng: -122.6784 },
+    zoom: 11,
+  },
+  {
+    slug: "san-francisco",
+    name: "San Francisco",
+    state: "CA",
+    description:
+      "Explore SF Bay Area saunas from Japanese bathhouses in Japantown to floating saunas on the Bay with cold plunges into the Pacific.",
+    center: { lat: 37.7749, lng: -122.4194 },
+    zoom: 10,
+  },
+];
+
+export function getCityBySlug(slug: string): City | undefined {
+  return cities.find((c) => c.slug === slug);
+}
+
+/**
  * Represents a sauna facility with its amenities and details.
  *
  * **Inclusion criteria:**
@@ -63,7 +114,7 @@ export interface Sauna {
   updatedAt: string;
 }
 
-export const seattleSaunas: Sauna[] = [
+export const saunas: Sauna[] = [
   {
     slug: "815-refresh",
     name: "815 Refresh",
@@ -1254,17 +1305,46 @@ export const seattleSaunas: Sauna[] = [
     lng: -122.1585519,
     updatedAt: "2026-01-06",
   },
+  {
+    slug: "alyeska-nordic-spa",
+    name: "Alyeska Nordic Spa",
+    address: "1000 Arlberg Avenue, Girdwood, AK 99587",
+    website: "https://www.anordicspa.com/",
+    bookingUrl: "https://www.anordicspa.com/",
+    googleMapsUrl: "https://maps.app.goo.gl/8VLZ8Y7VJvNPRzHR7",
+    sessionPrice: 85, // Hydrotherapy access; verify on website
+    sessionLengthMinutes: 180,
+    steamRoom: true, // Aromatherapy-infused steam rooms
+    coldPlunge: true, // Cold plunge pools and waterfall
+    soakingTub: true, // Warm and hot hydrotherapy pools
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true, // Two Trees Bistro on-site
+    hours: "Daily 10am-9pm",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Alaska's first Nordic spa, a stunning 50,000 sq ft indoor-outdoor facility at Alyeska Resort in the Chugach Mountains. Features Finnish sauna, Halotherapy Signature sauna, two Banya saunas, two barrel saunas, aromatherapy steam rooms, hot/warm/cold hydrotherapy pools, cold plunge waterfall, and exfoliation cabin with Alaskan sea salt. On-site Two Trees Bistro. Reservations required. 45-min scenic drive from Anchorage.",
+    lat: 60.9706743,
+    lng: -149.0959696,
+    updatedAt: "2026-01-05",
+  },
 ];
+
+// Backwards-compatible alias
+export const seattleSaunas = saunas;
 
 // Helper functions
 export function getSaunaBySlug(slug: string): Sauna | undefined {
-  return seattleSaunas.find((s) => s.slug === slug);
+  return saunas.find((s) => s.slug === slug);
 }
 
 export function getLatestUpdateDate(): string {
-  return seattleSaunas.reduce((latest, sauna) => {
+  return saunas.reduce((latest, sauna) => {
     return sauna.updatedAt > latest ? sauna.updatedAt : latest;
-  }, seattleSaunas[0]?.updatedAt ?? "");
+  }, saunas[0]?.updatedAt ?? "");
 }
 
 export function getSimilarSaunas(
@@ -1272,10 +1352,10 @@ export function getSimilarSaunas(
   limit: number = 5
 ): Sauna[] {
   const current = getSaunaBySlug(currentSlug);
-  if (!current) return seattleSaunas.slice(0, limit);
+  if (!current) return saunas.slice(0, limit);
 
   // Prioritize similar amenities and price
-  const others = seattleSaunas.filter((s) => s.slug !== currentSlug);
+  const others = saunas.filter((s) => s.slug !== currentSlug);
 
   const scored = others.map((sauna) => {
     let score = 0;

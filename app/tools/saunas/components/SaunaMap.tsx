@@ -91,6 +91,27 @@ function MapPanner({ selectedSauna, isMobile }: { selectedSauna: Sauna | null; i
   return null;
 }
 
+// Component to handle map clicks (for deselecting)
+function MapClickHandler({ onMapClick }: { onMapClick?: () => void }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!onMapClick) return;
+
+    const handleClick = () => {
+      onMapClick();
+    };
+
+    map.on('click', handleClick);
+
+    return () => {
+      map.off('click', handleClick);
+    };
+  }, [map, onMapClick]);
+
+  return null;
+}
+
 // CSS to move zoom controls to top-right on mobile
 const mobileZoomStyles = `
   @media (max-width: 1023px) {
@@ -115,6 +136,7 @@ interface SaunaMapProps {
   center?: [number, number];
   zoom?: number;
   onSaunaClick?: (sauna: Sauna) => void;
+  onMapClick?: () => void;
   onBoundsChange?: (bounds: LatLngBounds) => void;
   selectedSlug?: string | null;
   selectedSauna?: Sauna | null;
@@ -130,6 +152,7 @@ export function SaunaMap({
   center = SEATTLE_CENTER,
   zoom = 12,
   onSaunaClick,
+  onMapClick,
   onBoundsChange,
   selectedSlug,
   selectedSauna,
@@ -152,6 +175,7 @@ export function SaunaMap({
         <ZoomControl position="bottomright" />
         <BoundsTracker onBoundsChange={onBoundsChange} />
         <MapPanner selectedSauna={selectedSauna || null} isMobile={isMobile} />
+        <MapClickHandler onMapClick={onMapClick} />
         {saunas.map((sauna) => (
           <SaunaMarker 
             key={sauna.slug} 

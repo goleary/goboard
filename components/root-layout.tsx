@@ -64,8 +64,8 @@ export default function RootLayout({
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link className="hover:text-blue-500" href="/seattle-saunas">
-                Seattle Saunas
+              <Link className="hover:text-blue-500" href="/tools/saunas">
+                Sauna Map
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

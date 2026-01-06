@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { seattleSaunas } from "@/data/saunas/seattle-saunas";
+import { saunas, cities } from "@/data/saunas/seattle-saunas";
 import {
   getSortedWorksData,
   getSortedPostsData,
@@ -71,19 +71,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Seattle Saunas pages
+  // Saunas pages
   const saunaIndexPage: MetadataRoute.Sitemap = [
     {
-      url: `${baseUrl}/seattle-saunas`,
+      url: `${baseUrl}/tools/saunas`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
   ];
 
-  const saunaDetailPages: MetadataRoute.Sitemap = seattleSaunas.map(
+  // City-specific sauna pages
+  const saunaCityPages: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${baseUrl}/tools/saunas/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  const saunaDetailPages: MetadataRoute.Sitemap = saunas.map(
     (sauna) => ({
-      url: `${baseUrl}/seattle-saunas?sauna=${sauna.slug}`,
+      url: `${baseUrl}/tools/saunas?sauna=${sauna.slug}`,
       lastModified: new Date(sauna.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.7,
@@ -119,6 +127,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticPages,
     ...toolPages,
     ...saunaIndexPage,
+    ...saunaCityPages,
     ...saunaDetailPages,
     ...workPages,
     ...postPages,
