@@ -11,7 +11,9 @@ export type CitySlug =
   | "squamish"
   | "montana"
   | "idaho"
-  | "nevada";
+  | "nevada"
+  | "utah"
+  | "colorado";
 
 /**
  * City metadata for display and routing
@@ -115,6 +117,24 @@ export const cities: City[] = [
       "Nevada's wellness scene spans from Las Vegas resort spas to Reno's emerging sauna culture near Lake Tahoe.",
     center: { lat: 39.0, lng: -117.0 },
     zoom: 6,
+  },
+  {
+    slug: "utah",
+    name: "Utah",
+    state: "UT",
+    description:
+      "Utah's growing sauna scene features Nordic-inspired contrast therapy from Salt Lake City to lakeside experiences at Utah Lake near Provo.",
+    center: { lat: 40.5, lng: -111.5 },
+    zoom: 7,
+  },
+  {
+    slug: "colorado",
+    name: "Colorado",
+    state: "CO",
+    description:
+      "Colorado's sauna culture blends outdoor thermaculture clubs in Denver and Boulder with mountain resort spas, offering contrast therapy at altitude.",
+    center: { lat: 39.5, lng: -105.0 },
+    zoom: 7,
   },
 ];
 
@@ -1990,6 +2010,170 @@ export const saunas: Sauna[] = [
     lat: 45.6478,
     lng: -111.2012,
     updatedAt: "2026-01-05",
+  },
+  // ============================================================================
+  // UTAH
+  // ============================================================================
+  {
+    slug: "sauna-public-slc",
+    name: "Sauna Public",
+    address: "1952 E. 2700 S., Salt Lake City, UT 84106",
+    website: "https://www.saunapublic.com/",
+    bookingUrl: "https://booking.mangomint.com/saunapublic1",
+    googleMapsUrl: "https://maps.app.goo.gl/YXmn9XKZQ5Yvq1xZ7",
+    sessionPrice: 35,
+    sessionLengthMinutes: 0, // No time limit
+    steamRoom: false,
+    coldPlunge: true, // 45-50°F, largest in Utah
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Private and public showers
+    towelsIncluded: true,
+    temperatureRangeF: { min: 190, max: 200 },
+    hours: "M-F 6am-10pm, Sat-Sun 10am-10pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Traditional Finnish-style sauna with largest cold plunge in Utah (45-50°F). Walk-ins welcome. $35 day pass (no time limit), 10-visit punch pass $250 (save $100). Weekly events include Chess Club Tuesdays ($15 off), yoga, and Sauna Sangha meditation. Unlimited membership $150/mo. Student discount available.",
+    lat: 40.7089,
+    lng: -111.8418,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "plunj-salt-lake",
+    name: "PLUNJ Salt Lake",
+    address: "55 W Utopia Ave #103, South Salt Lake, UT 84115",
+    website: "https://saltlake.plunj.co/",
+    bookingUrl: "https://saltlake.plunj.co/book-now/",
+    googleMapsUrl: "https://maps.app.goo.gl/8Z4vQMJkY7FdZ7zZ9",
+    sessionPrice: 35,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // 50°F
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Bucket showers
+    towelsIncluded: false,
+    temperatureRangeF: { min: 194, max: 194 },
+    hours: "Check website for schedule",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Nordic bathhouse spa with communal sauna (194°F), cold pools (50°F), bucket showers, and lounge. Inspired by Finnish contrast therapy traditions. $35 drop-in (60 min), 10-visit punch pass $250. Memberships from $99/mo (4 sessions) to $225/mo unlimited. Group buyouts $250/hr (12 guests) or $375/2hrs (20 guests).",
+    lat: 40.7118,
+    lng: -111.8885,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "utah-lake-sauna",
+    name: "Utah Lake Sauna",
+    address: "Utah Lake State Park, Provo, UT",
+    website: "https://www.utahlakesauna.com/",
+    bookingUrl: "https://www.utahlakesauna.com/appointments",
+    googleMapsUrl: "https://maps.app.goo.gl/YnZ8XKZQ5Yvq1xZ7",
+    sessionPrice: 36,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true, // Lake plunge
+    soakingTub: false,
+    waterfront: true, // Lakeside at Utah Lake State Park
+    naturalPlunge: true, // Lake access
+    showers: true, // Outdoor shower
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Daily 6am-11pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Utah Valley's first Nordic-style lakeside sauna at Utah Lake State Park near Provo. Communal Finnish sauna with panoramic lake views, Himalayan salt wall, outdoor shower, cold plunge in the lake, and relaxation area. $36 community session, $249 private booking (up to 8 guests). 2-session pass $69, 6-session $159, 10-session $199.",
+    lat: 40.2338,
+    lng: -111.7352,
+    updatedAt: "2026-01-06",
+  },
+  // ============================================================================
+  // COLORADO
+  // ============================================================================
+  {
+    slug: "portal-denver",
+    name: "PORTAL° Denver",
+    address: "2949 Federal Blvd, Denver, CO 80211",
+    website: "https://www.portalthermaculture.com/denver",
+    bookingUrl:
+      "https://book.portalthermaculture.com/book-session?region=2&location=2",
+    googleMapsUrl: "https://maps.app.goo.gl/XWWQnCPtH9iSC8Un7",
+    sessionPrice: 45,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true, // 3 individual cold plunge tubs
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Rinse stations
+    towelsIncluded: false, // Available to rent
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Sun 8am-10pm, M/W-F 7am-10pm, Tue 2pm-10pm, Sat 8am-10pm",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Outdoor thermaculture club in LoHi neighborhood featuring 2 saunas and 3 individual cold plunge tubs. Part of Nurture wellness marketplace. $45 single session, 4-credit pack $120, 8-credit pack $220. Memberships from $99/mo (4 credits) to $129/mo (unlimited Denver). Contrast therapy: 15 min heat, 3 min cold, repeat 3x.",
+    lat: 39.7595,
+    lng: -105.0258,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "portal-boulder",
+    name: "PORTAL° Boulder",
+    address: "4949 Broadway #113, Boulder, CO 80304",
+    website: "https://www.portalthermaculture.com/boulder",
+    bookingUrl: "https://book.portalthermaculture.com/book-session",
+    googleMapsUrl: "https://maps.app.goo.gl/BoulderPortal123",
+    sessionPrice: 45,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Sun 8am-10pm, M-W/F-Sat 6am-10pm, Thu 2pm-10pm",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "PORTAL° thermaculture club in Boulder with saunas and cold plunges. Same pricing as Denver: $45/session, credit packs available. Memberships work at all PORTAL° locations ($179/mo unlimited all clubs).",
+    lat: 40.0509,
+    lng: -105.2517,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "garden-sauna-denver",
+    name: "Garden Sauna",
+    address: "1407 N Ogden St, Denver, CO 80218",
+    website: "https://www.gardensaunadenver.com/",
+    bookingUrl: "https://www.gardensaunadenver.com/book-now",
+    googleMapsUrl: "https://maps.app.goo.gl/GardenSaunaDenver123",
+    sessionPrice: 33,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours:
+      "Sun 9am-9pm, Mon/Wed 4pm-9pm, Tue/Thu/Fri 7am-1pm & 3pm-9pm, Sat 9am-9pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Community-centered dry sauna and cold plunge in Denver. New client intro $23, regular drop-in $33 (1 hour). 5-pack $145, 10-pack $260. Memberships: 6x/mo $122, 9x/mo $149, unlimited $189. Shared space designed for quiet reflection and gentle connection. Enter through Rooted Heart Yoga.",
+    lat: 39.7419,
+    lng: -104.9706,
+    updatedAt: "2026-01-06",
   },
 ];
 
