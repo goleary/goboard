@@ -1192,8 +1192,7 @@ export const saunas: Sauna[] = [
     website: "https://www.everetthousecommunityhealingcenter.com/",
     bookingUrl:
       "https://clients.mindbodyonline.com/classic/ws?studioid=47269&stype=-101",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/The+Everett+House+Community+Healing+Center/@45.5252303,-122.6352669,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/WwuiZuSaPTu5y3Zv9",
     sessionPrice: 28, // 60 min; 30 min $18, 90 min $39
     sessionLengthMinutes: 60,
     steamRoom: true,
@@ -1220,8 +1219,7 @@ export const saunas: Sauna[] = [
     website: "https://www.bearbanya.com/",
     bookingUrl:
       "https://book.squareup.com/appointments/sdr909jlzvzvv8/location/L05M6ZMRXDHXZ/services",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Bear+Banya/@45.5074432,-122.5640963,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/zB2mFo97osPvVUZr8",
     sessionPrice: 60, // 1 hr All Inclusive; 2 hr $120, 3 hr $180
     sessionLengthMinutes: 60,
     steamRoom: true, // Turkish Hamam steam room
@@ -1271,8 +1269,7 @@ export const saunas: Sauna[] = [
     website: "https://www.theguss.com/",
     bookingUrl:
       "https://minside.periode.no/eventlist/v9YqrmvzfkNDbpcILgA8/KcnoUcYNgTY9TtpttJ4g",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Guss/@45.4659271,-122.6628812,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/qsYa7tDFeHjtngis6",
     sessionPrice: 30, // Drop-in; 5-session punch pass $120
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -1298,8 +1295,7 @@ export const saunas: Sauna[] = [
     website: "https://knotsprings.com/",
     bookingUrl:
       "https://clients.mindbodyonline.com/classic/ws?studioid=337004&stype=-103&sView=week&sLoc=0",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Knot+Springs/@45.5234981,-122.6629436,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/nHaJyxDfqGuLcD7M7",
     sessionPrice: 69, // Tue-Thu before 3pm; $89 all other times
     sessionLengthMinutes: 120,
     steamRoom: true, // Eucalyptus-infused steam room
@@ -1325,8 +1321,7 @@ export const saunas: Sauna[] = [
     address: "4128 SE Jefferson St, Milwaukie, OR 97222",
     website: "https://www.kotisauna.com/",
     bookingUrl: "https://www.kotisauna.com/booksauna",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Koti/@45.4442786,-122.6201981,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/QHpZ294cn2vYyqhD6",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
     steamRoom: false,
@@ -1352,8 +1347,7 @@ export const saunas: Sauna[] = [
     address: "4301 NE 59th Ave, Vancouver, WA 98661",
     website: "https://www.connectwellness.biz/",
     bookingUrl: "https://www.connectwellness.biz/calendar",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Connect+Wellness/@45.6528752,-122.6111391,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/RSHr2Ewh21DP4SK87",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
     steamRoom: false,
@@ -1379,8 +1373,7 @@ export const saunas: Sauna[] = [
     address: "6545 N Fenwick Ave, Portland, OR 97217",
     website: "https://backyardblisspdx.simplybook.me/",
     bookingUrl: "https://backyardblisspdx.simplybook.me/v2/#book",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Backyard+Bliss+PDX/@45.5706761,-122.6855365,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/vyXa58VwfctfRHBLA",
     sessionPrice: 100, // Mid Week Special 90 min; Weekend $125
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -1407,8 +1400,7 @@ export const saunas: Sauna[] = [
     address: "7415 N Oatman Ave, Portland, OR 97217",
     website: "https://www.fusionpdx.com/",
     bookingUrl: "http://fusionbodyworkspdx2.clinicsense.com/book/",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Fusion+Bodyworks+PDX/@45.5769069,-122.7007139,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/YoBZYagBtnN3wkm57",
     sessionPrice: 30, // Community sauna 90 min; Private $200/90min, $250/120min
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -1436,8 +1428,7 @@ export const saunas: Sauna[] = [
     website: "https://www.fernandthistle.co/",
     bookingUrl:
       "https://www.vagaro.com//Users/BusinessWidget.aspx?enc=MMLjhIwJMcwFQhXLL7ifVKn0Tz6QdbfjxAhAIcfKsQIt3PHfWZmW1NGrsutPz35VvfCdchdL3vBXHR7ZhFnnlmp5GLs3/Fn1RCKNDfhpshOVLYG6X4o8IP2RvFmKwjCDjEFURQIFRzOGN2Kn/N0nNbDHIyKQ+zrSnvU8YHpxwnctPVKnluEGtGTnaH/s9xF/0cn1f3Mo0uvqhp7/OTxoNRsFmQL1Ne1wsQK2diEzCpmJhKHPxvuDL6Jqop0rg8ZEXZGkAybs90s4ie0ytmi/zz4SnX77ITbfsPi106OyEeaTwppa9ZOVT4hN5LBbA4DtIyfEExqySpyr6/34f4dSIBj18GZ1+dJyF3jvnfTWHtAI6FdCX33E6M0hd8DiSeIeSv5qQ1FaaUwEAzEl5SwYDBnxXk227tSuAFPcNA1mcxNMFqXINIoztZ/F/C/H9QtK",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Fern+%26+Thistle+Massage+and+Spa/@45.5887579,-122.7506969,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/iJ5NEB5KewdazvAA6",
     sessionPrice: 25, // 1 hour spa session
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -1463,8 +1454,7 @@ export const saunas: Sauna[] = [
     address: "414 W 23rd St, Vancouver, WA 98660",
     website: "https://www.uptownsaunahouse.com/",
     bookingUrl: "https://www.uptownsaunahouse.com/book-online",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Uptown+Sauna+House/@45.6382949,-122.6757138,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/Zmj6oReyvZkhW2fL6",
     sessionPrice: 35, // 90-min session; Sunrise Mini $25/30min
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -1491,8 +1481,7 @@ export const saunas: Sauna[] = [
     website: "https://www.ebbandember.com/",
     bookingUrl:
       "https://minside.periode.no/bookinggroups/wE4l5rKVuae2oCBE93gz/XBS8E3lQehtlsunpb5Kx/2025-11-09",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Ebb+%26+Ember+Floating+Saunas/@45.6018646,-122.6631804,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/SxKydKCWtX9iFnBSA",
     sessionPrice: 59, // Social session; Private $539 for up to 10 guests
     sessionLengthMinutes: 105, // 1hr 45min
     steamRoom: false,
@@ -1563,6 +1552,32 @@ export const saunas: Sauna[] = [
       "Unique floating sauna on SF Bay with two Finnish saunas and bay plunge. Shared sessions $45 (90 min, up to 8 ppl), Private $270 (2 hrs, up to 6), Full Buyout $2K half-day or $5K full-day. 5-pack $210. Sessions sell out fast—book when calendar opens. Must bring 2 towels, water, swimsuit. 4.9 stars. ~30 min from SF.",
     lat: 37.8669,
     lng: -122.49484,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "almonte-spa",
+    name: "Almonte Spa",
+    address: "158 Almonte Blvd, Mill Valley, CA 94941",
+    website: "https://www.almontespa.com/",
+    bookingUrl: "https://www.almontespa.com/book",
+    googleMapsUrl: "https://maps.app.goo.gl/4c1sTy9dAZeBDLq16",
+    sessionPrice: 35, // Finnish sauna 30 min; also $45/45min, $55/60min
+    sessionLengthMinutes: 30,
+    steamRoom: false,
+    coldPlunge: false, // Cold showers only, no cold plunge pool
+    soakingTub: true, // Outdoor hot tubs under the redwoods
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 190, max: 200 },
+    hours: "Daily 10am-9pm",
+    genderPolicy: "Private booking",
+    clothingPolicy: "Private rooms",
+    notes:
+      "Marin County wellness sanctuary since 1978, nestled under redwoods near Muir Woods. Features private Finnish cedar sauna (190°F+) and infrared sauna. Outdoor hot tubs available separately ($35-55). Also offers massage services. Cold showers available for contrast therapy. 4.5 stars with 162 reviews. Voted Best in Marin.",
+    lat: 37.8879632,
+    lng: -122.5265786,
     updatedAt: "2026-01-06",
   },
   {
