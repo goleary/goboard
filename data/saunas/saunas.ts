@@ -1342,6 +1342,32 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-05",
   },
   {
+    slug: "connect-wellness",
+    name: "Connect Wellness",
+    address: "4301 NE 59th Ave, Vancouver, WA 98661",
+    website: "https://www.connectwellness.biz/",
+    bookingUrl: "https://www.connectwellness.biz/calendar",
+    googleMapsUrl: "https://maps.app.goo.gl/ConnectWellnessVan",
+    sessionPrice: 40,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true, // Ice baths at 35-55°F
+    soakingTub: true, // Warm soaking tub
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 165, max: 190 },
+    hours: "Fri-Mon 7am-9:30pm, Tue/Thu 6am-8:30pm, Wed 5pm-9:30pm",
+    genderPolicy: "Co-ed (13+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Community backyard spa in Vancouver, WA. Features electric barrel sauna (165-190°F) with Huum heater, infrared sauna cabin, cold plunge tubs (35-55°F), and warm soaking tub. 2-hour sessions $40/person. Appointment only. Address provided with booking confirmation. Grass-roots community focused.",
+    lat: 45.6512,
+    lng: -122.5978,
+    updatedAt: "2026-01-05",
+  },
+  {
     slug: "uptown-sauna-house",
     name: "Uptown Sauna House",
     address: "414 W 23rd St, Vancouver, WA 98660",
@@ -1357,7 +1383,8 @@ export const saunas: Sauna[] = [
     naturalPlunge: false,
     showers: true, // Outdoor hot/cold shower with soaps provided
     towelsIncluded: false,
-    hours: "Mon/Wed/Fri 6am-11:30am & 5pm-8:30pm, Sun 8am-4:30pm; Tue/Thu/Sat Closed",
+    hours:
+      "Mon/Wed/Fri 6am-11:30am & 5pm-8:30pm, Sun 8am-4:30pm; Tue/Thu/Sat Closed",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
