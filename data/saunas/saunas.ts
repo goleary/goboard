@@ -1186,6 +1186,162 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-06",
   },
   {
+    slug: "everett-house",
+    name: "Everett House Community Healing Center",
+    address: "2927 NE Everett St, Portland, OR 97232",
+    website: "https://www.everetthousecommunityhealingcenter.com/",
+    bookingUrl:
+      "https://clients.mindbodyonline.com/classic/ws?studioid=47269&stype=-101",
+    googleMapsUrl: "https://maps.app.goo.gl/4kxYMQjmAWvUvKdK9",
+    sessionPrice: 28, // 60 min; 30 min $18, 90 min $39
+    sessionLengthMinutes: 60,
+    steamRoom: true,
+    coldPlunge: true, // Two clawfoot cold plunge tubs
+    soakingTub: true, // Large salt hot tub
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Outdoor shower
+    towelsIncluded: false, // $2.50 towel rental
+    hours:
+      "Mon 1-11pm, Tue 9am-11pm (LGBTQ 9am-1pm), Wed-Thu 9am-11pm, Fri 11am-11pm, Sat 9am-11pm, Sun 9am-11pm (Women's 9am-3pm)",
+    genderPolicy: "Co-ed (LGBTQ hours Tue 9am-1pm, Women's Sun 9am-3pm)",
+    clothingPolicy: "Clothing optional",
+    notes:
+      "Portland community sanctuary since 1970s. Features two dry saunas (large and small), steam room, salt hot tub, two cold plunge clawfoot tubs, outdoor shower, and fire pit patio. 10-pack available for 20% off. 18+ only. 4.5 stars with 651 reviews.",
+    lat: 45.5252261,
+    lng: -122.6352974,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "bear-banya",
+    name: "Bear Banya",
+    address: "2130 SE 96th Ave, Portland, OR 97216",
+    website: "https://www.bearbanya.com/",
+    bookingUrl:
+      "https://book.squareup.com/appointments/sdr909jlzvzvv8/location/L05M6ZMRXDHXZ/services",
+    googleMapsUrl: "https://maps.app.goo.gl/QkZ7Y8x9VJQZ3",
+    sessionPrice: 60, // 1 hr All Inclusive; 2 hr $120, 3 hr $180
+    sessionLengthMinutes: 60,
+    steamRoom: true, // Turkish Hamam steam room
+    coldPlunge: true,
+    soakingTub: true, // Wood-burning hot tub (Kupel)
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Summer shower
+    towelsIncluded: true, // Towels, slippers, robes included
+    hours: "By appointment",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Private experience",
+    notes:
+      "Traditional Russian banya in Portland. All Inclusive Banya Retreat: 1hr $60, 2hr $120, 3hr $180. Includes Russian Banya (Parilka), Turkish Steam Room (Hamam), wood-burning hot tub (Kupel), cold plunge, herbal tea, fruits, and relaxation lounge with fireplace. Signature Banya Ritual with venik treatment $260/2hr. 5.0 stars with 88 reviews.",
+    lat: 45.5084,
+    lng: -122.5651,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "saunaglo",
+    name: "SaunaGlo",
+    address: "1915 SE Jefferson St, Milwaukie, OR 97222",
+    website: "https://www.saunaglo.com/",
+    bookingUrl: "https://www.saunaglo.com/book",
+    googleMapsUrl: "https://maps.app.goo.gl/Nbv2Uhdf8zfLPyaA8",
+    sessionPrice: 29, // Day pass; $19 weekdays before 2pm
+    steamRoom: false,
+    coldPlunge: true, // Cedar barrel cold plunge tank
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Rainwater shower and water pail dump bucket
+    towelsIncluded: false,
+    hours: "Mon-Thu 7am-8pm, Fri 7am-9pm, Sat 9am-9pm, Sun 9am-8pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Community Nordic sauna built to Finnish standards with 18-person capacity. Cold contrast options include rainwater shower, water pail dump bucket, and cedar barrel cold plunge. Weekday early bird $19 before 2pm. Multi Pass 10-pack available. Membership $149/mo unlimited. Walk-ins welcome. 5.0 stars with 123 reviews.",
+    lat: 45.4438,
+    lng: -122.6317,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "guss-mobile-sauna",
+    name: "Guss Mobile Sauna",
+    address: "Sellwood Riverfront Park, Portland, OR 97202",
+    website: "https://www.theguss.com/",
+    bookingUrl:
+      "https://minside.periode.no/eventlist/v9YqrmvzfkNDbpcILgA8/KcnoUcYNgTY9TtpttJ4g",
+    googleMapsUrl: "https://maps.app.goo.gl/QkZ7Y8x9VJQZ4",
+    sessionPrice: 30, // Drop-in; 5-session punch pass $120
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // Willamette River cold plunge
+    soakingTub: false,
+    waterfront: true, // On Willamette River
+    naturalPlunge: true, // River plunge
+    showers: false,
+    towelsIncluded: false, // Bring two towels
+    hours: "Check website for session times",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Portland's first riverfront wood-fired barrel sauna. Located at Sellwood Riverfront Park or Willamette Park. Drop-in $30/hr, 5-session punch pass $120 (never expires). Private rental $280/hr (up to 12 people). Cold plunge in Willamette River. Bring two towels. 5% of revenue donated to Human Access Project. 5.0 stars with 73 reviews.",
+    lat: 45.4623,
+    lng: -122.6563,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "knot-springs",
+    name: "Knot Springs",
+    address: "33 NE 3rd Ave Suite 365, Portland, OR 97232",
+    website: "https://knotsprings.com/",
+    bookingUrl:
+      "https://clients.mindbodyonline.com/classic/ws?studioid=337004&stype=-103&sView=week&sLoc=0",
+    googleMapsUrl: "https://maps.app.goo.gl/QkZ7Y8x9VJQZ5",
+    sessionPrice: 69, // Tue-Thu before 3pm; $89 all other times
+    sessionLengthMinutes: 120,
+    steamRoom: true, // Eucalyptus-infused steam room
+    coldPlunge: true, // 47°F cold plunge
+    soakingTub: true, // Hot tub and tepid bath
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    temperatureRangeF: { min: 170, max: 190 },
+    hours: "Public 8am-8pm daily; Members 6am-10pm M-F, 8am-10pm S-S",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Urban wellness club in Central Eastside with Portland skyline views. Springs area includes dry sauna, eucalyptus steam room, 47°F cold plunge, hot tub, and tepid bath. Midweek pricing (Tue-Thu before 3pm) $69, all other times $89. Also offers massage, skincare, and movement classes. Memberships available. 4.4 stars with 643 reviews.",
+    lat: 45.5234,
+    lng: -122.6612,
+    updatedAt: "2026-01-05",
+  },
+  {
+    slug: "koti-sauna",
+    name: "Koti",
+    address: "4128 SE Jefferson St, Milwaukie, OR 97222",
+    website: "https://www.kotisauna.com/",
+    bookingUrl: "https://www.kotisauna.com/booksauna",
+    googleMapsUrl: "https://maps.app.goo.gl/QkZ7Y8x9VJQZ6",
+    sessionPrice: 40,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true, // Two outdoor cold plunges at 40-50°F
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Outdoor showers
+    towelsIncluded: false,
+    temperatureRangeF: { min: 185, max: 195 },
+    hours: "Mon/Thu-Sun 8am-8:30pm, Tue-Wed Closed",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Neighborhood Finnish sauna in Milwaukie. Outdoor cedar sauna (185-195°F) with three tiers of benches and birch-scented steam. Two outdoor cold plunges (40-50°F), outdoor showers, and firepit lounge. Community sessions $40/2hr. Private rentals and memberships available. Inspired by Finnish word 'koti' meaning home. 5.0 stars with 103 reviews.",
+    lat: 45.4432,
+    lng: -122.6231,
+    updatedAt: "2026-01-05",
+  },
+  {
     slug: "archimedes-banya",
     name: "Archimedes Banya",
     address: "748 Innes Ave, San Francisco, CA 94124",
