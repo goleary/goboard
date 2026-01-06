@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { type Sauna } from "@/data/saunas/seattle-saunas";
+import { type Sauna } from "@/data/saunas/saunas";
 
 export interface FilterState {
   coldPlungeOnly: boolean;

@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft } from "lucide-react";
-import { type Sauna } from "@/data/saunas/seattle-saunas";
+import { type Sauna } from "@/data/saunas/saunas";
 import {
   SaunaFilters,
   FilterState,

@@ -1,6 +1,6 @@
 "use client";
 
-import { type Sauna } from "@/data/saunas/seattle-saunas";
+import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,7 +73,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
         <div className="flex items-center gap-2 flex-wrap">
           {sauna.sessionPrice > 0 && (
             <Badge variant="default" className="text-sm">
-              ${sauna.sessionPrice}
+              {formatPrice(sauna)}
             </Badge>
           )}
           {sauna.sessionLengthMinutes && (

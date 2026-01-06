@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { saunas, getSaunaBySlug } from "@/data/saunas/seattle-saunas";
+import { saunas, getSaunaBySlug, formatPrice } from "@/data/saunas/saunas";
 import { SaunasClient } from "./components/SaunasClient";
 
 type Props = {
@@ -13,9 +13,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   if (saunaSlug) {
     const sauna = getSaunaBySlug(saunaSlug);
     if (sauna) {
-      const title = `${sauna.name} - US Saunas`;
+      const title = `${sauna.name} - North American Saunas`;
       const description = sauna.notes || 
-        `${sauna.name}. ${sauna.sessionPrice ? `$${sauna.sessionPrice}` : ""} ${sauna.sessionLengthMinutes ? `for ${sauna.sessionLengthMinutes} minutes` : ""}. ${sauna.coldPlunge ? "Cold plunge available." : ""} ${sauna.steamRoom ? "Steam room available." : ""}`.trim();
+        `${sauna.name}. ${sauna.sessionPrice ? formatPrice(sauna) : ""} ${sauna.sessionLengthMinutes ? `for ${sauna.sessionLengthMinutes} minutes` : ""}. ${sauna.coldPlunge ? "Cold plunge available." : ""} ${sauna.steamRoom ? "Steam room available." : ""}`.trim();
       
       return {
         title,
@@ -34,13 +34,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   }
 
   return {
-    title: "US Saunas - Compare Sauna & Bathhouse Options",
+    title: "North American Saunas - Compare Sauna & Bathhouse Options",
     description:
-      "Compare saunas and bathhouses across the United States by price, amenities, and location. Find the perfect sauna experience with cold plunge, steam rooms, and more.",
+      "Compare saunas and bathhouses across North America by price, amenities, and location. Find the perfect sauna experience with cold plunge, steam rooms, and more.",
     openGraph: {
-      title: "US Saunas - Compare Sauna & Bathhouse Options",
+      title: "North American Saunas - Compare Sauna & Bathhouse Options",
       description:
-        "Compare saunas and bathhouses across the United States by price, amenities, and location.",
+        "Compare saunas and bathhouses across North America by price, amenities, and location.",
       url: "https://goleary.com/tools/saunas",
       type: "website",
     },
@@ -55,8 +55,8 @@ function generateItemListSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "US Saunas",
-    description: "A curated list of saunas and bathhouses in the United States",
+    name: "North American Saunas",
+    description: "A curated list of saunas and bathhouses across North America",
     numberOfItems: saunas.length,
     itemListElement: saunas.map((sauna, index) => ({
       "@type": "ListItem",
@@ -67,8 +67,8 @@ function generateItemListSchema() {
   };
 }
 
-// US center coordinates (roughly center of continental US)
-const US_CENTER: [number, number] = [39.8283, -98.5795];
+// North America center coordinates (shifted west to capture West Coast saunas)
+const NA_CENTER: [number, number] = [45.0, -115.0];
 
 export default function SaunasPage() {
   return (
@@ -85,10 +85,10 @@ export default function SaunasPage() {
       <Suspense fallback={<div className="h-screen w-full flex items-center justify-center">Loading...</div>}>
         <SaunasClient 
           saunas={saunas}
-          title="US Public Saunas"
+          title="North American Public Saunas"
           basePath="/tools/saunas"
-          center={US_CENTER}
-          zoom={5}
+          center={NA_CENTER}
+          zoom={4}
         />
       </Suspense>
     </>

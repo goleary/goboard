@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Waves, Leaf, Snowflake, Mail } from "lucide-react";
-import { type Sauna } from "@/data/saunas/seattle-saunas";
+import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 
 interface SaunaTableProps {
   saunas: Sauna[];
@@ -76,14 +76,14 @@ function CompactSaunaList({
             </div>
             {sauna.sessionPrice > 0 && (
               <Badge variant="secondary" className="shrink-0 text-xs">
-                ${sauna.sessionPrice}
+                {formatPrice(sauna)}
               </Badge>
             )}
           </div>
         </button>
       ))}
       <a
-        href="mailto:oleary.gabe@gmail.com?subject=Seattle%20Saunas%20-%20Missing%20or%20Incorrect%20Info"
+        href="mailto:oleary.gabe@gmail.com?subject=Sauna%20Map%20-%20Missing%20or%20Incorrect%20Info"
         className="flex items-center gap-2 p-3 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
       >
         <Mail className="h-3 w-3" />
@@ -130,7 +130,7 @@ export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug
             <TableRow key={sauna.slug}>
               <TableCell className="sticky left-0 bg-background font-medium">
                 <Link
-                  href={`/seattle-saunas/${sauna.slug}`}
+                  href={`/tools/saunas?sauna=${sauna.slug}`}
                   className="text-primary hover:underline"
                 >
                   {sauna.name}
@@ -138,7 +138,7 @@ export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug
               </TableCell>
               <TableCell className="text-center">
                 <Badge variant="outline">
-                  {sauna.sessionPrice ? `$${sauna.sessionPrice}` : "N/A"}
+                  {sauna.sessionPrice ? formatPrice(sauna) : "N/A"}
                 </Badge>
               </TableCell>
               <TableCell className="text-center text-muted-foreground">

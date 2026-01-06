@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import L from "leaflet";
 import { Marker, Tooltip } from "react-leaflet";
-import { type Sauna } from "@/data/saunas/seattle-saunas";
+import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 
 interface SaunaMarkerProps {
   sauna: Sauna;
@@ -58,7 +58,7 @@ export function SaunaMarker({ sauna, onClick, isSelected = false }: SaunaMarkerP
       <Tooltip direction="top" offset={[0, isSelected ? -32 : -28]}>
         <span className="font-medium">{sauna.name}</span>
         {sauna.sessionPrice > 0 && (
-          <span className="text-muted-foreground"> · ${sauna.sessionPrice}</span>
+          <span className="text-muted-foreground"> · {formatPrice(sauna)}</span>
         )}
       </Tooltip>
     </Marker>

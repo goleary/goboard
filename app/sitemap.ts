@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { saunas, cities } from "@/data/saunas/seattle-saunas";
+import { saunas, cities, getLatestUpdateDate } from "@/data/saunas/saunas";
 import {
   getSortedWorksData,
   getSortedPostsData,
@@ -71,20 +71,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Saunas pages
+  // Saunas pages - use the latest sauna update date for accurate lastModified
+  const latestSaunaUpdate = new Date(getLatestUpdateDate());
+  
   const saunaIndexPage: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}/tools/saunas`,
-      lastModified: new Date(),
+      lastModified: latestSaunaUpdate,
       changeFrequency: "weekly",
       priority: 0.8,
     },
   ];
 
-  // City-specific sauna pages
+  // City-specific sauna pages with SEO-optimized metadata
   const saunaCityPages: MetadataRoute.Sitemap = cities.map((city) => ({
     url: `${baseUrl}/tools/saunas/${city.slug}`,
-    lastModified: new Date(),
+    lastModified: latestSaunaUpdate,
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));

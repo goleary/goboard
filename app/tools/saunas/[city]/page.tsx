@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { saunas, getSaunaBySlug, cities, getCityBySlug } from "@/data/saunas/seattle-saunas";
+import { saunas, getSaunaBySlug, cities, getCityBySlug, formatPrice } from "@/data/saunas/saunas";
 import { SaunasClient } from "../components/SaunasClient";
 
 type Props = {
@@ -29,7 +29,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     if (sauna) {
       const title = `${sauna.name} - ${city.name} Saunas`;
       const description = sauna.notes || 
-        `${sauna.name}. ${sauna.sessionPrice ? `$${sauna.sessionPrice}` : ""} ${sauna.sessionLengthMinutes ? `for ${sauna.sessionLengthMinutes} minutes` : ""}. ${sauna.coldPlunge ? "Cold plunge available." : ""} ${sauna.steamRoom ? "Steam room available." : ""}`.trim();
+        `${sauna.name}. ${sauna.sessionPrice ? formatPrice(sauna) : ""} ${sauna.sessionLengthMinutes ? `for ${sauna.sessionLengthMinutes} minutes` : ""}. ${sauna.coldPlunge ? "Cold plunge available." : ""} ${sauna.steamRoom ? "Steam room available." : ""}`.trim();
       
       return {
         title,

@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type { LatLngBounds } from "leaflet";
-import { type Sauna } from "@/data/saunas/seattle-saunas";
+import { type Sauna } from "@/data/saunas/saunas";
 import { SaunaMarker } from "./SaunaMarker";
 
 export type { LatLngBounds };

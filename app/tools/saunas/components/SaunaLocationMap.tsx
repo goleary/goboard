@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
-import { type Sauna } from "@/data/saunas/seattle-saunas";
+import { type Sauna } from "@/data/saunas/saunas";
 
 // Dynamic import for map (client-only)
 const SaunaMap = dynamic(() => import("./SaunaMap"), {
