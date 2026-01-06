@@ -1374,8 +1374,8 @@ export const saunas: Sauna[] = [
     website: "https://backyardblisspdx.simplybook.me/",
     bookingUrl: "https://backyardblisspdx.simplybook.me/v2/#book",
     googleMapsUrl: "https://maps.app.goo.gl/vyXa58VwfctfRHBLA",
-    sessionPrice: 100, // Mid Week Special 90 min; Weekend $125
-    sessionLengthMinutes: 90,
+    sessionPrice: 45, // Sauna & Shower 1hr Mon/Thu; Full experience 90min $100
+    sessionLengthMinutes: 60,
     steamRoom: false,
     coldPlunge: false, // "Cool plunge" is tap water, guests bring ice
     soakingTub: true, // Hot tub
@@ -1389,7 +1389,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Co-ed, LGBTQ+ friendly",
     clothingPolicy: "Swimsuit required",
     notes:
-      "Private backyard oasis in North Portland. Hand-built 5-person cedar sauna with electric heater. Includes hot tub, outdoor shower, cool plunge (tap water - bring ice), and propane fire pit. Mid-week (Mon-Thu) 90 min $100, 2 hr $130, 3 hr $200. Weekend (Fri-Sun) 90 min $125, 2 hr $155, 3 hr $255. Prices per booking for up to 5 guests. 5.0 stars (1 review).",
+      "Private backyard oasis in North Portland. Hand-built 5-person cedar sauna with electric heater. Includes hot tub, outdoor shower, cool plunge (tap water - bring ice), and propane fire pit. Sauna & Shower only: $45/hr (Mon/Thu). Full experience: Mid-week 90 min $100, 2 hr $130, 3 hr $200. Weekend 90 min $125, 2 hr $155, 3 hr $255. Up to 5 guests. 5.0 stars.",
     lat: 45.5706761,
     lng: -122.6855365,
     updatedAt: "2026-01-06",
