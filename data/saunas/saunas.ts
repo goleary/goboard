@@ -1192,7 +1192,8 @@ export const saunas: Sauna[] = [
     website: "https://www.everetthousecommunityhealingcenter.com/",
     bookingUrl:
       "https://clients.mindbodyonline.com/classic/ws?studioid=47269&stype=-101",
-    googleMapsUrl: "https://maps.app.goo.gl/4kxYMQjmAWvUvKdK9",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/The+Everett+House+Community+Healing+Center/@45.5252303,-122.6352669,17z",
     sessionPrice: 28, // 60 min; 30 min $18, 90 min $39
     sessionLengthMinutes: 60,
     steamRoom: true,
@@ -1219,7 +1220,8 @@ export const saunas: Sauna[] = [
     website: "https://www.bearbanya.com/",
     bookingUrl:
       "https://book.squareup.com/appointments/sdr909jlzvzvv8/location/L05M6ZMRXDHXZ/services",
-    googleMapsUrl: "https://maps.app.goo.gl/QkZ7Y8x9VJQZ3",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Bear+Banya/@45.5074432,-122.5640963,17z",
     sessionPrice: 60, // 1 hr All Inclusive; 2 hr $120, 3 hr $180
     sessionLengthMinutes: 60,
     steamRoom: true, // Turkish Hamam steam room
@@ -1234,8 +1236,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Private experience",
     notes:
       "Traditional Russian banya in Portland. All Inclusive Banya Retreat: 1hr $60, 2hr $120, 3hr $180. Includes Russian Banya (Parilka), Turkish Steam Room (Hamam), wood-burning hot tub (Kupel), cold plunge, herbal tea, fruits, and relaxation lounge with fireplace. Signature Banya Ritual with venik treatment $260/2hr. 5.0 stars with 88 reviews.",
-    lat: 45.5084,
-    lng: -122.5651,
+    lat: 45.5074432,
+    lng: -122.5640963,
     updatedAt: "2026-01-05",
   },
   {
@@ -1269,7 +1271,8 @@ export const saunas: Sauna[] = [
     website: "https://www.theguss.com/",
     bookingUrl:
       "https://minside.periode.no/eventlist/v9YqrmvzfkNDbpcILgA8/KcnoUcYNgTY9TtpttJ4g",
-    googleMapsUrl: "https://maps.app.goo.gl/QkZ7Y8x9VJQZ4",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Guss/@45.4659271,-122.6628812,17z",
     sessionPrice: 30, // Drop-in; 5-session punch pass $120
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -1284,8 +1287,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Portland's first riverfront wood-fired barrel sauna. Located at Sellwood Riverfront Park or Willamette Park. Drop-in $30/hr, 5-session punch pass $120 (never expires). Private rental $280/hr (up to 12 people). Cold plunge in Willamette River. Bring two towels. 5% of revenue donated to Human Access Project. 5.0 stars with 73 reviews.",
-    lat: 45.4623,
-    lng: -122.6563,
+    lat: 45.4659271,
+    lng: -122.6628812,
     updatedAt: "2026-01-05",
   },
   {
@@ -1295,7 +1298,8 @@ export const saunas: Sauna[] = [
     website: "https://knotsprings.com/",
     bookingUrl:
       "https://clients.mindbodyonline.com/classic/ws?studioid=337004&stype=-103&sView=week&sLoc=0",
-    googleMapsUrl: "https://maps.app.goo.gl/QkZ7Y8x9VJQZ5",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Knot+Springs/@45.5234981,-122.6629436,17z",
     sessionPrice: 69, // Tue-Thu before 3pm; $89 all other times
     sessionLengthMinutes: 120,
     steamRoom: true, // Eucalyptus-infused steam room
@@ -1311,8 +1315,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Urban wellness club in Central Eastside with Portland skyline views. Springs area includes dry sauna, eucalyptus steam room, 47°F cold plunge, hot tub, and tepid bath. Midweek pricing (Tue-Thu before 3pm) $69, all other times $89. Also offers massage, skincare, and movement classes. Memberships available. 4.4 stars with 643 reviews.",
-    lat: 45.5234,
-    lng: -122.6612,
+    lat: 45.5234981,
+    lng: -122.6629436,
     updatedAt: "2026-01-05",
   },
   {
@@ -1321,7 +1325,8 @@ export const saunas: Sauna[] = [
     address: "4128 SE Jefferson St, Milwaukie, OR 97222",
     website: "https://www.kotisauna.com/",
     bookingUrl: "https://www.kotisauna.com/booksauna",
-    googleMapsUrl: "https://maps.app.goo.gl/QkZ7Y8x9VJQZ6",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Koti/@45.4442786,-122.6201981,17z",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
     steamRoom: false,
@@ -1337,8 +1342,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Neighborhood Finnish sauna in Milwaukie. Outdoor cedar sauna (185-195°F) with three tiers of benches and birch-scented steam. Two outdoor cold plunges (40-50°F), outdoor showers, and firepit lounge. Community sessions $40/2hr. Private rentals and memberships available. Inspired by Finnish word 'koti' meaning home. 5.0 stars with 103 reviews.",
-    lat: 45.4432,
-    lng: -122.6231,
+    lat: 45.4442786,
+    lng: -122.6201981,
     updatedAt: "2026-01-05",
   },
   {
@@ -1347,7 +1352,8 @@ export const saunas: Sauna[] = [
     address: "4301 NE 59th Ave, Vancouver, WA 98661",
     website: "https://www.connectwellness.biz/",
     bookingUrl: "https://www.connectwellness.biz/calendar",
-    googleMapsUrl: "https://maps.app.goo.gl/ConnectWellnessVan",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Connect+Wellness/@45.6528752,-122.6111391,17z",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
     steamRoom: false,
@@ -1363,8 +1369,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Community backyard spa in Vancouver, WA. Features electric barrel sauna (165-190°F) with Huum heater, infrared sauna cabin, cold plunge tubs (35-55°F), and warm soaking tub. 2-hour sessions $40/person. Appointment only. Address provided with booking confirmation. Grass-roots community focused.",
-    lat: 45.6512,
-    lng: -122.5978,
+    lat: 45.6528752,
+    lng: -122.6111391,
     updatedAt: "2026-01-05",
   },
   {
@@ -1401,7 +1407,8 @@ export const saunas: Sauna[] = [
     address: "414 W 23rd St, Vancouver, WA 98660",
     website: "https://www.uptownsaunahouse.com/",
     bookingUrl: "https://www.uptownsaunahouse.com/book-online",
-    googleMapsUrl: "https://maps.app.goo.gl/UptownSaunaVancouver",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Uptown+Sauna+House/@45.6382949,-122.6757138,17z",
     sessionPrice: 35, // 90-min session; Sunrise Mini $25/30min
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -1417,8 +1424,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Finnish-inspired outdoor cedar sauna in Vancouver, WA. Public sessions $35/90min (up to 4 people), Sunrise Mini $25/30min. Multi-passes available: 6-pack $175, 10-pack $280. Clean filtered cold plunges. Outdoor shower with hot/cold water and soap provided. Owned by Rebekah and Paul Crawford.",
-    lat: 45.6387,
-    lng: -122.6745,
+    lat: 45.6382949,
+    lng: -122.6757138,
     updatedAt: "2026-01-05",
   },
   {
@@ -1428,7 +1435,8 @@ export const saunas: Sauna[] = [
     website: "https://www.ebbandember.com/",
     bookingUrl:
       "https://minside.periode.no/bookinggroups/wE4l5rKVuae2oCBE93gz/XBS8E3lQehtlsunpb5Kx/2025-11-09",
-    googleMapsUrl: "https://maps.app.goo.gl/EbbEmberColumbia",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Ebb+%26+Ember+Floating+Saunas/@45.6018646,-122.6631804,17z",
     sessionPrice: 59, // Social session; Private $539 for up to 10 guests
     sessionLengthMinutes: 105, // 1hr 45min
     steamRoom: false,
@@ -1443,8 +1451,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Floating sauna on the Columbia River with modern design and deck lounge. Social sessions $59/person (up to 8 people), Private sessions $539 (up to 10 guests). All sessions 1hr 45min with 15min transition. Memberships available: Ember 1 $99/mo (4 sessions), Ember 2 $149/mo (6 sessions). Bring swimsuit, two towels, and non-metallic water bottle.",
-    lat: 45.6012,
-    lng: -122.6821,
+    lat: 45.6018646,
+    lng: -122.6631804,
     updatedAt: "2026-01-05",
   },
   {
