@@ -1342,6 +1342,32 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-05",
   },
   {
+    slug: "ebb-and-ember",
+    name: "Ebb & Ember Floating Saunas",
+    address: "173 NE Bridgeton Rd, Portland, OR 97211",
+    website: "https://www.ebbandember.com/",
+    bookingUrl:
+      "https://minside.periode.no/bookinggroups/wE4l5rKVuae2oCBE93gz/XBS8E3lQehtlsunpb5Kx/2025-11-09",
+    googleMapsUrl: "https://maps.app.goo.gl/EbbEmberColumbia",
+    sessionPrice: 59, // Social session; Private $539 for up to 10 guests
+    sessionLengthMinutes: 105, // 1hr 45min
+    steamRoom: false,
+    coldPlunge: true, // Columbia River plunge
+    soakingTub: false,
+    waterfront: true, // Floating on Columbia River
+    naturalPlunge: true, // River plunge
+    showers: true, // Freshwater showers (no soap for environmental reasons)
+    towelsIncluded: false, // Bring two towels
+    hours: "Social Fri-Sun 7am-7pm; Private available all week",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Floating sauna on the Columbia River with modern design and deck lounge. Social sessions $59/person (up to 8 people), Private sessions $539 (up to 10 guests). All sessions 1hr 45min with 15min transition. Memberships available: Ember 1 $99/mo (4 sessions), Ember 2 $149/mo (6 sessions). Bring swimsuit, two towels, and non-metallic water bottle.",
+    lat: 45.6012,
+    lng: -122.6821,
+    updatedAt: "2026-01-05",
+  },
+  {
     slug: "archimedes-banya",
     name: "Archimedes Banya",
     address: "748 Innes Ave, San Francisco, CA 94124",
