@@ -1342,6 +1342,31 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-05",
   },
   {
+    slug: "uptown-sauna-house",
+    name: "Uptown Sauna House",
+    address: "414 W 23rd St, Vancouver, WA 98660",
+    website: "https://www.uptownsaunahouse.com/",
+    bookingUrl: "https://www.uptownsaunahouse.com/book-online",
+    googleMapsUrl: "https://maps.app.goo.gl/UptownSaunaVancouver",
+    sessionPrice: 35, // 90-min session; Sunrise Mini $25/30min
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true, // Filtered cold plunges
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Outdoor hot/cold shower with soaps provided
+    towelsIncluded: false,
+    hours: "Mon/Wed/Fri 6am-11:30am & 5pm-8:30pm, Sun 8am-4:30pm; Tue/Thu/Sat Closed",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Finnish-inspired outdoor cedar sauna in Vancouver, WA. Public sessions $35/90min (up to 4 people), Sunrise Mini $25/30min. Multi-passes available: 6-pack $175, 10-pack $280. Clean filtered cold plunges. Outdoor shower with hot/cold water and soap provided. Owned by Rebekah and Paul Crawford.",
+    lat: 45.6387,
+    lng: -122.6745,
+    updatedAt: "2026-01-05",
+  },
+  {
     slug: "ebb-and-ember",
     name: "Ebb & Ember Floating Saunas",
     address: "173 NE Bridgeton Rd, Portland, OR 97211",
