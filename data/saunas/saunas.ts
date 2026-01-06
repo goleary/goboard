@@ -1368,6 +1368,34 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-05",
   },
   {
+    slug: "backyard-bliss-pdx",
+    name: "Backyard Bliss PDX",
+    address: "6545 N Fenwick Ave, Portland, OR 97217",
+    website: "https://backyardblisspdx.simplybook.me/",
+    bookingUrl: "https://backyardblisspdx.simplybook.me/v2/#book",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Backyard+Bliss+PDX/@45.5706761,-122.6855365,17z",
+    sessionPrice: 100, // Mid Week Special 90 min; Weekend $125
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: false, // "Cool plunge" is tap water, guests bring ice
+    soakingTub: true, // Hot tub
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Outdoor shower
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 190 },
+    capacity: 5,
+    hours: "Daily 8am-10pm",
+    genderPolicy: "Co-ed, LGBTQ+ friendly",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Private backyard oasis in North Portland. Hand-built 5-person cedar sauna with electric heater. Includes hot tub, outdoor shower, cool plunge (tap water - bring ice), and propane fire pit. Mid-week (Mon-Thu) 90 min $100, 2 hr $130, 3 hr $200. Weekend (Fri-Sun) 90 min $125, 2 hr $155, 3 hr $255. Prices per booking for up to 5 guests. 5.0 stars (1 review).",
+    lat: 45.5706761,
+    lng: -122.6855365,
+    updatedAt: "2026-01-06",
+  },
+  {
     slug: "uptown-sauna-house",
     name: "Uptown Sauna House",
     address: "414 W 23rd St, Vancouver, WA 98660",
