@@ -1402,6 +1402,62 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-06",
   },
   {
+    slug: "fusion-bodyworks-pdx",
+    name: "Fusion Bodyworks PDX",
+    address: "7415 N Oatman Ave, Portland, OR 97217",
+    website: "https://www.fusionpdx.com/",
+    bookingUrl: "http://fusionbodyworkspdx2.clinicsense.com/book/",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Fusion+Bodyworks+PDX/@45.5769069,-122.7007139,17z",
+    sessionPrice: 30, // Community sauna 90 min; Private $200/90min, $250/120min
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: false, // Has cold plunge but temperature not specified
+    soakingTub: true, // Two hot soaking tubs with salt infusions
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false, // $5 towel and robe rental
+    temperatureRangeF: { min: 170, max: 190 },
+    capacity: 8, // Private rental up to 8, +2 more at $40/guest
+    hours: "Daily 9am-8pm, by appointment",
+    genderPolicy: "Co-ed, LGBTQ+ friendly",
+    clothingPolicy: "Swimsuit required (community), optional (private)",
+    notes:
+      "Healing arts center in North Portland with outdoor cedar sauna built in a vintage trailer. Community sauna $30/90min (bathing suits required). Private rental $200/90min, $250/120min for up to 8 guests (bathing suits optional). Also offers infrared sauna ($25-45), soaking tubs ($85-125), and massage. LGBTQ+ owned, women-owned. 4.9 stars (319 reviews).",
+    lat: 45.5769069,
+    lng: -122.7007139,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "fern-and-thistle",
+    name: "Fern & Thistle Massage and Spa",
+    address: "8160 N Jersey St, Portland, OR 97203",
+    website: "https://www.fernandthistle.co/",
+    bookingUrl:
+      "https://www.vagaro.com//Users/BusinessWidget.aspx?enc=MMLjhIwJMcwFQhXLL7ifVKn0Tz6QdbfjxAhAIcfKsQIt3PHfWZmW1NGrsutPz35VvfCdchdL3vBXHR7ZhFnnlmp5GLs3/Fn1RCKNDfhpshOVLYG6X4o8IP2RvFmKwjCDjEFURQIFRzOGN2Kn/N0nNbDHIyKQ+zrSnvU8YHpxwnctPVKnluEGtGTnaH/s9xF/0cn1f3Mo0uvqhp7/OTxoNRsFmQL1Ne1wsQK2diEzCpmJhKHPxvuDL6Jqop0rg8ZEXZGkAybs90s4ie0ytmi/zz4SnX77ITbfsPi106OyEeaTwppa9ZOVT4hN5LBbA4DtIyfEExqySpyr6/34f4dSIBj18GZ1+dJyF3jvnfTWHtAI6FdCX33E6M0hd8DiSeIeSv5qQ1FaaUwEAzEl5SwYDBnxXk227tSuAFPcNA1mcxNMFqXINIoztZ/F/C/H9QtK",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Fern+%26+Thistle+Massage+and+Spa/@45.5887579,-122.7506969,17z",
+    sessionPrice: 25, // 1 hour spa session
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: false, // Has clawfoot cold plunge tub but temperature not specified
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Spa: Fri, Sat, some Sundays; by appointment",
+    genderPolicy: "Co-ed (13+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "St. Johns neighborhood spa with traditional Finnish sauna, clawfoot cold-plunge tub, DIY facial bar, and outdoor lounge. Spa sessions $25/hour. Open to public on Fri, Sat, and 2 Sundays per month. Also offers massage ($140+), yoga, and movement classes. Family-friendly (13+). Spa membership available. 5.0 stars (54 reviews).",
+    lat: 45.5887579,
+    lng: -122.7506969,
+    updatedAt: "2026-01-06",
+  },
+  {
     slug: "uptown-sauna-house",
     name: "Uptown Sauna House",
     address: "414 W 23rd St, Vancouver, WA 98660",
