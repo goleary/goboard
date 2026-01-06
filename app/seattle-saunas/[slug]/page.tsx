@@ -32,6 +32,7 @@ import {
   Home,
   Check,
   X,
+  UtensilsCrossed,
 } from "lucide-react";
 import { SaunaLocationMap } from "../components/SaunaLocationMap";
 
@@ -259,6 +260,11 @@ export default async function SaunaDetailPage(props: PageProps) {
                 icon={<Shirt className="h-5 w-5" />}
                 label="Towels Included"
                 available={sauna.towelsIncluded}
+              />
+              <AmenityItem
+                icon={<UtensilsCrossed className="h-5 w-5" />}
+                label="Serves Food"
+                available={sauna.servesFood ?? false}
               />
             </CardContent>
           </Card>

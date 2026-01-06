@@ -1,27 +1,65 @@
+/**
+ * Represents a sauna facility with its amenities and details.
+ *
+ * **Inclusion criteria:**
+ * - Must have a traditional dry sauna (wood-fired, electric, etc.). Infrared-only saunas do NOT qualify.
+ * - Must be gender-inclusive. Women's-only or men's-only saunas are NOT included.
+ *   Saunas with occasional gender-specific nights (e.g., Archimedes Banya) are OK if they also offer co-ed sessions.
+ * - Cold plunge must be 50°F or lower to qualify as `coldPlunge: true`.
+ */
 export interface Sauna {
+  /** URL-friendly unique identifier */
   slug: string;
+  /** Display name of the sauna */
   name: string;
+  /** Street address */
   address?: string;
+  /** Main website URL */
   website: string;
+  /** Direct booking/reservation URL */
   bookingUrl?: string;
+  /**
+   * Google Maps short link. Use the maps.app.goo.gl format.
+   * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
+   */
   googleMapsUrl?: string;
-  sessionPrice: number; // Price in dollars for a session
-  sessionLengthMinutes?: number; // Typical session length (e.g., 90, 120)
+  /** Price in USD for a single session */
+  sessionPrice: number;
+  /** Typical session length in minutes (e.g., 90, 120) */
+  sessionLengthMinutes?: number;
+  /** Whether the facility has a steam room */
   steamRoom: boolean;
+  /** Whether the facility has a cold plunge pool (50°F or lower) */
   coldPlunge: boolean;
-  soakingTub: boolean; // Hot tub, thermal pool, or soaking tub
-  waterfront: boolean; // Located on water (lake, canal, etc.)
-  naturalPlunge: boolean; // Cold plunge into natural body of water
+  /** Whether the facility has a hot tub, thermal pool, or soaking tub */
+  soakingTub: boolean;
+  /** Whether the facility is located on water (lake, bay, canal, etc.) */
+  waterfront: boolean;
+  /** Whether cold plunge is into a natural body of water (bay, lake, etc.) */
+  naturalPlunge: boolean;
+  /** Whether showers are available */
   showers: boolean;
+  /** Whether towels are included with admission */
   towelsIncluded: boolean;
+  /** Whether the facility serves food (restaurant, cafe, or kitchen on-site) */
+  servesFood?: boolean;
+  /** Dry sauna temperature range in Fahrenheit */
   temperatureRangeF?: { min: number; max: number };
+  /** Maximum guest capacity */
   capacity?: number;
+  /** Operating hours description */
   hours?: string;
+  /** Gender policy (e.g., "Co-ed", "Women only", "Gender-specific days") */
   genderPolicy?: string;
+  /** Clothing policy (e.g., "Swimsuit required", "Clothing optional") */
   clothingPolicy?: string;
+  /** Additional notes about the facility */
   notes?: string;
+  /** Latitude coordinate */
   lat: number;
+  /** Longitude coordinate */
   lng: number;
+  /** Date when this entry was last verified (YYYY-MM-DD) */
   updatedAt: string;
 }
 
@@ -741,6 +779,7 @@ export const seattleSaunas: Sauna[] = [
     naturalPlunge: false,
     showers: true,
     towelsIncluded: false,
+    servesFood: true, // Korean restaurant on-site
     hours: "Mon-Thu 9am-10pm, Fri-Sun 9am-11pm",
     genderPolicy: "Separate men's and women's facilities",
     clothingPolicy: "Swimsuit required",
@@ -750,54 +789,471 @@ export const seattleSaunas: Sauna[] = [
     lng: -122.2993405,
     updatedAt: "2026-01-05",
   },
-  // {
-  //   slug: "cedar-and-stone",
-  //   name: "Cedar & Stone Nordic Sauna",
-  //   neighborhood: "Eastlake",
-  //   address: "2116 Eastlake Ave E, Seattle, WA 98102",
-  //   website: "https://cedarandstone.com/",
-  //   bookingUrl: "https://cedarandstone.com/reserve",
-  //   sessionPrice: 95,
-  //   dayPassAvailable: false,
-  //   privateRoomAvailable: true,
-  //   steamRoom: true,
-  //   coldPlunge: true,
-  //   showers: true,
-  //   towelsIncluded: true,
-  //   temperatureRangeF: { min: 175, max: 200 },
-  //   hours: "Daily 7am-10pm",
-  //   genderPolicy: "Private reservations only",
-  //   clothingPolicy: "Private experience",
-  //   notes:
-  //     "Upscale Nordic-inspired private sauna suites. Beautiful lake views and premium amenities.",
-  //   lat: 47.6403,
-  //   lng: -122.3258,
-  //   updatedAt: "2025-01-04",
-  // },  // NOTE: Actually in Duluth, MN, not Seattle
+  {
+    slug: "cedar-and-stone-duluth",
+    name: "Cedar & Stone Nordic Sauna (Duluth)",
+    address: "800 W Railroad St, Duluth, MN 55802",
+    website: "https://cedarandstonesauna.com/",
+    bookingUrl:
+      "https://fareharbor.com/embeds/book/cedarandstonesauna/?full-items=yes",
+    googleMapsUrl: "https://maps.app.goo.gl/kxzGvHoJ6bTw1Rsg6",
+    sessionPrice: 49, // Social session price
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true, // Harborside natural cold plunge into Lake Superior harbor
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: true, // Outdoor cold showers
+    towelsIncluded: true,
+    hours: "Thu-Mon 9am-9pm, Closed Tue-Wed",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Flagship location on Lake Superior harbor with floating saunas. Social sessions $49, Private $79, Floating Sauna $99. Includes guided experience, herbal teas, aromatherapy, towels, and harborside cold plunge. 5.0 stars with 627 reviews. Monthly membership $199 for up to 5 sessions/week.",
+    lat: 46.7769647,
+    lng: -92.103863,
+    updatedAt: "2026-01-06",
+  },
   // {
   //   slug: "soak-on-the-sound",
   //   name: "Soak on the Sound",
   //   address: "242 Monroe St, Port Townsend, WA 98368",
-  //   website: "http://www.soakonthesound.com/",
+  //   website: "https://soakonthesound.com/",
+  //   bookingUrl:
+  //     "https://square.site/book/F9RT836CPTTC6/soak-on-the-sound-port-townsend-wa",
   //   googleMapsUrl: "https://maps.app.goo.gl/WnwwSV2reCcwWbb6A",
   //   sessionPrice: 44,
   //   sessionLengthMinutes: 45,
-  //   steamRoom: true,
+  //   steamRoom: true, // Finnish steam sauna in Soak & Sauna Suite (wet, not dry)
   //   coldPlunge: false,
+  //   soakingTub: true,
   //   waterfront: false,
   //   naturalPlunge: false,
-  //   soakingTub: true,
   //   showers: true,
   //   towelsIncluded: true,
-  //   hours: "Mon-Tue 3PM-9PM, Wed-Thu 11AM-9PM, Fri-Sat 10AM-10PM, Sun 11AM-9PM",
+  //   hours: "Mon-Tue 3pm-9pm, Wed-Thu 11am-9pm, Fri-Sat 10am-10pm, Sun 11am-9pm",
   //   genderPolicy: "Private",
   //   clothingPolicy: "Private experience",
   //   notes:
-  //     "Pacific Northwest's premier soak & sauna experience featuring private salt-water soaking tubs and private infrared saunas. Finnish steam sauna available in the Soak & Sauna Suite.",
-  //   lat: 48.116665134052774,
-  //   lng: -122.75274999353974,
-  //   updatedAt: "2026-01-04",
-  // },  // NOTE: No drop-in passes, reservation-based private experiences only
+  //     "Pacific Northwest's premier soak & sauna experience in Port Townsend. Features private salt-water soaking tubs and private FAR infrared saunas. Soak & Sauna Suite has Finnish steam sauna (wet). Reservation-based private experiences only.",
+  //   lat: 48.1166702,
+  //   lng: -122.7527507,
+  //   updatedAt: "2026-01-06",
+  // }, // NOTE: Infrared saunas only - no traditional dry sauna
+  {
+    slug: "onsen-sf",
+    name: "Onsen",
+    address: "466 Eddy St, San Francisco, CA 94109",
+    website: "https://www.onsensf.com/",
+    bookingUrl:
+      "https://www.exploretock.com/onsenurbanbathandrestaurant/experience/109861/co-ed-bathhouse-reservation",
+    googleMapsUrl: "https://maps.app.goo.gl/UEw2pajjXMjEZQ659",
+    sessionPrice: 50,
+    sessionLengthMinutes: 120,
+    steamRoom: true,
+    coldPlunge: false, // Overhead cold plunge shower, not a pool
+    soakingTub: true, // 104°F heated communal pool (15 person)
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true, // Includes robe, towel, sandals
+    servesFood: true, // Restaurant on-site
+    hours:
+      "Mon 4-10pm (Men), Tue 4-10pm (Women), Thu 2-10pm (Co-ed), Fri-Sun 10am-10pm (Co-ed), Wed Closed",
+    genderPolicy: "Gender-specific and co-ed sessions",
+    clothingPolicy: "Bathing suit optional on gender days, required on co-ed",
+    notes:
+      "Japanese-inspired communal bathhouse in SF's Tenderloin. Features redwood dry sauna, steam room, overhead cold plunge shower, and 15-person heated soaking pool. Reopened April 2025 after 5-year hiatus. Complimentary bath products and hot tea included. Max 4 guests per reservation.",
+    lat: 37.7837186,
+    lng: -122.4154065,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "alchemy-springs-sf",
+    name: "Alchemy Springs",
+    address: "939 Post St, San Francisco, CA 94109",
+    website: "https://www.alchemysprings.com/",
+    bookingUrl: "https://www.alchemysprings.com/visit",
+    googleMapsUrl: "https://maps.app.goo.gl/qTQFTYt4WLd8jMXq6",
+    sessionPrice: 45, // Estimated based on similar venues; offers packs and memberships
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true, // Cold plunge pools
+    soakingTub: false, // Coming in 2026 full opening
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Outdoor showers
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Modern bathhouse in Lower Nob Hill with the largest freestanding dry sauna in the U.S. (40-person capacity). Currently operating 'Sauna Garden' with outdoor sauna, cold plunge pools, thermal benches, and fire pit. Full 6,000 sq ft bathhouse opening 2026. 4.8 stars with 57 reviews. Offers 3-packs, 5-packs, and 30-day unlimited memberships.",
+    lat: 37.7869327,
+    lng: -122.4173046,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "piedmont-springs",
+    name: "Piedmont Springs",
+    address: "3939 Piedmont Ave, Oakland, CA 94611",
+    website: "https://www.piedmontsprings.com/",
+    bookingUrl: "https://www.piedmontsprings.com/online-booking",
+    googleMapsUrl: "https://maps.app.goo.gl/oRvFr6f97Kbaxgds8",
+    sessionPrice: 20, // $20 per 30 min, $22 per 45 min
+    sessionLengthMinutes: 30,
+    steamRoom: true, // Separate steam room available
+    coldPlunge: false,
+    soakingTub: true, // Outdoor hot tubs available separately
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    hours: "Daily 11am-10pm",
+    genderPolicy: "Private",
+    clothingPolicy: "Private rooms",
+    notes:
+      "Oakland spa since 1981. Private cedar-lined dry sauna with shower and dressing room. $20/30 min or $22/45 min per person. Also offers separate steam room (same pricing) and outdoor hot tubs. 2-person minimum Fri-Sun after 5pm. Massage and skin care services also available.",
+    lat: 37.825413,
+    lng: -122.254051,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "loyly-southeast",
+    name: "Löyly Southeast",
+    address: "2713 SE 21st Ave, Portland, OR 97202",
+    website: "https://www.loyly.net/",
+    bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
+    googleMapsUrl: "https://maps.app.goo.gl/oRJtXBpuSshfED5S7",
+    sessionPrice: 30, // Mon-Thu price; $40 Fri-Sun
+    sessionLengthMinutes: 120,
+    steamRoom: false, // SE location has steam room per web search
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true, // Includes towel and robe
+    hours: "Daily 9am-9pm",
+    genderPolicy: "Co-ed (check for gender-specific days)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Traditional Finnish dry sauna in SE Portland. 2-hour Sauna Lounge $30 Mon-Thu, $40 Fri-Sun. Includes towel, robe, showers with house-made products. Upgrades available: Sagewood Seasonal ($55-70) includes foot soak, face mask, tea, salt scrub. 4.7 stars with 188 reviews.",
+    lat: 45.5030764,
+    lng: -122.6448491,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "loyly-northeast",
+    name: "Löyly Northeast",
+    address: "3525 NE Martin Luther King Jr Blvd, Portland, OR 97212",
+    website: "https://www.loyly.net/",
+    bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
+    googleMapsUrl: "https://maps.app.goo.gl/woXtQYh8kmyJuwud7",
+    sessionPrice: 30, // Mon-Thu price; $40 Fri-Sun
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true, // Includes towel and robe
+    hours: "Daily 9am-9pm",
+    genderPolicy: "Co-ed (check for gender-specific days)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Traditional Finnish dry sauna in NE Portland on MLK Jr Blvd. 2-hour Sauna Lounge $30 Mon-Thu, $40 Fri-Sun. Includes towel, robe, showers with house-made products. Offers traditional whisking (vihta) treatment Thu-Sat for $45. 4.7 stars with 179 reviews.",
+    lat: 45.548673,
+    lng: -122.6617778,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "common-ground-wellness",
+    name: "Common Ground Wellness Cooperative",
+    address: "5010 NE 33rd Ave, Portland, OR 97211",
+    website: "https://www.cgwc.org/",
+    bookingUrl: "https://www.cgwc.org/scheduling",
+    googleMapsUrl: "https://maps.app.goo.gl/LCiBe5hwypAzRs6R8",
+    sessionPrice: 18, // 30 min; 60 min $28, 90 min $38, 120 min $48
+    sessionLengthMinutes: 30,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: true, // Salt water hot pool
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false, // Towel rental $2.50
+    hours: "Daily 10am-10pm (Wed opens 3pm). Silent hours 10-11am & 9-10pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Clothing optional",
+    notes:
+      "Portland cooperative since 1970s with outdoor courtyard. Dry cedar sauna and salt water hot pool. Pricing: 30 min $18, 60 min $28, 90 min $38, 120 min $48. Members get discounts. Towel rental $2.50. Also offers massage, acupuncture, and naturopathy services.",
+    lat: 45.5594156,
+    lng: -122.6304762,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "forest-haven-sauna",
+    name: "Forest Haven Sauna",
+    address: "9644 SW W Haven Dr, Portland, OR 97225",
+    website: "https://www.forestsaunapdx.com/",
+    bookingUrl:
+      "https://app.squareup.com/appointments/book/xkixhokqjj5m3m/LBCF5TC30K6Y1/start",
+    googleMapsUrl: "https://maps.app.goo.gl/wV4N4MEm7jbvuxdu8",
+    sessionPrice: 50, // Price varies by group size; estimate for private session
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: false, // Cold outdoor shower available
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Warm shower + cold outdoor shower
+    towelsIncluded: true,
+    hours: "Daily 10am-8pm, by appointment",
+    genderPolicy: "Private groups",
+    clothingPolicy: "Private experience",
+    notes:
+      "Traditional Russian banya in tranquil forest setting. Private sessions for 1-6 people (1.5 or 2.5 hrs) or guided bath attendant experience for up to 4 people. Includes sauna, relaxation room, warm/cold showers, essential oils, tea, and snacks. 5.0 stars with 45 reviews. Price varies by group size.",
+    lat: 45.5143955,
+    lng: -122.7762441,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "archimedes-banya",
+    name: "Archimedes Banya",
+    address: "748 Innes Ave, San Francisco, CA 94124",
+    website: "https://banyasf.com/",
+    bookingUrl: "https://go.booker.com/location/ARCHIMEDESBANYASF/service-menu",
+    googleMapsUrl: "https://maps.app.goo.gl/JAT6Wr8q8EDNeqJi9",
+    sessionPrice: 55, // Happy Hour Pass; Basic Banya Pass $67
+    sessionLengthMinutes: 180,
+    steamRoom: true, // Turkish hammam
+    coldPlunge: true, // Ice-cold plunge pool
+    soakingTub: true, // Private soaking tubs available
+    waterfront: true, // On shores of SF Bay with rooftop views
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true, // Zteamers' Cafe with Russian/European fare
+    temperatureRangeF: { min: 180, max: 210 },
+    hours:
+      "Mon/Wed-Fri 12pm-11pm, Sat-Sun 10am-11pm, Tue closed (except gender nights)",
+    genderPolicy: "Co-ed (Women's Night 1st Tue, Men's Night 3rd Tue)",
+    clothingPolicy: "Clothing optional",
+    notes:
+      "Traditional Russian banya on SF Bay shores blending Greek, Turkish, German, and Russian bathing traditions. Happy Hour $55 (weekdays 12-4pm), Basic Pass $67 (3 hrs), All Day Pass $95. Features venik platza (birch branch massage), hammam scrubs, aromatherapy/aufguss sessions. Rooftop deck with panoramic Bay views. On-site cafe. 4.1 stars with 441 reviews. 18+ only.",
+    lat: 37.7305426,
+    lng: -122.37276,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "fjord-sausalito",
+    name: "Fjord – Floating Sauna",
+    address: "2320 Marinship Way, Sausalito, CA 94965",
+    website: "https://www.thisisfjord.com/",
+    bookingUrl: "https://www.zettlor.com/c/fjord",
+    googleMapsUrl: "https://maps.app.goo.gl/BXAmzUXPz2gi8J3HA",
+    sessionPrice: 45, // Shared session; Private $270
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true, // Plunge into San Francisco Bay
+    soakingTub: false,
+    waterfront: true, // Floating on Richardson Bay
+    naturalPlunge: true, // Bay plunge
+    showers: false, // No showers, must bring towels
+    towelsIncluded: false, // Must bring 2 towels
+    temperatureRangeF: { min: 180, max: 190 },
+    hours: "Daily 8am-8:30pm, Tue 2pm-8:30pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Unique floating sauna on SF Bay with two Finnish saunas and bay plunge. Shared sessions $45 (90 min, up to 8 ppl), Private $270 (2 hrs, up to 6), Full Buyout $2K half-day or $5K full-day. 5-pack $210. Sessions sell out fast—book when calendar opens. Must bring 2 towels, water, swimsuit. 4.9 stars. ~30 min from SF.",
+    lat: 37.8669,
+    lng: -122.49484,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "good-hot-richmond",
+    name: "Good Hot",
+    address: "1950 Stenmark Dr, Richmond, CA 94801",
+    website: "https://www.good-hot-booking.com/",
+    bookingUrl: "https://www.good-hot-booking.com/book",
+    googleMapsUrl: "https://maps.app.goo.gl/ESCG9k97EtiJmrnp8",
+    sessionPrice: 130, // Saunas 1-3; Saunas 4-5 are $150
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true, // Beach access to SF Bay
+    soakingTub: false,
+    waterfront: true, // Point San Pablo waterfront
+    naturalPlunge: true, // Bay plunge at beach
+    showers: true, // Communal cold rinse showers
+    towelsIncluded: false,
+    temperatureRangeF: { min: 160, max: 180 },
+    hours: "Thu-Mon 9:30am-8:30pm, reservation only",
+    genderPolicy: "Private rental",
+    clothingPolicy: "Swimsuit in common areas, nude OK in saunas",
+    notes:
+      "Bayside saunas on Point San Pablo with 5 private saunas for rent. Saunas 1-3: $130 (1-6 ppl), Saunas 4-5: $150 (1-8 ppl). Beach access for bay plunge (check tides). 18+ only. QTBIPOC reduced rate program available. 4.8 stars with 48 reviews. Water shoes required for beach.",
+    lat: 37.962097,
+    lng: -122.4270183,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "dogpatch-paddle-sauna",
+    name: "Dogpatch Paddle Sauna",
+    address: "701 Illinois Street #A, San Francisco, CA 94107",
+    website: "https://www.dogpatchpaddle.com/sauna",
+    bookingUrl:
+      "https://book.peek.com/s/2530f333-35eb-43fc-b661-6c7d3c95dfea/wqA07",
+    googleMapsUrl: "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8",
+    sessionPrice: 25, // Public session; Private $100
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // Plunge in SF Bay
+    soakingTub: false,
+    waterfront: true, // Crane Cove Park on the Bay
+    naturalPlunge: true, // Bay plunge
+    showers: true, // Cold rinse shower available
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 190 },
+    hours: "Daily 9am-5pm (closed Mon Sept-May)",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "SF's only waterfront sauna—4-person barrel sauna at Crane Cove Park. Public sessions $25/hr, Private $100/hr (max 4). Cold plunge in the Bay (50s°F year-round). 5-pack $100, 10-pack $200. Memberships from $60/mo. Also offers kayak/SUP rentals. 5.0 stars with 102 reviews.",
+    lat: 37.7629995,
+    lng: -122.3873433,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "kabuki-springs-sf",
+    name: "Kabuki Springs & Spa",
+    address: "1750 Geary Blvd, San Francisco, CA 94115",
+    website: "https://kabukisprings.com/",
+    bookingUrl: "https://kabukisprings.com/baths/",
+    googleMapsUrl: "https://maps.app.goo.gl/2UJpZWKc1CitbvVS6",
+    sessionPrice: 35, // Communal bath admission (estimated)
+    sessionLengthMinutes: 120,
+    steamRoom: true, // 120°F steam room
+    coldPlunge: true, // 55°F cold plunge
+    soakingTub: true, // 104°F hot pool
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Traditional seated and Western showers
+    towelsIncluded: true,
+    temperatureRangeF: { min: 130, max: 140 },
+    hours:
+      "Mon 2pm-8pm, Tue-Sun 10am-9:30pm. Women: Sun/Wed/Fri. Men: Thu/Sat. All Gender: Mon/Tue",
+    genderPolicy: "Gender-specific and all-gender days",
+    clothingPolicy:
+      "Bathing suit optional on gender days, required on all-gender days",
+    notes:
+      "Iconic Japanese bathhouse in SF Japantown since 1968. Features dry sauna (140°F), steam room (120°F), hot pool (104°F), cold plunge (55°F), and traditional showers. Spa services include Shiatsu, Swedish massage, Reiki, and more. Non-binary facilities available on all-gender days. Validated parking at Japan Center. 4.5 stars with 1,500+ reviews.",
+    lat: 37.7847765,
+    lng: -122.4326245,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "the-springs-leavenworth",
+    name: "The Springs",
+    address: "200 Zelt Strasse, Leavenworth, WA 98826",
+    website: "https://www.thesprings.us/",
+    bookingUrl: "https://ecom.roller.app/thesprings/checkout/en-us/products",
+    googleMapsUrl: "https://maps.app.goo.gl/qaB6GfHQLbDP8GPYA",
+    sessionPrice: 35, // $35 Sun-Thu, $45 Fri-Sat
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true, // Communal cold plunge pool
+    soakingTub: true, // Hot and warm pools
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Individual shower rooms
+    towelsIncluded: true, // Robes and towels included
+    hours: "Reservations recommended, walk-ins welcome",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Outdoor hydrotherapy experience in Leavenworth featuring hot pools, warm pools, communal cold plunge, and traditional cedar sauna. Designed to blend with the natural mountain environment. Includes lounge areas and fire bowl patio. Typical visit is 1.5-2 hours. 4.9 stars with 131 reviews. 5-visit punch cards and memberships available.",
+    lat: 47.5989797,
+    lng: -120.6434129,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "seatsu-sauna",
+    name: "SeaTsu Sauna",
+    address: "Thompson Rd, Sequim, WA 98382",
+    website: "https://www.seatsusauna.com/",
+    bookingUrl: "https://www.seatsusauna.com/book-online",
+    googleMapsUrl: "https://maps.app.goo.gl/RJ787PtCqXUcJTQa7",
+    sessionPrice: 35, // Community session; Private $135 for up to 4 people
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true, // Cold plunge pool
+    soakingTub: true, // Hot bath available
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Outdoor showers
+    towelsIncluded: false,
+    hours: "By appointment only; Community sessions Thu/Sun 6pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired sauna in a forest setting on the North Olympic Peninsula near Sequim/Blyn. Features Forest Bathing Sanctuary combining forest bathing and sauna practices. Private sessions $135 for up to 4 people (1.5 hrs). Community sessions $35/person Thu/Sun. Women's session last Wed of month. Sauna & Stay overnight in Geodesic Dome $275/night. Mobile sauna rental available. 5.0 stars with 22 reviews.",
+    lat: 48.0560647,
+    lng: -122.9889463,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "snow-peak-campfield",
+    name: "Snow Peak Campfield Ofuro Spa",
+    address: "5411 Sandridge Rd, Long Beach, WA 98631",
+    website: "https://snowpeakcampfield.com/ofuro/",
+    bookingUrl: "https://www.vagaro.com/spcpyc3/classes",
+    googleMapsUrl: "https://maps.app.goo.gl/XDiU6yWXPVXeaHf76",
+    sessionPrice: 35, // Day guest pass; included for overnight guests
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true, // Cold plunge pool
+    soakingTub: true, // Hot soaking pool
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false, // Bring your own towel
+    hours: "Day guest passes subject to availability, book within 3 days",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Japanese-inspired Ofuro Spa at Snow Peak Campfield on the Long Beach Peninsula. Features hinoki cypress sauna, hot soaking pool, and cold plunge in an open-air setting overlooking alder trees and pond. Day passes $35 for 2 hours. Included for overnight guests (tent suites, Jyubako cabins, field sites). Campstore & Café on-site. 4.3 stars with 123 reviews.",
+    lat: 46.3420938,
+    lng: -124.0421083,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "watercourse-way",
+    name: "Watercourse Way Bath House Spa",
+    address: "165 Channing Ave, Palo Alto, CA 94301",
+    website: "https://watercourseway.com/",
+    bookingUrl: "https://go.booker.com/location/WatercourseWay/service-menu",
+    googleMapsUrl: "https://maps.app.goo.gl/gqMVsmoqDNEqPBHw5",
+    sessionPrice: 55, // Premium hot tub room with sauna (Mon-Thu); $60 Fri-Sun
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // Cold plunge in Eight Stars room
+    soakingTub: true, // Private hot tub rooms
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    hours: "Daily 8am-11:30pm",
+    genderPolicy: "Private rooms",
+    clothingPolicy: "Private experience (swimsuit optional)",
+    notes:
+      "Classic Palo Alto bathhouse since 1980 offering private hot tub rooms. 'Eight Stars' room includes sauna, hot tub, and cold plunge. Standard rooms $40-45/hr, Premium rooms with cold plunge $55-60/hr. Also offers massage, spa treatments, and skincare. Book hot tub rooms by phone. 4.7 stars with 1,310 reviews.",
+    lat: 37.4412042,
+    lng: -122.1585519,
+    updatedAt: "2026-01-06",
+  },
 ];
 
 // Helper functions

@@ -14,6 +14,7 @@ import {
   Shirt,
   Leaf,
   Flame,
+  UtensilsCrossed,
 } from "lucide-react";
 
 interface SaunaDetailPanelProps {
@@ -97,6 +98,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
             <AmenityBadge icon={Thermometer} label="Steam Room" available={sauna.steamRoom} />
             <AmenityBadge icon={ShowerHead} label="Showers" available={sauna.showers} />
             <AmenityBadge icon={Shirt} label="Towels" available={sauna.towelsIncluded} />
+            <AmenityBadge icon={UtensilsCrossed} label="Food" available={sauna.servesFood ?? false} iconClassName="text-amber-600" />
           </div>
         </div>
 

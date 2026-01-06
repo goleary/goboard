@@ -3,8 +3,51 @@
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import type { LatLngBounds } from "leaflet";
 import { type Sauna } from "@/data/saunas/seattle-saunas";
 import { SaunaMarker } from "./SaunaMarker";
+
+export type { LatLngBounds };
+
+// Component to track map bounds and report changes
+function BoundsTracker({ onBoundsChange }: { onBoundsChange?: (bounds: LatLngBounds) => void }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!onBoundsChange) return;
+
+    const reportBounds = () => {
+      // Only report if the map container is visible and has a valid size
+      const container = map.getContainer();
+      if (!container || container.offsetWidth === 0 || container.offsetHeight === 0) {
+        return;
+      }
+      
+      const bounds = map.getBounds();
+      // Only report if bounds are valid (non-zero area)
+      if (bounds.isValid()) {
+        onBoundsChange(bounds);
+      }
+    };
+
+    // Listen for move/zoom events
+    map.on('moveend', reportBounds);
+    map.on('zoomend', reportBounds);
+    
+    // Report initial bounds when map is ready
+    map.whenReady(() => {
+      // Small delay to ensure container is sized
+      setTimeout(reportBounds, 50);
+    });
+
+    return () => {
+      map.off('moveend', reportBounds);
+      map.off('zoomend', reportBounds);
+    };
+  }, [map, onBoundsChange]);
+
+  return null;
+}
 
 // Component to handle map panning when a sauna is selected
 function MapPanner({ selectedSauna, isMobile }: { selectedSauna: Sauna | null; isMobile: boolean }) {
@@ -72,6 +115,7 @@ interface SaunaMapProps {
   center?: [number, number];
   zoom?: number;
   onSaunaClick?: (sauna: Sauna) => void;
+  onBoundsChange?: (bounds: LatLngBounds) => void;
   selectedSlug?: string | null;
   selectedSauna?: Sauna | null;
   isMobile?: boolean;
@@ -86,6 +130,7 @@ export function SaunaMap({
   center = SEATTLE_CENTER,
   zoom = 12,
   onSaunaClick,
+  onBoundsChange,
   selectedSlug,
   selectedSauna,
   isMobile = false,
@@ -105,6 +150,7 @@ export function SaunaMap({
           attribution='&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, &copy;<a href="https://carto.com/attributions" target="_blank">CARTO</a>'
         />
         <ZoomControl position="bottomright" />
+        <BoundsTracker onBoundsChange={onBoundsChange} />
         <MapPanner selectedSauna={selectedSauna || null} isMobile={isMobile} />
         {saunas.map((sauna) => (
           <SaunaMarker 
