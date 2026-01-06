@@ -1,7 +1,8 @@
 /**
- * Supported city slugs for saunas
+ * Supported location slugs for saunas
  */
-export type CitySlug =
+export type LocationSlug =
+  | "pacific-northwest"
   | "seattle"
   | "portland"
   | "san-francisco"
@@ -9,6 +10,7 @@ export type CitySlug =
   | "vancouver-island"
   | "whistler"
   | "squamish"
+  | "sunshine-coast"
   | "montana"
   | "idaho"
   | "nevada"
@@ -16,10 +18,10 @@ export type CitySlug =
   | "colorado";
 
 /**
- * City metadata for display and routing
+ * Location metadata for display and routing
  */
-export interface City {
-  slug: CitySlug;
+export interface Location {
+  slug: LocationSlug;
   name: string;
   state: string;
   description: string;
@@ -27,7 +29,16 @@ export interface City {
   zoom: number;
 }
 
-export const cities: City[] = [
+export const locations: Location[] = [
+  {
+    slug: "pacific-northwest",
+    name: "Pacific Northwest",
+    state: "WA, OR, BC",
+    description:
+      "Explore the Pacific Northwest's thriving sauna culture, from Seattle's waterfront saunas to Portland's forest retreats and Vancouver's Nordic spas.",
+    center: { lat: 47.0, lng: -122.5 },
+    zoom: 7,
+  },
   {
     slug: "seattle",
     name: "Seattle",
@@ -70,8 +81,8 @@ export const cities: City[] = [
     state: "BC",
     description:
       "Vancouver Island's sauna scene spans from Victoria's floating harbour saunas and urban Nordic spas to oceanfront experiences in Parksville and traditional Eastern European-style sauna houses in Courtenay.",
-    center: { lat: 49.1, lng: -124.0 },
-    zoom: 8,
+    center: { lat: 49.0, lng: -124.5 },
+    zoom: 9,
   },
   {
     slug: "whistler",
@@ -90,6 +101,15 @@ export const cities: City[] = [
       "Squamish offers authentic Finnish sauna experiences beside glacier-fed rivers with mountain views in the Sea to Sky corridor.",
     center: { lat: 49.7016, lng: -123.1558 },
     zoom: 11,
+  },
+  {
+    slug: "sunshine-coast",
+    name: "Sunshine Coast",
+    state: "BC",
+    description:
+      "The Sunshine Coast offers oceanside sauna experiences from Powell River to Sechelt, with wood-fired saunas overlooking the Salish Sea and cold plunges in the Pacific.",
+    center: { lat: 49.6, lng: -124.0 },
+    zoom: 9,
   },
   {
     slug: "montana",
@@ -138,8 +158,8 @@ export const cities: City[] = [
   },
 ];
 
-export function getCityBySlug(slug: string): City | undefined {
-  return cities.find((c) => c.slug === slug);
+export function getLocationBySlug(slug: string): Location | undefined {
+  return locations.find((l) => l.slug === slug);
 }
 
 /**
@@ -1279,7 +1299,7 @@ export const saunas: Sauna[] = [
     website: "https://kabukisprings.com/",
     bookingUrl: "https://kabukisprings.com/baths/",
     googleMapsUrl: "https://maps.app.goo.gl/2UJpZWKc1CitbvVS6",
-    sessionPrice: 35, // Communal bath admission (estimated)
+    sessionPrice: 49, // Communal bath admission
     sessionLengthMinutes: 120,
     steamRoom: true, // 120°F steam room
     coldPlunge: true, // 55°F cold plunge
@@ -1300,6 +1320,31 @@ export const saunas: Sauna[] = [
     lng: -122.4326245,
     updatedAt: "2026-01-06",
   },
+  // NOTE: Imperial Day Spa excluded - requires booking a treatment, no spa-only access
+  // {
+  //   slug: "imperial-day-spa-sf",
+  //   name: "Imperial Day Spa",
+  //   address: "1875 Geary Blvd, San Francisco, CA 94115",
+  //   website: "https://imperialdayspa.com/",
+  //   bookingUrl: "https://imperialdayspa.com/appointment/",
+  //   googleMapsUrl: "https://maps.app.goo.gl/3TQZb5BhZwxN9Fxv7",
+  //   sessionPrice: 90,
+  //   sessionLengthMinutes: 120,
+  //   steamRoom: true,
+  //   coldPlunge: true,
+  //   soakingTub: true,
+  //   waterfront: false,
+  //   naturalPlunge: false,
+  //   showers: true,
+  //   towelsIncluded: true,
+  //   hours: "Mon-Thu 9am-8:45pm, Fri-Sun 8am-8:45pm",
+  //   genderPolicy: "Separate men's and women's areas (gender identity respected)",
+  //   clothingPolicy: "Nude required in spa areas",
+  //   notes: "Authentic Korean jjimjilbang-style spa. Requires treatment booking - no spa-only access.",
+  //   lat: 37.7839019,
+  //   lng: -122.4342635,
+  //   updatedAt: "2026-01-06",
+  // },
   {
     slug: "the-springs-leavenworth",
     name: "The Springs",
@@ -1802,6 +1847,64 @@ export const saunas: Sauna[] = [
     lng: -124.037,
     updatedAt: "2026-01-06",
   },
+  {
+    slug: "tuff-city-saunas-pacific-sands",
+    name: "Tuff City Saunas (Pacific Sands)",
+    address: "1421 Pacific Rim Hwy, Tofino, BC V0R 2Z0, Canada",
+    website: "https://tuffcitysaunas.com/",
+    bookingUrl:
+      "https://book.peek.com/s/cb68db65-f54b-43a1-b5d6-3d11dd60c422/4X0Ax",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Pacific+Sands+Beach+Resort/@49.1066474,-125.8729172,17z",
+    sessionPrice: 199, // CA$199 for private 2hr session (up to 6 people)
+    currency: "CAD",
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: false, // Cold shower only, not plunge
+    soakingTub: false,
+    waterfront: true, // Beachfront at Cox Bay
+    naturalPlunge: false,
+    showers: true, // Cold shower for cold-water-therapy
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "9am-9pm, booking required",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Beachfront wood-fired cedar sauna at Pacific Sands Beach Resort overlooking Cox Bay. Private session for up to 6 people CA$199/2hrs weekday, CA$249/2hrs weekend. All-day rental available. Aromatherapy add-on. Cold shower, firewood included. Arrive ready to sauna (swimsuit on). Open to public and resort guests. 4.9 stars.",
+    lat: 49.1066,
+    lng: -125.8729,
+    updatedAt: "2026-01-06",
+  },
+  {
+    slug: "remote-floating-sauna-tofino",
+    name: "Remote Floating Sauna",
+    address: "634 Campbell St, Tofino, BC V0R 2Z0, Canada",
+    website: "https://tofinoresortandmarina.com/remote-floating-sauna-dock/",
+    bookingUrl:
+      "https://fareharbor.com/embeds/book/tofinoresortandmarina/?full-items=yes&flow=1039132",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Tofino+Resort+%2B+Marina/@49.1501061,-125.895637,17z",
+    sessionPrice: 179, // CA$179/person community session (Sun/Wed)
+    currency: "CAD",
+    sessionLengthMinutes: 300, // 5 hours summer, 4 hours winter
+    steamRoom: false,
+    coldPlunge: false, // Ocean plunge counts as natural
+    soakingTub: false,
+    waterfront: true, // Floating in Clayoquot Sound
+    naturalPlunge: true, // Pacific Ocean cold plunges
+    showers: false,
+    towelsIncluded: true,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Summer: 8am + 2pm, Winter: 8am + 12:30pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Unique floating wood-fired cedar sauna in Clayoquot Sound UNESCO Biosphere Reserve. 30-min boat ride to remote location. Cold plunges in Pacific Ocean. Private group of 4: CA$1000 summer, CA$800 winter (+CA$150/extra person up to 12). Community sessions for locals CA$179/person Sun/Wed. Includes paddleboards, kayaks, hammocks, fire pit. Year-round.",
+    lat: 49.1498,
+    lng: -125.8956,
+    updatedAt: "2026-01-06",
+  },
   // ============================================================================
   // WHISTLER, BC
   // ============================================================================
@@ -1891,6 +1994,37 @@ export const saunas: Sauna[] = [
     lat: 49.7976,
     lng: -123.1581,
     updatedAt: "2026-01-05",
+  },
+  // ============================================================================
+  // SUNSHINE COAST, BC (Powell River area)
+  // ============================================================================
+  {
+    slug: "orca-saunas-willingdon-beach",
+    name: "Orca Saunas (Willingdon Beach)",
+    address: "4845 Marine Ave, Powell River, BC V8A 2L2, Canada",
+    website: "https://orcasaunas.com/",
+    bookingUrl:
+      "https://minside.periode.no/booking/aoy42QDbXlX69KNH6ook/HTj3APooRPh93WMtVFlq",
+    googleMapsUrl: "https://maps.app.goo.gl/cWhMT1FsiK5YAWmG6",
+    sessionPrice: 25, // CA$25 single session drop-in
+    currency: "CAD",
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: false, // Ocean plunge counts as natural
+    soakingTub: false,
+    waterfront: true, // Oceanside on the beach
+    naturalPlunge: true, // Salish Sea cold plunge
+    showers: true, // Outdoor cold shower
+    towelsIncluded: false,
+    temperatureRangeF: { min: 160, max: 176 }, // Up to 80°C
+    hours: "Seasonal - check booking calendar",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Oceanside wood-fired cedar sauna at Willingdon Beach Park overlooking the Salish Sea. Drop-in CA$25/session, 5-pass CA$112, 10-pass CA$190, 20-pass CA$320, Season Pass CA$500. Private sessions from CA$175. West Coast contemporary design with panoramic ocean views. Cold plunge in the sea. Ladies and LGBTQ+ affinity sessions available. 5.0 stars.",
+    lat: 49.8479,
+    lng: -124.5314,
+    updatedAt: "2026-01-06",
   },
   // ============================================================================
   // PEMBERTON, BC - EXCLUDED (no dry sauna)

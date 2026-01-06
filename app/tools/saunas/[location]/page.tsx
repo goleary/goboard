@@ -1,33 +1,33 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { saunas, getSaunaBySlug, cities, getCityBySlug, formatPrice } from "@/data/saunas/saunas";
+import { saunas, getSaunaBySlug, locations, getLocationBySlug, formatPrice } from "@/data/saunas/saunas";
 import { SaunasClient } from "../components/SaunasClient";
 
 type Props = {
-  params: Promise<{ city: string }>;
+  params: Promise<{ location: string }>;
   searchParams: Promise<{ sauna?: string }>;
 };
 
 export async function generateStaticParams() {
-  return cities.map((city) => ({
-    city: city.slug,
+  return locations.map((location) => ({
+    location: location.slug,
   }));
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
-  const { city: citySlug } = await params;
+  const { location: locationSlug } = await params;
   const { sauna: saunaSlug } = await searchParams;
   
-  const city = getCityBySlug(citySlug);
-  if (!city) {
-    return { title: "City Not Found" };
+  const location = getLocationBySlug(locationSlug);
+  if (!location) {
+    return { title: "Location Not Found" };
   }
   
   if (saunaSlug) {
     const sauna = getSaunaBySlug(saunaSlug);
     if (sauna) {
-      const title = `${sauna.name} - ${city.name} Saunas`;
+      const title = `${sauna.name} - ${location.name} Saunas`;
       const description = sauna.notes || 
         `${sauna.name}. ${sauna.sessionPrice ? formatPrice(sauna) : ""} ${sauna.sessionLengthMinutes ? `for ${sauna.sessionLengthMinutes} minutes` : ""}. ${sauna.coldPlunge ? "Cold plunge available." : ""} ${sauna.steamRoom ? "Steam room available." : ""}`.trim();
       
@@ -37,53 +37,53 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         openGraph: {
           title,
           description,
-          url: `https://goleary.com/tools/saunas/${city.slug}?sauna=${sauna.slug}`,
+          url: `https://goleary.com/tools/saunas/${location.slug}?sauna=${sauna.slug}`,
           type: "website",
         },
         alternates: {
-          canonical: `https://goleary.com/tools/saunas/${city.slug}?sauna=${sauna.slug}`,
+          canonical: `https://goleary.com/tools/saunas/${location.slug}?sauna=${sauna.slug}`,
         },
       };
     }
   }
 
   return {
-    title: `${city.name} Saunas - Compare Local Sauna & Bathhouse Options`,
-    description: city.description,
+    title: `${location.name} Saunas - Compare Local Sauna & Bathhouse Options`,
+    description: location.description,
     openGraph: {
-      title: `${city.name} Saunas - Compare Local Sauna & Bathhouse Options`,
-      description: city.description,
-      url: `https://goleary.com/tools/saunas/${city.slug}`,
+      title: `${location.name} Saunas - Compare Local Sauna & Bathhouse Options`,
+      description: location.description,
+      url: `https://goleary.com/tools/saunas/${location.slug}`,
       type: "website",
     },
     alternates: {
-      canonical: `https://goleary.com/tools/saunas/${city.slug}`,
+      canonical: `https://goleary.com/tools/saunas/${location.slug}`,
     },
   };
 }
 
 // Generate schema.org ItemList for SEO
-function generateItemListSchema(cityName: string, citySlug: string) {
+function generateItemListSchema(locationName: string, locationSlug: string) {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `${cityName} Saunas`,
-    description: `A curated list of saunas and bathhouses in ${cityName}`,
+    name: `${locationName} Saunas`,
+    description: `A curated list of saunas and bathhouses in ${locationName}`,
     numberOfItems: saunas.length,
     itemListElement: saunas.map((sauna, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      url: `https://goleary.com/tools/saunas/${citySlug}?sauna=${sauna.slug}`,
+      url: `https://goleary.com/tools/saunas/${locationSlug}?sauna=${sauna.slug}`,
       name: sauna.name,
     })),
   };
 }
 
-export default async function CitySaunasPage({ params }: Props) {
-  const { city: citySlug } = await params;
-  const city = getCityBySlug(citySlug);
+export default async function LocationSaunasPage({ params }: Props) {
+  const { location: locationSlug } = await params;
+  const location = getLocationBySlug(locationSlug);
   
-  if (!city) {
+  if (!location) {
     notFound();
   }
 
@@ -93,7 +93,7 @@ export default async function CitySaunasPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateItemListSchema(city.name, city.slug)),
+          __html: JSON.stringify(generateItemListSchema(location.name, location.slug)),
         }}
       />
 
@@ -101,10 +101,10 @@ export default async function CitySaunasPage({ params }: Props) {
       <Suspense fallback={<div className="h-screen w-full flex items-center justify-center">Loading...</div>}>
         <SaunasClient 
           saunas={saunas}
-          title={`${city.name} Public Saunas`}
-          basePath={`/tools/saunas/${city.slug}`}
-          center={[city.center.lat, city.center.lng]}
-          zoom={city.zoom}
+          title={`${location.name} Public Saunas`}
+          basePath={`/tools/saunas/${location.slug}`}
+          center={[location.center.lat, location.center.lng]}
+          zoom={location.zoom}
         />
       </Suspense>
     </>
