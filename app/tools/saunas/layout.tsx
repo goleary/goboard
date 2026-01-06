@@ -12,7 +12,7 @@ export default function SaunasLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-dvh flex flex-col overflow-hidden overscroll-none touch-manipulation fixed inset-0">
       {/* Header - constrained width */}
       <header className="border-b shrink-0">
         <div className="max-w-2xl mx-auto py-4 px-4 flex flex-col gap-4 items-center">
