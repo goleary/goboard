@@ -113,6 +113,21 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     [saunas, selectedSlug]
   );
 
+  // Compute initial map center/zoom - if a sauna is pre-selected via URL, focus on it
+  const initialCenter = useMemo((): [number, number] => {
+    if (selectedSauna) {
+      return [selectedSauna.lat, selectedSauna.lng];
+    }
+    return center || [45.0, -115.0];
+  }, [selectedSauna, center]);
+
+  const initialZoom = useMemo(() => {
+    if (selectedSauna) {
+      return 14; // Zoom in close when viewing a specific sauna
+    }
+    return zoom || 4;
+  }, [selectedSauna, zoom]);
+
   const filteredSaunas = useMemo(
     () => filterAndSortSaunas(saunas, filters),
     [saunas, filters]
@@ -189,8 +204,8 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
             selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={false}
-            center={center}
-            zoom={zoom}
+            center={initialCenter}
+            zoom={initialZoom}
           />
         </div>
         <div className="absolute top-4 left-4 bottom-4 w-[320px] z-[1000] bg-background/95 backdrop-blur-sm rounded-lg border shadow-lg overflow-hidden flex flex-col">
@@ -238,8 +253,8 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
             selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={true}
-            center={center}
-            zoom={zoom}
+            center={initialCenter}
+            zoom={initialZoom}
           />
         </div>
 
