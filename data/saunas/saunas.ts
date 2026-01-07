@@ -378,6 +378,8 @@ export const saunas: Sauna[] = [
     slug: "bywater-alki",
     name: "Bywater Alki",
     website: "https://bywatersauna.com/",
+    bookingUrl:
+      "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -400,6 +402,8 @@ export const saunas: Sauna[] = [
     slug: "bywater-golden-gardens",
     name: "Bywater Golden Gardens",
     website: "https://bywatersauna.com/",
+    bookingUrl:
+      "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -423,6 +427,8 @@ export const saunas: Sauna[] = [
     name: "Bywater Leschi",
     address: "201 Lakeside Ave S, Seattle, WA 98122",
     website: "https://bywatersauna.com/",
+    bookingUrl:
+      "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     googleMapsUrl: "https://maps.app.goo.gl/fEJKv6J2wSnAxaFT7",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
@@ -2649,6 +2655,30 @@ export const saunas: Sauna[] = [
     lat: 39.7419,
     lng: -104.9706,
     updatedAt: "2026-01-06",
+  },
+  {
+    slug: "mountlake-terrace-recreation-pavilion",
+    name: "Mountlake Terrace Recreation Pavilion",
+    address: "5303 228th St SW, Mountlake Terrace, WA 98043",
+    website: "https://www.cityofmlt.com/385/Recreation-Pavilion",
+    googleMapsUrl: "https://maps.app.goo.gl/umozFFM9FcwvfMQQ8",
+    sessionPrice: 9,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    hours:
+      "Mon-Thu 5:45am-8:30pm, Fri 5:45am-6:30pm, Sat 8am-2pm, Sun 8:30am-12:30pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Municipal recreation center with dry sauna, hot tub (therapy pool), indoor swimming pool complex (25-yard pool, leisure pool, lazy river), fitness room, and racquetball courts. Resident rate $7.25, non-resident $9. Youth/Senior/Disability $6-6.75. Pool closure alert currently in effect - check website for updates.",
+    lat: 47.7925322,
+    lng: -122.3052979,
+    updatedAt: "2026-01-07",
   },
 ];
 
