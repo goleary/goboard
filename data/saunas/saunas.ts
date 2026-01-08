@@ -420,6 +420,7 @@ export const saunas: Sauna[] = [
       "Waterfront sauna at Golden Gardens with cold plunge into Puget Sound.",
     lat: 47.69039345903234,
     lng: -122.40271635662027,
+    googleMapsUrl: "https://maps.app.goo.gl/LgenbWCtmXG9GN9P9",
     updatedAt: "2025-01-04",
   },
   {
@@ -453,6 +454,7 @@ export const saunas: Sauna[] = [
     name: "Evergreen Sauna",
     address: "Mukilteo, WA",
     website: "https://evergreensauna.com/",
+    bookingUrl: "https://app.acuityscheduling.com/schedule.php?owner=33228599",
     googleMapsUrl: "https://maps.app.goo.gl/ywjXu2CnYXdt6fNL6",
     sessionPrice: 35,
     sessionLengthMinutes: 75,
@@ -546,6 +548,8 @@ export const saunas: Sauna[] = [
     name: "Good Day Sauna",
     address: "Lincoln Park, West Seattle",
     website: "http://www.gooddaysauna.com/",
+    bookingUrl:
+      "https://app.acuityscheduling.com/schedule/5e9464ed/appointment/82608594/calendar/12638621",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -569,6 +573,8 @@ export const saunas: Sauna[] = [
     slug: "fire-and-floe",
     name: "Fire+Floe",
     website: "https://fireandfloe.com/",
+    bookingUrl:
+      "https://minside.periode.no/bookinggroups/7Rnv6gI4q8eaTuU5uSQA/xJeWObTOZgRyDoyknG7C",
     sessionPrice: 30,
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -681,7 +687,8 @@ export const saunas: Sauna[] = [
   {
     slug: "wildhaus",
     name: "Wildhaus",
-    website: "https://wildhaussauna.com/",
+    website: "https://thewildhaus.com/",
+    bookingUrl: "https://wild-haus.checkfront.com/reserve/",
     sessionPrice: 150,
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -696,6 +703,7 @@ export const saunas: Sauna[] = [
     notes: "Outdoor sauna experience.",
     lat: 47.64941161755134,
     lng: -122.32544961013753,
+    googleMapsUrl: "https://maps.app.goo.gl/vc1HhqLA9G5XXaEz8",
     updatedAt: "2025-01-04",
   },
   {
