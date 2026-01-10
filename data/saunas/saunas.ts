@@ -235,6 +235,7 @@ export const saunas: Sauna[] = [
     name: "815 Refresh",
     address: "815 NE 72nd St, Seattle, WA 98115",
     website: "https://www.815refresh.com/",
+    bookingUrl: "https://www.vagaro.com/815refresh/book-now",
     sessionPrice: 25,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -478,6 +479,7 @@ export const saunas: Sauna[] = [
     name: "Vihta",
     address: "3560 W Lake Sammamish Pkwy SE, Bellevue, WA 98008",
     website: "https://www.vihtasauna.co/",
+    bookingUrl: "https://www.vihtasauna.co/bookings",
     sessionPrice: 40,
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -526,6 +528,7 @@ export const saunas: Sauna[] = [
     slug: "tuli-lodge",
     name: "Tuli Lodge",
     website: "https://www.tuli-lodge.com/",
+    bookingUrl: "https://www.tuli-lodge.com/book",
     sessionPrice: 27,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -598,6 +601,7 @@ export const saunas: Sauna[] = [
     name: "Fyre Sauna",
     address: "14123 Redmond - Woodinville Rd NE, Redmond, WA 98052",
     website: "https://www.fyresauna.com/",
+    bookingUrl: "https://www.fyresauna.com/book-online",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -622,6 +626,8 @@ export const saunas: Sauna[] = [
     name: "Soak & Sage",
     address: "1135 Lake Washington Blvd N Suite 60, Renton, WA 98057",
     website: "http://www.soakandsagespa.com/",
+    bookingUrl:
+      "https://www.joinblvd.com/b/34303b6d-5682-4a50-b816-c4901c2b1072/widget",
     sessionPrice: 75,
     sessionLengthMinutes: 120,
     steamRoom: true,
@@ -644,6 +650,7 @@ export const saunas: Sauna[] = [
     slug: "seattle-sauna",
     name: "Seattle Sauna",
     website: "https://seattlesauna.com/",
+    bookingUrl: "https://bookeo.com/seattlesauna",
     sessionPrice: 64,
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -658,6 +665,7 @@ export const saunas: Sauna[] = [
     notes: "Traditional sauna experience.",
     lat: 47.650332705185996,
     lng: -122.33052201956258,
+    googleMapsUrl: "https://maps.app.goo.gl/zWoF6awqyvpSLaa76",
     updatedAt: "2025-01-04",
   },
   {
@@ -711,6 +719,8 @@ export const saunas: Sauna[] = [
     name: "Svette Sauna",
     address: "5605 Owen Beach Rd, Tacoma, WA 98407",
     website: "https://svettetacoma.com/",
+    bookingUrl:
+      "https://app.glofox.com/portal/#/branch/67a141b0d1806cff7106b964/classes-day-view",
     sessionPrice: 35, // Peak pricing, $28 matinee
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -759,6 +769,7 @@ export const saunas: Sauna[] = [
     name: "Hothouse Spa & Sauna",
     address: "1019 E Pike St, Seattle, WA 98122",
     website: "https://www.hothousespa.com/",
+    bookingUrl: "https://www.hothousespa.com/schedule",
     googleMapsUrl: "https://maps.app.goo.gl/nWMgFkAafFz76Lc49",
     sessionPrice: 190, // Starting price for 90min weekday rental (up to 4 people)
     sessionLengthMinutes: 90,
