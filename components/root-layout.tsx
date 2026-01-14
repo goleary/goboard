@@ -37,34 +37,28 @@ export default function RootLayout({
         <DropdownMenu>
           <DropdownMenuTrigger>Tools</DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Link
-                className="hover:text-blue-500"
-                href="https://discoverevs.com"
-              >
+            <DropdownMenuItem asChild>
+              <Link href="https://discoverevs.com">
                 Discover EVs
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link className="hover:text-blue-500" href="/tools/current-map">
+            <DropdownMenuItem asChild>
+              <Link href="/tools/current-map">
                 PNW Current Map
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link className="hover:text-blue-500" href="/tools/lake-stats">
+            <DropdownMenuItem asChild>
+              <Link href="/tools/lake-stats">
                 Seattle Lake Stats
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link
-                className="hover:text-blue-500"
-                href="/tools/marriage-tax-calculator"
-              >
+            <DropdownMenuItem asChild>
+              <Link href="/tools/marriage-tax-calculator">
                 Marriage Tax Calculator
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link className="hover:text-blue-500" href="/tools/saunas">
+            <DropdownMenuItem asChild>
+              <Link href="/tools/saunas">
                 Sauna Map
               </Link>
             </DropdownMenuItem>
