@@ -259,8 +259,11 @@ export const saunas: Sauna[] = [
   {
     slug: "banya-5",
     name: "Banya 5",
-    website: "https://bfreedseattle.com/",
-    bookingUrl: "https://bfreedseattle.com/pages/book-now",
+    address: "217 9th Ave N, Seattle, WA 98109",
+    website: "https://www.banya5.com/",
+    bookingUrl:
+      "https://banya5.zenoti.com/webstoreNew/fitness/classes/59175a72-7837-4902-afc2-c16704fbc371",
+    googleMapsUrl: "https://maps.app.goo.gl/ABKyKsmbLZbBeeCR7",
     sessionPrice: 70,
     sessionLengthMinutes: 120,
     steamRoom: true,
@@ -275,10 +278,10 @@ export const saunas: Sauna[] = [
     genderPolicy: "Co-ed and gender-specific sessions available",
     clothingPolicy: "Swimsuit required in co-ed areas",
     notes:
-      "Traditional Russian banya experience with platza (birch branch massage) available. Multiple sauna rooms with varying temperatures.",
-    lat: 47.62033531850257,
-    lng: -122.33992852528486,
-    updatedAt: "2025-01-04",
+      "Traditional Russian banya experience with platza (birch branch massage) available. Multiple sauna rooms with varying temperatures. Uses Zenoti for bookings.",
+    lat: 47.6203409,
+    lng: -122.3399385,
+    updatedAt: "2026-01-14",
   },
   // {
   //   slug: "loyly-seattle",
