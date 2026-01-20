@@ -1011,6 +1011,31 @@ export const saunas: Sauna[] = [
     lng: -92.103863,
     updatedAt: "2026-01-06",
   },
+  {
+    slug: "sauna-du-nord",
+    name: "Sauna du Nord",
+    address: "Caribou Lake, Duluth, MN",
+    website: "https://www.saunadunord.com/",
+    bookingUrl: "https://www.saunadunord.com/booking",
+    googleMapsUrl: "https://maps.app.goo.gl/a7hn962v4w9hdMTP6",
+    sessionPrice: 35,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true, // Lake access at Caribou Lake
+    showers: false,
+    towelsIncluded: false, // Bring your own small towel
+    hours: "Wed, Thu, Sat, plus by request",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Nordic sauna experience at Caribou Lake north of Duluth. Cedar sauna with lake access for cold plunge. Community sessions $35/person (75 min), private group sessions $245 for up to 10 people. Private delivery packages also available. Bring towel, water bottle, and flip-flops.",
+    lat: 46.8995902,
+    lng: -92.3128808,
+    updatedAt: "2026-01-20",
+  },
   // {
   //   slug: "soak-on-the-sound",
   //   name: "Soak on the Sound",
