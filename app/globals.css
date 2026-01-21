@@ -136,3 +136,9 @@ body {
     opacity: 1;
   }
 }
+
+/* Clear default leaflet divIcon background for cluster icons */
+.sauna-cluster-icon {
+  background: transparent !important;
+  border: none !important;
+}

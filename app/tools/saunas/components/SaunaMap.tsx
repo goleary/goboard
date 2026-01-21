@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
-import type { LatLngBounds } from "leaflet";
+import type { LatLngBounds, PointTuple } from "leaflet";
 import { type Sauna } from "@/data/saunas/saunas";
 import { SaunaMarker } from "./SaunaMarker";
 import { createClusterIcon } from "./createClusterIcon";
@@ -92,14 +92,15 @@ function MapPanner({ selectedSauna, isMobile, panToSelection }: { selectedSauna:
     // Project sauna to pixel coordinates at target zoom level
     const saunaPoint = map.project([selectedSauna.lat, selectedSauna.lng], targetZoom);
 
-    // Calculate the map center that will position the sauna at our target screen location
-    const adjustedCenterPoint = {
-      x: saunaPoint.x + offsetX,
-      y: saunaPoint.y + offsetY,
-    };
 
     // Convert back to lat/lng and set view in a single smooth animation
-    const adjustedCenter = map.unproject(adjustedCenterPoint, targetZoom);
+    const adjustedCenter = map.unproject(
+    // Calculate the map center that will position the sauna at our target screen location
+      
+      [
+      saunaPoint.x + offsetX,
+      saunaPoint.y + offsetY,
+    ], targetZoom);
     map.setView(adjustedCenter, targetZoom, { animate: true });
   }, [selectedSauna, map, isMobile]);
 
