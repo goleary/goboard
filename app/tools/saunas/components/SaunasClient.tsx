@@ -113,6 +113,9 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     [saunas, selectedSlug]
   );
 
+  // Track whether to pan/zoom to the selected sauna (only for list selections)
+  const [panToSelection, setPanToSelection] = useState(false);
+
   // Compute initial map center/zoom - if a sauna is pre-selected via URL, focus on it
   const initialCenter = useMemo((): [number, number] => {
     if (selectedSauna) {
@@ -162,8 +165,20 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     };
   }, [isDragging, handleDragMove, handleDragEnd]);
 
-  const handleSaunaClick = (sauna: Sauna) => {
-    // Update URL with sauna slug
+  // Handler for marker clicks on the map (no pan/zoom)
+  const handleMarkerClick = (sauna: Sauna) => {
+    setPanToSelection(false);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sauna", sauna.slug);
+    router.push(`${basePath}?${params.toString()}`, { scroll: false });
+    // Expand sheet on mobile when selecting a sauna
+    const containerHeight = containerRef.current?.parentElement?.clientHeight || window.innerHeight;
+    setSheetHeight(containerHeight * MAX_SHEET_PERCENT);
+  };
+
+  // Handler for list item clicks (zoom/pan to sauna)
+  const handleListClick = (sauna: Sauna) => {
+    setPanToSelection(true);
     const params = new URLSearchParams(searchParams.toString());
     params.set("sauna", sauna.slug);
     router.push(`${basePath}?${params.toString()}`, { scroll: false });
@@ -196,14 +211,15 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       {/* Desktop: Full-width map with panel overlay */}
       <div className="hidden lg:block relative h-full">
         <div className="absolute inset-0">
-          <SaunaMap 
-            saunas={filteredSaunas} 
-            onSaunaClick={handleSaunaClick}
+          <SaunaMap
+            saunas={filteredSaunas}
+            onSaunaClick={handleMarkerClick}
             onMapClick={selectedSauna ? handleCloseDetail : undefined}
             onBoundsChange={handleBoundsChange}
             selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={false}
+            panToSelection={panToSelection}
             center={initialCenter}
             zoom={initialZoom}
           />
@@ -229,10 +245,10 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                 <p className="text-sm text-muted-foreground">{viewportSaunas.length} saunas in view</p>
               </div>
               <div className="flex-1 overflow-auto">
-                <SaunaTable 
-                  saunas={viewportSaunas} 
-                  compact 
-                  onSaunaClick={handleSaunaClick}
+                <SaunaTable
+                  saunas={viewportSaunas}
+                  compact
+                  onSaunaClick={handleListClick}
                   selectedSlug={selectedSlug ?? undefined}
                 />
               </div>
@@ -245,14 +261,15 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       <div className="lg:hidden relative h-full" ref={containerRef}>
         {/* Full-screen map */}
         <div className="absolute inset-0">
-          <SaunaMap 
-            saunas={filteredSaunas} 
-            onSaunaClick={handleSaunaClick}
+          <SaunaMap
+            saunas={filteredSaunas}
+            onSaunaClick={handleMarkerClick}
             onMapClick={selectedSauna ? handleCloseDetail : undefined}
             onBoundsChange={handleBoundsChange}
             selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={true}
+            panToSelection={panToSelection}
             center={initialCenter}
             zoom={initialZoom}
           />
@@ -297,10 +314,10 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                   <p className="text-sm text-muted-foreground">{viewportSaunas.length} saunas in view</p>
                 </div>
                 <div className="flex-1 overflow-auto">
-                  <SaunaTable 
-                    saunas={viewportSaunas} 
-                    compact 
-                    onSaunaClick={handleSaunaClick}
+                  <SaunaTable
+                    saunas={viewportSaunas}
+                    compact
+                    onSaunaClick={handleListClick}
                     selectedSlug={selectedSlug ?? undefined}
                   />
                 </div>

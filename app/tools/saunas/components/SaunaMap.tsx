@@ -1,11 +1,20 @@
 "use client";
 
 import React, { useEffect } from "react";
+import dynamic from "next/dynamic";
 import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 import type { LatLngBounds } from "leaflet";
 import { type Sauna } from "@/data/saunas/saunas";
 import { SaunaMarker } from "./SaunaMarker";
+import { createClusterIcon } from "./createClusterIcon";
+
+const MarkerClusterGroup = dynamic(
+  () => import("react-leaflet-cluster").then((mod) => mod.default),
+  { ssr: false }
+);
 
 export type { LatLngBounds };
 
@@ -49,43 +58,49 @@ function BoundsTracker({ onBoundsChange }: { onBoundsChange?: (bounds: LatLngBou
   return null;
 }
 
-// Component to handle map panning when a sauna is selected
-function MapPanner({ selectedSauna, isMobile }: { selectedSauna: Sauna | null; isMobile: boolean }) {
+// Component to handle map panning/zooming when a sauna is selected
+function MapPanner({ selectedSauna, isMobile, panToSelection }: { selectedSauna: Sauna | null; isMobile: boolean; panToSelection: boolean }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!selectedSauna) return;
+    if (!selectedSauna || !panToSelection) return;
 
-    const point = map.latLngToContainerPoint([selectedSauna.lat, selectedSauna.lng]);
     const mapSize = map.getSize();
-    
+    const targetZoom = 14;
+
+    // Calculate where we want the marker to appear on screen
+    let targetX: number;
+    let targetY: number;
+
     if (isMobile) {
-      // On mobile, always pan to center the marker in the top fifth of the map
-      // Target: horizontally centered, vertically at 1/10 of map height (center of top fifth)
-      const targetX = mapSize.x / 2;
-      const targetY = mapSize.y / 10;
-      const offsetX = point.x - targetX;
-      const offsetY = point.y - targetY;
-      
-      // Only pan if the offset is significant (more than 20px)
-      if (Math.abs(offsetX) > 20 || Math.abs(offsetY) > 20) {
-        map.panBy([offsetX, offsetY], { animate: true, duration: 0.3 });
-      }
+      // On mobile, position marker in the top fifth of the map
+      targetX = mapSize.x / 2;
+      targetY = mapSize.y / 10;
     } else {
-      // On desktop, check if marker is visible (accounting for left panel ~340px)
+      // On desktop, position marker in center of visible area (right of panel)
       const leftPanelWidth = 340;
-      const isVisible = point.y >= 0 && point.y <= mapSize.y && 
-                        point.x >= leftPanelWidth && point.x <= mapSize.x;
-      
-      if (!isVisible) {
-        // Pan to center marker in visible map area (right of panel)
-        const targetX = leftPanelWidth + (mapSize.x - leftPanelWidth) / 2;
-        const targetY = mapSize.y / 2;
-        const offsetX = point.x - targetX;
-        const offsetY = point.y - targetY;
-        map.panBy([offsetX, offsetY], { animate: true, duration: 0.3 });
-      }
+      targetX = leftPanelWidth + (mapSize.x - leftPanelWidth) / 2;
+      targetY = mapSize.y / 2;
     }
+
+    // Calculate pixel offset from screen center to target position
+    const centerX = mapSize.x / 2;
+    const centerY = mapSize.y / 2;
+    const offsetX = centerX - targetX;
+    const offsetY = centerY - targetY;
+
+    // Project sauna to pixel coordinates at target zoom level
+    const saunaPoint = map.project([selectedSauna.lat, selectedSauna.lng], targetZoom);
+
+    // Calculate the map center that will position the sauna at our target screen location
+    const adjustedCenterPoint = {
+      x: saunaPoint.x + offsetX,
+      y: saunaPoint.y + offsetY,
+    };
+
+    // Convert back to lat/lng and set view in a single smooth animation
+    const adjustedCenter = map.unproject(adjustedCenterPoint, targetZoom);
+    map.setView(adjustedCenter, targetZoom, { animate: true });
   }, [selectedSauna, map, isMobile]);
 
   return null;
@@ -141,6 +156,8 @@ interface SaunaMapProps {
   selectedSlug?: string | null;
   selectedSauna?: Sauna | null;
   isMobile?: boolean;
+  /** When true, zoom/pan to the selected sauna (use for list selections, not marker clicks) */
+  panToSelection?: boolean;
 }
 
 // Seattle center coordinates
@@ -157,6 +174,7 @@ export function SaunaMap({
   selectedSlug,
   selectedSauna,
   isMobile = false,
+  panToSelection = false,
 }: SaunaMapProps) {
   return (
     <>
@@ -174,16 +192,26 @@ export function SaunaMap({
         />
         <ZoomControl position="bottomright" />
         <BoundsTracker onBoundsChange={onBoundsChange} />
-        <MapPanner selectedSauna={selectedSauna || null} isMobile={isMobile} />
+        <MapPanner selectedSauna={selectedSauna || null} isMobile={isMobile} panToSelection={panToSelection} />
         <MapClickHandler onMapClick={onMapClick} />
-        {saunas.map((sauna) => (
-          <SaunaMarker 
-            key={sauna.slug} 
-            sauna={sauna} 
-            onClick={onSaunaClick}
-            isSelected={sauna.slug === selectedSlug}
-          />
-        ))}
+        <MarkerClusterGroup
+          iconCreateFunction={createClusterIcon}
+          maxClusterRadius={60}
+          zoomToBoundsOnClick={true}
+          spiderfyOnMaxZoom={true}
+          animate={false}
+          removeOutsideVisibleBounds={false}
+          showCoverageOnHover={false}
+        >
+          {saunas.map((sauna) => (
+            <SaunaMarker
+              key={sauna.slug}
+              sauna={sauna}
+              onClick={onSaunaClick}
+              isSelected={sauna.slug === selectedSlug}
+            />
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
     </>
   );
