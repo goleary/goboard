@@ -2779,6 +2779,31 @@ export const saunas: Sauna[] = [
     lng: -87.7498633,
     updatedAt: "2026-01-08",
   },
+  {
+    slug: "south-woods-nwa",
+    name: "South Woods",
+    address: "17097 Lake Sequoyah Dr, Fayetteville, AR 72701",
+    website: "https://southwoodsnwa.com/",
+    bookingUrl: "https://book.peek.com/s/c483e16c-9ecf-4e56-a76d-d3155e7c0646/0b7pw",
+    googleMapsUrl: "https://maps.app.goo.gl/7wBuqNnCzB4LzBBd8",
+    sessionPrice: 55,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    hours: "Check booking calendar for session times",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit or light gym clothing",
+    notes:
+      "Wood-fired outdoor sauna retreat in Northwest Arkansas with community sessions and guided saunakeepers. Cold contrast is via cold showers or bucket dousing. Towels and tea included.",
+    lat: 36.0597787,
+    lng: -94.0537409,
+    updatedAt: "2026-02-01",
+  },
 ];
 
 // Backwards-compatible alias
