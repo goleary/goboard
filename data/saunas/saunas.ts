@@ -15,7 +15,8 @@ export type LocationSlug =
   | "idaho"
   | "nevada"
   | "utah"
-  | "colorado";
+  | "colorado"
+  | "minnesota";
 
 /**
  * Location metadata for display and routing
@@ -119,6 +120,15 @@ export const locations: Location[] = [
       "Montana's sauna scene features natural hot springs with dry saunas near Yellowstone and Big Sky, offering mountain wellness experiences.",
     center: { lat: 46.0, lng: -110.5 },
     zoom: 6,
+  },
+  {
+    slug: "minnesota",
+    name: "Minnesota",
+    state: "MN",
+    description:
+      "Minnesota's sauna culture blends Nordic traditions with modern thermaculture clubs, offering contrast therapy in the Land of 10,000 Lakes.",
+    center: { lat: 44.9778, lng: -93.2650 },
+    zoom: 8,
   },
   {
     slug: "idaho",
@@ -2516,6 +2526,32 @@ export const saunas: Sauna[] = [
   // MONTANA
   // ============================================================================
   {
+    slug: "portal-bozeman",
+    name: "PORTAL° Bozeman",
+    address: "707 E Peach St, Bozeman, MT 59715",
+    website: "https://www.portalthermaculture.com/bozeman",
+    bookingUrl: "https://book.portalthermaculture.com/book-session",
+    googleMapsUrl: "https://maps.app.goo.gl/PortalBozeman123",
+    sessionPrice: 45,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Coming Soon",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "PORTAL° thermaculture club in Bozeman (coming soon). Same pricing as other PORTAL° locations: $45/session, credit packs available. Memberships work at all PORTAL° locations ($179/mo unlimited all clubs).",
+    lat: 45.6778,
+    lng: -111.0344,
+    updatedAt: "2026-02-06",
+  },
+  {
     slug: "bozeman-hot-springs",
     name: "Bozeman Hot Springs",
     address: "81123 Gallatin Rd, Bozeman, MT 59718",
@@ -2540,6 +2576,35 @@ export const saunas: Sauna[] = [
     lat: 45.6478,
     lng: -111.2012,
     updatedAt: "2026-01-05",
+  },
+  // ============================================================================
+  // MINNESOTA
+  // ============================================================================
+  {
+    slug: "portal-minneapolis",
+    name: "PORTAL° Minneapolis",
+    address: "3120 Excelsior Blvd, Minneapolis, MN 55416",
+    website: "https://www.portalthermaculture.com/minneapolis",
+    bookingUrl: "https://book.portalthermaculture.com/book-session",
+    googleMapsUrl: "https://maps.app.goo.gl/PortalMinneapolis123",
+    sessionPrice: 45,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Sun 8am-10pm, Mon-Wed 6am-10pm, Thu 12pm-10pm, Fri-Sat 8am-11pm",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "PORTAL° thermaculture club in Minneapolis with saunas and cold plunges. Same pricing as other PORTAL° locations: $45/session, credit packs available. Memberships work at all PORTAL° locations ($179/mo unlimited all clubs).",
+    lat: 44.9489,
+    lng: -93.3159,
+    updatedAt: "2026-02-06",
   },
   // ============================================================================
   // UTAH
@@ -2669,7 +2734,7 @@ export const saunas: Sauna[] = [
     showers: true,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
-    hours: "Sun 8am-10pm, M-W/F-Sat 6am-10pm, Thu 2pm-10pm",
+    hours: "Sun 10am-10pm, Mon-Fri 4pm-10pm, Sat 10am-10pm",
     genderPolicy: "Co-ed (18+)",
     clothingPolicy: "Swimsuit required",
     notes:
