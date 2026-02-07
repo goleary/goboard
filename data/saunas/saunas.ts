@@ -2966,7 +2966,7 @@ export const saunas: Sauna[] = [
     address: "928 McFerrin Ave, Nashville, TN 37206",
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/schedule",
-    googleMapsUrl: "https://maps.google.com/?q=36.1887,-86.7506",
+    googleMapsUrl: "https://maps.app.goo.gl/YsgWzJ6zGCw2GUQ69",
     sessionPrice: 25, // $25 weekday, $35 weekend
     sessionLengthMinutes: null,
     steamRoom: false,
