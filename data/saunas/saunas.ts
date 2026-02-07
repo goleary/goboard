@@ -2940,7 +2940,7 @@ export const saunas: Sauna[] = [
     address: "1411 4th Ave South, Nashville, TN 37210",
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/schedule",
-    googleMapsUrl: "https://maps.google.com/?q=36.1447,-86.7786",
+    googleMapsUrl: "https://maps.app.goo.gl/myhsXzMqzdzBuXW88",
     sessionPrice: 35, // $35 weekday, $55 weekend
     sessionLengthMinutes: null,
     steamRoom: false,
