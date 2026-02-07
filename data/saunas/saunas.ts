@@ -2889,10 +2889,10 @@ export const saunas: Sauna[] = [
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/book-now",
     googleMapsUrl: "https://maps.app.goo.gl/FrameworkFlagship123",
-    sessionPrice: 0, // Membership-based, intro offer $79 for 5 sessions
+    sessionPrice: 35, // $35 weekday, $55 weekend
     sessionLengthMinutes: 60,
     steamRoom: false,
-    coldPlunge: true, // 13 commercial-grade cold tubs (35-60°F)
+    coldPlunge: true, // 9 commercial-grade cold tubs (38-60°F)
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
@@ -2903,7 +2903,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
-      "Framework's original flagship studio in Wedgewood Houston—Nashville's largest sauna and cold plunge facility. Features 7 traditional saunas (social and silent), 13 commercial-grade cold tubs (35-60°F) with solo and shared options, full-service locker rooms, indoor showers, outdoor patio sauna and cold tubs. Also includes The Café, SAVA Sound Journey, and private rooms with sauna, tub, rinse shower, and lounge space. First timer intro offer: $79 for 5 sessions (10 days to use). Text preferred: 615.200.7409",
+      "Framework's original flagship studio in Wedgewood Houston—Nashville's largest sauna and cold plunge facility. Features 3 traditional saunas (social, silent, and outdoor), 9 commercial-grade cold tubs (38-60°F) with solo and group options, full-service locker rooms, indoor showers, outdoor patio sauna and cold tubs. Also includes The Café, SAVA Sound Journey, and private rooms with sauna, tub, rinse shower, and lounge space. Drop-in: $35 weekday, $55 weekend. First timer intro offer: $79 for 5 sessions (10 days to use). Memberships: Forge $109/mo (4x), Fuse $179/mo (8x), Fortify $249/mo (unlimited). Text preferred: 615.200.7409",
     lat: 36.1447,
     lng: -86.7786,
     updatedAt: "2026-02-06",
@@ -2915,10 +2915,10 @@ export const saunas: Sauna[] = [
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/book-now",
     googleMapsUrl: "https://maps.app.goo.gl/FrameworkBackyard123",
-    sessionPrice: 0, // Membership-based, intro offer $79 for 5 sessions
+    sessionPrice: 25, // $25 weekday, $35 weekend
     sessionLengthMinutes: 60,
     steamRoom: false,
-    coldPlunge: true, // 4 cold tubs (40-60°F)
+    coldPlunge: true, // Solo & dual tubs (40-60°F)
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
@@ -2929,7 +2929,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
-      "Framework's East Nashville Backyard location—fully outdoor and designed for neighborhood ease. Features a social 190°F sauna (fits up to 12) and 4 cold tubs (solo and two-person) at multiple temps (40-60°F). Outdoor showers, changing rooms, lockers, and bathrooms inside a fully remodeled historic 1900s home. Hosts fitness classes and events. First timer intro offer: $79 for 5 sessions (10 days to use). Text preferred: 615.241.0277",
+      "Framework's East Nashville Backyard location—fully outdoor and designed for neighborhood ease. Features a social 190°F sauna (fits 10-12) and solo & dual cold tubs (40-60°F). Outdoor showers, indoor lockers, changing rooms, and bathrooms inside a fully remodeled historic 1900s home. Hosts fitness classes and events. Drop-in: $25 weekday, $35 weekend. First timer intro offer: $79 for 5 sessions (10 days to use). Memberships: Forge $89/mo (4x), Fuse $149/mo (8x), Fortify $199/mo (unlimited). Text preferred: 615.241.0277",
     lat: 36.1887,
     lng: -86.7506,
     updatedAt: "2026-02-06",
