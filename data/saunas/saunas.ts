@@ -785,8 +785,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Traditional Russian banya (Eastern European sauna) experience in Tacoma. Features hot sauna, steam room, wet sauna, hot tub, and tepid pool. Temperature-controlled showers on main floor. Additional amenities include VIP room (with sauna, relaxation space, TV, karaoke, chess table), billiard room, and tea zone. Traditional birch branch (venik) practice available. Waiver required before participation. Call for pricing: (253) 878-8966 or email tacomabanya@gmail.com",
-    lat: 47.2000,
-    lng: -122.4500,
+    lat: 47.21400939375373,
+    lng: -122.4733156020583,
     updatedAt: "2026-02-06",
   },
   {
