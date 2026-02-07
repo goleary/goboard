@@ -805,7 +805,7 @@ export const saunas: Sauna[] = [
     showers: true,
     towelsIncluded: true, // Towels and flip flops included
     servesFood: true, // On-site kitchen with traditional Eastern European food
-    temperatureRangeF: { min: 200, max: 250 }, // Hottest sauna in PNW
+    temperatureRangeF: { min: 160, max: 200 },
     hours: "Mon-Thu 12pm-10pm, Fri-Sat 12pm-12am, Sun Private Events",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
