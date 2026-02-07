@@ -16,7 +16,8 @@ export type LocationSlug =
   | "nevada"
   | "utah"
   | "colorado"
-  | "minnesota";
+  | "minnesota"
+  | "tennessee";
 
 /**
  * Location metadata for display and routing
@@ -129,6 +130,15 @@ export const locations: Location[] = [
       "Minnesota's sauna culture blends Nordic traditions with modern thermaculture clubs, offering contrast therapy in the Land of 10,000 Lakes.",
     center: { lat: 44.9778, lng: -93.2650 },
     zoom: 8,
+  },
+  {
+    slug: "tennessee",
+    name: "Tennessee",
+    state: "TN",
+    description:
+      "Tennessee's sauna scene features modern contrast therapy studios in Nashville, combining traditional saunas with commercial-grade cold plunge facilities.",
+    center: { lat: 36.1627, lng: -86.7816 },
+    zoom: 10,
   },
   {
     slug: "idaho",
@@ -2868,6 +2878,61 @@ export const saunas: Sauna[] = [
     lat: 36.0597787,
     lng: -94.0537409,
     updatedAt: "2026-02-01",
+  },
+  // ============================================================================
+  // TENNESSEE
+  // ============================================================================
+  {
+    slug: "framework-flagship-nashville",
+    name: "Framework (Flagship)",
+    address: "1411 4th Ave South, Nashville, TN 37210",
+    website: "https://www.joinframework.com/",
+    bookingUrl: "https://www.joinframework.com/book-now",
+    googleMapsUrl: "https://maps.app.goo.gl/FrameworkFlagship123",
+    sessionPrice: 0, // Membership-based, intro offer $79 for 5 sessions
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // 13 commercial-grade cold tubs (35-60°F)
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Indoor showers
+    towelsIncluded: false,
+    temperatureRangeF: { min: 190, max: 190 }, // Traditional saunas at 190°F
+    hours: "Mon/Wed-Fri 6am-8pm, Sat 8am-6pm, Sun 8am-7pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Framework's original flagship studio in Wedgewood Houston—Nashville's largest sauna and cold plunge facility. Features 7 traditional saunas (social and silent), 13 commercial-grade cold tubs (35-60°F) with solo and shared options, full-service locker rooms, indoor showers, outdoor patio sauna and cold tubs. Also includes The Café, SAVA Sound Journey, and private rooms with sauna, tub, rinse shower, and lounge space. First timer intro offer: $79 for 5 sessions (10 days to use). Text preferred: 615.200.7409",
+    lat: 36.1447,
+    lng: -86.7786,
+    updatedAt: "2026-02-06",
+  },
+  {
+    slug: "framework-backyard-nashville",
+    name: "Framework (Backyard)",
+    address: "928 McFerrin Ave, Nashville, TN 37206",
+    website: "https://www.joinframework.com/",
+    bookingUrl: "https://www.joinframework.com/book-now",
+    googleMapsUrl: "https://maps.app.goo.gl/FrameworkBackyard123",
+    sessionPrice: 0, // Membership-based, intro offer $79 for 5 sessions
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // 4 cold tubs (40-60°F)
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Outdoor showers
+    towelsIncluded: false,
+    temperatureRangeF: { min: 190, max: 190 }, // Social sauna at 190°F
+    hours: "Mon/Tue/Thu/Fri 7am-7pm, Sat-Sun 8am-6pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Framework's East Nashville Backyard location—fully outdoor and designed for neighborhood ease. Features a social 190°F sauna (fits up to 12) and 4 cold tubs (solo and two-person) at multiple temps (40-60°F). Outdoor showers, changing rooms, lockers, and bathrooms inside a fully remodeled historic 1900s home. Hosts fitness classes and events. First timer intro offer: $79 for 5 sessions (10 days to use). Text preferred: 615.241.0277",
+    lat: 36.1887,
+    lng: -86.7506,
+    updatedAt: "2026-02-06",
   },
 ];
 
