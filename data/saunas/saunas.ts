@@ -212,7 +212,7 @@ export interface Sauna {
   /** Currency code (defaults to "USD" if not specified) */
   currency?: "USD" | "CAD";
   /** Typical session length in minutes (e.g., 90, 120) */
-  sessionLengthMinutes?: number;
+  sessionLengthMinutes?: number | null;
   /** Whether the facility has a steam room */
   steamRoom: boolean;
   /** Whether the facility has a cold plunge pool (50°F or lower) */
@@ -2890,7 +2890,7 @@ export const saunas: Sauna[] = [
     bookingUrl: "https://www.joinframework.com/book-now",
     googleMapsUrl: "https://maps.app.goo.gl/FrameworkFlagship123",
     sessionPrice: 35, // $35 weekday, $55 weekend
-    sessionLengthMinutes: 0, // No time limit
+    sessionLengthMinutes: null,
     steamRoom: false,
     coldPlunge: true, // 9 commercial-grade cold tubs (38-60°F)
     soakingTub: false,
@@ -2916,7 +2916,7 @@ export const saunas: Sauna[] = [
     bookingUrl: "https://www.joinframework.com/book-now",
     googleMapsUrl: "https://maps.app.goo.gl/FrameworkBackyard123",
     sessionPrice: 25, // $25 weekday, $35 weekend
-    sessionLengthMinutes: 0, // No time limit
+    sessionLengthMinutes: null,
     steamRoom: false,
     coldPlunge: true, // Solo & dual tubs (40-60°F)
     soakingTub: false,
