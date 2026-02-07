@@ -764,6 +764,32 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-05",
   },
   {
+    slug: "tacoma-banya",
+    name: "Tacoma Banya",
+    address: "4704 S Oakes St #6400, Tacoma, WA 98409",
+    website: "https://www.tacomabanya.com/",
+    bookingUrl: "tel:+12538788966", // Call to book
+    googleMapsUrl: "https://maps.app.goo.gl/TacomaBanya123",
+    sessionPrice: 0, // Pricing not listed on website - call for rates
+    sessionLengthMinutes: null,
+    steamRoom: true, // Steam room and wet sauna
+    coldPlunge: false, // Tepid pool (not cold plunge)
+    soakingTub: true, // Hot tub mentioned
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Temperature-controlled showers
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Daily 6pm-midnight",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Traditional Russian banya (Eastern European sauna) experience in Tacoma. Features hot sauna, steam room, wet sauna, hot tub, and tepid pool. Temperature-controlled showers on main floor. Additional amenities include VIP room (with sauna, relaxation space, TV, karaoke, chess table), billiard room, and tea zone. Traditional birch branch (venik) practice available. Waiver required before participation. Call for pricing: (253) 878-8966 or email tacomabanya@gmail.com",
+    lat: 47.2000,
+    lng: -122.4500,
+    updatedAt: "2026-02-06",
+  },
+  {
     slug: "sacred-rain-healing-center",
     name: "Sacred Rain Healing Center",
     address: "1100 NW 50th St, Seattle, WA 98107",
