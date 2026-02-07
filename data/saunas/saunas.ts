@@ -2939,7 +2939,7 @@ export const saunas: Sauna[] = [
     name: "Framework (Flagship)",
     address: "1411 4th Ave South, Nashville, TN 37210",
     website: "https://www.joinframework.com/",
-    bookingUrl: "https://www.joinframework.com/book-now",
+    bookingUrl: "https://www.joinframework.com/schedule",
     googleMapsUrl: "https://maps.app.goo.gl/FrameworkFlagship123",
     sessionPrice: 35, // $35 weekday, $55 weekend
     sessionLengthMinutes: null,
@@ -2965,7 +2965,7 @@ export const saunas: Sauna[] = [
     name: "Framework (Backyard)",
     address: "928 McFerrin Ave, Nashville, TN 37206",
     website: "https://www.joinframework.com/",
-    bookingUrl: "https://www.joinframework.com/book-now",
+    bookingUrl: "https://www.joinframework.com/schedule",
     googleMapsUrl: "https://maps.app.goo.gl/FrameworkBackyard123",
     sessionPrice: 25, // $25 weekday, $35 weekend
     sessionLengthMinutes: null,
