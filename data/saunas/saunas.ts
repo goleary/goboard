@@ -805,14 +805,14 @@ export const saunas: Sauna[] = [
     showers: true,
     towelsIncluded: true, // Towels and flip flops included
     servesFood: true, // On-site kitchen with traditional Eastern European food
-    temperatureRangeF: { min: 250, max: 250 }, // Hottest sauna in PNW at 250+°F
+    temperatureRangeF: { min: 200, max: 250 }, // Hottest sauna in PNW
     hours: "Mon-Thu 12pm-10pm, Fri-Sat 12pm-12am, Sun Private Events",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
-      "Authentic Eastern European banya in Everett—hottest sauna (250+°F) and coldest cold plunge (35-40°F) in the Pacific Northwest. Features traditional European sauna, steam room with essential oils, red light therapy sauna, jacuzzi, and on-site kitchen serving traditional Eastern European cuisine (dumplings, pickled salads, kvass, kombucha). 3-hour sessions. Day reservation $40, day walk-in $50, evening reservation $50, evening walk-in $60. Memberships available. Family hours Mon-Thu & Fri-Sat 12pm-8pm (youth 5-11, no children under 5). Contact: (425) 252-2692 or dtbanya@gmail.com",
-    lat: 47.9788,
-    lng: -122.2027,
+      "Authentic Eastern European banya in Everett—hottest sauna and coldest cold plunge (35-40°F) in the Pacific Northwest. Features traditional European sauna, steam room with essential oils, red light therapy sauna, jacuzzi, and on-site kitchen serving traditional Eastern European cuisine (dumplings, pickled salads, kvass, kombucha). 3-hour sessions. Day reservation $40, day walk-in $50, evening reservation $50, evening walk-in $60. Memberships available. Family hours Mon-Thu & Fri-Sat 12pm-8pm (youth 5-11, no children under 5). Contact: (425) 252-2692 or dtbanya@gmail.com",
+    lat: 47.98004258034211,
+    lng: -122.2089488431352,
     updatedAt: "2026-02-06",
   },
   {
