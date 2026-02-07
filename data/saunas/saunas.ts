@@ -768,7 +768,6 @@ export const saunas: Sauna[] = [
     name: "Tacoma Banya",
     address: "4704 S Oakes St #6400, Tacoma, WA 98409",
     website: "https://www.tacomabanya.com/",
-    bookingUrl: "tel:+12538788966", // Call to book
     googleMapsUrl: "https://maps.app.goo.gl/TacomaBanya123",
     sessionPrice: 0, // Pricing not listed on website - call for rates
     sessionLengthMinutes: null,
