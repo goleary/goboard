@@ -18,6 +18,7 @@ interface SaunaTableProps {
   compact?: boolean;
   onSaunaClick?: (sauna: Sauna) => void;
   selectedSlug?: string;
+  isMobile?: boolean;
 }
 
 function BooleanCell({ value }: { value: boolean }) {
@@ -31,17 +32,20 @@ function BooleanCell({ value }: { value: boolean }) {
 function CompactSaunaList({ 
   saunas, 
   onSaunaClick,
-  selectedSlug 
+  selectedSlug,
+  isMobile = false
 }: { 
   saunas: Sauna[]; 
   onSaunaClick?: (sauna: Sauna) => void;
   selectedSlug?: string;
+  isMobile?: boolean;
 }) {
   return (
     <div className="divide-y">
       {saunas.map((sauna) => (
         <button
           key={sauna.slug}
+          type="button"
           onClick={() => onSaunaClick?.(sauna)}
           className={`block w-full text-left p-3 hover:bg-muted/50 transition-colors ${
             selectedSlug === sauna.slug ? "bg-muted" : ""
@@ -82,18 +86,21 @@ function CompactSaunaList({
           </div>
         </button>
       ))}
-      <a
-        href="mailto:oleary.gabe@gmail.com?subject=Sauna%20Map%20-%20Missing%20or%20Incorrect%20Info"
-        className="flex items-center gap-2 p-3 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-      >
-        <Mail className="h-3 w-3" />
-        <span>Missing something? Let me know</span>
-      </a>
+      {/* Only show link on desktop - mobile has it in sticky footer */}
+      {!isMobile && (
+        <a
+          href="mailto:oleary.gabe@gmail.com?subject=Sauna%20Map%20-%20Missing%20or%20Incorrect%20Info"
+          className="flex items-center gap-2 p-3 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+        >
+          <Mail className="h-3 w-3" />
+          <span>Missing something? Let me know</span>
+        </a>
+      )}
     </div>
   );
 }
 
-export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug }: SaunaTableProps) {
+export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug, isMobile = false }: SaunaTableProps) {
   if (saunas.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
@@ -103,7 +110,7 @@ export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug
   }
 
   if (compact) {
-    return <CompactSaunaList saunas={saunas} onSaunaClick={onSaunaClick} selectedSlug={selectedSlug} />;
+    return <CompactSaunaList saunas={saunas} onSaunaClick={onSaunaClick} selectedSlug={selectedSlug} isMobile={isMobile} />;
   }
 
   return (

@@ -46,8 +46,14 @@ export function filterAndSortSaunas(
     filtered = filtered.filter((s) => s.naturalPlunge);
   }
 
-  // Always sort by price ascending
-  filtered.sort((a, b) => (a.sessionPrice ?? 999) - (b.sessionPrice ?? 999));
+  // Sort by price ascending, saunas without price go to bottom
+  filtered.sort((a, b) => {
+    const aHasPrice = a.sessionPrice > 0;
+    const bHasPrice = b.sessionPrice > 0;
+    if (aHasPrice && !bHasPrice) return -1;
+    if (!aHasPrice && bHasPrice) return 1;
+    return (a.sessionPrice ?? 0) - (b.sessionPrice ?? 0);
+  });
 
   return filtered;
 }

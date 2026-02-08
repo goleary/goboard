@@ -2,9 +2,10 @@
 
 import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Mail } from "lucide-react";
 import { type Sauna } from "@/data/saunas/saunas";
 import {
   SaunaFilters,
@@ -74,6 +75,13 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLElement>(null);
+  const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
+  const isDragGesture = useRef(false);
+  const isDraggingRef = useRef(false);
+  const hasMoved = useRef(false);
+  const touchStartTarget = useRef<EventTarget | null>(null);
 
   // Handle map bounds change
   const handleBoundsChange = useCallback((bounds: LatLngBounds) => {
@@ -83,6 +91,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   // Handle drag start
   const handleDragStart = useCallback((clientY: number) => {
     setIsDragging(true);
+    isDraggingRef.current = true;
     dragStartY.current = clientY;
     dragStartHeight.current = sheetHeight;
   }, [sheetHeight]);
@@ -101,8 +110,9 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
 
   // Handle drag end
   const handleDragEnd = useCallback(() => {
-    if (!isDragging || !containerRef.current) return;
+    if (!isDraggingRef.current || !containerRef.current) return;
     setIsDragging(false);
+    isDraggingRef.current = false;
     
     const containerHeight = containerRef.current.parentElement?.clientHeight || window.innerHeight;
     const maxHeight = containerHeight * MAX_SHEET_PERCENT;
@@ -114,27 +124,26 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     } else {
       setSheetHeight(MIN_SHEET_HEIGHT);
     }
-  }, [isDragging, sheetHeight]);
+  }, [sheetHeight]);
+
+  // Handle tap to expand
+  const handleTap = useCallback(() => {
+    if (!containerRef.current) return;
+    
+    // Ensure we're not dragging when tapping
+    if (isDraggingRef.current) return;
+    
+    const containerHeight = containerRef.current.parentElement?.clientHeight || window.innerHeight;
+    const maxHeight = containerHeight * MAX_SHEET_PERCENT;
+    
+    // Only expand on tap if currently collapsed
+    // Don't collapse on tap - user should use drag handle or back button
+    if (sheetHeight <= MIN_SHEET_HEIGHT + 10) {
+      setSheetHeight(maxHeight);
+    }
+  }, [sheetHeight]);
 
 
-  // Touch handlers
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    // Don't start dragging if we shouldn't allow drag from this element
-    if (!shouldAllowDrag(e.target)) return;
-    e.preventDefault();
-    handleDragStart(e.touches[0].clientY);
-  }, [handleDragStart]);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    handleDragMove(e.touches[0].clientY);
-  }, [handleDragMove, isDragging]);
-
-  const handleTouchEnd = useCallback(() => {
-    if (!isDragging) return;
-    handleDragEnd();
-  }, [handleDragEnd, isDragging]);
 
   // Mouse handlers (for testing on desktop)
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -203,6 +212,130 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     };
   }, [isDragging, handleDragMove, handleDragEnd]);
 
+  // Global touch handlers for mobile drag - using native listeners with passive: false
+  useEffect(() => {
+    const sheet = sheetRef.current;
+    if (!sheet) return;
+    
+    const handleTouchStartNative = (e: TouchEvent) => {
+      // Track initial touch position and target
+      touchStartY.current = e.touches[0].clientY;
+      touchStartX.current = e.touches[0].clientX;
+      touchStartTarget.current = e.target;
+      hasMoved.current = false;
+      isDragGesture.current = false;
+      
+      // Don't start dragging if we shouldn't allow drag from this element
+      if (!shouldAllowDrag(e.target)) {
+        return;
+      }
+    };
+    
+    const handleTouchMoveNative = (e: TouchEvent) => {
+      // Track that movement occurred
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
+      const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
+      
+      if (deltaY > 5 || deltaX > 5) {
+        hasMoved.current = true;
+      }
+      
+      // If we're already dragging, prevent default and handle drag
+      if (isDraggingRef.current || isDragGesture.current) {
+        e.preventDefault();
+        if (!isDraggingRef.current) {
+          handleDragStart(e.touches[0].clientY);
+        } else {
+          handleDragMove(e.touches[0].clientY);
+        }
+        return;
+      }
+      
+      // Need minimum movement to start dragging
+      if (deltaY < 10) return;
+      
+      // If vertical movement is greater than horizontal, check if we should drag
+      if (deltaY > deltaX) {
+        // Check if we're at the top/bottom of a scrollable container
+        const target = e.target;
+        if (target && target instanceof Element) {
+          const scrollableParent = (target as HTMLElement).closest('[class*="overflow-auto"], [class*="overflow-y-auto"], [class*="overflow-scroll"]');
+          if (scrollableParent && scrollableParent instanceof HTMLElement) {
+            const scrollable = scrollableParent;
+            const isScrollable = scrollable.scrollHeight > scrollable.clientHeight;
+            const isAtTop = scrollable.scrollTop === 0;
+            const isAtBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 1;
+            const isDraggingDown = e.touches[0].clientY > touchStartY.current;
+            const isDraggingUp = e.touches[0].clientY < touchStartY.current;
+            
+            // Only start dragging if:
+            // - Not scrollable, OR
+            // - At top and dragging down, OR
+            // - At bottom and dragging up
+            if (isScrollable && !((isAtTop && isDraggingDown) || (isAtBottom && isDraggingUp))) {
+              // Let scrolling happen - don't prevent default
+              return;
+            }
+          }
+        }
+        
+        // Check if we should allow drag from this element
+        if (!shouldAllowDrag(e.target)) {
+          return;
+        }
+        
+        // This is a drag gesture - prevent default and start dragging
+        isDragGesture.current = true;
+        e.preventDefault();
+        handleDragStart(e.touches[0].clientY);
+      }
+    };
+    
+    const handleTouchEndNative = () => {
+      if (isDraggingRef.current) {
+        handleDragEnd();
+        isDragGesture.current = false;
+        hasMoved.current = false;
+        touchStartTarget.current = null;
+        return;
+      }
+      
+      // If no drag occurred and no significant movement, treat as tap
+      if (!hasMoved.current && !isDragGesture.current && touchStartTarget.current) {
+        const target = touchStartTarget.current;
+        
+        // Check if target is an interactive element or inside one
+        if (target instanceof Element) {
+          const element = target as HTMLElement;
+          const isInteractive = element.closest('button, a, input, [role="button"]');
+          
+          // Only handle tap if not on interactive element and should allow drag
+          if (!isInteractive && shouldAllowDrag(target)) {
+            // Use requestAnimationFrame to ensure this runs after any click handlers
+            requestAnimationFrame(() => {
+              handleTap();
+            });
+          }
+        }
+      }
+      
+      isDragGesture.current = false;
+      hasMoved.current = false;
+      touchStartTarget.current = null;
+    };
+    
+    // Add listeners with passive: false to allow preventDefault when needed
+    sheet.addEventListener('touchstart', handleTouchStartNative, { passive: false });
+    sheet.addEventListener('touchmove', handleTouchMoveNative, { passive: false });
+    sheet.addEventListener('touchend', handleTouchEndNative, { passive: false });
+    
+    return () => {
+      sheet.removeEventListener('touchstart', handleTouchStartNative);
+      sheet.removeEventListener('touchmove', handleTouchMoveNative);
+      sheet.removeEventListener('touchend', handleTouchEndNative);
+    };
+  }, [handleDragStart, handleDragMove, handleDragEnd, handleTap]);
+
   // Handler for marker clicks on the map (no pan/zoom)
   const handleMarkerClick = (sauna: Sauna) => {
     setPanToSelection(false);
@@ -234,9 +367,12 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   };
 
   // Filters component for reuse
-  const filtersSection = (
-    <div className="px-3 py-2 border-b">
-      <h2 className="font-semibold text-base mb-2">{title}</h2>
+  const filtersSection = (isMobile: boolean) => (
+    <div className={`px-3 pb-2 border-b ${isMobile ? "pt-0" : "pt-2"}`}>
+      <div className="flex items-baseline justify-between mb-2">
+        <h2 className="font-semibold text-lg">{title}</h2>
+        <span className="text-sm text-muted-foreground">{viewportSaunas.length} in view</span>
+      </div>
       <SaunaFilters
         filters={filters}
         onFiltersChange={setFilters}
@@ -279,16 +415,14 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
             </>
           ) : (
             <>
-              {filtersSection}
-              <div className="px-3 py-2 border-b bg-background">
-                <p className="text-sm text-muted-foreground">{viewportSaunas.length} saunas in view</p>
-              </div>
+              {filtersSection(false)}
               <div className="flex-1 overflow-auto">
                 <SaunaTable
                   saunas={viewportSaunas}
                   compact
                   onSaunaClick={handleListClick}
                   selectedSlug={selectedSlug ?? undefined}
+                  isMobile={false}
                 />
               </div>
             </>
@@ -316,51 +450,69 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
 
         {/* Bottom sheet - always visible */}
         <section 
+          ref={sheetRef}
           aria-label="Sauna list panel"
-          className={`absolute left-0 right-0 bottom-0 z-[1000] bg-background rounded-t-2xl border-t shadow-2xl ${
-            isDragging ? "" : "transition-all duration-300"
+          className={`absolute left-0 right-0 bottom-0 z-[1000] bg-background rounded-t-2xl border-t shadow-2xl flex flex-col ${
+            isDragging ? "" : "transition-[height] duration-300 ease-out"
           } ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
           style={{ height: sheetHeight }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
           onMouseDown={handleMouseDown}
         >
           {/* Drag handle */}
           <div 
-            className="w-full flex justify-center py-3 touch-none select-none"
+            className="w-full flex justify-center pt-2 pb-2 touch-none select-none shrink-0"
           >
             <div className="w-10 h-1 bg-muted-foreground/40 rounded-full" />
           </div>
           
-          <div className="flex flex-col h-[calc(100%-40px)] overflow-hidden">
+          <div className="flex flex-col flex-1 overflow-hidden min-h-0">
             {selectedSauna ? (
               <>
                 <button
                   type="button"
                   onClick={handleCloseDetail}
-                  className="flex items-center gap-1 px-4 py-2 text-sm text-muted-foreground hover:text-foreground border-b shrink-0"
+                  className="flex items-center gap-1 px-4 py-1 text-sm text-muted-foreground hover:text-foreground border-b shrink-0"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Back to list
                 </button>
-                <div className="flex-1 overflow-auto">
+                <div className="flex-1 overflow-auto min-h-0">
                   <SaunaDetailPanel sauna={selectedSauna} />
                 </div>
               </>
             ) : (
               <>
-                {filtersSection}
-                <div className="px-3 py-1 border-b shrink-0">
-                  <p className="text-sm text-muted-foreground">{viewportSaunas.length} saunas in view</p>
-                </div>
-                <div className="flex-1 overflow-auto">
-                  <SaunaTable
-                    saunas={viewportSaunas}
-                    compact
-                    onSaunaClick={handleListClick}
-                    selectedSlug={selectedSlug ?? undefined}
-                  />
+                {filtersSection(true)}
+                <div className="flex-1 overflow-auto flex flex-col min-h-0">
+                  <div className="flex-1 overflow-auto">
+                    <SaunaTable
+                      saunas={viewportSaunas}
+                      compact
+                      onSaunaClick={handleListClick}
+                      selectedSlug={selectedSlug ?? undefined}
+                      isMobile={true}
+                    />
+                  </div>
+                  {/* Sticky footer - only show when sheet is expanded */}
+                  {sheetHeight > MIN_SHEET_HEIGHT && (
+                    <div className="shrink-0 bg-background border-t">
+                      <div className="flex items-center justify-between px-3 py-2">
+                        <a
+                          href="mailto:oleary.gabe@gmail.com?subject=Sauna%20Map%20-%20Missing%20or%20Incorrect%20Info"
+                          className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors p-2 -mx-2 rounded"
+                        >
+                          <Mail className="h-3 w-3" />
+                          <span>Missing something? Let me know</span>
+                        </a>
+                        <Link
+                          href="/"
+                          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          made by Gabe O&apos;Leary
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </>
             )}

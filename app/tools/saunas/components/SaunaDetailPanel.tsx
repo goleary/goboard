@@ -45,9 +45,9 @@ function AmenityBadge({
 
 export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-0 h-full">
       {/* Header */}
-      <div className="p-4 border-b">
+      <div className="p-4 border-b shrink-0">
         <h2 className="font-semibold text-lg truncate">
           <a 
             href={sauna.website} 
@@ -56,7 +56,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
             className="hover:underline flex items-center gap-1"
           >
             {sauna.name}
-            <ExternalLink className="h-3 w-3 text-muted-foreground" />
+            <ExternalLink className="h-4 w-4 text-muted-foreground" />
           </a>
         </h2>
         {sauna.address && (
@@ -68,7 +68,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-4 space-y-4">
+      <div className="flex-1 overflow-auto p-4 space-y-4 min-h-0">
         {/* Price and Duration */}
         <div className="flex items-center gap-2 flex-wrap">
           {sauna.sessionPrice > 0 && (
@@ -151,29 +151,25 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
       </div>
 
       {/* Actions */}
-      <div className="p-4 border-t space-y-2">
-        <Button asChild className="w-full">
-          <a href={sauna.website} target="_blank" rel="noopener noreferrer">
-            <ExternalLink className="mr-2 h-4 w-4" />
-            Visit Website
-          </a>
-        </Button>
-        {sauna.bookingUrl && (
-          <Button variant="outline" asChild className="w-full">
-            <a href={sauna.bookingUrl} target="_blank" rel="noopener noreferrer">
-              Book Now
-            </a>
-          </Button>
-        )}
-        {sauna.googleMapsUrl && (
-          <Button variant="outline" asChild className="w-full">
-            <a href={sauna.googleMapsUrl} target="_blank" rel="noopener noreferrer">
-              <MapPin className="mr-2 h-4 w-4" />
-              Open in Google Maps
-            </a>
-          </Button>
-        )}
-      </div>
+      {(sauna.bookingUrl || sauna.googleMapsUrl) && (
+        <div className="p-4 border-t flex gap-2">
+          {sauna.bookingUrl && (
+            <Button asChild className="flex-1">
+              <a href={sauna.bookingUrl} target="_blank" rel="noopener noreferrer">
+                Book Now
+              </a>
+            </Button>
+          )}
+          {sauna.googleMapsUrl && (
+            <Button variant="outline" asChild className="flex-1">
+              <a href={sauna.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                <MapPin className="mr-1 h-4 w-4" />
+                Google Maps
+              </a>
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

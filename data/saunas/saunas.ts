@@ -2986,6 +2986,31 @@ export const saunas: Sauna[] = [
     lng: -86.7506,
     updatedAt: "2026-02-06",
   },
+  {
+    slug: "glidden-point-oyster-farms",
+    name: "Glidden Point Oyster Farms",
+    address: "637 River Road, Edgecomb, ME 04556",
+    website: "https://www.gliddenpoint.com/pages/saunas-at-glidden-point",
+    bookingUrl: "https://www.ticketsignup.io/TicketEvent/GliddenPointSauna",
+    googleMapsUrl: "https://maps.app.goo.gl/MVcTNwwzNP3s6H3EA",
+    sessionPrice: 133.50,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    hours: "Thu-Sun sunrise to sunset, Oct 2-May 8",
+    genderPolicy: "Co-ed, ages 18+",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Two wood-fired saunas (Riverside and Floating) at Glidden Point Oyster Farms with cold plunge in Damariscotta River from oyster cage dock. Up to 4 people per session (booking is per session, not per person). Includes access to shuck fresh oysters. Water available. Bring your own towels (hand towel provided for sauna seating). Food and beverages available for purchase. 24-hour cancellation policy. Arrive 10 minutes early for check-in.",
+    lat: 43.95,
+    lng: -69.63,
+    updatedAt: "2026-02-08",
+  },
 ];
 
 // Backwards-compatible alias
