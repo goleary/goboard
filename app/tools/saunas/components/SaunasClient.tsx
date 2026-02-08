@@ -35,6 +35,35 @@ interface SaunasClientProps {
 const MIN_SHEET_HEIGHT = 200;
 const MAX_SHEET_PERCENT = 0.85;
 
+// Check if we should allow dragging from this element
+function shouldAllowDrag(target: EventTarget | null): boolean {
+  if (!target || !(target instanceof Element)) return true;
+  const element = target as HTMLElement;
+  
+  // Never allow dragging from buttons, links, or inputs
+  if (element.tagName === 'BUTTON' || element.tagName === 'A' || element.tagName === 'INPUT') {
+    return false;
+  }
+  
+  // Check if it's inside a scrollable container
+  const scrollableParent = element.closest('[class*="overflow-auto"], [class*="overflow-y-auto"], [class*="overflow-scroll"]');
+  if (scrollableParent && scrollableParent instanceof HTMLElement) {
+    const scrollable = scrollableParent;
+    const isScrollable = scrollable.scrollHeight > scrollable.clientHeight;
+    const isAtTop = scrollable.scrollTop === 0;
+    const isAtBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 1;
+    
+    // Allow dragging if:
+    // 1. Content is not scrollable, OR
+    // 2. User is at the top and dragging down, OR
+    // 3. User is at the bottom and dragging up
+    // Otherwise, let the scroll happen
+    return !isScrollable || isAtTop || isAtBottom;
+  }
+  
+  return true;
+}
+
 export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -87,21 +116,30 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     }
   }, [isDragging, sheetHeight]);
 
+
   // Touch handlers
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    // Don't start dragging if we shouldn't allow drag from this element
+    if (!shouldAllowDrag(e.target)) return;
+    e.preventDefault();
     handleDragStart(e.touches[0].clientY);
   }, [handleDragStart]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
     handleDragMove(e.touches[0].clientY);
-  }, [handleDragMove]);
+  }, [handleDragMove, isDragging]);
 
   const handleTouchEnd = useCallback(() => {
+    if (!isDragging) return;
     handleDragEnd();
-  }, [handleDragEnd]);
+  }, [handleDragEnd, isDragging]);
 
   // Mouse handlers (for testing on desktop)
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    // Don't start dragging if we shouldn't allow drag from this element
+    if (!shouldAllowDrag(e.target)) return;
     e.preventDefault();
     handleDragStart(e.clientY);
   }, [handleDragStart]);
@@ -228,6 +266,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
           {selectedSauna ? (
             <>
               <button
+                type="button"
                 onClick={handleCloseDetail}
                 className="flex items-center gap-1 p-3 text-sm text-muted-foreground hover:text-foreground border-b"
               >
@@ -276,19 +315,20 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
         </div>
 
         {/* Bottom sheet - always visible */}
-        <div 
+        <section 
+          aria-label="Sauna list panel"
           className={`absolute left-0 right-0 bottom-0 z-[1000] bg-background rounded-t-2xl border-t shadow-2xl ${
             isDragging ? "" : "transition-all duration-300"
-          }`}
+          } ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
           style={{ height: sheetHeight }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
         >
           {/* Drag handle */}
           <div 
-            className="w-full flex justify-center py-3 cursor-grab active:cursor-grabbing touch-none select-none"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            onMouseDown={handleMouseDown}
+            className="w-full flex justify-center py-3 touch-none select-none"
           >
             <div className="w-10 h-1 bg-muted-foreground/40 rounded-full" />
           </div>
@@ -297,6 +337,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
             {selectedSauna ? (
               <>
                 <button
+                  type="button"
                   onClick={handleCloseDetail}
                   className="flex items-center gap-1 px-4 py-2 text-sm text-muted-foreground hover:text-foreground border-b shrink-0"
                 >
@@ -324,7 +365,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
               </>
             )}
           </div>
-        </div>
+        </section>
       </div>
     </>
   );
