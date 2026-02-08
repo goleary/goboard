@@ -307,7 +307,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
         // Check if target is an interactive element or inside one
         if (target instanceof Element) {
           const element = target as HTMLElement;
-          const isInteractive = element.closest('button, a, input, [role="button"]');
+          const isInteractive = element.closest('button, a, input, label, [role="button"], [role="checkbox"]');
           
           // Only handle tap if not on interactive element and should allow drag
           if (!isInteractive && shouldAllowDrag(target)) {
