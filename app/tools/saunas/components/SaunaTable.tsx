@@ -47,6 +47,8 @@ function CompactSaunaList({
           key={sauna.slug}
           type="button"
           onClick={() => onSaunaClick?.(sauna)}
+          data-umami-event="list-sauna-click"
+          data-umami-event-sauna={sauna.slug}
           className={`block w-full text-left p-3 hover:bg-muted/50 transition-colors ${
             selectedSlug === sauna.slug ? "bg-muted" : ""
           }`}

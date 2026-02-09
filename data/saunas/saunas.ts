@@ -3011,6 +3011,31 @@ export const saunas: Sauna[] = [
     lng: -69.63,
     updatedAt: "2026-02-08",
   },
+  {
+    slug: "good-medicine-whidbey",
+    name: "Good Medicine Whidbey",
+    address: "Whidbey Island, WA 98249",
+    website: "https://www.goodmedicinewhidbey.com/",
+    bookingUrl: "https://www.goodmedicinewhidbey.com/https/appacuityschedulingcom/catalogphpowner35124680",
+    googleMapsUrl: "https://maps.app.goo.gl/zaUiFtrFkpaqbKiv8",
+    sessionPrice: 40,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    hours: "Check website for schedule",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Mobile wood-fired sauna with Salish Sea cold plunge on Whidbey Island beaches (Robinson Beach, Maxwelton Beach, or Freeland Park). Social sessions up to 8 guests ($40/person). Private 90-min sessions ($300) and full-day rentals ($750) also available. Bring towels, water (no metal bottles), and water shoes.",
+    lat: 47.9928,
+    lng: -122.541,
+    updatedAt: "2026-02-08",
+  },
 ];
 
 // Backwards-compatible alias

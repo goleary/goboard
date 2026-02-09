@@ -54,6 +54,8 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
             target="_blank" 
             rel="noopener noreferrer"
             className="hover:underline flex items-center gap-1"
+            data-umami-event="website-click"
+            data-umami-event-sauna={sauna.slug}
           >
             {sauna.name}
             <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -155,14 +157,14 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
         <div className="p-4 border-t flex gap-2">
           {sauna.bookingUrl && (
             <Button asChild className="flex-1">
-              <a href={sauna.bookingUrl} target="_blank" rel="noopener noreferrer">
+              <a href={sauna.bookingUrl} target="_blank" rel="noopener noreferrer" data-umami-event="book-now-click" data-umami-event-sauna={sauna.slug}>
                 Book Now
               </a>
             </Button>
           )}
           {sauna.googleMapsUrl && (
             <Button variant="outline" asChild className="flex-1">
-              <a href={sauna.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+              <a href={sauna.googleMapsUrl} target="_blank" rel="noopener noreferrer" data-umami-event="google-maps-click" data-umami-event-sauna={sauna.slug}>
                 <MapPin className="mr-1 h-4 w-4" />
                 Google Maps
               </a>

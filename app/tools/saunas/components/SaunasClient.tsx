@@ -340,6 +340,10 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
 
   // Handler for marker clicks on the map (no pan/zoom)
   const handleMarkerClick = (sauna: Sauna) => {
+    // Track map marker click (Leaflet markers aren't DOM elements, so we use umami.track())
+    if (typeof window !== "undefined" && (window as any).umami) {
+      (window as any).umami.track("map-marker-click", { sauna: sauna.slug });
+    }
     setPanToSelection(false);
     const params = new URLSearchParams(searchParams.toString());
     params.set("sauna", sauna.slug);
