@@ -279,14 +279,16 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
           }
         }
         
+        // Prevent default to stop pull-to-refresh on any vertical swipe within the sheet
+        e.preventDefault();
+        
         // Check if we should allow drag from this element
         if (!shouldAllowDrag(e.target)) {
           return;
         }
         
-        // This is a drag gesture - prevent default and start dragging
+        // This is a drag gesture - start dragging
         isDragGesture.current = true;
-        e.preventDefault();
         handleDragStart(e.touches[0].clientY);
       }
     };
