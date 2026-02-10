@@ -139,7 +139,7 @@ export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug
             <TableRow key={sauna.slug}>
               <TableCell className="sticky left-0 bg-background font-medium">
                 <Link
-                  href={`/tools/saunas?sauna=${sauna.slug}`}
+                  href={`/tools/saunas/s/${sauna.slug}`}
                   className="text-primary hover:underline"
                 >
                   {sauna.name}

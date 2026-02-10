@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,7 +10,6 @@ import { type Sauna } from "@/data/saunas/saunas";
 import {
   SaunaFilters,
   FilterState,
-  getDefaultFilters,
   filterAndSortSaunas,
 } from "./SaunaFilters";
 import { SaunaTable } from "./SaunaTable";
@@ -65,10 +64,19 @@ function shouldAllowDrag(target: EventTarget | null): boolean {
   return true;
 }
 
+// Parse filters from URL search params
+function getFiltersFromParams(params: URLSearchParams): FilterState {
+  return {
+    coldPlungeOnly: params.get("coldPlunge") === "1",
+    soakingTubOnly: params.get("soakingTub") === "1",
+    waterfrontOnly: params.get("waterfront") === "1",
+    naturalPlungeOnly: params.get("naturalPlunge") === "1",
+  };
+}
+
 export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasClientProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const [filters, setFilters] = useState<FilterState>(getDefaultFilters());
+  const [filters, setFilters] = useState<FilterState>(() => getFiltersFromParams(searchParams));
   const [sheetHeight, setSheetHeight] = useState(MIN_SHEET_HEIGHT);
   const [isDragging, setIsDragging] = useState(false);
   const [mapBounds, setMapBounds] = useState<LatLngBounds | null>(null);
@@ -82,6 +90,62 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   const isDraggingRef = useRef(false);
   const hasMoved = useRef(false);
   const touchStartTarget = useRef<EventTarget | null>(null);
+
+  // Get selected sauna from URL - check query param (set by rewrite on SSR) 
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(() => {
+    return searchParams.get("sauna") || null;
+  });
+  const selectedSauna = useMemo(
+    () => saunas.find((s) => s.slug === selectedSlug) || null,
+    [saunas, selectedSlug]
+  );
+
+  // Build a path-based URL for a sauna
+  const buildSaunaUrl = useCallback((slug: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("sauna"); // Remove query param since we use path now
+    const queryString = params.toString();
+    if (slug) {
+      return `${basePath}/s/${slug}${queryString ? `?${queryString}` : ""}`;
+    }
+    return `${basePath}${queryString ? `?${queryString}` : ""}`;
+  }, [basePath, searchParams]);
+
+  // Sync filter changes to URL
+  const handleFiltersChange = useCallback((newFilters: FilterState) => {
+    setFilters(newFilters);
+    const params = new URLSearchParams();
+    
+    // Set or remove filter params
+    const filterMap: Record<string, boolean> = {
+      coldPlunge: newFilters.coldPlungeOnly,
+      soakingTub: newFilters.soakingTubOnly,
+      waterfront: newFilters.waterfrontOnly,
+      naturalPlunge: newFilters.naturalPlungeOnly,
+    };
+    
+    for (const [key, value] of Object.entries(filterMap)) {
+      if (value) {
+        params.set(key, "1");
+      }
+    }
+    
+    const queryString = params.toString();
+    const pathBase = selectedSlug ? `${basePath}/s/${selectedSlug}` : basePath;
+    window.history.replaceState(null, "", queryString ? `${pathBase}?${queryString}` : pathBase);
+  }, [selectedSlug, basePath]);
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      const match = path.match(/\/s\/([^/]+)$/);
+      setSelectedSlug(match ? match[1] : null);
+    };
+    
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   // Handle map bounds change
   const handleBoundsChange = useCallback((bounds: LatLngBounds) => {
@@ -153,12 +217,6 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     handleDragStart(e.clientY);
   }, [handleDragStart]);
 
-  // Get selected sauna from URL
-  const selectedSlug = searchParams.get("sauna");
-  const selectedSauna = useMemo(
-    () => saunas.find((s) => s.slug === selectedSlug) || null,
-    [saunas, selectedSlug]
-  );
 
   // Track whether to pan/zoom to the selected sauna (only for list selections)
   const [panToSelection, setPanToSelection] = useState(false);
@@ -345,9 +403,8 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       (window as any).umami.track("map-marker-click", { sauna: sauna.slug });
     }
     setPanToSelection(false);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("sauna", sauna.slug);
-    router.push(`${basePath}?${params.toString()}`, { scroll: false });
+    setSelectedSlug(sauna.slug);
+    window.history.pushState(null, "", buildSaunaUrl(sauna.slug));
     // Expand sheet on mobile when selecting a sauna
     const containerHeight = containerRef.current?.parentElement?.clientHeight || window.innerHeight;
     setSheetHeight(containerHeight * MAX_SHEET_PERCENT);
@@ -356,20 +413,16 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   // Handler for list item clicks (zoom/pan to sauna)
   const handleListClick = (sauna: Sauna) => {
     setPanToSelection(true);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("sauna", sauna.slug);
-    router.push(`${basePath}?${params.toString()}`, { scroll: false });
+    setSelectedSlug(sauna.slug);
+    window.history.pushState(null, "", buildSaunaUrl(sauna.slug));
     // Expand sheet on mobile when selecting a sauna
     const containerHeight = containerRef.current?.parentElement?.clientHeight || window.innerHeight;
     setSheetHeight(containerHeight * MAX_SHEET_PERCENT);
   };
 
   const handleCloseDetail = () => {
-    // Remove sauna from URL
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("sauna");
-    const queryString = params.toString();
-    router.push(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
+    setSelectedSlug(null);
+    window.history.pushState(null, "", buildSaunaUrl(null));
   };
 
   // Filters component for reuse
@@ -381,7 +434,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       </div>
       <SaunaFilters
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={handleFiltersChange}
       />
     </div>
   );
