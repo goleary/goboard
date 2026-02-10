@@ -37,11 +37,11 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         openGraph: {
           title,
           description,
-          url: `https://goleary.com/tools/saunas/${location.slug}?sauna=${sauna.slug}`,
+          url: `https://goleary.com/tools/saunas/${location.slug}/s/${sauna.slug}`,
           type: "website",
         },
         alternates: {
-          canonical: `https://goleary.com/tools/saunas/${location.slug}?sauna=${sauna.slug}`,
+          canonical: `https://goleary.com/tools/saunas/${location.slug}/s/${sauna.slug}`,
         },
       };
     }
@@ -73,7 +73,7 @@ function generateItemListSchema(locationName: string, locationSlug: string) {
     itemListElement: saunas.map((sauna, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      url: `https://goleary.com/tools/saunas/${locationSlug}?sauna=${sauna.slug}`,
+      url: `https://goleary.com/tools/saunas/${locationSlug}/s/${sauna.slug}`,
       name: sauna.name,
     })),
   };

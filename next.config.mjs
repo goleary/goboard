@@ -43,6 +43,18 @@ const nextConfig = {
       },
     ];
   },
+  rewrites: async () => {
+    return [
+      {
+        source: "/tools/saunas/s/:slug",
+        destination: "/tools/saunas?sauna=:slug",
+      },
+      {
+        source: "/tools/saunas/:location/s/:slug",
+        destination: "/tools/saunas/:location?sauna=:slug",
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
