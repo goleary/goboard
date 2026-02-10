@@ -17,7 +17,8 @@ export type LocationSlug =
   | "utah"
   | "colorado"
   | "minnesota"
-  | "tennessee";
+  | "tennessee"
+  | "boston";
 
 /**
  * Location metadata for display and routing
@@ -175,6 +176,15 @@ export const locations: Location[] = [
       "Colorado's sauna culture blends outdoor thermaculture clubs in Denver and Boulder with mountain resort spas, offering contrast therapy at altitude.",
     center: { lat: 39.5, lng: -105.0 },
     zoom: 7,
+  },
+  {
+    slug: "boston",
+    name: "Boston",
+    state: "MA",
+    description:
+      "Boston's sauna scene features modern Nordic-inspired wellness with wood-fired saunas, cold plunges, and communal relaxation spaces across multiple neighborhoods.",
+    center: { lat: 42.3601, lng: -71.0589 },
+    zoom: 12,
   },
 ];
 
@@ -3035,6 +3045,54 @@ export const saunas: Sauna[] = [
     lat: 47.9928,
     lng: -122.541,
     updatedAt: "2026-02-08",
+  },
+  {
+    slug: "moki-sauna-south-boston",
+    name: "Moki Sauna - South Boston",
+    address: "385 Dorchester Ave, Boston, MA 02127",
+    website: "https://www.mokisauna.com/",
+    bookingUrl: "https://www.mokisauna.com/social-sessions",
+    sessionPrice: 59,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    hours: "Mon 4pm-9pm, Tues Closed, Wed/Thurs 4pm-9pm, Fri/Sat 8am-10pm, Sun 8am-8pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Modern Nordic-inspired sauna and cold plunge facility in South Boston. Features wood-fired and electric saunas, cedar cold plunge tubs, outdoor lounge areas with firepits, and showers. Towels and sandals provided. Social sessions (shared, $59/90min) and private rentals available. Memberships offered.",
+    lat: 42.3385,
+    lng: -71.0564,
+    updatedAt: "2026-02-09",
+  },
+  {
+    slug: "moki-sauna-allston",
+    name: "Moki Sauna - Allston",
+    address: "267 Western Ave, Allston, MA 02134",
+    website: "https://www.mokisauna.com/",
+    bookingUrl: "https://www.mokisauna.com/social-sessions",
+    sessionPrice: 59,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    hours: "Mon 4pm-9pm, Tues Closed, Wed/Thurs 4pm-9pm, Fri/Sat 8am-10pm, Sun 8am-8pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Modern Nordic-inspired sauna and cold plunge facility in Allston (Zone 3). Features wood-fired and electric saunas, cedar cold plunge tubs, outdoor lounge areas with firepits, and showers. Towels and sandals provided. Social sessions (shared, $59/90min) and private rentals available. Memberships offered.",
+    lat: 42.3625,
+    lng: -71.1285,
+    updatedAt: "2026-02-09",
   },
 ];
 
