@@ -18,7 +18,8 @@ export type LocationSlug =
   | "colorado"
   | "minnesota"
   | "tennessee"
-  | "boston";
+  | "boston"
+  | "new-york";
 
 /**
  * Location metadata for display and routing
@@ -185,6 +186,15 @@ export const locations: Location[] = [
       "Boston's sauna scene features modern Nordic-inspired wellness with wood-fired saunas, cold plunges, and communal relaxation spaces across multiple neighborhoods.",
     center: { lat: 42.3601, lng: -71.0589 },
     zoom: 12,
+  },
+  {
+    slug: "new-york",
+    name: "New York City",
+    state: "NY",
+    description:
+      "New York City is emerging as the center of America's new bathing movement, with a wave of bathhouses and sauna clubs opening across Manhattan and Brooklyn.",
+    center: { lat: 40.73, lng: -73.998 },
+    zoom: 13,
   },
 ];
 
@@ -3093,6 +3103,105 @@ export const saunas: Sauna[] = [
     lat: 42.3625,
     lng: -71.1285,
     updatedAt: "2026-02-09",
+  },
+  // New York City
+  {
+    slug: "lore-bathing-club",
+    name: "Lore Bathing Club",
+    address: "676 Broadway, New York, NY 10012",
+    website: "https://www.lorebathingclub.com/",
+    bookingUrl: "https://www.lorebathingclub.com/membership",
+    googleMapsUrl: "https://maps.app.goo.gl/opRcSwt9dS69oSC26",
+    sessionPrice: 55,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    temperatureRangeF: { min: 170, max: 190 },
+    hours: "Mon-Sun 7am-11pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Membership-based neighborhood bathing club in NoHo. Features large Finnish dry sauna (up to 190°F), infrared sauna, 16x7ft cold pool with hammam-style heated stone benches. Programming includes aufguss, guided cold water soaks, in-sauna aroma therapy, and guided stretching. Cafe with La Cabra coffee, tea, bone broth, and juice. Monthly membership $200/mo (75-min sessions, unlimited weekdays), one-week pass $89, weekend visits $25/visit with membership. Towels and Dyson hair dryers provided.",
+    lat: 40.72745,
+    lng: -73.99488,
+    updatedAt: "2026-02-11",
+  },
+  // {
+  //   slug: "schwet",
+  //   name: "Schwet",
+  //   address: "78 Franklin Street, New York, NY 10013",
+  //   website: "https://www.getschwet.com/",
+  //   sessionPrice: 150,
+  //   sessionLengthMinutes: 150,
+  //   steamRoom: true,
+  //   coldPlunge: true,
+  //   soakingTub: true,
+  //   waterfront: false,
+  //   naturalPlunge: false,
+  //   showers: true,
+  //   towelsIncluded: true,
+  //   servesFood: true,
+  //   genderPolicy: "Co-ed",
+  //   clothingPolicy: "Swimsuit required",
+  //   notes:
+  //     "European-inspired bathhouse in Tribeca opening Spring 2026. Features traditional Russian banya, aromatic steam room, Japanese scrub room, and red light infrared sauna. Grand Pool Room with hot mineral pool and 48°F cold plunge with top-of-the-line water filtration. Bar with wine program by Parcelle and fireplace lounge. Programming includes dinner parties, artist takeovers, Indian head massage, and Russian platza. $150 general admission for 2.5 hours.",
+  //   lat: 40.7188,
+  //   lng: -74.0041,
+  //   updatedAt: "2026-02-11",
+  // },
+  {
+    slug: "the-altar",
+    name: "The Altar",
+    address: "122 Fifth Avenue, New York, NY 10011",
+    website: "https://www.the-altar.com/",
+    bookingUrl: "https://www.the-altar.com/menu",
+    sessionPrice: 65,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    capacity: 50,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Health club and community gathering space in Flatiron. Features 50-person sauna, cold plunge suite, and central gathering area with guided classes, open sessions, and later-evening 'Afters.' Recovery suite offers vitamin IVs (from $200), hyperbaric oxygen chambers ($100), NAD+ (from $450), compression boots ($35), red light ($35), and PEMF ($35). Founding memberships: Base $275-$299/mo, Resident $500/mo with credits toward services. Atrium pass (sauna + cold plunge) $65 per session.",
+    lat: 40.738,
+    lng: -73.9912,
+    updatedAt: "2026-02-11",
+  },
+  // Connecticut
+  {
+    slug: "hideout-social-club",
+    name: "Hideout Social Club",
+    address: "1 Blachley Rd, Stamford, CT 06902",
+    website: "https://hideoutsocial.club/",
+    bookingUrl: "https://hideoutsocial.club/book",
+    googleMapsUrl: "https://maps.app.goo.gl/uziZddHwQoj1tz788",
+    sessionPrice: 30,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 16,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Outdoor sauna and cold plunge social club in Stamford, CT. Features custom-built 16-person dry sauna and four Ice Barrel cold plunges with garden lounge. Session types include free flow (self-guided), private sessions, guided group sessions (breathwork, aroma, 3 rounds hot / 2 cold; Mon/Wed/Thurs 7:30PM), and Friday socials. Phone-free and alcohol-free environment. First timer $19, trial $49 (3 passes/10 days), 4-pack $119 (30 days), individual membership $159/mo (2 guest passes), family $249/mo (10 guest passes). 5.0 stars (20 reviews).",
+    lat: 41.0676,
+    lng: -73.5365,
+    updatedAt: "2026-02-11",
   },
 ];
 
