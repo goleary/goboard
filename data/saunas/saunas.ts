@@ -18,6 +18,7 @@ export type LocationSlug =
   | "colorado"
   | "minnesota"
   | "tennessee"
+  | "chicago"
   | "boston"
   | "new-york";
 
@@ -177,6 +178,15 @@ export const locations: Location[] = [
       "Colorado's sauna culture blends outdoor thermaculture clubs in Denver and Boulder with mountain resort spas, offering contrast therapy at altitude.",
     center: { lat: 39.5, lng: -105.0 },
     zoom: 7,
+  },
+  {
+    slug: "chicago",
+    name: "Chicago",
+    state: "IL",
+    description:
+      "Chicago's sauna scene is heating up with lakefront contrast therapy experiences and Nordic-inspired wellness clubs along Lake Michigan.",
+    center: { lat: 41.8781, lng: -87.6298 },
+    zoom: 11,
   },
   {
     slug: "boston",
@@ -3201,6 +3211,58 @@ export const saunas: Sauna[] = [
       "Outdoor sauna and cold plunge social club in Stamford, CT. Features custom-built 16-person dry sauna and four Ice Barrel cold plunges with garden lounge. Session types include free flow (self-guided), private sessions, guided group sessions (breathwork, aroma, 3 rounds hot / 2 cold; Mon/Wed/Thurs 7:30PM), and Friday socials. Phone-free and alcohol-free environment. First timer $19, trial $49 (3 passes/10 days), 4-pack $119 (30 days), individual membership $159/mo (2 guest passes), family $249/mo (10 guest passes). 5.0 stars (20 reviews).",
     lat: 41.0676,
     lng: -73.5365,
+    updatedAt: "2026-02-11",
+  },
+  // Chicago
+  {
+    slug: "fire-and-ice-sauna-experience",
+    name: "Fire & Ice Sauna Experience",
+    address: "1600 N Lake Shore Dr, Chicago, IL 60613",
+    website: "https://fire-ice-sauna-experience.square.site/",
+    bookingUrl: "https://fire-ice-sauna-experience.square.site/",
+    googleMapsUrl: "https://maps.app.goo.gl/GJdxDD68Qf49ofQD6",
+    sessionPrice: 30,
+    sessionLengthMinutes: 30,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 160, max: 185 },
+    capacity: 3,
+    genderPolicy: "Co-ed (private booking)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seasonal outdoor wood-fired cedar sauna at North Ave Beach, next to Castaways. Private sessions for up to 6 guests (3 in sauna at once). Cold plunge in Lake Michigan in winter or ice bath in summer. Heated dome with changing room and belongings storage. Open Fri–Sat 9AM–3PM. Private events available: full sauna camp (8-person sauna, 4-person sauna, heated dome) from $300/2hrs.",
+    lat: 41.9141307,
+    lng: -87.625018,
+    updatedAt: "2026-02-11",
+  },
+  {
+    slug: "fire-and-ice-sauna",
+    name: "Fire & Ice Sauna",
+    address: "726 E Boughton Rd, Bolingbrook, IL 60440",
+    website: "https://fireiceco.com/",
+    bookingUrl: "https://fireiceco.com/collections/grand-opening",
+    googleMapsUrl:
+      "https://www.google.com/maps/place/Fire+%26+Ice+Sauna/@41.7217,-88.0417,15z",
+    sessionPrice: 45,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    temperatureRangeF: { min: 180, max: 190 },
+    genderPolicy: "Gender-segregated (separate men's & women's facilities)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Permanent indoor contrast therapy facility in Bolingbrook with fully gender-separated sides, each with dedicated traditional sauna, cold plunge (39–49°F), showers, lockers, and relaxation lounge. Self-guided sessions; most guests spend 60–90 min. Intro rate $30 single entry (regular $45). Monthly membership $199 (intro) / $299 (regular). Towels, sandals, and tea included. Yoga classes also available. Open Mon–Sat 10AM–8PM, closed Wed.",
+    lat: 41.7217,
+    lng: -88.0417,
     updatedAt: "2026-02-11",
   },
 ];
