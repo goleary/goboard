@@ -212,6 +212,17 @@ export function getLocationBySlug(slug: string): Location | undefined {
   return locations.find((l) => l.slug === slug);
 }
 
+/** Get saunas that fall within a location's approximate viewport. */
+export function getSaunasForLocation(location: Location): Sauna[] {
+  const latRange = 180 / Math.pow(2, location.zoom);
+  const lngRange = 360 / Math.pow(2, location.zoom);
+  return saunas.filter(
+    (s) =>
+      Math.abs(s.lat - location.center.lat) <= latRange &&
+      Math.abs(s.lng - location.center.lng) <= lngRange
+  );
+}
+
 /**
  * Represents a sauna facility with its amenities and details.
  *
@@ -2228,6 +2239,7 @@ export const saunas: Sauna[] = [
     name: "Sea Edge Sauna",
     address: "209 Island Hwy W, Parksville, BC V9P 1K8, Canada",
     website: "https://www.thefinnishsauna.ca/sea-edge-sauna",
+    googleMapsUrl: "https://maps.app.goo.gl/6YhNcvZy3Nmuerh26",
     bookingUrl:
       "https://www.thefinnishsauna.ca/bookings?category=e7a79865-03c4-48ce-8c0c-15461f872892",
     sessionPrice: 40,
@@ -2246,8 +2258,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Oceanfront Finnish sauna at Sea Edge Beachside Hotel in Parksville. 11-12 person electric sauna with ocean cold plunge access. Communal sessions CA$40/90min, private CA$370. 25% off for Evergreen property guests. 5/5 stars. Operated by The Finnish Sauna Co.",
-    lat: 49.3186,
-    lng: -124.3126,
+    lat: 49.32266548355333,
+    lng: -124.31835823099492,
     updatedAt: "2026-01-05",
   },
   {
@@ -3352,6 +3364,37 @@ export function formatPrice(sauna: Sauna): string {
 
 export function getSaunaBySlug(slug: string): Sauna | undefined {
   return saunas.find((s) => s.slug === slug);
+}
+
+/** Build a full meta description for an individual sauna page. */
+export function buildSaunaMetaDescription(sauna: Sauna): string {
+  const amenities = describeSaunaAmenities(sauna);
+  return (
+    sauna.notes ||
+    [
+      sauna.name,
+      sauna.sessionPrice
+        ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}`
+        : "",
+      amenities,
+    ]
+      .filter(Boolean)
+      .join(". ")
+      .trim() + "."
+  );
+}
+
+/** Build a short description for JSON-LD structured data (no name/notes). */
+export function buildSaunaSchemaDescription(sauna: Sauna): string {
+  const amenities = describeSaunaAmenities(sauna);
+  return [
+    sauna.sessionPrice
+      ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}`
+      : "",
+    amenities,
+  ]
+    .filter(Boolean)
+    .join(". ");
 }
 
 /** Build a concise amenity summary string for SEO descriptions. */

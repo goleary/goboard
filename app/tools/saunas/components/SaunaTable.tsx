@@ -57,7 +57,7 @@ function CompactSaunaList({
             <div className="min-w-0">
               <p className="font-medium text-sm truncate">{sauna.name}</p>
               <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
-                {sauna.sessionLengthMinutes && (
+                {sauna.sessionLengthMinutes > 0 && (
                   <span>{sauna.sessionLengthMinutes} min</span>
                 )}
                 {sauna.coldPlunge && (

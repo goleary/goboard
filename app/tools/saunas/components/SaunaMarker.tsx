@@ -128,10 +128,11 @@ const getMarkerIcon = (
     ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
     : renderLucideGlyph(HOUSE_ICON_NODE, glyphStrokeWidth);
 
+  const pinTipY = Math.round(pinHeight * (42 / 52));
   return L.divIcon({
     iconSize: [pinWidth, pinHeight],
-    iconAnchor: [pinWidth / 2, pinHeight],
-    popupAnchor: [0, -pinHeight + 6],
+    iconAnchor: [pinWidth / 2, pinTipY],
+    popupAnchor: [0, -pinTipY + 6],
     className: "sauna-marker",
     html: `
       <div style="
@@ -216,7 +217,7 @@ export function SaunaMarker({
         click: () => onClick?.(sauna),
       }}
     >
-      <Tooltip direction="top" offset={[0, isSelected ? -48 : -42]}>
+      <Tooltip direction="top" offset={[0, isSelected ? -38 : -33]}>
         <span className="font-medium">{sauna.name}</span>
         {sauna.sessionPrice > 0 && (
           <span className="text-muted-foreground"> · {formatPrice(sauna)}</span>

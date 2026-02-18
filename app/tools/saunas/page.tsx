@@ -1,7 +1,6 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { Suspense } from "react";
-import { saunas, getSaunaBySlug, formatPrice, describeSaunaAmenities } from "@/data/saunas/saunas";
-import type { Sauna } from "@/data/saunas/saunas";
+import { saunas, getSaunaBySlug, buildSaunaMetaDescription, buildSaunaSchemaDescription } from "@/data/saunas/saunas";
 import { SaunasClient } from "./components/SaunasClient";
 
 type Props = {
@@ -15,13 +14,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     const sauna = getSaunaBySlug(saunaSlug);
     if (sauna) {
       const title = `${sauna.name} - North American Saunas`;
-      const amenities = describeSaunaAmenities(sauna);
-      const description = sauna.notes ||
-        [
-          sauna.name,
-          sauna.sessionPrice ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}` : "",
-          amenities,
-        ].filter(Boolean).join(". ").trim() + ".";
+      const description = buildSaunaMetaDescription(sauna);
       
       return {
         title,
@@ -40,11 +33,11 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   }
 
   return {
-    title: "North American Saunas - Compare Sauna & Bathhouse Options",
+    title: `North American Saunas - Compare${saunas.length >= 4 ? ` ${saunas.length}` : ""} Saunas & Bathhouses`,
     description:
       "Compare saunas and bathhouses across North America by price, amenities, and location. Find the perfect sauna experience with cold plunge, steam rooms, and more.",
     openGraph: {
-      title: "North American Saunas - Compare Sauna & Bathhouse Options",
+      title: `North American Saunas - Compare${saunas.length >= 4 ? ` ${saunas.length}` : ""} Saunas & Bathhouses`,
       description:
         "Compare saunas and bathhouses across North America by price, amenities, and location.",
       url: "https://goleary.com/tools/saunas",
@@ -54,14 +47,6 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       canonical: "https://goleary.com/tools/saunas",
     },
   };
-}
-
-function generateSaunaDescription(sauna: Sauna): string {
-  const amenities = describeSaunaAmenities(sauna);
-  return [
-    sauna.sessionPrice ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}` : "",
-    amenities,
-  ].filter(Boolean).join(". ");
 }
 
 function generateItemListSchema() {
@@ -76,7 +61,7 @@ function generateItemListSchema() {
       position: index + 1,
       url: `https://goleary.com/tools/saunas?sauna=${sauna.slug}`,
       name: sauna.name,
-      description: generateSaunaDescription(sauna),
+      description: buildSaunaSchemaDescription(sauna),
     })),
   };
 }

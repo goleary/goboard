@@ -1,8 +1,7 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { saunas, getSaunaBySlug, locations, getLocationBySlug, formatPrice, describeSaunaAmenities, describeLocationAmenities } from "@/data/saunas/saunas";
-import type { Sauna } from "@/data/saunas/saunas";
+import { saunas, getSaunaBySlug, locations, getLocationBySlug, getSaunasForLocation, buildSaunaMetaDescription, buildSaunaSchemaDescription, describeLocationAmenities } from "@/data/saunas/saunas";
 import { SaunasClient } from "../components/SaunasClient";
 
 type Props = {
@@ -29,13 +28,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const sauna = getSaunaBySlug(saunaSlug);
     if (sauna) {
       const title = `${sauna.name} - ${location.name} Saunas`;
-      const amenities = describeSaunaAmenities(sauna);
-      const description = sauna.notes ||
-        [
-          sauna.name,
-          sauna.sessionPrice ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}` : "",
-          amenities,
-        ].filter(Boolean).join(". ").trim() + ".";
+      const description = buildSaunaMetaDescription(sauna);
       
       return {
         title,
@@ -53,15 +46,17 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     }
   }
 
-  const locationSaunas = saunas.filter(() => true);
+  const locationSaunas = getSaunasForLocation(location);
+  const count = locationSaunas.length;
   const amenitySummary = describeLocationAmenities(locationSaunas);
   const description = `${location.description} ${amenitySummary}`;
+  const title = `${location.name} Saunas - Compare${count >= 4 ? ` ${count}` : ""} Saunas & Bathhouses`;
 
   return {
-    title: `${location.name} Saunas - Compare Local Sauna & Bathhouse Options`,
+    title,
     description,
     openGraph: {
-      title: `${location.name} Saunas - Compare Local Sauna & Bathhouse Options`,
+      title,
       description,
       url: `https://goleary.com/tools/saunas/${location.slug}`,
       type: "website",
@@ -70,14 +65,6 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       canonical: `https://goleary.com/tools/saunas/${location.slug}`,
     },
   };
-}
-
-function generateSaunaDescription(sauna: Sauna): string {
-  const amenities = describeSaunaAmenities(sauna);
-  return [
-    sauna.sessionPrice ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}` : "",
-    amenities,
-  ].filter(Boolean).join(". ");
 }
 
 function generateItemListSchema(locationName: string, locationSlug: string) {
@@ -92,7 +79,7 @@ function generateItemListSchema(locationName: string, locationSlug: string) {
       position: index + 1,
       url: `https://goleary.com/tools/saunas/${locationSlug}?sauna=${sauna.slug}`,
       name: sauna.name,
-      description: generateSaunaDescription(sauna),
+      description: buildSaunaSchemaDescription(sauna),
     })),
   };
 }
