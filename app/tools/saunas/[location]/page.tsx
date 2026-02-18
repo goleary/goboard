@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { saunas, getSaunaBySlug, locations, getLocationBySlug, formatPrice } from "@/data/saunas/saunas";
+import { saunas, getSaunaBySlug, locations, getLocationBySlug, formatPrice, describeSaunaAmenities, describeLocationAmenities } from "@/data/saunas/saunas";
+import type { Sauna } from "@/data/saunas/saunas";
 import { SaunasClient } from "../components/SaunasClient";
 
 type Props = {
@@ -28,8 +29,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     const sauna = getSaunaBySlug(saunaSlug);
     if (sauna) {
       const title = `${sauna.name} - ${location.name} Saunas`;
-      const description = sauna.notes || 
-        `${sauna.name}. ${sauna.sessionPrice ? formatPrice(sauna) : ""} ${sauna.sessionLengthMinutes ? `for ${sauna.sessionLengthMinutes} minutes` : ""}. ${sauna.coldPlunge ? "Cold plunge available." : ""} ${sauna.steamRoom ? "Steam room available." : ""}`.trim();
+      const amenities = describeSaunaAmenities(sauna);
+      const description = sauna.notes ||
+        [
+          sauna.name,
+          sauna.sessionPrice ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}` : "",
+          amenities,
+        ].filter(Boolean).join(". ").trim() + ".";
       
       return {
         title,
@@ -47,12 +53,16 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     }
   }
 
+  const locationSaunas = saunas.filter(() => true);
+  const amenitySummary = describeLocationAmenities(locationSaunas);
+  const description = `${location.description} ${amenitySummary}`;
+
   return {
     title: `${location.name} Saunas - Compare Local Sauna & Bathhouse Options`,
-    description: location.description,
+    description,
     openGraph: {
       title: `${location.name} Saunas - Compare Local Sauna & Bathhouse Options`,
-      description: location.description,
+      description,
       url: `https://goleary.com/tools/saunas/${location.slug}`,
       type: "website",
     },
@@ -62,7 +72,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   };
 }
 
-// Generate schema.org ItemList for SEO
+function generateSaunaDescription(sauna: Sauna): string {
+  const amenities = describeSaunaAmenities(sauna);
+  return [
+    sauna.sessionPrice ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}` : "",
+    amenities,
+  ].filter(Boolean).join(". ");
+}
+
 function generateItemListSchema(locationName: string, locationSlug: string) {
   return {
     "@context": "https://schema.org",
@@ -75,6 +92,7 @@ function generateItemListSchema(locationName: string, locationSlug: string) {
       position: index + 1,
       url: `https://goleary.com/tools/saunas/${locationSlug}?sauna=${sauna.slug}`,
       name: sauna.name,
+      description: generateSaunaDescription(sauna),
     })),
   };
 }

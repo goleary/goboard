@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { saunas, getSaunaBySlug, formatPrice } from "@/data/saunas/saunas";
+import { saunas, getSaunaBySlug, formatPrice, describeSaunaAmenities } from "@/data/saunas/saunas";
+import type { Sauna } from "@/data/saunas/saunas";
 import { SaunasClient } from "./components/SaunasClient";
 
 type Props = {
@@ -14,8 +15,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     const sauna = getSaunaBySlug(saunaSlug);
     if (sauna) {
       const title = `${sauna.name} - North American Saunas`;
-      const description = sauna.notes || 
-        `${sauna.name}. ${sauna.sessionPrice ? formatPrice(sauna) : ""} ${sauna.sessionLengthMinutes ? `for ${sauna.sessionLengthMinutes} minutes` : ""}. ${sauna.coldPlunge ? "Cold plunge available." : ""} ${sauna.steamRoom ? "Steam room available." : ""}`.trim();
+      const amenities = describeSaunaAmenities(sauna);
+      const description = sauna.notes ||
+        [
+          sauna.name,
+          sauna.sessionPrice ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}` : "",
+          amenities,
+        ].filter(Boolean).join(". ").trim() + ".";
       
       return {
         title,
@@ -50,7 +56,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-// Generate schema.org ItemList for SEO
+function generateSaunaDescription(sauna: Sauna): string {
+  const amenities = describeSaunaAmenities(sauna);
+  return [
+    sauna.sessionPrice ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}` : "",
+    amenities,
+  ].filter(Boolean).join(". ");
+}
+
 function generateItemListSchema() {
   return {
     "@context": "https://schema.org",
@@ -63,6 +76,7 @@ function generateItemListSchema() {
       position: index + 1,
       url: `https://goleary.com/tools/saunas?sauna=${sauna.slug}`,
       name: sauna.name,
+      description: generateSaunaDescription(sauna),
     })),
   };
 }

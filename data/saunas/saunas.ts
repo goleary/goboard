@@ -3354,6 +3354,41 @@ export function getSaunaBySlug(slug: string): Sauna | undefined {
   return saunas.find((s) => s.slug === slug);
 }
 
+/** Build a concise amenity summary string for SEO descriptions. */
+export function describeSaunaAmenities(sauna: Sauna): string {
+  const parts: string[] = [];
+  if (sauna.floating) parts.push("Floating sauna");
+  else if (sauna.waterfront) parts.push("Waterfront location");
+  if (sauna.naturalPlunge) parts.push("natural cold plunge");
+  else if (sauna.coldPlunge) parts.push("cold plunge");
+  if (sauna.soakingTub) parts.push("soaking tub");
+  if (sauna.steamRoom) parts.push("steam room");
+  if (sauna.towelsIncluded) parts.push("towels included");
+  return parts.join(", ");
+}
+
+/** Build a dynamic SEO description for a location based on its saunas. */
+export function describeLocationAmenities(locationSaunas: Sauna[]): string {
+  const total = locationSaunas.length;
+  const floating = locationSaunas.filter((s) => s.floating).length;
+  const waterfront = locationSaunas.filter((s) => s.waterfront).length;
+  const coldPlunge = locationSaunas.filter((s) => s.coldPlunge).length;
+  const naturalPlunge = locationSaunas.filter((s) => s.naturalPlunge).length;
+  const soakingTub = locationSaunas.filter((s) => s.soakingTub).length;
+  const steamRoom = locationSaunas.filter((s) => s.steamRoom).length;
+
+  const highlights: string[] = [];
+  if (floating > 0) highlights.push(`${floating} floating`);
+  if (waterfront > floating) highlights.push(`${waterfront - floating} waterfront`);
+  if (naturalPlunge > 0) highlights.push(`${naturalPlunge} with natural cold plunge`);
+  else if (coldPlunge > 0) highlights.push(`${coldPlunge} with cold plunge`);
+  if (soakingTub > 0) highlights.push(`${soakingTub} with soaking tubs`);
+  if (steamRoom > 0) highlights.push(`${steamRoom} with steam rooms`);
+
+  if (highlights.length === 0) return `Compare ${total} saunas and bathhouses.`;
+  return `Compare ${total} saunas including ${highlights.join(", ")}.`;
+}
+
 export function getLatestUpdateDate(): string {
   return saunas.reduce((latest, sauna) => {
     return sauna.updatedAt > latest ? sauna.updatedAt : latest;
