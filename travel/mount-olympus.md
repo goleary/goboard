@@ -2,6 +2,7 @@
 title: "Climb Mount Olympus, Olympic NP"
 date: "2017-07"
 link: "https://www.theoutbound.com/washington/backpacking/climb-mount-olympus-olympic-np"
+tags: ["mountaineering", "backpacking", "glacier", "washington"]
 ---
 
 Climb the tallest mountain on the Olympic Peninsula. You'll be rewarded with unparalleled views of the Olympics, the Cascades and the ocean to the west.

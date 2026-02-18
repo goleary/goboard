@@ -2,6 +2,7 @@
 title: "Kauaʻi - Kayaking the Nā Pali Coast to Miloliʻi"
 date: "2017-05"
 link: "https://www.theoutbound.com/hawaii/kayaking/kayak-camp-on-miloli-i-beach"
+tags: ["kayak", "camping", "beach", "hawaii"]
 ---
 
 Miloliʻi is one of the most remote beaches in Hawaiʻi. It's so remote that it's not possible to reach via land — there are no roads or hiking trails leading to it because it's surrounded by cliffs thousands of feet high. The only way to get there is by kayak.

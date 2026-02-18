@@ -1,6 +1,7 @@
 ---
 title: 'Hawai''i - "The Big Island" (WIP)'
 date: "2025-12"
+tags: ["volcano", "stargazing", "hawaii"]
 ---
 
 I had been to Hawai'i 3 times previous to this trip. One trip to Oahu + Kauai, one to Kauai, and another to Oahu + Molokai. Living in Seattle, Hawai'i is quite accessible (relatively speaking), but we don't end up coming too often (after this trip, only 3 times in the 14 years I've been living in Seattle). I usually plan my partner's family trips over the end of year holidays. This year people wanted to go to Hawai'i. Between Thanksgiving & New Years is the high tourist season for the islands, and Hawai'i is already an expensive place. We also looked at going to Maui but it was prohibitively expensive, and many people have rightfully told me that I'd love The Big Island.

@@ -2,6 +2,7 @@
 title: "Climb Mount Thomson"
 date: "2017-09"
 link: "https://www.theoutbound.com/washington/hiking/climb-mount-thomson"
+tags: ["rock climbing", "scramble", "washington"]
 ---
 
 This impressive looking summit stands out to all hikers in the area. It has the best view within a day's hike of Snoqualmie Pass.

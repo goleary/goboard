@@ -2,6 +2,7 @@
 title: "Scramble Guye Peak"
 date: "2016-11"
 link: "https://www.theoutbound.com/washington/hiking/scramble-guye-peak"
+tags: ["scramble", "hike", "washington"]
 ---
 
 This imposing looking classic at the pass offers multiple fun routes to the summit. Great scrambling and panoramic vistas await.

@@ -2,6 +2,7 @@
 title: "Scramble Fortress Mountain"
 date: "2017-09"
 link: "https://www.theoutbound.com/washington/backpacking/scramble-fortress-mountain"
+tags: ["scramble", "backpacking", "washington"]
 ---
 
 Fortress is one of the tallest mountains in the state and offers incredible views of the surrounding Entiat range as well as majestic Glacier Peak and the North Cascades.

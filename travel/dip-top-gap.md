@@ -2,6 +2,7 @@
 title: "Dip Top Gap"
 date: "2017-08"
 link: "https://www.theoutbound.com/washington/hiking/dip-top-gap"
+tags: ["scramble", "backpacking", "hike", "washington"]
 ---
 
 Dip Top Gap offers one of the best views in all of Washington. It comes at a high price though as the "simplest" way to get there takes ~25 miles of travel round trip.

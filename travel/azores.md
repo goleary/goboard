@@ -1,6 +1,7 @@
 ---
 title: "The Azores - São Miguel"
 date: "2024-08"
+tags: ["kayak", "hike", "hot springs", "portugal"]
 ---
 
 One of my favorite things to do is look at maps. I've spent countless hours in Google Maps and on other mapping applications. I'm an avid user of saved places on Google Maps. I currently have 1337 places saved on my "Want to go" list, and 1506 on my "Starred" list (all places I have been). Some number of years ago I was panning around on the map and I discovered a set of islands in the middle of the Atlantic Ocean - The Azores. Ever since then I've had a green flag in a sea of blue on my google map.

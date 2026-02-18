@@ -14,6 +14,7 @@ const postSchema = z.object({
   link: z.string().optional(),
   date: z.string(),
   description: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 function getSortedData(directory: string) {

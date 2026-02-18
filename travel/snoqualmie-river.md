@@ -2,6 +2,7 @@
 title: "Swim in the South Fork of the Snoqualmie River"
 date: "2017-08"
 link: "https://www.theoutbound.com/washington/swimming/swim-in-the-south-fork-of-the-snoqualmie-river"
+tags: ["swimming", "washington"]
 ---
 
 Perfect place to jump in the river and cool off on a hot day.
