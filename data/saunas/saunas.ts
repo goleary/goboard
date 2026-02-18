@@ -2175,6 +2175,33 @@ export const saunas: Sauna[] = [
     lng: -123.3333,
     updatedAt: "2026-01-05",
   },
+  {
+    slug: "jericho-beach-seaside-sauna",
+    name: "Jericho Beach Seaside Sauna",
+    address: "Jericho Sailing Centre, Vancouver, BC, Canada",
+    website:
+      "https://www.thefinnishsauna.ca/service-page/jericho-beach-seaside-sauna-social",
+    bookingUrl:
+      "https://www.thefinnishsauna.ca/booking-calendar/jericho-beach-seaside-sauna-social?referral=service_list_widget",
+    sessionPrice: 36,
+    currency: "CAD",
+    sessionLengthMinutes: 105,
+    steamRoom: false,
+    coldPlunge: true, // Ocean cold plunge at Jerry's Cove
+    soakingTub: false,
+    waterfront: true, // Oceanside at Jericho Beach
+    naturalPlunge: true, // Ocean access
+    showers: true, // Freshwater rinse showers
+    towelsIncluded: false, // Bring two towels
+    hours: "Seasonal winter pop-up, check schedule for session times",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seasonal ocean-side wood-fired sauna pop-up at Jericho Sailing Centre. Shared sessions for up to 9 people, CA$36/1hr45min. Ocean cold plunge at Jerry's Cove, freshwater rinse showers, covered rest area. Outdoor changing rooms and indoor washrooms. Collaboration between Windsure Adventure Watersports, Tality Wellness, and The Finnish Sauna Co.",
+    lat: 49.27556069996275,
+    lng: -123.20116604338386,
+    updatedAt: "2026-02-18",
+  },
   // ============================================================================
   // VANCOUVER ISLAND, BC
   // ============================================================================
@@ -2498,7 +2525,8 @@ export const saunas: Sauna[] = [
     name: "Cheekye Ranch Sauna",
     address: "Cheekye Ranch, Squamish, BC, Canada",
     website: "https://www.thefinnishsauna.ca/squamish",
-    bookingUrl: "https://www.thefinnishsauna.ca/bookings",
+    bookingUrl:
+      "https://www.thefinnishsauna.ca/booking-calendar/cheekye-ranch-sauna-social?referral=service_list_widget",
     googleMapsUrl: "https://maps.app.goo.gl/KU4dEmFnTw5Zfhz87",
     sessionPrice: 40,
     currency: "CAD",
