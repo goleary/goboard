@@ -6,10 +6,10 @@ const Posts: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">Posts</h1>
+      <h1 className="text-2xl font-bold">Travel</h1>
       <p>
-        Various ramblings on technologies I&apos;ve used, experiences I&apos;ve
-        had and things I&apos;ve built.
+        Notes and stories from trips I&apos;ve taken and adventures I&apos;ve
+        had.
       </p>
       <ul className="flex flex-col gap-4">
         {posts.map((post) => (
