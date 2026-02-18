@@ -70,7 +70,7 @@ const SHIP_ICON_NODE: IconNode = [
 ];
 
 const renderFloatingSaunaGlyph = (strokeWidth: number) => `
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path
       fill="white"
       fill-rule="evenodd"
@@ -87,7 +87,7 @@ const renderFloatingSaunaGlyph = (strokeWidth: number) => `
 `;
 
 const renderSoakingTubGlyph = () => `
-  <svg width="14" height="14" viewBox="0 0 512 512" fill="none" aria-hidden="true">
+  <svg width="16" height="16" viewBox="0 0 512 512" fill="none" aria-hidden="true">
     <path
       fill="white"
       d="M272 24c0-13.3-10.7-24-24-24s-24 10.7-24 24v5.2c0 34 14.4 66.4 39.7 89.2l16.4 14.8c15.2 13.7 23.8 33.1 23.8 53.5v13.2c0 13.3 10.7 24 24 24s24-10.7 24-24v-13.2c0-34-14.4-66.4-39.7-89.2l-16.4-14.7C280.7 69.1 272 49.7 272 29.2zM0 320v128c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V320c0-35.3-28.7-64-64-64H277.3c-13.8 0-27.3-4.5-38.4-12.8l-85.3-64C137 166.7 116.8 160 96 160c-53 0-96 43-96 96zm128 16v96c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16s16 7.2 16 16m80-16c8.8 0 16 7.2 16 16v96c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16m112 16v96c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16s16 7.2 16 16m80-16c8.8 0 16 7.2 16 16v96c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16M360 0c-13.3 0-24 10.7-24 24v5.2c0 34 14.4 66.4 39.7 89.2l16.4 14.8c15.2 13.7 23.8 33.1 23.8 53.5v13.2c0 13.3 10.7 24 24 24s24-10.7 24-24v-13.2c0-34-14.4-66.4-39.7-89.2l-16.4-14.7C392.7 69.1 384 49.7 384 29.2V24c0-13.3-10.7-24-24-24M64 128A64 64 0 1 0 64 0a64 64 0 1 0 0 128"
@@ -110,7 +110,7 @@ const renderLucideGlyph = (
     .join("");
 
   return `
-    <svg width="14" height="14" viewBox="${viewBox}" fill="none" aria-hidden="true" stroke="white" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="16" height="16" viewBox="${viewBox}" fill="none" aria-hidden="true" stroke="white" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
       ${paths}
     </svg>
   `;
@@ -199,6 +199,50 @@ export function getMarkerPinHtml({
         aria-hidden="true"
       >
         <path d="${PIN_PATH}" fill="${pinShellColor}" />
+        <circle cx="20" cy="18" r="14" fill="${pinColor}" />
+      </svg>
+      <div style="
+        position: absolute;
+        left: 50%;
+        top: 15.6px;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+      ">
+        ${glyph}
+      </div>
+    </div>
+  `;
+}
+
+export function getMarkerPinHtmlWithCustomGlyph({
+  pinColor,
+  glyph,
+}: {
+  pinColor: string;
+  glyph: string;
+}): string {
+  return `
+    <div style="
+      width: 36px;
+      height: 46px;
+      position: relative;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+    ">
+      <svg
+        width="36"
+        height="46"
+        viewBox="0 0 40 52"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style="display: block;"
+        aria-hidden="true"
+      >
+        <path d="${PIN_PATH}" fill="#FFFFFF" />
         <circle cx="20" cy="18" r="14" fill="${pinColor}" />
       </svg>
       <div style="
