@@ -19,7 +19,11 @@ const MarkerClusterGroup = dynamic(
 export type { LatLngBounds };
 
 // Component to track map bounds and report changes
-function BoundsTracker({ onBoundsChange }: { onBoundsChange?: (bounds: LatLngBounds) => void }) {
+function BoundsTracker({
+  onBoundsChange,
+}: {
+  onBoundsChange?: (bounds: LatLngBounds) => void;
+}) {
   const map = useMap();
 
   useEffect(() => {
@@ -28,10 +32,14 @@ function BoundsTracker({ onBoundsChange }: { onBoundsChange?: (bounds: LatLngBou
     const reportBounds = () => {
       // Only report if the map container is visible and has a valid size
       const container = map.getContainer();
-      if (!container || container.offsetWidth === 0 || container.offsetHeight === 0) {
+      if (
+        !container ||
+        container.offsetWidth === 0 ||
+        container.offsetHeight === 0
+      ) {
         return;
       }
-      
+
       const bounds = map.getBounds();
       // Only report if bounds are valid (non-zero area)
       if (bounds.isValid()) {
@@ -40,9 +48,9 @@ function BoundsTracker({ onBoundsChange }: { onBoundsChange?: (bounds: LatLngBou
     };
 
     // Listen for move/zoom events
-    map.on('moveend', reportBounds);
-    map.on('zoomend', reportBounds);
-    
+    map.on("moveend", reportBounds);
+    map.on("zoomend", reportBounds);
+
     // Report initial bounds when map is ready
     map.whenReady(() => {
       // Small delay to ensure container is sized
@@ -50,8 +58,8 @@ function BoundsTracker({ onBoundsChange }: { onBoundsChange?: (bounds: LatLngBou
     });
 
     return () => {
-      map.off('moveend', reportBounds);
-      map.off('zoomend', reportBounds);
+      map.off("moveend", reportBounds);
+      map.off("zoomend", reportBounds);
     };
   }, [map, onBoundsChange]);
 
@@ -59,7 +67,15 @@ function BoundsTracker({ onBoundsChange }: { onBoundsChange?: (bounds: LatLngBou
 }
 
 // Component to handle map panning/zooming when a sauna is selected
-function MapPanner({ selectedSauna, isMobile, panToSelection }: { selectedSauna: Sauna | null; isMobile: boolean; panToSelection: boolean }) {
+function MapPanner({
+  selectedSauna,
+  isMobile,
+  panToSelection,
+}: {
+  selectedSauna: Sauna | null;
+  isMobile: boolean;
+  panToSelection: boolean;
+}) {
   const map = useMap();
 
   useEffect(() => {
@@ -90,17 +106,18 @@ function MapPanner({ selectedSauna, isMobile, panToSelection }: { selectedSauna:
     const offsetY = centerY - targetY;
 
     // Project sauna to pixel coordinates at target zoom level
-    const saunaPoint = map.project([selectedSauna.lat, selectedSauna.lng], targetZoom);
-
+    const saunaPoint = map.project(
+      [selectedSauna.lat, selectedSauna.lng],
+      targetZoom
+    );
 
     // Convert back to lat/lng and set view in a single smooth animation
     const adjustedCenter = map.unproject(
-    // Calculate the map center that will position the sauna at our target screen location
-      
-      [
-      saunaPoint.x + offsetX,
-      saunaPoint.y + offsetY,
-    ], targetZoom);
+      // Calculate the map center that will position the sauna at our target screen location
+
+      [saunaPoint.x + offsetX, saunaPoint.y + offsetY],
+      targetZoom
+    );
     map.setView(adjustedCenter, targetZoom, { animate: true });
   }, [selectedSauna, map, isMobile]);
 
@@ -118,10 +135,10 @@ function MapClickHandler({ onMapClick }: { onMapClick?: () => void }) {
       onMapClick();
     };
 
-    map.on('click', handleClick);
+    map.on("click", handleClick);
 
     return () => {
-      map.off('click', handleClick);
+      map.off("click", handleClick);
     };
   }, [map, onMapClick]);
 
@@ -193,11 +210,15 @@ export function SaunaMap({
         />
         <ZoomControl position="bottomright" />
         <BoundsTracker onBoundsChange={onBoundsChange} />
-        <MapPanner selectedSauna={selectedSauna || null} isMobile={isMobile} panToSelection={panToSelection} />
+        <MapPanner
+          selectedSauna={selectedSauna || null}
+          isMobile={isMobile}
+          panToSelection={panToSelection}
+        />
         <MapClickHandler onMapClick={onMapClick} />
         <MarkerClusterGroup
           iconCreateFunction={createClusterIcon}
-          maxClusterRadius={60}
+          maxClusterRadius={50}
           zoomToBoundsOnClick={true}
           spiderfyOnMaxZoom={true}
           animate={false}
@@ -219,4 +240,3 @@ export function SaunaMap({
 }
 
 export default SaunaMap;
-

@@ -222,6 +222,8 @@ export function getLocationBySlug(slug: string): Location | undefined {
  * - Cold plunge must be 50°F or lower to qualify as `coldPlunge: true`.
  */
 export interface Sauna {
+  /** Optional map marker icon override */
+  markerIconOverride?: "house" | "waves" | "snowflake" | "ship";
   /** URL-friendly unique identifier */
   slug: string;
   /** Display name of the sauna */
@@ -499,8 +501,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Waterfront sauna on Lake Washington with cold plunge into the lake.",
-    lat: 47.60192793689925,
-    lng: -122.28637987422943,
+    lat: 47.60192549413326,
+    lng: -122.2841857043505,
     updatedAt: "2025-01-04",
   },
   {
@@ -748,6 +750,7 @@ export const saunas: Sauna[] = [
   {
     slug: "wildhaus",
     name: "Wildhaus",
+    markerIconOverride: "ship",
     website: "https://thewildhaus.com/",
     bookingUrl: "https://wild-haus.checkfront.com/reserve/",
     sessionPrice: 150,
