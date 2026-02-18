@@ -90,7 +90,7 @@ const getMarkerIcon = (
     ? "#E65A3A"
     : isColdPlungeWithoutNaturalPlunge
     ? "#5FA8FF"
-    : "#D93025";
+    : "#E65A3A";
   const pinShellColor = "#FFFFFF";
   const pinPath =
     "M20 1C10.6112 1 3 8.6112 3 18C3 26 6 33 20 42C34 33 37 26 37 18C37 8.6112 29.3888 1 20 1Z";
