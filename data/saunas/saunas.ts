@@ -223,7 +223,7 @@ export function getLocationBySlug(slug: string): Location | undefined {
  */
 export interface Sauna {
   /** Optional map marker icon override */
-  markerIconOverride?: "house" | "waves" | "snowflake" | "ship";
+  markerIconOverride?: "house" | "waves" | "snowflake" | "ship" | "floating-sauna";
   /** URL-friendly unique identifier */
   slug: string;
   /** Display name of the sauna */
@@ -255,6 +255,8 @@ export interface Sauna {
   waterfront: boolean;
   /** Whether cold plunge is into a natural body of water (bay, lake, etc.) */
   naturalPlunge: boolean;
+  /** Whether the sauna is a floating structure (on a lake, bay, etc.) */
+  floating?: boolean;
   /** Whether showers are available */
   showers: boolean;
   /** Whether towels are included with admission */
@@ -556,6 +558,7 @@ export const saunas: Sauna[] = [
   {
     slug: "von-sauna",
     name: "Von Sauna",
+    markerIconOverride: "floating-sauna",
     address: "1200 Carillon Point, Kirkland, WA 98033",
     website: "https://www.vonsauna.co/",
     bookingUrl:
@@ -567,6 +570,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    floating: true,
     showers: false,
     towelsIncluded: false,
     hours: "7AM - 7PM, 7 Days/Week",
@@ -704,6 +708,7 @@ export const saunas: Sauna[] = [
   {
     slug: "seattle-sauna",
     name: "Seattle Sauna",
+    markerIconOverride: "floating-sauna",
     website: "https://seattlesauna.com/",
     bookingUrl: "https://bookeo.com/seattlesauna",
     sessionPrice: 64,
@@ -713,6 +718,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: false,
+    floating: true,
     showers: true,
     towelsIncluded: true,
     genderPolicy: "Co-ed",
@@ -1105,6 +1111,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    floating: true,
     showers: true, // Outdoor cold showers
     towelsIncluded: true,
     hours: "Thu-Mon 9am-9pm, Closed Tue-Wed",
@@ -1649,6 +1656,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating on Columbia River
     naturalPlunge: true, // River plunge
+    floating: true,
     showers: true, // Freshwater showers (no soap for environmental reasons)
     towelsIncluded: false, // Bring two towels
     hours: "Social Fri-Sun 7am-7pm; Private available all week",
@@ -1691,6 +1699,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fjord-sausalito",
     name: "Fjord – Floating Sauna",
+    markerIconOverride: "floating-sauna",
     address: "2320 Marinship Way, Sausalito, CA 94965",
     website: "https://www.thisisfjord.com/",
     bookingUrl: "https://www.zettlor.com/c/fjord",
@@ -1702,6 +1711,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating on Richardson Bay
     naturalPlunge: true, // Bay plunge
+    floating: true,
     showers: false, // No showers, must bring towels
     towelsIncluded: false, // Must bring 2 towels
     temperatureRangeF: { min: 180, max: 190 },
@@ -1710,8 +1720,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Unique floating sauna on SF Bay with two Finnish saunas and bay plunge. Shared sessions $45 (90 min, up to 8 ppl), Private $270 (2 hrs, up to 6), Full Buyout $2K half-day or $5K full-day. 5-pack $210. Sessions sell out fast—book when calendar opens. Must bring 2 towels, water, swimsuit. 4.9 stars. ~30 min from SF.",
-    lat: 37.8669,
-    lng: -122.49484,
+    lat: 37.866355519413275,
+    lng: -122.49567078054073,
     updatedAt: "2026-01-06",
   },
   {
@@ -2172,6 +2182,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // 2 hot mineral tubs
     waterfront: true, // Floating in Victoria's Inner Harbour
     naturalPlunge: false,
+    floating: true,
     showers: true,
     towelsIncluded: true, // Plush robe and towels included
     servesFood: true, // Light food and beverage service in lounge
@@ -2394,6 +2405,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating in Clayoquot Sound
     naturalPlunge: true, // Pacific Ocean cold plunges
+    floating: true,
     showers: false,
     towelsIncluded: true,
     temperatureRangeF: { min: 170, max: 200 },
@@ -3058,6 +3070,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    floating: true,
     showers: false,
     towelsIncluded: false,
     hours: "Thu-Sun sunrise to sunset, Oct 2-May 8",

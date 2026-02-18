@@ -45,6 +45,13 @@ const SHIP_ICON_NODE: IconNode = [
   ["path", { d: "M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" }],
 ];
 
+const FLOATING_SAUNA_ICON_NODE: IconNode = [
+  ["path", { d: "M5 11 L12 6 L19 11" }],
+  ["path", { d: "M7 11 V17 H17 V11" }],
+  ["path", { d: "M11 17 V13 H13 V17" }],
+  ["path", { d: "M5 20 C7 18 9 22 11 20 C13 18 15 22 17 20 C18 19 19 21 19 20" }],
+];
+
 const renderSoakingTubGlyph = () => `
   <svg width="14" height="14" viewBox="0 0 512 512" fill="none" aria-hidden="true">
     <path
@@ -54,7 +61,7 @@ const renderSoakingTubGlyph = () => `
   </svg>
 `;
 
-const renderLucideGlyph = (iconNode: IconNode, strokeWidth: number) => {
+const renderLucideGlyph = (iconNode: IconNode, strokeWidth: number, viewBox = "0 0 24 24") => {
   const paths = iconNode
     .map(([tagName, attrs]) => {
       const attrText = Object.entries(attrs)
@@ -65,7 +72,7 @@ const renderLucideGlyph = (iconNode: IconNode, strokeWidth: number) => {
     .join("");
 
   return `
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" stroke="white" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="14" height="14" viewBox="${viewBox}" fill="none" aria-hidden="true" stroke="white" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
       ${paths}
     </svg>
   `;
@@ -79,6 +86,7 @@ const getMarkerIcon = (
   coldPlunge: boolean,
   naturalPlunge: boolean,
   soakingTub: boolean,
+  floating: boolean,
   markerIconOverride?: MarkerIconOverride
 ) => {
   const pinWidth = isSelected ? 40 : 36;
@@ -105,7 +113,11 @@ const getMarkerIcon = (
       ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
       : markerIconOverride === "snowflake"
       ? renderLucideGlyph(SNOWFLAKE_ICON_NODE, glyphStrokeWidth)
+      : markerIconOverride === "floating-sauna"
+      ? renderLucideGlyph(FLOATING_SAUNA_ICON_NODE, glyphStrokeWidth * 0.7, "3 4 18 18")
       : renderLucideGlyph(HOUSE_ICON_NODE, glyphStrokeWidth)
+    : floating
+    ? renderLucideGlyph(FLOATING_SAUNA_ICON_NODE, glyphStrokeWidth * 0.7, "3 4 18 18")
     : naturalPlunge
     ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
     : soakingTub
@@ -181,6 +193,7 @@ export function SaunaMarker({
         sauna.coldPlunge,
         sauna.naturalPlunge,
         sauna.soakingTub,
+        sauna.floating ?? false,
         sauna.markerIconOverride
       ),
     [
@@ -189,6 +202,7 @@ export function SaunaMarker({
       sauna.coldPlunge,
       sauna.naturalPlunge,
       sauna.soakingTub,
+      sauna.floating,
       sauna.markerIconOverride,
     ]
   );
