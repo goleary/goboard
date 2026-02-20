@@ -3321,6 +3321,30 @@ export const saunas: Sauna[] = [
     lng: -73.9912,
     updatedAt: "2026-02-11",
   },
+  {
+    slug: "culture-of-bathe-ing",
+    name: "Culture of Bathe-ing",
+    address: "Domino Park, Williamsburg, Brooklyn, NY",
+    website: "https://cultureofbathe-ing.com/",
+    bookingUrl: "https://cultureofbathe-ing.com/tickets",
+    sessionPrice: 60,
+    sessionLengthMinutes: 120,
+    steamRoom: true, // Steam and aromatherapy sessions
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: true, // Williamsburg waterfront
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    hours: "Feb 12 – Mar 1, 2026, daily 7am-10pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "NYC's first sauna festival — a village of 15 architecturally-distinct saunas along the Williamsburg waterfront at Domino Park. Feb 12–Mar 1, 2026. 2hr sessions: Core $60 (weekdays), Peak $85 (weekends 12-4pm), After Dark $95 (Fri-Sun 4-10pm). Daily aufguss rituals led by international sauna masters. Cultural programming by Pioneer Works. Family days available. Indoor lounge, lockers, and retail at One Domino Square.",
+    lat: 40.71348874983753,
+    lng: -73.96838781492237,
+    updatedAt: "2026-02-18",
+  },
   // Connecticut
   {
     slug: "hideout-social-club",
