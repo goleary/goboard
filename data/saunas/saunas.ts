@@ -224,6 +224,42 @@ export function getSaunasForLocation(location: Location): Sauna[] {
 }
 
 /**
+ * Acuity (Squarespace Scheduling) appointment type configuration.
+ */
+export interface AcuityAppointmentType {
+  /** Numeric appointment type ID */
+  id: number;
+  /** Numeric calendar ID */
+  calendarId: number;
+  /** Display name (e.g. "Social Session") */
+  name: string;
+  /** Price in the sauna's currency (e.g. 30) */
+  price: number;
+  /** Duration in minutes (e.g. 60) */
+  durationMinutes: number;
+}
+
+/**
+ * Acuity (Squarespace Scheduling) booking provider configuration.
+ */
+export interface AcuityBookingProvider {
+  type: "acuity";
+  /** Owner ID from the Squarespace Scheduling embed URL */
+  owner: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Appointment types to show availability for */
+  appointmentTypes: AcuityAppointmentType[];
+}
+
+/**
+ * Booking provider configuration for availability checking.
+ * Uses a discriminated union so new providers can be added
+ * by extending this type.
+ */
+export type BookingProvider = AcuityBookingProvider;
+
+/**
  * Represents a sauna facility with its amenities and details.
  *
  * **Inclusion criteria:**
@@ -297,6 +333,8 @@ export interface Sauna {
   lng: number;
   /** Date when this entry was last verified (YYYY-MM-DD) */
   updatedAt: string;
+  /** Booking provider config for live availability checking */
+  bookingProvider?: BookingProvider;
 }
 
 export const saunas: Sauna[] = [
@@ -3229,6 +3267,15 @@ export const saunas: Sauna[] = [
     lat: 48.192226197179,
     lng: -122.70851049351572,
     updatedAt: "2026-02-18",
+    bookingProvider: {
+      type: "acuity",
+      owner: "25eb04ae",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        { id: 88542873, calendarId: 13535422, name: "Social Session", price: 30, durationMinutes: 60 },
+        { id: 88545427, calendarId: 13535422, name: "Private Session", price: 150, durationMinutes: 60 },
+      ],
+    },
   },
   {
     slug: "moki-sauna-south-boston",
