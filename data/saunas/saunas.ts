@@ -584,6 +584,15 @@ export const saunas: Sauna[] = [
     lat: 47.947830005194824,
     lng: -122.30645419904099,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "acuity",
+      owner: "11de2e69",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        { id: 87906317, calendarId: 10669303, name: "Community Session", price: 35, durationMinutes: 75 },
+        { id: 87906287, calendarId: 10669303, name: "Private Session", price: 270, durationMinutes: 75 },
+      ],
+    },
   },
   {
     slug: "vihta",
@@ -3249,6 +3258,17 @@ export const saunas: Sauna[] = [
     lat: 47.9928,
     lng: -122.541,
     updatedAt: "2026-02-08",
+    bookingProvider: {
+      type: "acuity",
+      owner: "138cd2f6",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        { id: 76761625, calendarId: 11722003, name: "Robinson Beach Social Session", price: 40, durationMinutes: 90 },
+        { id: 76522553, calendarId: 11722003, name: "90-Minute Private Rental", price: 300, durationMinutes: 90 },
+        { id: 76724657, calendarId: 11722003, name: "Hierophant Meadery Sip & Sauna", price: 27.50, durationMinutes: 60 },
+        { id: 76523967, calendarId: 11722003, name: "Private Daily Rental", price: 750, durationMinutes: 480 },
+      ],
+    },
   },
   {
     slug: "driftwood-sauna-co",
