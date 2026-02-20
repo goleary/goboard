@@ -2491,8 +2491,7 @@ export const saunas: Sauna[] = [
     website: "https://tofinoresortandmarina.com/remote-floating-sauna-dock/",
     bookingUrl:
       "https://fareharbor.com/embeds/book/tofinoresortandmarina/?full-items=yes&flow=1039132",
-    googleMapsUrl:
-      "https://www.google.com/maps/place/Tofino+Resort+%2B+Marina/@49.1501061,-125.895637,17z",
+    googleMapsUrl: "https://maps.app.goo.gl/wKtMwNTh4ahGiQzJ7",
     sessionPrice: 179, // CA$179/person community session (Sun/Wed)
     currency: "CAD",
     sessionLengthMinutes: 300, // 5 hours summer, 4 hours winter
