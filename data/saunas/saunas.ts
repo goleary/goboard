@@ -227,10 +227,10 @@ export function getSaunasForLocation(location: Location): Sauna[] {
  * Acuity (Squarespace Scheduling) appointment type configuration.
  */
 export interface AcuityAppointmentType {
-  /** Numeric appointment type ID */
-  id: number;
-  /** Numeric calendar ID */
-  calendarId: number;
+  /** Acuity appointment type ID */
+  acuityAppointmentId: number;
+  /** Acuity calendar ID */
+  acuityCalendarId: number;
   /** Display name (e.g. "Social Session") */
   name: string;
   /** Price in the sauna's currency (e.g. 30) */
@@ -242,7 +242,7 @@ export interface AcuityAppointmentType {
 /**
  * Acuity (Squarespace Scheduling) booking provider configuration.
  */
-export interface AcuityBookingProvider {
+export interface AcuityBookingProviderConfig {
   type: "acuity";
   /** Owner ID from the Squarespace Scheduling embed URL */
   owner: string;
@@ -257,7 +257,7 @@ export interface AcuityBookingProvider {
  * Uses a discriminated union so new providers can be added
  * by extending this type.
  */
-export type BookingProvider = AcuityBookingProvider;
+export type BookingProviderConfig = AcuityBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -286,6 +286,30 @@ export interface Sauna {
   website: string;
   /** Direct booking/reservation URL */
   bookingUrl?: string;
+  /** Booking platform used by this sauna (for tracking, even if we don't support availability for it yet) */
+  bookingPlatform?:
+    | "acuity"
+    | "vagaro"
+    | "zenoti"
+    | "glofox"
+    | "mindbody"
+    | "booker"
+    | "peek"
+    | "fareharbor"
+    | "square"
+    | "periode"
+    | "simplybook"
+    | "zettlor"
+    | "roller"
+    | "mangomint"
+    | "checkfront"
+    | "clinicsense"
+    | "bookeo"
+    | "wix"
+    | "mariana-tek"
+    | "momence"
+    | "tock"
+    | "boulevard";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -334,7 +358,7 @@ export interface Sauna {
   /** Date when this entry was last verified (YYYY-MM-DD) */
   updatedAt: string;
   /** Booking provider config for live availability checking */
-  bookingProvider?: BookingProvider;
+  bookingProvider?: BookingProviderConfig;
 }
 
 export const saunas: Sauna[] = [
@@ -344,6 +368,7 @@ export const saunas: Sauna[] = [
     address: "815 NE 72nd St, Seattle, WA 98115",
     website: "https://www.815refresh.com/",
     bookingUrl: "https://www.vagaro.com/815refresh/book-now",
+    bookingPlatform: "vagaro",
     sessionPrice: 25,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -371,6 +396,7 @@ export const saunas: Sauna[] = [
     website: "https://www.banya5.com/",
     bookingUrl:
       "https://banya5.zenoti.com/webstoreNew/fitness/classes/59175a72-7837-4902-afc2-c16704fbc371",
+    bookingPlatform: "zenoti",
     googleMapsUrl: "https://maps.app.goo.gl/ABKyKsmbLZbBeeCR7",
     sessionPrice: 70,
     sessionLengthMinutes: 120,
@@ -589,8 +615,8 @@ export const saunas: Sauna[] = [
       owner: "11de2e69",
       timezone: "America/Los_Angeles",
       appointmentTypes: [
-        { id: 87906317, calendarId: 10669303, name: "Community Session", price: 35, durationMinutes: 75 },
-        { id: 87906287, calendarId: 10669303, name: "Private Session", price: 270, durationMinutes: 75 },
+        { acuityAppointmentId: 87906317, acuityCalendarId: 10669303, name: "Community Session", price: 35, durationMinutes: 75 },
+        { acuityAppointmentId: 87906287, acuityCalendarId: 10669303, name: "Private Session", price: 270, durationMinutes: 75 },
       ],
     },
   },
@@ -698,7 +724,7 @@ export const saunas: Sauna[] = [
       owner: "5e9464ed",
       timezone: "America/Los_Angeles",
       appointmentTypes: [
-        { id: 82608594, calendarId: 12638621, name: "Sauna Session", price: 35, durationMinutes: 60 },
+        { acuityAppointmentId: 82608594, acuityCalendarId: 12638621, name: "Sauna Session", price: 35, durationMinutes: 60 },
       ],
     },
   },
@@ -823,6 +849,17 @@ export const saunas: Sauna[] = [
     lat: 47.813456307232165,
     lng: -122.38195767249658,
     updatedAt: "2026-01-04",
+    bookingProvider: {
+      type: "acuity",
+      owner: "2fd467d2",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        { acuityAppointmentId: 73677787, acuityCalendarId: 11452405, name: "Morning Sauna", price: 25, durationMinutes: 45 },
+        { acuityAppointmentId: 73677820, acuityCalendarId: 11452405, name: "Sauna and Cold Plunge", price: 30, durationMinutes: 60 },
+        { acuityAppointmentId: 87550111, acuityCalendarId: 11452405, name: "Weekday Morning Sauna (Reduced Price)", price: 20, durationMinutes: 45 },
+        { acuityAppointmentId: 87550863, acuityCalendarId: 11452405, name: "Thursday Sauna and Cold Plunge", price: 20, durationMinutes: 60 },
+      ],
+    },
   },
   {
     slug: "wildhaus",
@@ -3263,10 +3300,10 @@ export const saunas: Sauna[] = [
       owner: "138cd2f6",
       timezone: "America/Los_Angeles",
       appointmentTypes: [
-        { id: 76761625, calendarId: 11722003, name: "Robinson Beach Social Session", price: 40, durationMinutes: 90 },
-        { id: 76522553, calendarId: 11722003, name: "90-Minute Private Rental", price: 300, durationMinutes: 90 },
-        { id: 76724657, calendarId: 11722003, name: "Hierophant Meadery Sip & Sauna", price: 27.50, durationMinutes: 60 },
-        { id: 76523967, calendarId: 11722003, name: "Private Daily Rental", price: 750, durationMinutes: 480 },
+        { acuityAppointmentId: 76761625, acuityCalendarId: 11722003, name: "Robinson Beach Social Session", price: 40, durationMinutes: 90 },
+        { acuityAppointmentId: 76522553, acuityCalendarId: 11722003, name: "90-Minute Private Rental", price: 300, durationMinutes: 90 },
+        { acuityAppointmentId: 76724657, acuityCalendarId: 11722003, name: "Hierophant Meadery Sip & Sauna", price: 27.50, durationMinutes: 60 },
+        { acuityAppointmentId: 76523967, acuityCalendarId: 11722003, name: "Private Daily Rental", price: 750, durationMinutes: 480 },
       ],
     },
   },
@@ -3300,8 +3337,8 @@ export const saunas: Sauna[] = [
       owner: "25eb04ae",
       timezone: "America/Los_Angeles",
       appointmentTypes: [
-        { id: 88542873, calendarId: 13535422, name: "Social Session", price: 30, durationMinutes: 60 },
-        { id: 88545427, calendarId: 13535422, name: "Private Session", price: 150, durationMinutes: 60 },
+        { acuityAppointmentId: 88542873, acuityCalendarId: 13535422, name: "Social Session", price: 30, durationMinutes: 60 },
+        { acuityAppointmentId: 88545427, acuityCalendarId: 13535422, name: "Private Session", price: 150, durationMinutes: 60 },
       ],
     },
   },

@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import {
   getSaunaBySlug,
-  type AcuityBookingProvider,
+  type AcuityBookingProviderConfig,
 } from "@/data/saunas/saunas";
 
 export interface AvailabilitySlot {
@@ -28,7 +28,7 @@ const querySchema = z.object({
 });
 
 async function fetchAcuityAvailability(
-  provider: AcuityBookingProvider,
+  provider: AcuityBookingProviderConfig,
   startDate: string
 ): Promise<AppointmentTypeAvailability[]> {
   const results = await Promise.all(
@@ -37,8 +37,8 @@ async function fetchAcuityAvailability(
         "https://app.squarespacescheduling.com/api/scheduling/v1/availability/times"
       );
       url.searchParams.set("owner", provider.owner);
-      url.searchParams.set("appointmentTypeId", String(apt.id));
-      url.searchParams.set("calendarId", String(apt.calendarId));
+      url.searchParams.set("appointmentTypeId", String(apt.acuityAppointmentId));
+      url.searchParams.set("calendarId", String(apt.acuityCalendarId));
       url.searchParams.set("startDate", startDate);
       url.searchParams.set("timezone", provider.timezone);
 
@@ -47,7 +47,7 @@ async function fetchAcuityAvailability(
       });
 
       if (!res.ok) {
-        throw new Error(`Acuity API returned ${res.status} for type ${apt.id}`);
+        throw new Error(`Acuity API returned ${res.status} for type ${apt.acuityAppointmentId}`);
       }
 
       const raw: Record<
@@ -64,7 +64,7 @@ async function fetchAcuityAvailability(
       }
 
       return {
-        appointmentTypeId: String(apt.id),
+        appointmentTypeId: String(apt.acuityAppointmentId),
         name: apt.name,
         price: apt.price,
         durationMinutes: apt.durationMinutes,
@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
         appointmentTypes = await fetchAcuityAvailability(provider, startDate);
         break;
       // When adding a new provider, add a case here.
-      // TypeScript will enforce this via the BookingProvider union.
+      // TypeScript will enforce this via the BookingProviderConfig union.
     }
 
     return Response.json({ appointmentTypes } satisfies AvailabilityResponse);
