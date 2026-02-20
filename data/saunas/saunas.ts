@@ -3220,7 +3220,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
-      "Family-owned mobile wood-fired sauna on South Whidbey Island at Trustland Trails. IKI wood stove with deep heat and rich steam. Community sessions $26/60min or $30/75min (up to 6 people). Private sessions $180/75min (1-4 people) or $300/75min (5-8). Membership $210/mo unlimited community sessions. Communal changing room. 18+ only. Bring towels and water bottle.",
+      "Family-owned mobile wood-fired sauna on South Whidbey Island at Trustland Trails with natural cold plunge. IKI wood stove with deep heat and rich steam. Community sessions $30/60min (up to 6 people). Private sessions from $180/75min. Membership $210/mo unlimited community sessions. Communal changing room. 18+ only. Bring towels and water bottle.",
     lat: 48.192226197179,
     lng: -122.70851049351572,
     updatedAt: "2026-02-18",
