@@ -3215,12 +3215,12 @@ export const saunas: Sauna[] = [
     showers: false,
     towelsIncluded: false, // Bring two towels
     temperatureRangeF: { min: 140, max: 180 },
-    capacity: 7,
+    capacity: 8,
     hours: "Check website for schedule",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
-      "Family-owned mobile wood-fired sauna on South Whidbey Island at Trustland Trails with natural cold plunge. IKI wood stove with deep heat and rich steam. Community sessions $30/60min (up to 6 people). Private sessions from $180/75min. Membership $210/mo unlimited community sessions. Communal changing room. 18+ only. Bring towels and water bottle.",
+      "Family-owned mobile wood-fired sauna on Whidbey Island at Ebey's Landing with natural cold plunge. IKI wood stove with deep heat and rich steam. Shared sessions $30/60min (up to 8 people). Private sessions $150/60min (up to 8 people). Bring two towels and water bottle.",
     lat: 48.192226197179,
     lng: -122.70851049351572,
     updatedAt: "2026-02-18",
