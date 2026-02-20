@@ -1,4 +1,10 @@
-import { saunas, locations, getSaunasForLocation, buildSaunaMetaDescription, describeLocationAmenities } from "@/data/saunas/saunas";
+import {
+  saunas,
+  locations,
+  getSaunasForLocation,
+  buildSaunaMetaDescription,
+  describeLocationAmenities,
+} from "@/data/saunas/saunas";
 
 const BASE_URL = "https://goleary.com";
 const TITLE_LIMIT = 60;
@@ -9,15 +15,35 @@ function truncate(text: string, limit: number) {
   return { text: text.slice(0, limit), over: true };
 }
 
-function SearchResult({ title, url, description }: { title: string; url: string; description: string }) {
+function SearchResult({
+  title,
+  url,
+  description,
+}: {
+  title: string;
+  url: string;
+  description: string;
+}) {
   const t = truncate(title, TITLE_LIMIT);
   const d = truncate(description, DESC_LIMIT);
 
   return (
     <div className="max-w-[600px] mb-6">
-      <a href={url} target="_blank" rel="noopener noreferrer" className="text-sm text-[#202124]/60 mb-0.5 truncate block hover:underline">{url}</a>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-sm text-[#202124]/60 mb-0.5 truncate block hover:underline"
+      >
+        {url}
+      </a>
       <div className="text-lg leading-snug mb-0.5">
-        <a href={url} target="_blank" rel="noopener noreferrer" className={`text-[#1a0dab] hover:underline cursor-pointer`}>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`text-[#1a0dab] hover:underline cursor-pointer`}
+        >
           {t.text}
           {t.over && <span className="text-red-500">...</span>}
         </a>
@@ -46,7 +72,9 @@ export default function DebugSeoPage() {
     const count = locationSaunas.length;
     const amenitySummary = describeLocationAmenities(locationSaunas);
     return {
-      title: `${loc.name} Saunas - Compare${count >= 4 ? ` ${count}` : ""} Saunas & Bathhouses`,
+      title: `${loc.name} Saunas - Compare${
+        count >= 4 ? ` ${count}` : ""
+      } Saunas & Bathhouses`,
       url: `${BASE_URL}/tools/saunas/${loc.slug}`,
       description: `${loc.description} ${amenitySummary}`,
     };
@@ -56,21 +84,26 @@ export default function DebugSeoPage() {
     const matchingLocations = locations.filter(() => true);
     const loc = matchingLocations[0];
     if (!loc) return [];
-    return [{
-      title: `${sauna.name} - ${loc.name} Saunas`,
-      url: `${BASE_URL}/tools/saunas/${loc.slug}?sauna=${sauna.slug}`,
-      description: buildSaunaMetaDescription(sauna),
-      slug: sauna.slug,
-    }];
+    return [
+      {
+        title: `${sauna.name} - ${loc.name} Saunas`,
+        url: `${BASE_URL}/tools/saunas/${loc.slug}?sauna=${sauna.slug}`,
+        description: buildSaunaMetaDescription(sauna),
+        slug: sauna.slug,
+      },
+    ];
   });
 
   return (
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold mb-1 text-[#202124]">SEO Debug — Search Result Previews</h1>
+        <h1 className="text-2xl font-bold mb-1 text-[#202124]">
+          SEO Debug — Search Result Previews
+        </h1>
         <p className="text-sm text-[#5f6368] mb-8">
-          Title limit: {TITLE_LIMIT} chars | Description limit: {DESC_LIMIT} chars |{" "}
-          <span className="text-red-500">Red</span> = truncated by Google
+          Title limit: {TITLE_LIMIT} chars | Description limit: {DESC_LIMIT}{" "}
+          chars | <span className="text-red-500">Red</span> = truncated by
+          Google
         </p>
 
         <section className="mb-12">
@@ -87,7 +120,12 @@ export default function DebugSeoPage() {
             Individual Sauna Pages ({saunaResults.length})
           </h2>
           {saunaResults.map((r) => (
-            <SearchResult key={r.slug} title={r.title} url={r.url} description={r.description} />
+            <SearchResult
+              key={r.slug}
+              title={r.title}
+              url={r.url}
+              description={r.description}
+            />
           ))}
         </section>
       </div>
