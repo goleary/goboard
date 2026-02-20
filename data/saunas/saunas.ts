@@ -866,6 +866,58 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-02-06",
   },
   {
+    slug: "hot-spot-lookout-arts-quarry",
+    name: "Hot Spot Sauna Club (Lookout Arts Quarry)",
+    address: "246 Old Hwy 99 N, Bellingham, WA 98229",
+    website: "https://www.hotspotbellingham.com/",
+    bookingUrl: "https://www.hotspotbellingham.com/bookings",
+    googleMapsUrl: "https://maps.app.goo.gl/5EpaLT2r57PqxSN37",
+    sessionPrice: 35,
+    sessionLengthMinutes: 50,
+    steamRoom: false,
+    coldPlunge: true, // 80ft freshwater quarry
+    soakingTub: false,
+    waterfront: true, // On quarry
+    naturalPlunge: true, // Freshwater quarry cold plunge
+    showers: true,
+    towelsIncluded: false, // Towels available to rent $4
+    temperatureRangeF: { min: 175, max: 194 },
+    capacity: 8,
+    hours: "Fri-Sat 5-10pm, Sun 12-5pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Custom cedar barrel sauna at Lookout Arts Quarry with cold plunge into an 80ft freshwater quarry (with waterslide). Social sessions $35/seat, private booking $210 for whole sauna. Membership $50/mo includes 2 sessions then $5 each. Towels and sauna hats available to rent or purchase. Bring sandals and headlamp.",
+    lat: 48.64144031843873,
+    lng: -122.35482835387809,
+    updatedAt: "2026-02-18",
+  },
+  {
+    slug: "hot-spot-bloedel-donovan",
+    name: "Hot Spot Sauna Club (Bloedel Donovan)",
+    address: "Bloedel Donovan Park, Bellingham, WA",
+    website: "https://www.hotspotbellingham.com/",
+    bookingUrl: "https://www.hotspotbellingham.com/bookings",
+    googleMapsUrl: "https://maps.app.goo.gl/5EpaLT2r57PqxSN37",
+    sessionPrice: 35,
+    sessionLengthMinutes: 50,
+    steamRoom: false,
+    coldPlunge: true, // Lake Whatcom
+    soakingTub: false,
+    waterfront: true, // On Lake Whatcom
+    naturalPlunge: true, // Lake Whatcom
+    showers: false,
+    towelsIncluded: false,
+    hours: "Check website for session times (soft opening Feb 2026)",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Hot Spot Sauna Club's newest location on Lake Whatcom at Bloedel Donovan Park. Soft opening February 2026. Book individually online.",
+    lat: 48.76063678683713,
+    lng: -122.41836214427805,
+    updatedAt: "2026-02-18",
+  },
+  {
     slug: "sacred-rain-healing-center",
     name: "Sacred Rain Healing Center",
     address: "1100 NW 50th St, Seattle, WA 98107",
