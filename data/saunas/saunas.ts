@@ -131,7 +131,7 @@ export const locations: Location[] = [
     state: "MN",
     description:
       "Minnesota's sauna culture blends Nordic traditions with modern thermaculture clubs, offering contrast therapy in the Land of 10,000 Lakes.",
-    center: { lat: 44.9778, lng: -93.2650 },
+    center: { lat: 44.9778, lng: -93.265 },
     zoom: 8,
   },
   {
@@ -234,7 +234,12 @@ export function getSaunasForLocation(location: Location): Sauna[] {
  */
 export interface Sauna {
   /** Optional map marker icon override */
-  markerIconOverride?: "house" | "waves" | "snowflake" | "ship" | "floating-sauna";
+  markerIconOverride?:
+    | "house"
+    | "waves"
+    | "snowflake"
+    | "ship"
+    | "floating-sauna";
   /** URL-friendly unique identifier */
   slug: string;
   /** Display name of the sauna */
@@ -2891,8 +2896,7 @@ export const saunas: Sauna[] = [
     name: "Soho Saunas",
     address: "West Soldier Hollow Ln, Midway, UT 84049",
     website: "https://sohosaunas.com/",
-    bookingUrl:
-      "https://www.zettlor.com/c/sohosaunas",
+    bookingUrl: "https://www.zettlor.com/c/sohosaunas",
     googleMapsUrl: "https://maps.app.goo.gl/WJJqd5UxSn1twaYC6",
     sessionPrice: 38,
     sessionLengthMinutes: 120,
@@ -2908,7 +2912,7 @@ export const saunas: Sauna[] = [
     notes:
       "Japanese-inspired outdoor barrel sauna and cold plunge near Soldier Hollow in Heber Valley. Social sessions (2 hrs, per person), private barrel rental (up to 6 guests), and full venue rental (both saunas, up to 30 guests). Founded with a jichinsai groundbreaking ceremony honoring Japanese onsen traditions. Book through Zettlor.",
     lat: 40.4809,
-    lng: -111.5010,
+    lng: -111.501,
     updatedAt: "2026-02-11",
   },
   // ============================================================================
@@ -3073,7 +3077,8 @@ export const saunas: Sauna[] = [
     name: "South Woods",
     address: "17097 Lake Sequoyah Dr, Fayetteville, AR 72701",
     website: "https://southwoodsnwa.com/",
-    bookingUrl: "https://book.peek.com/s/c483e16c-9ecf-4e56-a76d-d3155e7c0646/0b7pw",
+    bookingUrl:
+      "https://book.peek.com/s/c483e16c-9ecf-4e56-a76d-d3155e7c0646/0b7pw",
     googleMapsUrl: "https://maps.app.goo.gl/7wBuqNnCzB4LzBBd8",
     sessionPrice: 55,
     sessionLengthMinutes: 90,
@@ -3155,7 +3160,7 @@ export const saunas: Sauna[] = [
     website: "https://www.gliddenpoint.com/pages/saunas-at-glidden-point",
     bookingUrl: "https://www.ticketsignup.io/TicketEvent/GliddenPointSauna",
     googleMapsUrl: "https://maps.app.goo.gl/MVcTNwwzNP3s6H3EA",
-    sessionPrice: 133.50,
+    sessionPrice: 133.5,
     sessionLengthMinutes: 75,
     steamRoom: false,
     coldPlunge: true,
@@ -3179,7 +3184,8 @@ export const saunas: Sauna[] = [
     name: "Good Medicine Whidbey",
     address: "Whidbey Island, WA 98249",
     website: "https://www.goodmedicinewhidbey.com/",
-    bookingUrl: "https://www.goodmedicinewhidbey.com/https/appacuityschedulingcom/catalogphpowner35124680",
+    bookingUrl:
+      "https://www.goodmedicinewhidbey.com/https/appacuityschedulingcom/catalogphpowner35124680",
     googleMapsUrl: "https://maps.app.goo.gl/zaUiFtrFkpaqbKiv8",
     sessionPrice: 40,
     sessionLengthMinutes: 90,
@@ -3220,7 +3226,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
-      "Family-owned mobile wood-fired sauna on Whidbey Island at Ebey's Landing with natural cold plunge. IKI wood stove with deep heat and rich steam. Shared sessions $30/60min (up to 8 people). Private sessions $150/60min (up to 8 people). Bring two towels and water bottle.",
+      "Family-owned waterfront mobile wood-fired sauna on Whidbey Island at Ebey's Landing with plunge access to the Admiralty Inlet. IKI wood stove with deep heat and rich steam. Shared sessions $30/60min (up to 8 people). Private sessions $150/60min (up to 8 people). Bring two towels and water bottle.",
     lat: 48.192226197179,
     lng: -122.70851049351572,
     updatedAt: "2026-02-18",
@@ -3240,7 +3246,8 @@ export const saunas: Sauna[] = [
     naturalPlunge: false,
     showers: true,
     towelsIncluded: true,
-    hours: "Mon 4pm-9pm, Tues Closed, Wed/Thurs 4pm-9pm, Fri/Sat 8am-10pm, Sun 8am-8pm",
+    hours:
+      "Mon 4pm-9pm, Tues Closed, Wed/Thurs 4pm-9pm, Fri/Sat 8am-10pm, Sun 8am-8pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -3264,7 +3271,8 @@ export const saunas: Sauna[] = [
     naturalPlunge: false,
     showers: true,
     towelsIncluded: true,
-    hours: "Mon 4pm-9pm, Tues Closed, Wed/Thurs 4pm-9pm, Fri/Sat 8am-10pm, Sun 8am-8pm",
+    hours:
+      "Mon 4pm-9pm, Tues Closed, Wed/Thurs 4pm-9pm, Fri/Sat 8am-10pm, Sun 8am-8pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -3504,7 +3512,11 @@ export function buildSaunaMetaDescription(sauna: Sauna): string {
     [
       sauna.name,
       sauna.sessionPrice
-        ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}`
+        ? `${formatPrice(sauna)}${
+            sauna.sessionLengthMinutes
+              ? ` for ${sauna.sessionLengthMinutes} min`
+              : ""
+          }`
         : "",
       amenities,
     ]
@@ -3519,7 +3531,11 @@ export function buildSaunaSchemaDescription(sauna: Sauna): string {
   const amenities = describeSaunaAmenities(sauna);
   return [
     sauna.sessionPrice
-      ? `${formatPrice(sauna)}${sauna.sessionLengthMinutes ? ` for ${sauna.sessionLengthMinutes} min` : ""}`
+      ? `${formatPrice(sauna)}${
+          sauna.sessionLengthMinutes
+            ? ` for ${sauna.sessionLengthMinutes} min`
+            : ""
+        }`
       : "",
     amenities,
   ]
@@ -3552,8 +3568,10 @@ export function describeLocationAmenities(locationSaunas: Sauna[]): string {
 
   const highlights: string[] = [];
   if (floating > 0) highlights.push(`${floating} floating`);
-  if (waterfront > floating) highlights.push(`${waterfront - floating} waterfront`);
-  if (naturalPlunge > 0) highlights.push(`${naturalPlunge} with natural cold plunge`);
+  if (waterfront > floating)
+    highlights.push(`${waterfront - floating} waterfront`);
+  if (naturalPlunge > 0)
+    highlights.push(`${naturalPlunge} with natural cold plunge`);
   else if (coldPlunge > 0) highlights.push(`${coldPlunge} with cold plunge`);
   if (soakingTub > 0) highlights.push(`${soakingTub} with soaking tubs`);
   if (steamRoom > 0) highlights.push(`${steamRoom} with steam rooms`);
