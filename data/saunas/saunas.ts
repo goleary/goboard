@@ -3431,6 +3431,56 @@ export const saunas: Sauna[] = [
     lng: -72.9238,
     updatedAt: "2026-02-11",
   },
+  // Berkshires, MA / NY
+  {
+    slug: "huht-sauna-village-bousquet",
+    name: "HUHT Sauna Village at Bousquet",
+    address: "Bousquet Mountain, 101 Dan Fox Dr, Pittsfield, MA",
+    website: "https://www.gethuht.com/gather/sauna-village-bousquet",
+    bookingUrl: "https://www.gethuht.com/gather/sauna-village-bousquet",
+    sessionPrice: 39,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    hours:
+      "Wed-Thu 4-8pm, Fri 12-8pm, Sat 10am-8pm, Sun 10am-4pm (Dec 12, 2025 – Mar 21, 2026)",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seasonal wood-fired sauna village at Bousquet Mountain ski area. Finnish-inspired HUHT mobile saunas with cold plunge. Open to anyone — no ski pass required. First-timer $20 (code HUHT), single $39, 5-pack $175.50, season pass $249. Private hourly buyout $499 (up to 15 people). Aufguss rituals and guest sauna masters throughout the season.",
+    lat: 42.41908285082946,
+    lng: -73.27661717759202,
+    updatedAt: "2026-02-18",
+  },
+  {
+    slug: "huht-sauna-ps21",
+    name: "HUHT Sauna at PS21",
+    address: "PS21, 2980 NY-66, Chatham, NY",
+    website: "https://www.gethuht.com/gather/ps21",
+    bookingUrl: "https://www.gethuht.com/gather/ps21",
+    sessionPrice: 25,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // Natural pond
+    soakingTub: false,
+    waterfront: true, // PS21 Pond
+    naturalPlunge: true, // Cold plunge in natural pond
+    showers: false,
+    towelsIncluded: false,
+    hours: "Daily 10am-7pm (Jan 31 – Mar 1, 2026)",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Seasonal wood-fired HUHT mobile sauna at PS21 performing arts center in Chatham, NY. $25/person, 60-min sessions with option to stay longer if no booking follows. Cold plunge in the natural PS21 pond. Sauna sound installation by Kara-Lis Coverdale. Thursdays available for private bookings (up to 6-7 people). Walk-ups welcome if space is available.",
+    lat: 42.37499137949829,
+    lng: -73.6062908949651,
+    updatedAt: "2026-02-18",
+  },
   // Chicago
   {
     slug: "fire-and-ice-sauna-experience",
