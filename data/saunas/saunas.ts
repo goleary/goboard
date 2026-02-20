@@ -684,6 +684,14 @@ export const saunas: Sauna[] = [
     lng: -122.39572104295499,
     googleMapsUrl: "https://maps.app.goo.gl/M6J5vgcMeswgkGht5",
     updatedAt: "2025-01-04",
+    bookingProvider: {
+      type: "acuity",
+      owner: "5e9464ed",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        { id: 82608594, calendarId: 12638621, name: "Sauna Session", price: 35, durationMinutes: 60 },
+      ],
+    },
   },
   {
     slug: "fire-and-floe",
