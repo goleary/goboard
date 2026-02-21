@@ -22,14 +22,18 @@ function formatTime(isoString: string): string {
   });
 }
 
+function localDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 function formatDateLabel(dateStr: string): string {
   const date = new Date(dateStr + "T00:00:00");
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const todayStr = today.toISOString().slice(0, 10);
-  const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+  const todayStr = localDateStr(today);
+  const tomorrowStr = localDateStr(tomorrow);
 
   if (dateStr === todayStr) return "Today";
   if (dateStr === tomorrowStr) return "Tomorrow";
@@ -70,12 +74,29 @@ function DateSlots({
   );
 }
 
+function filterPastSlots(
+  dates: AppointmentTypeAvailability["dates"]
+): AppointmentTypeAvailability["dates"] {
+  const now = Date.now();
+  const filtered: AppointmentTypeAvailability["dates"] = {};
+  for (const [dateStr, slots] of Object.entries(dates)) {
+    const futureSlots = slots.filter(
+      (slot) => new Date(slot.time).getTime() > now
+    );
+    if (futureSlots.length > 0) {
+      filtered[dateStr] = futureSlots;
+    }
+  }
+  return filtered;
+}
+
 function AppointmentTypeSection({
   appointmentType,
 }: {
   appointmentType: AppointmentTypeAvailability;
 }) {
-  const sortedDates = Object.keys(appointmentType.dates).sort();
+  const filteredDates = filterPastSlots(appointmentType.dates);
+  const sortedDates = Object.keys(filteredDates).sort();
 
   if (sortedDates.length === 0) {
     return (
@@ -99,7 +120,7 @@ function AppointmentTypeSection({
           <DateSlots
             key={date}
             dateStr={date}
-            slots={appointmentType.dates[date]}
+            slots={filteredDates[date]}
           />
         ))}
       </div>
@@ -118,7 +139,7 @@ export function SaunaAvailability({ sauna }: SaunaAvailabilityProps) {
     setLoading(true);
     setError(null);
 
-    const startDate = new Date().toISOString().slice(0, 10);
+    const startDate = localDateStr(new Date());
     fetch(
       `/api/saunas/availability?slug=${encodeURIComponent(sauna.slug)}&startDate=${startDate}`
     )
