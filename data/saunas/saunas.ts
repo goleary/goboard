@@ -518,6 +518,7 @@ export const saunas: Sauna[] = [
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
+    bookingPlatform: "glofox",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -542,6 +543,7 @@ export const saunas: Sauna[] = [
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
+    bookingPlatform: "glofox",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -568,6 +570,7 @@ export const saunas: Sauna[] = [
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
+    bookingPlatform: "glofox",
     googleMapsUrl: "https://maps.app.goo.gl/fEJKv6J2wSnAxaFT7",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
@@ -593,6 +596,7 @@ export const saunas: Sauna[] = [
     address: "Mukilteo, WA",
     website: "https://evergreensauna.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule.php?owner=33228599",
+    bookingPlatform: "acuity",
     googleMapsUrl: "https://maps.app.goo.gl/ywjXu2CnYXdt6fNL6",
     sessionPrice: 35,
     sessionLengthMinutes: 75,
@@ -626,6 +630,7 @@ export const saunas: Sauna[] = [
     address: "3560 W Lake Sammamish Pkwy SE, Bellevue, WA 98008",
     website: "https://www.vihtasauna.co/",
     bookingUrl: "https://www.vihtasauna.co/bookings",
+    bookingPlatform: "wix",
     sessionPrice: 40,
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -652,6 +657,7 @@ export const saunas: Sauna[] = [
     website: "https://www.vonsauna.co/",
     bookingUrl:
       "https://minside.periode.no/bookinggroups/PqrVGDw50fAmCwkYGrxY/Off8bTkjMxsqCHc84gDD",
+    bookingPlatform: "periode",
     sessionPrice: 40,
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -677,6 +683,7 @@ export const saunas: Sauna[] = [
     name: "Tuli Lodge",
     website: "https://www.tuli-lodge.com/",
     bookingUrl: "https://www.tuli-lodge.com/book",
+    bookingPlatform: "wix",
     sessionPrice: 27,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -701,6 +708,7 @@ export const saunas: Sauna[] = [
     website: "http://www.gooddaysauna.com/",
     bookingUrl:
       "https://app.acuityscheduling.com/schedule/5e9464ed/appointment/82608594/calendar/12638621",
+    bookingPlatform: "acuity",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -734,6 +742,7 @@ export const saunas: Sauna[] = [
     website: "https://fireandfloe.com/",
     bookingUrl:
       "https://minside.periode.no/bookinggroups/7Rnv6gI4q8eaTuU5uSQA/xJeWObTOZgRyDoyknG7C",
+    bookingPlatform: "periode",
     sessionPrice: 30,
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -758,6 +767,7 @@ export const saunas: Sauna[] = [
     address: "14123 Redmond - Woodinville Rd NE, Redmond, WA 98052",
     website: "https://www.fyresauna.com/",
     bookingUrl: "https://www.fyresauna.com/book-online",
+    bookingPlatform: "wix",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -784,6 +794,7 @@ export const saunas: Sauna[] = [
     website: "http://www.soakandsagespa.com/",
     bookingUrl:
       "https://www.joinblvd.com/b/34303b6d-5682-4a50-b816-c4901c2b1072/widget",
+    bookingPlatform: "boulevard",
     sessionPrice: 75,
     sessionLengthMinutes: 120,
     steamRoom: true,
@@ -808,6 +819,7 @@ export const saunas: Sauna[] = [
     markerIconOverride: "floating-sauna",
     website: "https://seattlesauna.com/",
     bookingUrl: "https://bookeo.com/seattlesauna",
+    bookingPlatform: "bookeo",
     sessionPrice: 64,
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -832,6 +844,7 @@ export const saunas: Sauna[] = [
     address: "Brackett's Landing North, Edmonds, WA",
     website: "https://www.saunansoak.com/services",
     bookingUrl: "https://www.saunansoak.com/appointments",
+    bookingPlatform: "acuity",
     googleMapsUrl: "https://maps.app.goo.gl/BJZ2vLncQueWCy5V9",
     sessionPrice: 30,
     sessionLengthMinutes: 60,
@@ -867,6 +880,7 @@ export const saunas: Sauna[] = [
     markerIconOverride: "ship",
     website: "https://thewildhaus.com/",
     bookingUrl: "https://wild-haus.checkfront.com/reserve/",
+    bookingPlatform: "checkfront",
     sessionPrice: 150,
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -891,6 +905,7 @@ export const saunas: Sauna[] = [
     website: "https://svettetacoma.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/67a141b0d1806cff7106b964/classes-day-view",
+    bookingPlatform: "glofox",
     sessionPrice: 35, // Peak pricing, $28 matinee
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -941,6 +956,7 @@ export const saunas: Sauna[] = [
     address: "2814 Colby Ave, Everett, WA 98201",
     website: "https://banyabyfgm.com/",
     bookingUrl: "https://banyabyfgm.com/book-now/",
+    bookingPlatform: "mindbody",
     googleMapsUrl: "https://maps.app.goo.gl/BaTyLaz1F2j9baw28",
     sessionPrice: 40, // Day reservation $40, Day walk-in $50, Evening reservation $50, Evening walk-in $60
     sessionLengthMinutes: 180, // 3-hour sessions
@@ -968,6 +984,7 @@ export const saunas: Sauna[] = [
     address: "246 Old Hwy 99 N, Bellingham, WA 98229",
     website: "https://www.hotspotbellingham.com/",
     bookingUrl: "https://www.hotspotbellingham.com/bookings",
+    bookingPlatform: "mindbody",
     googleMapsUrl: "https://maps.app.goo.gl/5EpaLT2r57PqxSN37",
     sessionPrice: 35,
     sessionLengthMinutes: 50,
@@ -995,6 +1012,7 @@ export const saunas: Sauna[] = [
     address: "Bloedel Donovan Park, Bellingham, WA",
     website: "https://www.hotspotbellingham.com/",
     bookingUrl: "https://www.hotspotbellingham.com/bookings",
+    bookingPlatform: "mindbody",
     googleMapsUrl: "https://maps.app.goo.gl/5EpaLT2r57PqxSN37",
     sessionPrice: 35,
     sessionLengthMinutes: 50,
@@ -1044,6 +1062,7 @@ export const saunas: Sauna[] = [
     address: "1019 E Pike St, Seattle, WA 98122",
     website: "https://www.hothousespa.com/",
     bookingUrl: "https://www.hothousespa.com/schedule",
+    bookingPlatform: "acuity",
     googleMapsUrl: "https://maps.app.goo.gl/nWMgFkAafFz76Lc49",
     sessionPrice: 190, // Starting price for 90min weekday rental (up to 4 people)
     sessionLengthMinutes: 90,
@@ -1063,6 +1082,19 @@ export const saunas: Sauna[] = [
     lat: 47.61395512236991,
     lng: -122.31851450204844,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "acuity",
+      owner: "bae4137c",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        { acuityAppointmentId: 40981922, acuityCalendarId: 5156616, name: "90 min Daytime Weekday", price: 190, durationMinutes: 90 },
+        { acuityAppointmentId: 67383995, acuityCalendarId: 5156616, name: "90 min Eve/Weekend", price: 240, durationMinutes: 90 },
+        { acuityAppointmentId: 62947500, acuityCalendarId: 5156616, name: "2 Hour Daytime Weekdays", price: 220, durationMinutes: 120 },
+        { acuityAppointmentId: 62947509, acuityCalendarId: 5156616, name: "2 Hour Evenings & Weekends", price: 270, durationMinutes: 120 },
+        { acuityAppointmentId: 67384119, acuityCalendarId: 5156616, name: "3 Hour Daytime Weekdays", price: 300, durationMinutes: 180 },
+        { acuityAppointmentId: 67384126, acuityCalendarId: 5156616, name: "3 Hour Evenings & Weekends", price: 350, durationMinutes: 180 },
+      ],
+    },
   },
   {
     slug: "yuan-spa-bellevue",
@@ -1070,6 +1102,7 @@ export const saunas: Sauna[] = [
     address: "1032 106th Ave NE, Suite 125, Bellevue, WA 98004",
     website: "https://yuanspa.com/",
     bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
+    bookingPlatform: "booker",
     googleMapsUrl: "https://goo.gl/maps/UphkRHkShgbc5kMa8",
     sessionPrice: 59, // Weekday price, $69 on weekends
     sessionLengthMinutes: 60,
@@ -1211,6 +1244,7 @@ export const saunas: Sauna[] = [
     address: "11900 NE Village Plaza #176, Kirkland, WA 98034",
     website: "https://yuanspa.com/",
     bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
+    bookingPlatform: "booker",
     googleMapsUrl: "https://goo.gl/maps/HtTVeP2ihv92JdH36",
     sessionPrice: 59, // Weekday price, $69 on weekends
     sessionLengthMinutes: 60,
@@ -1263,6 +1297,7 @@ export const saunas: Sauna[] = [
     website: "https://cedarandstonesauna.com/",
     bookingUrl:
       "https://fareharbor.com/embeds/book/cedarandstonesauna/?full-items=yes",
+    bookingPlatform: "fareharbor",
     googleMapsUrl: "https://maps.app.goo.gl/kxzGvHoJ6bTw1Rsg6",
     sessionPrice: 49, // Social session price
     sessionLengthMinutes: 75,
@@ -1341,6 +1376,7 @@ export const saunas: Sauna[] = [
     website: "https://www.onsensf.com/",
     bookingUrl:
       "https://www.exploretock.com/onsenurbanbathandrestaurant/experience/109861/co-ed-bathhouse-reservation",
+    bookingPlatform: "tock",
     googleMapsUrl: "https://maps.app.goo.gl/UEw2pajjXMjEZQ659",
     sessionPrice: 50,
     sessionLengthMinutes: 120,
@@ -1392,6 +1428,7 @@ export const saunas: Sauna[] = [
     address: "3939 Piedmont Ave, Oakland, CA 94611",
     website: "https://www.piedmontsprings.com/",
     bookingUrl: "https://www.piedmontsprings.com/online-booking",
+    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/oRvFr6f97Kbaxgds8",
     sessionPrice: 20, // $20 per 30 min, $22 per 45 min
     sessionLengthMinutes: 30,
@@ -1417,6 +1454,7 @@ export const saunas: Sauna[] = [
     address: "2713 SE 21st Ave, Portland, OR 97202",
     website: "https://www.loyly.net/",
     bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
+    bookingPlatform: "zenoti",
     googleMapsUrl: "https://maps.app.goo.gl/oRJtXBpuSshfED5S7",
     sessionPrice: 30, // Mon-Thu price; $40 Fri-Sun
     sessionLengthMinutes: 120,
@@ -1442,6 +1480,7 @@ export const saunas: Sauna[] = [
     address: "3525 NE Martin Luther King Jr Blvd, Portland, OR 97212",
     website: "https://www.loyly.net/",
     bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
+    bookingPlatform: "zenoti",
     googleMapsUrl: "https://maps.app.goo.gl/woXtQYh8kmyJuwud7",
     sessionPrice: 30, // Mon-Thu price; $40 Fri-Sun
     sessionLengthMinutes: 120,
@@ -1493,6 +1532,7 @@ export const saunas: Sauna[] = [
     website: "https://www.forestsaunapdx.com/",
     bookingUrl:
       "https://app.squareup.com/appointments/book/xkixhokqjj5m3m/LBCF5TC30K6Y1/start",
+    bookingPlatform: "square",
     googleMapsUrl: "https://maps.app.goo.gl/wV4N4MEm7jbvuxdu8",
     sessionPrice: 50, // Price varies by group size; estimate for private session
     sessionLengthMinutes: 90,
@@ -1519,6 +1559,7 @@ export const saunas: Sauna[] = [
     website: "https://www.everetthousecommunityhealingcenter.com/",
     bookingUrl:
       "https://clients.mindbodyonline.com/classic/ws?studioid=47269&stype=-101",
+    bookingPlatform: "mindbody",
     googleMapsUrl: "https://maps.app.goo.gl/WwuiZuSaPTu5y3Zv9",
     sessionPrice: 28, // 60 min; 30 min $18, 90 min $39
     sessionLengthMinutes: 60,
@@ -1546,6 +1587,7 @@ export const saunas: Sauna[] = [
     website: "https://www.bearbanya.com/",
     bookingUrl:
       "https://book.squareup.com/appointments/sdr909jlzvzvv8/location/L05M6ZMRXDHXZ/services",
+    bookingPlatform: "square",
     googleMapsUrl: "https://maps.app.goo.gl/zB2mFo97osPvVUZr8",
     sessionPrice: 60, // 1 hr All Inclusive; 2 hr $120, 3 hr $180
     sessionLengthMinutes: 60,
@@ -1571,6 +1613,7 @@ export const saunas: Sauna[] = [
     address: "1915 SE Jefferson St, Milwaukie, OR 97222",
     website: "https://www.saunaglo.com/",
     bookingUrl: "https://www.saunaglo.com/book",
+    bookingPlatform: "glofox",
     googleMapsUrl: "https://maps.app.goo.gl/Nbv2Uhdf8zfLPyaA8",
     sessionPrice: 29, // Day pass; $19 weekdays before 2pm
     steamRoom: false,
@@ -1596,6 +1639,7 @@ export const saunas: Sauna[] = [
     website: "https://www.theguss.com/",
     bookingUrl:
       "https://minside.periode.no/eventlist/v9YqrmvzfkNDbpcILgA8/KcnoUcYNgTY9TtpttJ4g",
+    bookingPlatform: "periode",
     googleMapsUrl: "https://maps.app.goo.gl/qsYa7tDFeHjtngis6",
     sessionPrice: 30, // Drop-in; 5-session punch pass $120
     sessionLengthMinutes: 60,
@@ -1622,6 +1666,7 @@ export const saunas: Sauna[] = [
     website: "https://knotsprings.com/",
     bookingUrl:
       "https://clients.mindbodyonline.com/classic/ws?studioid=337004&stype=-103&sView=week&sLoc=0",
+    bookingPlatform: "mindbody",
     googleMapsUrl: "https://maps.app.goo.gl/nHaJyxDfqGuLcD7M7",
     sessionPrice: 69, // Tue-Thu before 3pm; $89 all other times
     sessionLengthMinutes: 120,
@@ -1648,6 +1693,7 @@ export const saunas: Sauna[] = [
     address: "4128 SE Jefferson St, Milwaukie, OR 97222",
     website: "https://www.kotisauna.com/",
     bookingUrl: "https://www.kotisauna.com/booksauna",
+    bookingPlatform: "acuity",
     googleMapsUrl: "https://maps.app.goo.gl/QHpZ294cn2vYyqhD6",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
@@ -1667,6 +1713,15 @@ export const saunas: Sauna[] = [
     lat: 45.4442786,
     lng: -122.6201981,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "acuity",
+      owner: "d8dc9e08",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        { acuityAppointmentId: 78853595, acuityCalendarId: 11520159, name: "Community Sauna and Cold Plunge", price: 40, durationMinutes: 120 },
+        { acuityAppointmentId: 86951055, acuityCalendarId: 11520159, name: "Rooted Warmth: Sauna + Sound Bath Reset", price: 70, durationMinutes: 180 },
+      ],
+    },
   },
   {
     slug: "connect-wellness",
@@ -1674,6 +1729,7 @@ export const saunas: Sauna[] = [
     address: "4301 NE 59th Ave, Vancouver, WA 98661",
     website: "https://www.connectwellness.biz/",
     bookingUrl: "https://www.connectwellness.biz/calendar",
+    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/RSHr2Ewh21DP4SK87",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
@@ -1700,6 +1756,7 @@ export const saunas: Sauna[] = [
     address: "6545 N Fenwick Ave, Portland, OR 97217",
     website: "https://backyardblisspdx.simplybook.me/",
     bookingUrl: "https://backyardblisspdx.simplybook.me/v2/#book",
+    bookingPlatform: "simplybook",
     googleMapsUrl: "https://maps.app.goo.gl/vyXa58VwfctfRHBLA",
     sessionPrice: 45, // Sauna & Shower 1hr Mon/Thu; Full experience 90min $100
     sessionLengthMinutes: 60,
@@ -1727,6 +1784,7 @@ export const saunas: Sauna[] = [
     address: "7415 N Oatman Ave, Portland, OR 97217",
     website: "https://www.fusionpdx.com/",
     bookingUrl: "http://fusionbodyworkspdx2.clinicsense.com/book/",
+    bookingPlatform: "clinicsense",
     googleMapsUrl: "https://maps.app.goo.gl/YoBZYagBtnN3wkm57",
     sessionPrice: 30, // Community sauna 90 min; Private $200/90min, $250/120min
     sessionLengthMinutes: 90,
@@ -1781,6 +1839,7 @@ export const saunas: Sauna[] = [
     address: "414 W 23rd St, Vancouver, WA 98660",
     website: "https://www.uptownsaunahouse.com/",
     bookingUrl: "https://www.uptownsaunahouse.com/book-online",
+    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/Zmj6oReyvZkhW2fL6",
     sessionPrice: 35, // 90-min session; Sunrise Mini $25/30min
     sessionLengthMinutes: 90,
@@ -1808,6 +1867,7 @@ export const saunas: Sauna[] = [
     website: "https://www.ebbandember.com/",
     bookingUrl:
       "https://minside.periode.no/bookinggroups/wE4l5rKVuae2oCBE93gz/XBS8E3lQehtlsunpb5Kx/2025-11-09",
+    bookingPlatform: "periode",
     googleMapsUrl: "https://maps.app.goo.gl/SxKydKCWtX9iFnBSA",
     sessionPrice: 59, // Social session; Private $539 for up to 10 guests
     sessionLengthMinutes: 105, // 1hr 45min
@@ -1834,6 +1894,7 @@ export const saunas: Sauna[] = [
     address: "748 Innes Ave, San Francisco, CA 94124",
     website: "https://banyasf.com/",
     bookingUrl: "https://go.booker.com/location/ARCHIMEDESBANYASF/service-menu",
+    bookingPlatform: "booker",
     googleMapsUrl: "https://maps.app.goo.gl/JAT6Wr8q8EDNeqJi9",
     sessionPrice: 55, // Happy Hour Pass; Basic Banya Pass $67
     sessionLengthMinutes: 180,
@@ -1863,6 +1924,7 @@ export const saunas: Sauna[] = [
     address: "2320 Marinship Way, Sausalito, CA 94965",
     website: "https://www.thisisfjord.com/",
     bookingUrl: "https://www.zettlor.com/c/fjord",
+    bookingPlatform: "zettlor",
     googleMapsUrl: "https://maps.app.goo.gl/BXAmzUXPz2gi8J3HA",
     sessionPrice: 45, // Shared session; Private $270
     sessionLengthMinutes: 90,
@@ -1890,6 +1952,7 @@ export const saunas: Sauna[] = [
     address: "158 Almonte Blvd, Mill Valley, CA 94941",
     website: "https://www.almontespa.com/",
     bookingUrl: "https://www.almontespa.com/book",
+    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/4c1sTy9dAZeBDLq16",
     sessionPrice: 35, // Finnish sauna 30 min; also $45/45min, $55/60min
     sessionLengthMinutes: 30,
@@ -1916,6 +1979,7 @@ export const saunas: Sauna[] = [
     address: "1950 Stenmark Dr, Richmond, CA 94801",
     website: "https://www.good-hot-booking.com/",
     bookingUrl: "https://www.good-hot-booking.com/book",
+    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/ESCG9k97EtiJmrnp8",
     sessionPrice: 130, // Saunas 1-3; Saunas 4-5 are $150
     sessionLengthMinutes: 90,
@@ -1943,6 +2007,7 @@ export const saunas: Sauna[] = [
     website: "https://www.dogpatchpaddle.com/sauna",
     bookingUrl:
       "https://book.peek.com/s/2530f333-35eb-43fc-b661-6c7d3c95dfea/wqA07",
+    bookingPlatform: "peek",
     googleMapsUrl: "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8",
     sessionPrice: 25, // Public session; Private $100
     sessionLengthMinutes: 60,
@@ -2022,6 +2087,7 @@ export const saunas: Sauna[] = [
     address: "200 Zelt Strasse, Leavenworth, WA 98826",
     website: "https://www.thesprings.us/",
     bookingUrl: "https://ecom.roller.app/thesprings/checkout/en-us/products",
+    bookingPlatform: "roller",
     googleMapsUrl: "https://maps.app.goo.gl/qaB6GfHQLbDP8GPYA",
     sessionPrice: 35, // $35 Sun-Thu, $45 Fri-Sat
     sessionLengthMinutes: 120,
@@ -2047,6 +2113,7 @@ export const saunas: Sauna[] = [
     address: "Thompson Rd, Sequim, WA 98382",
     website: "https://www.seatsusauna.com/",
     bookingUrl: "https://www.seatsusauna.com/book-online",
+    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/RJ787PtCqXUcJTQa7",
     sessionPrice: 35, // Community session; Private $135 for up to 4 people
     sessionLengthMinutes: 90,
@@ -2072,6 +2139,7 @@ export const saunas: Sauna[] = [
     address: "5411 Sandridge Rd, Long Beach, WA 98631",
     website: "https://snowpeakcampfield.com/ofuro/",
     bookingUrl: "https://www.vagaro.com/spcpyc3/classes",
+    bookingPlatform: "vagaro",
     googleMapsUrl: "https://maps.app.goo.gl/XDiU6yWXPVXeaHf76",
     sessionPrice: 35, // Day guest pass; included for overnight guests
     sessionLengthMinutes: 120,
@@ -2097,6 +2165,7 @@ export const saunas: Sauna[] = [
     address: "165 Channing Ave, Palo Alto, CA 94301",
     website: "https://watercourseway.com/",
     bookingUrl: "https://go.booker.com/location/WatercourseWay/service-menu",
+    bookingPlatform: "booker",
     googleMapsUrl: "https://maps.app.goo.gl/gqMVsmoqDNEqPBHw5",
     sessionPrice: 55, // Premium hot tub room with sauna (Mon-Thu); $60 Fri-Sun
     sessionLengthMinutes: 60,
@@ -2148,6 +2217,7 @@ export const saunas: Sauna[] = [
     address: "Riverbend Park, Bend, OR 97702",
     website: "https://www.gathersaunahouse.com/",
     bookingUrl: "https://www.gathersaunahouse.com/locations",
+    bookingPlatform: "acuity",
     googleMapsUrl: "https://maps.app.goo.gl/dxnDXFy9y6dF9c1N8",
     sessionPrice: 40,
     sessionLengthMinutes: 90,
@@ -2166,6 +2236,16 @@ export const saunas: Sauna[] = [
     lat: 44.0548,
     lng: -121.2932,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "acuity",
+      owner: "5ce047b0",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        { acuityAppointmentId: 33194159, acuityCalendarId: 11295248, name: "Public Session - Riverbend", price: 45, durationMinutes: 75 },
+        { acuityAppointmentId: 37714997, acuityCalendarId: 11295248, name: "Private Session - Riverbend", price: 250, durationMinutes: 75 },
+        { acuityAppointmentId: 87599235, acuityCalendarId: 11295248, name: "Thermic Thursday Socials", price: 30, durationMinutes: 75 },
+      ],
+    },
   },
   {
     slug: "breitenbush-hot-springs",
@@ -2279,6 +2359,7 @@ export const saunas: Sauna[] = [
     website: "https://hastingsspa.com/",
     bookingUrl:
       "https://squareup.com/appointments/book/p860or5934mejb/Y9NQRV2CZP0BT/services",
+    bookingPlatform: "square",
     sessionPrice: 37,
     currency: "CAD",
     sessionLengthMinutes: 90,
@@ -2304,6 +2385,7 @@ export const saunas: Sauna[] = [
     address: "Bowen Island, BC, Canada",
     website: "https://www.mistthermal.com/",
     bookingUrl: "https://mistthermalsanctuary.as.me/",
+    bookingPlatform: "acuity",
     sessionPrice: 199,
     currency: "CAD",
     sessionLengthMinutes: 90,
@@ -2323,6 +2405,15 @@ export const saunas: Sauna[] = [
     lat: 49.3833,
     lng: -123.3333,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "acuity",
+      owner: "e382c61c",
+      timezone: "America/Vancouver",
+      appointmentTypes: [
+        { acuityAppointmentId: 69916653, acuityCalendarId: 0, name: "Mist Experience (90 min)", price: 199, durationMinutes: 90 },
+        { acuityAppointmentId: 74108106, acuityCalendarId: 0, name: "Mist Experience (120 min)", price: 249, durationMinutes: 120 },
+      ],
+    },
   },
   {
     slug: "jericho-beach-seaside-sauna",
@@ -2332,6 +2423,7 @@ export const saunas: Sauna[] = [
       "https://www.thefinnishsauna.ca/service-page/jericho-beach-seaside-sauna-social",
     bookingUrl:
       "https://www.thefinnishsauna.ca/booking-calendar/jericho-beach-seaside-sauna-social?referral=service_list_widget",
+    bookingPlatform: "wix",
     sessionPrice: 36,
     currency: "CAD",
     sessionLengthMinutes: 105,
@@ -2360,6 +2452,7 @@ export const saunas: Sauna[] = [
     address: "920 Wharf St, Victoria, BC V8W 1T3, Canada",
     website: "https://www.havnsaunas.com/",
     bookingUrl: "https://www.havnsaunas.com/book",
+    bookingPlatform: "checkfront",
     googleMapsUrl: "https://maps.app.goo.gl/tMQ7JM7VZ2VWLD8y6",
     sessionPrice: 94,
     currency: "CAD",
@@ -2389,6 +2482,7 @@ export const saunas: Sauna[] = [
     address: "989 Johnson St #101, Victoria, BC V8V 0E3, Canada",
     website: "https://ritualnordicspa.com/",
     bookingUrl: "https://ritualnordicspa.zenoti.com/webstorenew",
+    bookingPlatform: "zenoti",
     googleMapsUrl: "https://maps.app.goo.gl/Q8X9e7VQnLkj2fxr5",
     sessionPrice: 59,
     currency: "CAD",
@@ -2418,6 +2512,7 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/6YhNcvZy3Nmuerh26",
     bookingUrl:
       "https://www.thefinnishsauna.ca/bookings?category=e7a79865-03c4-48ce-8c0c-15461f872892",
+    bookingPlatform: "wix",
     sessionPrice: 40,
     currency: "CAD",
     sessionLengthMinutes: 90,
@@ -2445,6 +2540,7 @@ export const saunas: Sauna[] = [
     website: "https://thelostfaucet.com/",
     bookingUrl:
       "https://square.site/book/A3DZSYC1ZD77J/the-lost-faucet-courtenay-bc",
+    bookingPlatform: "square",
     googleMapsUrl: "https://maps.app.goo.gl/mxJDKJa5kPv6VFEZ7",
     sessionPrice: 38,
     currency: "CAD",
@@ -2472,6 +2568,7 @@ export const saunas: Sauna[] = [
     address: "2795 Meadowview Rd, Shawnigan Lake, BC V0R 2W0, Canada",
     website: "https://nyubu.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/nyubu/?full-items=yes",
+    bookingPlatform: "fareharbor",
     googleMapsUrl: "https://maps.app.goo.gl/bq4BvBhhtuYgAoFa7",
     sessionPrice: 30,
     currency: "CAD",
@@ -2500,6 +2597,7 @@ export const saunas: Sauna[] = [
     website: "https://www.islandsauna.ca/",
     bookingUrl:
       "https://book.peek.com/s/6182797e-e84c-474f-bdb6-261fd070df1e/N3xJ8",
+    bookingPlatform: "peek",
     sessionPrice: 38, // CA$37.50 rounded up
     currency: "CAD",
     sessionLengthMinutes: 120,
@@ -2527,6 +2625,7 @@ export const saunas: Sauna[] = [
     website: "https://www.islandsauna.ca/",
     bookingUrl:
       "https://book.peek.com/s/6182797e-e84c-474f-bdb6-261fd070df1e/0lYdX",
+    bookingPlatform: "peek",
     sessionPrice: 35, // CA$35 for social session
     currency: "CAD",
     sessionLengthMinutes: 90,
@@ -2554,6 +2653,7 @@ export const saunas: Sauna[] = [
     website: "https://tuffcitysaunas.com/",
     bookingUrl:
       "https://book.peek.com/s/cb68db65-f54b-43a1-b5d6-3d11dd60c422/4X0Ax",
+    bookingPlatform: "peek",
     googleMapsUrl:
       "https://www.google.com/maps/place/Pacific+Sands+Beach+Resort/@49.1066474,-125.8729172,17z",
     sessionPrice: 199, // CA$199 for private 2hr session (up to 6 people)
@@ -2583,6 +2683,7 @@ export const saunas: Sauna[] = [
     website: "https://tofinoresortandmarina.com/remote-floating-sauna-dock/",
     bookingUrl:
       "https://fareharbor.com/embeds/book/tofinoresortandmarina/?full-items=yes&flow=1039132",
+    bookingPlatform: "fareharbor",
     googleMapsUrl: "https://maps.app.goo.gl/wKtMwNTh4ahGiQzJ7",
     sessionPrice: 179, // CA$179/person community session (Sun/Wed)
     currency: "CAD",
@@ -2615,6 +2716,7 @@ export const saunas: Sauna[] = [
     website: "https://www.scandinave.com/whistler/",
     bookingUrl:
       "https://scandinave.zenoti.com/webstoreNew/services/69bb2568-7d3c-4353-afc5-ad61c51bed79",
+    bookingPlatform: "zenoti",
     googleMapsUrl: "https://maps.app.goo.gl/u9j8cDT5TySgqNrJ8",
     sessionPrice: 138,
     currency: "CAD",
@@ -2675,6 +2777,7 @@ export const saunas: Sauna[] = [
     website: "https://www.thefinnishsauna.ca/squamish",
     bookingUrl:
       "https://www.thefinnishsauna.ca/booking-calendar/cheekye-ranch-sauna-social?referral=service_list_widget",
+    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/KU4dEmFnTw5Zfhz87",
     sessionPrice: 40,
     currency: "CAD",
@@ -2706,6 +2809,7 @@ export const saunas: Sauna[] = [
     website: "https://orcasaunas.com/",
     bookingUrl:
       "https://minside.periode.no/booking/aoy42QDbXlX69KNH6ook/HTj3APooRPh93WMtVFlq",
+    bookingPlatform: "periode",
     googleMapsUrl: "https://maps.app.goo.gl/cWhMT1FsiK5YAWmG6",
     sessionPrice: 25, // CA$25 single session drop-in
     currency: "CAD",
@@ -2910,6 +3014,7 @@ export const saunas: Sauna[] = [
     address: "1952 E. 2700 S., Salt Lake City, UT 84106",
     website: "https://www.saunapublic.com/",
     bookingUrl: "https://booking.mangomint.com/saunapublic1",
+    bookingPlatform: "mangomint",
     googleMapsUrl: "https://maps.app.goo.gl/YXmn9XKZQ5Yvq1xZ7",
     sessionPrice: 35,
     sessionLengthMinutes: 0, // No time limit
@@ -2962,6 +3067,7 @@ export const saunas: Sauna[] = [
     address: "Utah Lake State Park, Provo, UT",
     website: "https://www.utahlakesauna.com/",
     bookingUrl: "https://www.utahlakesauna.com/appointments",
+    bookingPlatform: "acuity",
     googleMapsUrl: "https://maps.app.goo.gl/YnZ8XKZQ5Yvq1xZ7",
     sessionPrice: 36,
     sessionLengthMinutes: 75,
@@ -2981,6 +3087,14 @@ export const saunas: Sauna[] = [
     lat: 40.2338,
     lng: -111.7352,
     updatedAt: "2026-01-06",
+    bookingProvider: {
+      type: "acuity",
+      owner: "1a980a7f",
+      timezone: "America/Denver",
+      appointmentTypes: [
+        { acuityAppointmentId: 85865448, acuityCalendarId: 13077391, name: "Community Session", price: 36, durationMinutes: 75 },
+      ],
+    },
   },
   {
     slug: "soho-saunas",
@@ -2988,6 +3102,7 @@ export const saunas: Sauna[] = [
     address: "West Soldier Hollow Ln, Midway, UT 84049",
     website: "https://sohosaunas.com/",
     bookingUrl: "https://www.zettlor.com/c/sohosaunas",
+    bookingPlatform: "zettlor",
     googleMapsUrl: "https://maps.app.goo.gl/WJJqd5UxSn1twaYC6",
     sessionPrice: 38,
     sessionLengthMinutes: 120,
@@ -3170,6 +3285,7 @@ export const saunas: Sauna[] = [
     website: "https://southwoodsnwa.com/",
     bookingUrl:
       "https://book.peek.com/s/c483e16c-9ecf-4e56-a76d-d3155e7c0646/0b7pw",
+    bookingPlatform: "peek",
     googleMapsUrl: "https://maps.app.goo.gl/7wBuqNnCzB4LzBBd8",
     sessionPrice: 55,
     sessionLengthMinutes: 90,
@@ -3198,6 +3314,7 @@ export const saunas: Sauna[] = [
     address: "1411 4th Ave South, Nashville, TN 37210",
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/schedule",
+    bookingPlatform: "mariana-tek",
     googleMapsUrl: "https://maps.app.goo.gl/myhsXzMqzdzBuXW88",
     sessionPrice: 35, // $35 weekday, $55 weekend
     sessionLengthMinutes: null,
@@ -3224,6 +3341,7 @@ export const saunas: Sauna[] = [
     address: "928 McFerrin Ave, Nashville, TN 37206",
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/schedule",
+    bookingPlatform: "mariana-tek",
     googleMapsUrl: "https://maps.app.goo.gl/YsgWzJ6zGCw2GUQ69",
     sessionPrice: 25, // $25 weekday, $35 weekend
     sessionLengthMinutes: null,
@@ -3277,6 +3395,7 @@ export const saunas: Sauna[] = [
     website: "https://www.goodmedicinewhidbey.com/",
     bookingUrl:
       "https://www.goodmedicinewhidbey.com/https/appacuityschedulingcom/catalogphpowner35124680",
+    bookingPlatform: "acuity",
     googleMapsUrl: "https://maps.app.goo.gl/zaUiFtrFkpaqbKiv8",
     sessionPrice: 40,
     sessionLengthMinutes: 90,
@@ -3313,6 +3432,7 @@ export const saunas: Sauna[] = [
     address: "Whidbey Island, WA",
     website: "https://www.driftwoodsaunaco.com/",
     bookingUrl: "https://www.driftwoodsaunaco.com/book",
+    bookingPlatform: "acuity",
     sessionPrice: 30,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -3348,6 +3468,7 @@ export const saunas: Sauna[] = [
     address: "385 Dorchester Ave, Boston, MA 02127",
     website: "https://www.mokisauna.com/",
     bookingUrl: "https://www.mokisauna.com/social-sessions",
+    bookingPlatform: "periode",
     sessionPrice: 59,
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -3373,6 +3494,7 @@ export const saunas: Sauna[] = [
     address: "267 Western Ave, Allston, MA 02134",
     website: "https://www.mokisauna.com/",
     bookingUrl: "https://www.mokisauna.com/social-sessions",
+    bookingPlatform: "periode",
     sessionPrice: 59,
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -3399,6 +3521,7 @@ export const saunas: Sauna[] = [
     address: "676 Broadway, New York, NY 10012",
     website: "https://www.lorebathingclub.com/",
     bookingUrl: "https://www.lorebathingclub.com/membership",
+    bookingPlatform: "glofox",
     googleMapsUrl: "https://maps.app.goo.gl/opRcSwt9dS69oSC26",
     sessionPrice: 55,
     sessionLengthMinutes: 75,
@@ -3497,6 +3620,7 @@ export const saunas: Sauna[] = [
     address: "1 Blachley Rd, Stamford, CT 06902",
     website: "https://hideoutsocial.club/",
     bookingUrl: "https://hideoutsocial.club/book",
+    bookingPlatform: "mariana-tek",
     googleMapsUrl: "https://maps.app.goo.gl/uziZddHwQoj1tz788",
     sessionPrice: 30,
     steamRoom: false,
@@ -3521,6 +3645,7 @@ export const saunas: Sauna[] = [
     address: "745 Chapel St, New Haven, CT",
     website: "https://www.dryypsauna.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/dryypsauna/?full-items=yes",
+    bookingPlatform: "fareharbor",
     googleMapsUrl: "https://maps.app.goo.gl/YLBk4xcULW9pF46B9",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
@@ -3549,6 +3674,7 @@ export const saunas: Sauna[] = [
     address: "Bousquet Mountain, 101 Dan Fox Dr, Pittsfield, MA",
     website: "https://www.gethuht.com/gather/sauna-village-bousquet",
     bookingUrl: "https://www.gethuht.com/gather/sauna-village-bousquet",
+    bookingPlatform: "fareharbor",
     sessionPrice: 39,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -3574,6 +3700,7 @@ export const saunas: Sauna[] = [
     address: "PS21, 2980 NY-66, Chatham, NY",
     website: "https://www.gethuht.com/gather/ps21",
     bookingUrl: "https://www.gethuht.com/gather/ps21",
+    bookingPlatform: "fareharbor",
     sessionPrice: 25,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -3599,6 +3726,7 @@ export const saunas: Sauna[] = [
     address: "1600 N Lake Shore Dr, Chicago, IL 60613",
     website: "https://fire-ice-sauna-experience.square.site/",
     bookingUrl: "https://fire-ice-sauna-experience.square.site/",
+    bookingPlatform: "square",
     googleMapsUrl: "https://maps.app.goo.gl/GJdxDD68Qf49ofQD6",
     sessionPrice: 30,
     sessionLengthMinutes: 30,
