@@ -253,11 +253,40 @@ export interface AcuityBookingProviderConfig {
 }
 
 /**
+ * Wix Bookings service type configuration.
+ */
+export interface WixServiceType {
+  /** Wix service ID (UUID) */
+  serviceId: string;
+  /** Display name (e.g. "Sauna Session") */
+  name: string;
+  /** Price in the sauna's currency */
+  price: number;
+  /** Duration in minutes */
+  durationMinutes: number;
+}
+
+/**
+ * Wix Bookings provider configuration.
+ */
+export interface WixBookingProviderConfig {
+  type: "wix";
+  /** The Wix site hostname (e.g. "www.vihtasauna.co") */
+  siteUrl: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Services to show availability for */
+  services: WixServiceType[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
  */
-export type BookingProviderConfig = AcuityBookingProviderConfig;
+export type BookingProviderConfig =
+  | AcuityBookingProviderConfig
+  | WixBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -660,6 +689,19 @@ export const saunas: Sauna[] = [
     lng: -122.1118042997229,
     googleMapsUrl: "https://maps.app.goo.gl/CDbBkrwehr3fHGjG9",
     updatedAt: "2025-01-04",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.vihtasauna.co",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "cf27f6ae-2db0-4c1a-8a3e-b5d9e186e765",
+          name: "Sauna Session",
+          price: 40,
+          durationMinutes: 75,
+        },
+      ],
+    },
   },
   {
     slug: "von-sauna",

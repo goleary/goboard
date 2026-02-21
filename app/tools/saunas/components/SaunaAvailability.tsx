@@ -8,16 +8,18 @@ import type {
 } from "@/app/api/saunas/availability/route";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Clock } from "lucide-react";
+
 
 interface SaunaAvailabilityProps {
   sauna: Sauna;
+  onHasAvailability?: (hasAvailability: boolean) => void;
 }
 
 function formatTime(isoString: string): string {
-  return new Date(isoString).toLocaleTimeString("en-US", {
+  const d = new Date(isoString);
+  return d.toLocaleTimeString("en-US", {
     hour: "numeric",
-    minute: "2-digit",
+    ...(d.getMinutes() !== 0 && { minute: "2-digit" }),
     hour12: true,
   });
 }
@@ -45,35 +47,6 @@ function formatDateLabel(dateStr: string): string {
   });
 }
 
-function DateSlots({
-  dateStr,
-  slots,
-}: {
-  dateStr: string;
-  slots: { time: string; slotsAvailable: number | null }[];
-}) {
-  return (
-    <div>
-      <p className="text-xs text-muted-foreground mb-1">
-        {formatDateLabel(dateStr)}
-      </p>
-      <div className="flex flex-wrap gap-1.5">
-        {slots.map((slot) => (
-          <Badge key={slot.time} variant="outline" className="gap-1 text-xs">
-            <Clock className="h-3 w-3" />
-            {formatTime(slot.time)}
-            {slot.slotsAvailable !== null && (
-              <span className="text-muted-foreground">
-                ({slot.slotsAvailable} left)
-              </span>
-            )}
-          </Badge>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function filterPastSlots(
   dates: AppointmentTypeAvailability["dates"]
 ): AppointmentTypeAvailability["dates"] {
@@ -90,45 +63,27 @@ function filterPastSlots(
   return filtered;
 }
 
-function AppointmentTypeSection({
-  appointmentType,
-}: {
-  appointmentType: AppointmentTypeAvailability;
-}) {
-  const filteredDates = filterPastSlots(appointmentType.dates);
-  const sortedDates = Object.keys(filteredDates).sort();
+/** Collect all dates across appointment types, then group slots by date → appointment type */
+function groupByDate(appointmentTypes: AppointmentTypeAvailability[]) {
+  const byDate: Record<
+    string,
+    { appointmentType: AppointmentTypeAvailability; slots: { time: string; slotsAvailable: number | null }[] }[]
+  > = {};
 
-  if (sortedDates.length === 0) {
-    return (
-      <div>
-        <p className="text-sm font-medium mb-1">{appointmentType.name}</p>
-        <p className="text-xs text-muted-foreground">No upcoming slots</p>
-      </div>
-    );
+  for (const apt of appointmentTypes) {
+    const filteredDates = filterPastSlots(apt.dates);
+    for (const [dateStr, slots] of Object.entries(filteredDates)) {
+      const available = slots.filter((s) => s.slotsAvailable === null || s.slotsAvailable > 0);
+      if (available.length === 0) continue;
+      if (!byDate[dateStr]) byDate[dateStr] = [];
+      byDate[dateStr].push({ appointmentType: apt, slots: available });
+    }
   }
 
-  return (
-    <div>
-      <div className="flex items-center gap-2 mb-2">
-        <p className="text-sm font-medium">{appointmentType.name}</p>
-        <span className="text-xs text-muted-foreground">
-          ${appointmentType.price} / {appointmentType.durationMinutes}min
-        </span>
-      </div>
-      <div className="space-y-2">
-        {sortedDates.map((date) => (
-          <DateSlots
-            key={date}
-            dateStr={date}
-            slots={filteredDates[date]}
-          />
-        ))}
-      </div>
-    </div>
-  );
+  return byDate;
 }
 
-export function SaunaAvailability({ sauna }: SaunaAvailabilityProps) {
+export function SaunaAvailability({ sauna, onHasAvailability }: SaunaAvailabilityProps) {
   const [data, setData] = useState<AvailabilityResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -156,6 +111,14 @@ export function SaunaAvailability({ sauna }: SaunaAvailabilityProps) {
         setLoading(false);
       });
   }, [sauna.slug, sauna.bookingProvider]);
+
+  useEffect(() => {
+    if (!onHasAvailability || loading) return;
+    const hasSlots =
+      !!data &&
+      Object.keys(groupByDate(data.appointmentTypes)).length > 0;
+    onHasAvailability(hasSlots);
+  }, [data, loading, onHasAvailability]);
 
   if (!sauna.bookingProvider) return null;
 
@@ -192,7 +155,10 @@ export function SaunaAvailability({ sauna }: SaunaAvailabilityProps) {
     );
   }
 
-  if (!data || data.appointmentTypes.length === 0) {
+  const byDate = data ? groupByDate(data.appointmentTypes) : {};
+  const sortedDates = Object.keys(byDate).sort();
+
+  if (!data || sortedDates.length === 0) {
     return (
       <div>
         <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
@@ -211,11 +177,38 @@ export function SaunaAvailability({ sauna }: SaunaAvailabilityProps) {
         Upcoming Availability
       </p>
       <div className="space-y-4">
-        {data.appointmentTypes.map((apt) => (
-          <AppointmentTypeSection
-            key={apt.appointmentTypeId}
-            appointmentType={apt}
-          />
+        {sortedDates.map((dateStr) => (
+          <div key={dateStr}>
+            <p className="text-sm font-medium mb-2">
+              {formatDateLabel(dateStr)}
+            </p>
+            <div className="space-y-2">
+              {byDate[dateStr].map(({ appointmentType, slots }) => (
+                <div key={appointmentType.appointmentTypeId}>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-xs text-muted-foreground">
+                      {appointmentType.name}
+                    </p>
+                    <span className="text-xs text-muted-foreground">
+                      ${appointmentType.price} / {appointmentType.durationMinutes}min
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {slots.map((slot) => (
+                      <Badge key={slot.time} variant="outline" className="text-xs gap-1">
+                        {formatTime(slot.time)}
+                        {slot.slotsAvailable !== null && (
+                          <span className="text-muted-foreground">
+                            ({slot.slotsAvailable} seats)
+                          </span>
+                        )}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </div>

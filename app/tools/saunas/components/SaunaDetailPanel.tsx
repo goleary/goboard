@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,9 @@ function AmenityBadge({
 }
 
 export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
+  const [hasAvailability, setHasAvailability] = useState(false);
+  const handleHasAvailability = useCallback((v: boolean) => setHasAvailability(v), []);
+
   return (
     <div className="flex flex-col min-h-0 h-full">
       {/* Header */}
@@ -72,20 +76,22 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-auto p-4 space-y-4 min-h-0">
-        {/* Price and Duration */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {sauna.sessionPrice > 0 && (
-            <Badge variant="default" className="text-sm">
-              {formatPrice(sauna)}
-            </Badge>
-          )}
-          {sauna.sessionLengthMinutes && (
-            <Badge variant="outline" className="text-sm gap-1">
-              <Clock className="h-3 w-3" />
-              {sauna.sessionLengthMinutes} min
-            </Badge>
-          )}
-        </div>
+        {/* Price and Duration – hidden when live availability is shown */}
+        {!hasAvailability && (
+          <div className="flex items-center gap-2 flex-wrap">
+            {sauna.sessionPrice > 0 && (
+              <Badge variant="default" className="text-sm">
+                {formatPrice(sauna)}
+              </Badge>
+            )}
+            {sauna.sessionLengthMinutes && (
+              <Badge variant="outline" className="text-sm gap-1">
+                <Clock className="h-3 w-3" />
+                {sauna.sessionLengthMinutes} min
+              </Badge>
+            )}
+          </div>
+        )}
 
         {/* Amenities */}
         <div>
@@ -106,7 +112,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
         </div>
 
         {/* Availability */}
-        <SaunaAvailability sauna={sauna} />
+        <SaunaAvailability sauna={sauna} onHasAvailability={handleHasAvailability} />
 
         {/* Temperature */}
         {sauna.temperatureRangeF && (
@@ -120,8 +126,8 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
           </div>
         )}
 
-        {/* Hours */}
-        {sauna.hours && (
+        {/* Hours – hidden when live availability is shown */}
+        {sauna.hours && !hasAvailability && (
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
               Hours
