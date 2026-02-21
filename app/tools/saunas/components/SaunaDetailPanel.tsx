@@ -3,6 +3,7 @@
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SaunaAvailability } from "./SaunaAvailability";
 import {
   ExternalLink,
   MapPin,
@@ -103,6 +104,9 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
             <AmenityBadge icon={UtensilsCrossed} label="Food" available={sauna.servesFood ?? false} iconClassName="text-amber-600" />
           </div>
         </div>
+
+        {/* Availability */}
+        <SaunaAvailability sauna={sauna} />
 
         {/* Temperature */}
         {sauna.temperatureRangeF && (
