@@ -737,6 +737,7 @@ export const saunas: Sauna[] = [
     name: "Tuli Lodge",
     website: "https://www.tuli-lodge.com/",
     bookingUrl: "https://www.tuli-lodge.com/book",
+    bookingPlatform: "mariana-tek",
     sessionPrice: 27,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -1560,6 +1561,7 @@ export const saunas: Sauna[] = [
     address: "3939 Piedmont Ave, Oakland, CA 94611",
     website: "https://www.piedmontsprings.com/",
     bookingUrl: "https://www.piedmontsprings.com/online-booking",
+    bookingPlatform: "booker",
     googleMapsUrl: "https://maps.app.goo.gl/oRvFr6f97Kbaxgds8",
     sessionPrice: 20, // $20 per 30 min, $22 per 45 min
     sessionLengthMinutes: 30,
@@ -2127,6 +2129,7 @@ export const saunas: Sauna[] = [
     address: "158 Almonte Blvd, Mill Valley, CA 94941",
     website: "https://www.almontespa.com/",
     bookingUrl: "https://www.almontespa.com/book",
+    bookingPlatform: "booker",
     googleMapsUrl: "https://maps.app.goo.gl/4c1sTy9dAZeBDLq16",
     sessionPrice: 35, // Finnish sauna 30 min; also $45/45min, $55/60min
     sessionLengthMinutes: 30,
