@@ -737,7 +737,6 @@ export const saunas: Sauna[] = [
     name: "Tuli Lodge",
     website: "https://www.tuli-lodge.com/",
     bookingUrl: "https://www.tuli-lodge.com/book",
-    bookingPlatform: "wix",
     sessionPrice: 27,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -846,6 +845,19 @@ export const saunas: Sauna[] = [
     lng: -122.13848356206124,
     googleMapsUrl: "https://maps.app.goo.gl/B7dqHRKFQAWEqX9K7",
     updatedAt: "2025-01-04",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.fyresauna.com",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "712a0bcb-4c7d-41ac-a381-b71307ae32bd",
+          name: "Contrast Therapy Session",
+          price: 35,
+          durationMinutes: 60,
+        },
+      ],
+    },
   },
   {
     slug: "soak-and-sage",
@@ -1548,7 +1560,6 @@ export const saunas: Sauna[] = [
     address: "3939 Piedmont Ave, Oakland, CA 94611",
     website: "https://www.piedmontsprings.com/",
     bookingUrl: "https://www.piedmontsprings.com/online-booking",
-    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/oRvFr6f97Kbaxgds8",
     sessionPrice: 20, // $20 per 30 min, $22 per 45 min
     sessionLengthMinutes: 30,
@@ -1881,6 +1892,19 @@ export const saunas: Sauna[] = [
     lat: 45.6528752,
     lng: -122.6111391,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.connectwellness.biz",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "5a415d4e-496f-4709-82b7-222ff55f5962",
+          name: "Community Spa Session",
+          price: 40,
+          durationMinutes: 120,
+        },
+      ],
+    },
   },
   {
     slug: "backyard-bliss-pdx",
@@ -1991,6 +2015,25 @@ export const saunas: Sauna[] = [
     lat: 45.6382949,
     lng: -122.6757138,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.uptownsaunahouse.com",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "34660c0c-56be-4e34-938c-0a14f6d8d519",
+          name: "Public Sauna & Cold Plunge",
+          price: 35,
+          durationMinutes: 90,
+        },
+        {
+          serviceId: "fdbe8315-f9d6-448c-9adf-fad7c9a776bb",
+          name: "Sunrise Mini Session",
+          price: 25,
+          durationMinutes: 30,
+        },
+      ],
+    },
   },
   {
     slug: "ebb-and-ember",
@@ -2084,7 +2127,6 @@ export const saunas: Sauna[] = [
     address: "158 Almonte Blvd, Mill Valley, CA 94941",
     website: "https://www.almontespa.com/",
     bookingUrl: "https://www.almontespa.com/book",
-    bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/4c1sTy9dAZeBDLq16",
     sessionPrice: 35, // Finnish sauna 30 min; also $45/45min, $55/60min
     sessionLengthMinutes: 30,
@@ -2131,6 +2173,43 @@ export const saunas: Sauna[] = [
     lat: 37.962097,
     lng: -122.4270183,
     updatedAt: "2026-01-06",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.good-hot-booking.com",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "c5c17895-bbde-4e4e-ad38-8a876b868730",
+          name: "Sauna 1 - Circle Skylight",
+          price: 110,
+          durationMinutes: 90,
+        },
+        {
+          serviceId: "6efce4a0-2bef-4d77-a785-3c886331b1cf",
+          name: "Sauna 2 - Picture Window",
+          price: 110,
+          durationMinutes: 90,
+        },
+        {
+          serviceId: "8569f2c2-124a-42b8-9716-16e57bee4a07",
+          name: "Sauna 3 - Step Skylight",
+          price: 110,
+          durationMinutes: 90,
+        },
+        {
+          serviceId: "d2e1d240-c496-41ff-b3fd-0341afd121ae",
+          name: "Sauna 4 - Big View",
+          price: 130,
+          durationMinutes: 90,
+        },
+        {
+          serviceId: "14bcb950-57de-499b-9454-772efb429096",
+          name: "Sauna 5 - Big Sky",
+          price: 130,
+          durationMinutes: 90,
+        },
+      ],
+    },
   },
   {
     slug: "dogpatch-paddle-sauna",
@@ -2264,6 +2343,25 @@ export const saunas: Sauna[] = [
     lat: 48.0560647,
     lng: -122.9889463,
     updatedAt: "2026-01-06",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.seatsusauna.com",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "bae83ae4-6a83-45b2-a4fe-6012fbf399b8",
+          name: "Community Session",
+          price: 35,
+          durationMinutes: 90,
+        },
+        {
+          serviceId: "0eb6faf2-2649-4609-901a-a1eda92001ac",
+          name: "Private Sauna (1-4 people)",
+          price: 135,
+          durationMinutes: 90,
+        },
+      ],
+    },
   },
   {
     slug: "snow-peak-campfield",
@@ -2604,6 +2702,19 @@ export const saunas: Sauna[] = [
     lat: 49.27556069996275,
     lng: -123.20116604338386,
     updatedAt: "2026-02-18",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.thefinnishsauna.ca",
+      timezone: "America/Vancouver",
+      services: [
+        {
+          serviceId: "ba313794-9e17-4202-a544-3167e54419c3",
+          name: "Seaside Sauna Social",
+          price: 36,
+          durationMinutes: 105,
+        },
+      ],
+    },
   },
   // ============================================================================
   // VANCOUVER ISLAND, BC
@@ -2694,6 +2805,19 @@ export const saunas: Sauna[] = [
     lat: 49.32266548355333,
     lng: -124.31835823099492,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.thefinnishsauna.ca",
+      timezone: "America/Vancouver",
+      services: [
+        {
+          serviceId: "8720ff8a-e714-4e58-9a35-3687ad7af0a1",
+          name: "Sauna Social",
+          price: 40,
+          durationMinutes: 90,
+        },
+      ],
+    },
   },
   {
     slug: "the-lost-faucet",
@@ -2960,6 +3084,19 @@ export const saunas: Sauna[] = [
     lat: 49.7976,
     lng: -123.1581,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.thefinnishsauna.ca",
+      timezone: "America/Vancouver",
+      services: [
+        {
+          serviceId: "634ae6cc-5df4-4792-9a57-651938d4d306",
+          name: "Sauna Social",
+          price: 42,
+          durationMinutes: 120,
+        },
+      ],
+    },
   },
   // ============================================================================
   // SUNSHINE COAST, BC (Powell River area)
