@@ -290,6 +290,8 @@ export interface GlofoxBookingProviderConfig {
   facilityId: string;
   /** IANA timezone for availability display */
   timezone: string;
+  /** Override prices by Glofox program ID (guest API returns $0) */
+  priceOverrides?: Record<string, number>;
 }
 
 /**
@@ -1087,8 +1089,12 @@ export const saunas: Sauna[] = [
       branchId: "67a141b0d1806cff7106b964",
       facilityId: "67a141b1d1806cff7106b96b",
       timezone: "America/Los_Angeles",
+      priceOverrides: {
+        "68af1bc596e3414b0b0d765c": 35, // Peak-time Social Sauna Session
+        "6863046ee1518f87a404e00b": 28, // Matinee Social Sauna Session
+      },
     },
-    sessionPrice: 35, // Peak pricing, $28 matinee
+    sessionPrice: 28, // Matinee pricing (peak is $35)
     sessionLengthMinutes: 75,
     steamRoom: false,
     coldPlunge: true, // Puget Sound 46-58°F

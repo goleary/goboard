@@ -53,6 +53,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
   const [tideOpen, setTideOpen] = useState(false);
   const [tideHighlightTime, setTideHighlightTime] = useState<string | null>(null);
   const [tideHighlightColor, setTideHighlightColor] = useState<string | null>(null);
+  const [tideScrollNonce, setTideScrollNonce] = useState(0);
   useEffect(() => {
     setHasAvailability(false);
     setFirstAvailableDate(null);
@@ -69,6 +70,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
     setTideHighlightTime(slotTime);
     setTideHighlightColor(color);
     setTideOpen(true);
+    setTideScrollNonce((n) => n + 1);
   }, []);
 
   return (
@@ -97,7 +99,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-4 space-y-4 min-h-0">
+      <div className="flex-1 overflow-auto thin-scrollbar p-4 space-y-4 min-h-0">
         {/* Price and Duration – hidden when live availability is shown */}
         {!hasAvailability && (
           <div className="flex items-center gap-2 flex-wrap">
@@ -137,7 +139,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
         <SaunaAvailability sauna={sauna} onHasAvailability={handleHasAvailability} onFirstAvailableDate={handleFirstAvailableDate} onLastAvailableDate={handleLastAvailableDate} onTideTimeClick={handleTideTimeClick} />
 
         {/* Tides */}
-        <SaunaTides sauna={sauna} date={firstAvailableDate} endDate={lastAvailableDate} waitForDate={!!sauna.bookingProvider} open={tideOpen} onOpenChange={setTideOpen} highlightTime={tideHighlightTime} highlightColor={tideHighlightColor} />
+        <SaunaTides sauna={sauna} date={firstAvailableDate} endDate={lastAvailableDate} waitForDate={!!sauna.bookingProvider} open={tideOpen} onOpenChange={setTideOpen} highlightTime={tideHighlightTime} highlightColor={tideHighlightColor} scrollNonce={tideScrollNonce} />
 
         {/* Temperature */}
         {sauna.temperatureRangeF && (

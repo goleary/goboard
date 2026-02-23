@@ -250,11 +250,11 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
               {byDate[dateStr].map(({ appointmentType, slots }) => (
                 <div key={appointmentType.appointmentTypeId}>
                   {!isSingleType && (
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <p className="text-xs text-muted-foreground truncate min-w-0" title={appointmentType.name}>
                         {appointmentType.name}
                       </p>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
                         ${appointmentType.price} / {appointmentType.durationMinutes}min
                       </span>
                     </div>

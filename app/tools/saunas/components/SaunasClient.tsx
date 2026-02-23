@@ -404,7 +404,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
             zoom={initialZoom}
           />
         </div>
-        <div className="absolute top-4 left-4 bottom-4 w-[320px] z-[1000] bg-background/95 backdrop-blur-sm rounded-lg border shadow-lg overflow-hidden flex flex-col">
+        <div className="absolute top-4 left-4 bottom-4 w-[340px] z-[1000] bg-background/95 backdrop-blur-sm rounded-lg border shadow-lg overflow-hidden flex flex-col">
           {selectedSauna ? (
             <>
               <button
@@ -422,7 +422,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
           ) : (
             <>
               {filtersSection(false)}
-              <div className="flex-1 overflow-auto">
+              <div className="flex-1 overflow-auto thin-scrollbar">
                 <SaunaTable
                   saunas={viewportSaunas}
                   compact

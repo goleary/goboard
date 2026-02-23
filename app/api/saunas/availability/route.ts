@@ -264,11 +264,12 @@ async function fetchGlofoxAvailability(
 
   for (const event of facilityEvents) {
     if (!programMap.has(event.program_id)) {
-      const paygPrice =
+      const apiPrice =
         event.program_obj?.pricing?.find((p) => p.type === "payg")?.price ?? 0;
+      const price = provider.priceOverrides?.[event.program_id] ?? apiPrice;
       programMap.set(event.program_id, {
         name: event.name,
-        price: paygPrice,
+        price: price,
         duration: event.duration,
         events: [],
       });

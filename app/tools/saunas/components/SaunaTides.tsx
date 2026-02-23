@@ -27,6 +27,8 @@ interface SaunaTidesProps {
   highlightTime?: string | null;
   /** Color for the highlight line. */
   highlightColor?: string | null;
+  /** Incrementing counter to force scroll-into-view on repeated clicks. */
+  scrollNonce?: number;
 }
 
 function localDateStr(d: Date): string {
@@ -175,9 +177,9 @@ function TideChart({
             fill="url(#tideGradient)"
             strokeWidth={2}
           />
-          {predictionDots.map((p) => (
+          {predictionDots.map((p, i) => (
             <ReferenceDot
-              key={p.time}
+              key={`${p.time}-${p.type}-${i}`}
               x={p.time}
               y={p.height}
               r={3}
@@ -204,7 +206,7 @@ function TideChart({
                 x={nearest.time}
                 stroke={color}
                 strokeWidth={2}
-                label={{ value: formatChartTime(nearest.time, multiDay), position: "top", fontSize: 10, fill: color }}
+                label={{ value: formatTideTime(highlightTime), position: "top", fontSize: 10, fill: color }}
               />
             );
           })()}
@@ -214,7 +216,7 @@ function TideChart({
   );
 }
 
-export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, open: controlledOpen, onOpenChange, highlightTime, highlightColor }: SaunaTidesProps) {
+export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, open: controlledOpen, onOpenChange, highlightTime, highlightColor, scrollNonce }: SaunaTidesProps) {
   const [predictions, setPredictions] = useState<TidePrediction[] | null>(null);
   const [hourly, setHourly] = useState<TideDataPoint[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -225,28 +227,36 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
   const setOpen = onOpenChange ?? setInternalOpen;
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Scroll into view when a tide indicator is clicked
+  // Scroll into view when a tide indicator is clicked.
+  // We use a ResizeObserver because the chart renders asynchronously
+  // (it measures its container width first), so the section height
+  // isn't final until the chart appears.
   useEffect(() => {
-    if (highlightTime && open && sectionRef.current) {
-      requestAnimationFrame(() => {
-        const el = sectionRef.current;
-        if (!el) return;
-        const scrollParent = el.closest("[class*='overflow-auto']") as HTMLElement | null;
-        if (!scrollParent) return;
-        const parentRect = scrollParent.getBoundingClientRect();
-        const elRect = el.getBoundingClientRect();
-        const visibleBottom = parentRect.bottom;
-        // Already fully visible — do nothing
-        if (elRect.top >= parentRect.top && elRect.bottom <= visibleBottom) return;
-        // Scroll the minimum amount to make it visible
-        if (elRect.bottom > visibleBottom) {
-          scrollParent.scrollBy({ top: elRect.bottom - visibleBottom, behavior: "smooth" });
-        } else if (elRect.top < parentRect.top) {
-          scrollParent.scrollBy({ top: elRect.top - parentRect.top, behavior: "smooth" });
-        }
-      });
-    }
-  }, [highlightTime, open]);
+    if (!highlightTime || !open || !sectionRef.current) return;
+
+    const el = sectionRef.current;
+    const scrollParent = el.closest("[class*='overflow-auto']") as HTMLElement | null;
+    if (!scrollParent) return;
+
+    const scrollIntoView = () => {
+      const parentRect = scrollParent.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const visibleBottom = parentRect.bottom;
+      if (elRect.top >= parentRect.top && elRect.bottom <= visibleBottom) return;
+      if (elRect.bottom > visibleBottom) {
+        scrollParent.scrollBy({ top: elRect.bottom - visibleBottom, behavior: "smooth" });
+      } else if (elRect.top < parentRect.top) {
+        scrollParent.scrollBy({ top: elRect.top - parentRect.top, behavior: "smooth" });
+      }
+    };
+
+    const observer = new ResizeObserver(() => {
+      scrollIntoView();
+    });
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, [highlightTime, open, scrollNonce]);
 
   const today = localDateStr(new Date());
   const fetchStartDate = date || (waitForDate ? null : today);
