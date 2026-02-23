@@ -39,9 +39,7 @@ async function fetchAcuityAvailability(
       );
       url.searchParams.set("owner", provider.owner);
       url.searchParams.set("appointmentTypeId", String(apt.acuityAppointmentId));
-      if (apt.acuityCalendarId) {
-        url.searchParams.set("calendarId", String(apt.acuityCalendarId));
-      }
+      url.searchParams.set("calendarId", String(apt.acuityCalendarId));
       url.searchParams.set("startDate", startDate);
       url.searchParams.set("timezone", provider.timezone);
 

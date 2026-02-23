@@ -229,8 +229,8 @@ export function getSaunasForLocation(location: Location): Sauna[] {
 export interface AcuityAppointmentType {
   /** Acuity appointment type ID */
   acuityAppointmentId: number;
-  /** Acuity calendar ID */
-  acuityCalendarId: number;
+  /** Acuity calendar ID (numeric ID, or "any" for single-calendar accounts) */
+  acuityCalendarId: number | "any";
   /** Display name (e.g. "Social Session") */
   name: string;
   /** Price in the sauna's currency (e.g. 30) */
@@ -1010,6 +1010,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    tidal: true,
+    noaaTideStation: "9447130",
     showers: false, // No public showers at Owen Beach
     towelsIncluded: false,
     temperatureRangeF: { min: 180, max: 180 }, // Average 180°F
