@@ -280,13 +280,27 @@ export interface WixBookingProviderConfig {
 }
 
 /**
+ * Glofox booking provider configuration.
+ */
+export interface GlofoxBookingProviderConfig {
+  type: "glofox";
+  /** Glofox branch ID from the booking URL */
+  branchId: string;
+  /** Glofox facility ID to filter events for this specific location */
+  facilityId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
  */
 export type BookingProviderConfig =
   | AcuityBookingProviderConfig
-  | WixBookingProviderConfig;
+  | WixBookingProviderConfig
+  | GlofoxBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -552,6 +566,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "666cd839c3e964051d0e4307",
+      facilityId: "667117c9d33bf18a0e021529",
+      timezone: "America/Los_Angeles",
+    },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -579,6 +599,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "666cd839c3e964051d0e4307",
+      facilityId: "666cd83dc3e964051d0e430e",
+      timezone: "America/Los_Angeles",
+    },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -608,6 +634,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "666cd839c3e964051d0e4307",
+      facilityId: "6917a6d31834e278470237ea",
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/fEJKv6J2wSnAxaFT7",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
@@ -626,6 +658,37 @@ export const saunas: Sauna[] = [
     lat: 47.60192549413326,
     lng: -122.2841857043505,
     updatedAt: "2025-01-04",
+  },
+  {
+    slug: "bywater-old-stove",
+    name: "Bywater x Old Stove Brewing",
+    website: "https://bywatersauna.com/",
+    bookingUrl:
+      "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
+    bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "666cd839c3e964051d0e4307",
+      facilityId: "66f63fd9e778d6b036044012",
+      timezone: "America/Los_Angeles",
+    },
+    sessionPrice: 35,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    hours: "Daily",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Bywater sauna and cold tub at Old Stove Brewing in Ballard.",
+    lat: 47.664534194550185,
+    lng: -122.37824861677305,
+    updatedAt: "2026-02-22",
   },
   {
     slug: "evergreen-sauna",
@@ -1015,6 +1078,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/67a141b0d1806cff7106b964/classes-day-view",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "67a141b0d1806cff7106b964",
+      facilityId: "67a141b1d1806cff7106b96b",
+      timezone: "America/Los_Angeles",
+    },
     sessionPrice: 35, // Peak pricing, $28 matinee
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -1761,6 +1830,12 @@ export const saunas: Sauna[] = [
     website: "https://www.saunaglo.com/",
     bookingUrl: "https://www.saunaglo.com/book",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "67211b267819f979d70dad4d",
+      facilityId: "673192fb37a2a46702016536",
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/Nbv2Uhdf8zfLPyaA8",
     sessionPrice: 29, // Day pass; $19 weekdays before 2pm
     steamRoom: false,
@@ -3914,6 +3989,12 @@ export const saunas: Sauna[] = [
     website: "https://www.lorebathingclub.com/",
     bookingUrl: "https://www.lorebathingclub.com/membership",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "67c5eb09efb4277b06084eb6",
+      facilityId: "67c5eb0aefb4277b06084ebd",
+      timezone: "America/New_York",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/opRcSwt9dS69oSC26",
     sessionPrice: 55,
     sessionLengthMinutes: 75,

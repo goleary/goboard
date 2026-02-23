@@ -159,6 +159,7 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
 
   const byDate = data ? groupByDate(data.appointmentTypes) : {};
   const sortedDates = Object.keys(byDate).sort();
+  const isSingleType = data ? data.appointmentTypes.length <= 1 : false;
 
   if (!data || sortedDates.length === 0) {
     return (
@@ -187,14 +188,16 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
             <div className="space-y-2">
               {byDate[dateStr].map(({ appointmentType, slots }) => (
                 <div key={appointmentType.appointmentTypeId}>
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="text-xs text-muted-foreground">
-                      {appointmentType.name}
-                    </p>
-                    <span className="text-xs text-muted-foreground">
-                      ${appointmentType.price} / {appointmentType.durationMinutes}min
-                    </span>
-                  </div>
+                  {!isSingleType && (
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-xs text-muted-foreground">
+                        {appointmentType.name}
+                      </p>
+                      <span className="text-xs text-muted-foreground">
+                        ${appointmentType.price} / {appointmentType.durationMinutes}min
+                      </span>
+                    </div>
+                  )}
                   <div className="flex flex-wrap gap-1.5">
                     {slots.map((slot) => (
                       <Badge key={slot.time} variant="outline" className="text-xs gap-1">
