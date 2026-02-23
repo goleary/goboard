@@ -1066,6 +1066,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/67a141b0d1806cff7106b964/classes-day-view",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "67a141b0d1806cff7106b964",
+      facilityId: "67a141b1d1806cff7106b96b",
+      timezone: "America/Los_Angeles",
+    },
     sessionPrice: 35, // Peak pricing, $28 matinee
     sessionLengthMinutes: 75,
     steamRoom: false,
@@ -1810,6 +1816,12 @@ export const saunas: Sauna[] = [
     website: "https://www.saunaglo.com/",
     bookingUrl: "https://www.saunaglo.com/book",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "67211b267819f979d70dad4d",
+      facilityId: "673192fb37a2a46702016536",
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/Nbv2Uhdf8zfLPyaA8",
     sessionPrice: 29, // Day pass; $19 weekdays before 2pm
     steamRoom: false,
@@ -3963,6 +3975,12 @@ export const saunas: Sauna[] = [
     website: "https://www.lorebathingclub.com/",
     bookingUrl: "https://www.lorebathingclub.com/membership",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "67c5eb09efb4277b06084eb6",
+      facilityId: "67c5eb0aefb4277b06084ebd",
+      timezone: "America/New_York",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/opRcSwt9dS69oSC26",
     sessionPrice: 55,
     sessionLengthMinutes: 75,
