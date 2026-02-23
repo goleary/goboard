@@ -277,7 +277,7 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
                                 <TooltipTrigger asChild>
                                   <button
                                     type="button"
-                                    className="inline-flex"
+                                    className="inline-flex p-1 -m-1"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       onTideTimeClick?.(slot.time, TIDE_LEVEL_COLORS[tideLevel]);
