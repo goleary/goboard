@@ -157,8 +157,61 @@ Open the sauna's booking page and check the Network tab for requests to `_api/se
 | `price` | bookings page UI | Price per session |
 | `durationMinutes` | response body (step 2) | Computed from `localStartDate`/`localEndDate` |
 
+## Adding Glofox Availability
+
+Some saunas use Glofox (ABC Glofox) for class-based bookings. The booking URL typically looks like `https://app.glofox.com/portal/#/branch/<branchId>/classes-list-view`. Auth is handled via an anonymous guest login, so no credentials need to be stored.
+
+### Step 1: Find the branch ID
+
+The branch ID is in the booking URL path:
+```
+https://app.glofox.com/portal/#/branch/<branchId>/classes-list-view
+```
+
+### Step 2: Find the facility ID
+
+Glofox branches can have multiple facilities (locations). Each sauna entry needs a specific facility ID.
+
+1. Open the booking URL and open the browser's Network tab.
+2. Look for a request to `https://api.glofox.com/2.0/facilities?sort_by=name`.
+3. Each facility in the response has an `_id` and `name` — use the `_id` for the matching location.
+
+Alternatively, look at an `events` request in the Network tab — each event has a `facility` field with the facility ID and a `facility_obj.name` with the human-readable name.
+
+### Step 3: Add the config to the sauna entry
+
+```ts
+{
+  slug: "bywater-alki",
+  // ...other fields...
+  bookingUrl: "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
+  bookingPlatform: "glofox",
+  // ...other fields...
+  bookingProvider: {
+    type: "glofox",
+    branchId: "666cd839c3e964051d0e4307",
+    facilityId: "667117c9d33bf18a0e021529",
+    timezone: "America/Los_Angeles",
+  },
+},
+```
+
+Class types (programs) and their prices/durations are auto-detected from the API response — no need to configure them manually.
+
+### Field reference
+
+| Field | Source | Description |
+|---|---|---|
+| `bookingPlatform` | — | Set to `"glofox"` |
+| `bookingProvider.type` | — | Must be `"glofox"` |
+| `bookingProvider.branchId` | booking URL (step 1) | Branch ID from the portal URL |
+| `bookingProvider.facilityId` | network tab (step 2) | Facility ID for this specific location |
+| `bookingProvider.timezone` | — | IANA timezone (e.g. `America/Los_Angeles`) |
+
 ## How it works
 
 The availability API (`/api/saunas/availability`) reads the `bookingProvider` config and calls the appropriate provider API to fetch available time slots. Results are cached for 5 minutes. The `BookingProviderConfig` type is a discriminated union, so new providers can be added by extending the union in `saunas.ts` and adding a corresponding case in the API route.
 
 For Wix, the auth token is fetched dynamically from `https://<siteUrl>/_api/v2/dynamicmodel` on each request (also cached 5 minutes), so no tokens need to be stored or refreshed manually.
+
+For Glofox, a guest JWT is obtained via `POST https://api.glofox.com/2.0/login` (also cached 5 minutes). Events are fetched from the branch's events API and filtered by facility ID to show only the relevant location's classes.

@@ -280,13 +280,27 @@ export interface WixBookingProviderConfig {
 }
 
 /**
+ * Glofox booking provider configuration.
+ */
+export interface GlofoxBookingProviderConfig {
+  type: "glofox";
+  /** Glofox branch ID from the booking URL */
+  branchId: string;
+  /** Glofox facility ID to filter events for this specific location */
+  facilityId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
  */
 export type BookingProviderConfig =
   | AcuityBookingProviderConfig
-  | WixBookingProviderConfig;
+  | WixBookingProviderConfig
+  | GlofoxBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -548,6 +562,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "666cd839c3e964051d0e4307",
+      facilityId: "667117c9d33bf18a0e021529",
+      timezone: "America/Los_Angeles",
+    },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -573,6 +593,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "666cd839c3e964051d0e4307",
+      facilityId: "666cd83dc3e964051d0e430e",
+      timezone: "America/Los_Angeles",
+    },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -600,6 +626,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
     bookingPlatform: "glofox",
+    bookingProvider: {
+      type: "glofox",
+      branchId: "666cd839c3e964051d0e4307",
+      facilityId: "6917a6d31834e278470237ea",
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/fEJKv6J2wSnAxaFT7",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
