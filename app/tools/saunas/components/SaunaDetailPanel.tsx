@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,8 +49,27 @@ function AmenityBadge({
 export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
   const [hasAvailability, setHasAvailability] = useState(false);
   const [firstAvailableDate, setFirstAvailableDate] = useState<string | null>(null);
+  const [lastAvailableDate, setLastAvailableDate] = useState<string | null>(null);
+  const [tideOpen, setTideOpen] = useState(false);
+  const [tideHighlightTime, setTideHighlightTime] = useState<string | null>(null);
+  const [tideHighlightColor, setTideHighlightColor] = useState<string | null>(null);
+  useEffect(() => {
+    setHasAvailability(false);
+    setFirstAvailableDate(null);
+    setLastAvailableDate(null);
+    setTideOpen(false);
+    setTideHighlightTime(null);
+    setTideHighlightColor(null);
+  }, [sauna.slug]);
+
   const handleHasAvailability = useCallback((v: boolean) => setHasAvailability(v), []);
   const handleFirstAvailableDate = useCallback((d: string | null) => setFirstAvailableDate(d), []);
+  const handleLastAvailableDate = useCallback((d: string | null) => setLastAvailableDate(d), []);
+  const handleTideTimeClick = useCallback((slotTime: string, color: string) => {
+    setTideHighlightTime(slotTime);
+    setTideHighlightColor(color);
+    setTideOpen(true);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-0 h-full">
@@ -115,10 +134,10 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
         </div>
 
         {/* Availability */}
-        <SaunaAvailability sauna={sauna} onHasAvailability={handleHasAvailability} onFirstAvailableDate={handleFirstAvailableDate} />
+        <SaunaAvailability sauna={sauna} onHasAvailability={handleHasAvailability} onFirstAvailableDate={handleFirstAvailableDate} onLastAvailableDate={handleLastAvailableDate} onTideTimeClick={handleTideTimeClick} />
 
         {/* Tides */}
-        <SaunaTides sauna={sauna} date={firstAvailableDate} waitForDate={!!sauna.bookingProvider} />
+        <SaunaTides sauna={sauna} date={firstAvailableDate} endDate={lastAvailableDate} waitForDate={!!sauna.bookingProvider} open={tideOpen} onOpenChange={setTideOpen} highlightTime={tideHighlightTime} highlightColor={tideHighlightColor} />
 
         {/* Temperature */}
         {sauna.temperatureRangeF && (

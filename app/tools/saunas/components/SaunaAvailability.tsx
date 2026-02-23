@@ -6,14 +6,20 @@ import type {
   AvailabilityResponse,
   AppointmentTypeAvailability,
 } from "@/app/api/saunas/availability/route";
+import type { TideDataPoint, TidesResponse } from "@/app/api/saunas/tides/route";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowUpRight, Minus, ArrowDownRight } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { getTideLevelForSlot, type TideLevel } from "./tideUtils";
 
 
 interface SaunaAvailabilityProps {
   sauna: Sauna;
   onHasAvailability?: (hasAvailability: boolean) => void;
   onFirstAvailableDate?: (date: string | null) => void;
+  onLastAvailableDate?: (date: string | null) => void;
+  onTideTimeClick?: (slotTime: string, color: string) => void;
 }
 
 function formatTime(isoString: string): string {
@@ -84,14 +90,40 @@ function groupByDate(appointmentTypes: AppointmentTypeAvailability[]) {
   return byDate;
 }
 
-export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDate }: SaunaAvailabilityProps) {
+function TideLevelIndicator({ level }: { level: TideLevel }) {
+  switch (level) {
+    case "great":
+      return <ArrowUpRight className="h-3 w-3 text-green-500" />;
+    case "ok":
+      return <Minus className="h-3 w-3 text-yellow-500" />;
+    case "low":
+      return <ArrowDownRight className="h-3 w-3 text-red-300" />;
+  }
+}
+
+const TIDE_LEVEL_LABELS: Record<TideLevel, string> = {
+  great: "High tide",
+  ok: "Mid tide",
+  low: "Low tide",
+};
+
+const TIDE_LEVEL_COLORS: Record<TideLevel, string> = {
+  great: "rgb(34, 197, 94)",   // green-500
+  ok: "rgb(234, 179, 8)",      // yellow-500
+  low: "rgb(252, 165, 165)",   // red-300
+};
+
+export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDate, onLastAvailableDate, onTideTimeClick }: SaunaAvailabilityProps) {
   const [data, setData] = useState<AvailabilityResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [tideDataByDate, setTideDataByDate] = useState<Record<string, TideDataPoint[]>>({});
 
   useEffect(() => {
     if (!sauna.bookingProvider) return;
 
+    setData(null);
+    setTideDataByDate({});
     setLoading(true);
     setError(null);
 
@@ -120,7 +152,36 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
     const hasSlots = sortedDates.length > 0;
     onHasAvailability?.(hasSlots);
     onFirstAvailableDate?.(hasSlots ? sortedDates[0] : null);
-  }, [data, loading, onHasAvailability, onFirstAvailableDate]);
+    onLastAvailableDate?.(hasSlots ? sortedDates[sortedDates.length - 1] : null);
+  }, [data, loading, onHasAvailability, onFirstAvailableDate, onLastAvailableDate]);
+
+  useEffect(() => {
+    if (!data || !sauna.tidal || !sauna.noaaTideStation) return;
+
+    const byDate = groupByDate(data.appointmentTypes);
+    const dates = Object.keys(byDate);
+    if (dates.length === 0) return;
+
+    Promise.all(
+      dates.map((dateStr) =>
+        fetch(
+          `/api/saunas/tides?station=${encodeURIComponent(sauna.noaaTideStation!)}&date=${dateStr}`
+        )
+          .then((res) => (res.ok ? res.json() : null))
+          .then((json: TidesResponse | null) => ({
+            dateStr,
+            hourly: json?.hourly ?? [],
+          }))
+          .catch(() => ({ dateStr, hourly: [] as TideDataPoint[] }))
+      )
+    ).then((results) => {
+      const map: Record<string, TideDataPoint[]> = {};
+      for (const { dateStr, hourly } of results) {
+        if (hourly.length > 0) map[dateStr] = hourly;
+      }
+      setTideDataByDate(map);
+    });
+  }, [data, sauna.tidal, sauna.noaaTideStation]);
 
   if (!sauna.bookingProvider) return null;
 
@@ -199,16 +260,39 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
                     </div>
                   )}
                   <div className="flex flex-wrap gap-1.5">
-                    {slots.map((slot) => (
-                      <Badge key={slot.time} variant="outline" className="text-xs gap-1">
-                        {formatTime(slot.time)}
-                        {slot.slotsAvailable !== null && (
-                          <span className="text-muted-foreground">
-                            ({slot.slotsAvailable} seats)
-                          </span>
-                        )}
-                      </Badge>
-                    ))}
+                    {slots.map((slot) => {
+                      const hourly = tideDataByDate[dateStr];
+                      const tideLevel = hourly ? getTideLevelForSlot(slot.time, hourly) : null;
+                      return (
+                        <Badge key={slot.time} variant="outline" className="text-xs gap-1">
+                          {formatTime(slot.time)}
+                          {slot.slotsAvailable !== null && (
+                            <span className="text-muted-foreground">
+                              ({slot.slotsAvailable} seats)
+                            </span>
+                          )}
+                          {tideLevel && (
+                            <TooltipProvider delayDuration={300}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    type="button"
+                                    className="inline-flex"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      onTideTimeClick?.(slot.time, TIDE_LEVEL_COLORS[tideLevel]);
+                                    }}
+                                  >
+                                    <TideLevelIndicator level={tideLevel} />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>{TIDE_LEVEL_LABELS[tideLevel]}</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </Badge>
+                      );
+                    })}
                   </div>
                 </div>
               ))}

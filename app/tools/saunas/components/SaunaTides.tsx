@@ -7,17 +7,26 @@ import type {
   TidePrediction,
   TideDataPoint,
 } from "@/app/api/saunas/tides/route";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Area, AreaChart, XAxis, YAxis, ReferenceLine, Tooltip } from "recharts";
-import { ArrowUp, ArrowDown, ChevronRight } from "lucide-react";
+import { Area, AreaChart, XAxis, YAxis, ReferenceLine, Tooltip, ReferenceDot } from "recharts";
+import { ChevronRight } from "lucide-react";
 
 interface SaunaTidesProps {
   sauna: Sauna;
-  /** YYYY-MM-DD date to show tides for. Defaults to today. */
+  /** YYYY-MM-DD start date. Defaults to today. */
   date?: string | null;
+  /** YYYY-MM-DD end date. Defaults to date. */
+  endDate?: string | null;
   /** When true, wait for date to be provided before fetching. */
   waitForDate?: boolean;
+  /** Controlled open state for the collapsible section. */
+  open?: boolean;
+  /** Callback when open state changes. */
+  onOpenChange?: (open: boolean) => void;
+  /** ISO time string to highlight on the chart. */
+  highlightTime?: string | null;
+  /** Color for the highlight line. */
+  highlightColor?: string | null;
 }
 
 function localDateStr(d: Date): string {
@@ -33,38 +42,61 @@ function formatTideTime(timeStr: string): string {
   });
 }
 
-function formatTideLabel(dateStr: string): string {
+function formatTideLabel(startDate: string, endDate: string): string {
   const today = localDateStr(new Date());
-  if (dateStr === today) return "Tides Today";
-  const d = new Date(dateStr + "T00:00:00");
-  const label = d.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
-  return `Tides ${label}`;
+  if (startDate === endDate) {
+    if (startDate === today) return "Tides Today";
+    const d = new Date(startDate + "T00:00:00");
+    return `Tides ${d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}`;
+  }
+  const s = new Date(startDate + "T00:00:00");
+  const e = new Date(endDate + "T00:00:00");
+  const fmt = (d: Date) => d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  return `Tides ${fmt(s)} – ${fmt(e)}`;
 }
 
-function formatChartTime(timeStr: string): string {
+function formatChartTime(timeStr: string, multiDay: boolean): string {
   const d = new Date(timeStr.replace(" ", "T"));
-  return d.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    hour12: true,
-  });
+  if (multiDay) {
+    const day = d.toLocaleDateString("en-US", { weekday: "short" });
+    const hour = d.toLocaleTimeString("en-US", { hour: "numeric", hour12: true });
+    return `${day} ${hour}`;
+  }
+  return d.toLocaleTimeString("en-US", { hour: "numeric", hour12: true });
 }
 
-const CHART_HEIGHT = 120;
 const STROKE_COLOR = "hsl(210, 79%, 56%)";
 
+/** Trim to 6am on the first day and 9pm on the last day, but keep interior days continuous. */
+function filterHourlyToWindow(hourly: TideDataPoint[]): TideDataPoint[] {
+  if (hourly.length === 0) return hourly;
+  const firstDate = hourly[0].time.split(" ")[0];
+  const lastDate = hourly[hourly.length - 1].time.split(" ")[0];
+  return hourly.filter((p) => {
+    const [date] = p.time.split(" ");
+    const h = new Date(p.time.replace(" ", "T")).getHours();
+    if (date === firstDate && h < 6) return false;
+    if (date === lastDate && h > 21) return false;
+    return true;
+  });
+}
+
 function TideChart({
-  hourly,
+  hourly: rawHourly,
   predictions,
+  highlightTime,
+  highlightColor,
+  multiDay,
 }: {
   hourly: TideDataPoint[];
   predictions: TidePrediction[];
+  highlightTime?: string | null;
+  highlightColor?: string | null;
+  multiDay: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
+  const hourly = filterHourlyToWindow(rawHourly);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -75,14 +107,31 @@ function TideChart({
     return () => observer.disconnect();
   }, []);
 
+  const predictionDots = predictions
+    .map((p) => {
+      const pMs = new Date(p.time.replace(" ", "T")).getTime();
+      const nearest = hourly.reduce<{ time: string; height: number; d: number }>(
+        (best, h) => {
+          const d = Math.abs(new Date(h.time.replace(" ", "T")).getTime() - pMs);
+          return d < best.d ? { time: h.time, height: h.height, d } : best;
+        },
+        { time: "", height: 0, d: Infinity }
+      );
+      if (!nearest.time) return null;
+      return { ...nearest, type: p.type, rawHeight: p.height };
+    })
+    .filter(Boolean) as { time: string; height: number; type: "H" | "L"; rawHeight: string }[];
+
+  const chartHeight = multiDay ? 150 : 120;
+
   return (
     <div ref={containerRef} className="w-full">
-      {width > 0 && (
+      {width > 0 && hourly.length > 0 && (
         <AreaChart
           data={hourly}
           width={width}
-          height={CHART_HEIGHT}
-          margin={{ top: 4, right: 4, bottom: 0, left: -20 }}
+          height={chartHeight}
+          margin={{ top: 16, right: 4, bottom: 0, left: -20 }}
         >
           <defs>
             <linearGradient id="tideGradient" x1="0" y1="0" x2="0" y2="1">
@@ -92,11 +141,11 @@ function TideChart({
           </defs>
           <XAxis
             dataKey="time"
-            tickFormatter={formatChartTime}
+            tickFormatter={(t) => formatChartTime(t, multiDay)}
             tickLine={false}
             axisLine={false}
             interval="preserveStartEnd"
-            minTickGap={40}
+            minTickGap={multiDay ? 60 : 40}
             fontSize={10}
           />
           <YAxis
@@ -109,19 +158,16 @@ function TideChart({
           <Tooltip
             labelFormatter={(_, payload) => {
               if (!payload?.[0]?.payload?.time) return "";
-              return formatTideTime(payload[0].payload.time);
+              const t = payload[0].payload.time;
+              if (multiDay) {
+                const d = new Date(t.replace(" ", "T"));
+                const day = d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+                return `${day} ${formatTideTime(t)}`;
+              }
+              return formatTideTime(t);
             }}
             formatter={(value: number) => [`${value.toFixed(1)} ft`, "Height"]}
           />
-          {predictions.map((p) => (
-            <ReferenceLine
-              key={p.time}
-              x={p.time}
-              stroke="hsl(var(--muted-foreground))"
-              strokeDasharray="3 3"
-              strokeOpacity={0.4}
-            />
-          ))}
           <Area
             type="natural"
             dataKey="height"
@@ -129,30 +175,76 @@ function TideChart({
             fill="url(#tideGradient)"
             strokeWidth={2}
           />
+          {predictionDots.map((p) => (
+            <ReferenceDot
+              key={p.time}
+              x={p.time}
+              y={p.height}
+              r={3}
+              fill={p.type === "H" ? "hsl(210, 79%, 56%)" : "hsl(210, 79%, 76%)"}
+              stroke="white"
+              strokeWidth={1}
+              label={{
+                value: `${p.type === "H" ? "H" : "L"} ${parseFloat(p.rawHeight).toFixed(1)}ft`,
+                position: p.type === "H" ? "top" : "bottom",
+                fontSize: 9,
+                fill: "hsl(var(--muted-foreground))",
+              }}
+            />
+          ))}
+          {highlightTime && (() => {
+            const slotMs = new Date(highlightTime.replace(" ", "T")).getTime();
+            const nearest = hourly.reduce((best, p) => {
+              const d = Math.abs(new Date(p.time.replace(" ", "T")).getTime() - slotMs);
+              return d < best.d ? { time: p.time, d } : best;
+            }, { time: hourly[0].time, d: Infinity });
+            const color = highlightColor || "hsl(25, 95%, 53%)";
+            return (
+              <ReferenceLine
+                x={nearest.time}
+                stroke={color}
+                strokeWidth={2}
+                label={{ value: formatChartTime(nearest.time, multiDay), position: "top", fontSize: 10, fill: color }}
+              />
+            );
+          })()}
         </AreaChart>
       )}
     </div>
   );
 }
 
-export function SaunaTides({ sauna, date, waitForDate }: SaunaTidesProps) {
+export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, open: controlledOpen, onOpenChange, highlightTime, highlightColor }: SaunaTidesProps) {
   const [predictions, setPredictions] = useState<TidePrediction[] | null>(null);
   const [hourly, setHourly] = useState<TideDataPoint[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
 
-  const fetchDate = date || (waitForDate ? null : localDateStr(new Date()));
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
+
+  const today = localDateStr(new Date());
+  const fetchStartDate = date || (waitForDate ? null : today);
+  const fetchEndDate = endDateProp || fetchStartDate;
 
   useEffect(() => {
-    if (!sauna.noaaTideStation || !fetchDate) return;
+    if (!sauna.noaaTideStation || !fetchStartDate) return;
 
+    setPredictions(null);
+    setHourly(null);
     setLoading(true);
     setError(null);
 
-    fetch(
-      `/api/saunas/tides?station=${encodeURIComponent(sauna.noaaTideStation)}&date=${fetchDate}`
-    )
+    const params = new URLSearchParams({
+      station: sauna.noaaTideStation,
+      date: fetchStartDate,
+    });
+    if (fetchEndDate && fetchEndDate !== fetchStartDate) {
+      params.set("endDate", fetchEndDate);
+    }
+
+    fetch(`/api/saunas/tides?${params}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load tide data");
         return res.json();
@@ -166,22 +258,21 @@ export function SaunaTides({ sauna, date, waitForDate }: SaunaTidesProps) {
         setError(err.message);
         setLoading(false);
       });
-  }, [sauna.noaaTideStation, fetchDate]);
+  }, [sauna.noaaTideStation, fetchStartDate, fetchEndDate]);
 
   if (!sauna.tidal || !sauna.noaaTideStation) return null;
-  if (!fetchDate) return null;
+  if (!fetchStartDate) return null;
+
+  const multiDay = fetchEndDate !== fetchStartDate;
+  const label = formatTideLabel(fetchStartDate, fetchEndDate || fetchStartDate);
 
   if (loading) {
     return (
       <div>
         <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
-          {formatTideLabel(fetchDate)}
+          {label}
         </p>
-        <div className="flex gap-1.5">
-          <Skeleton className="h-6 w-24" />
-          <Skeleton className="h-6 w-24" />
-          <Skeleton className="h-6 w-24" />
-        </div>
+        <Skeleton className={multiDay ? "h-[150px] w-full" : "h-[120px] w-full"} />
       </div>
     );
   }
@@ -196,31 +287,16 @@ export function SaunaTides({ sauna, date, waitForDate }: SaunaTidesProps) {
     <div>
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(!open)}
         className="flex items-center gap-1 text-xs text-muted-foreground uppercase tracking-wide"
       >
         <ChevronRight className={`h-3 w-3 transition-transform ${open ? "rotate-90" : ""}`} />
-        {formatTideLabel(fetchDate)}
+        {label}
       </button>
       {open && (
         <div className="mt-2 space-y-2">
-          <div className="flex flex-wrap gap-1.5">
-            {predictions.map((p) => (
-              <Badge key={p.time} variant="outline" className="text-xs gap-1">
-                {p.type === "H" ? (
-                  <ArrowUp className="h-3 w-3 text-blue-500" />
-                ) : (
-                  <ArrowDown className="h-3 w-3 text-blue-300" />
-                )}
-                {formatTideTime(p.time)}
-                <span className="text-muted-foreground">
-                  {parseFloat(p.height).toFixed(1)} ft
-                </span>
-              </Badge>
-            ))}
-          </div>
           {hourly && hourly.length > 0 && (
-            <TideChart hourly={hourly} predictions={predictions} />
+            <TideChart hourly={hourly} predictions={predictions} highlightTime={highlightTime} highlightColor={highlightColor} multiDay={multiDay} />
           )}
           <a
             href={noaaUrl}
