@@ -223,6 +223,30 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
 
   const open = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll into view when a tide indicator is clicked
+  useEffect(() => {
+    if (highlightTime && open && sectionRef.current) {
+      requestAnimationFrame(() => {
+        const el = sectionRef.current;
+        if (!el) return;
+        const scrollParent = el.closest("[class*='overflow-auto']") as HTMLElement | null;
+        if (!scrollParent) return;
+        const parentRect = scrollParent.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        const visibleBottom = parentRect.bottom;
+        // Already fully visible — do nothing
+        if (elRect.top >= parentRect.top && elRect.bottom <= visibleBottom) return;
+        // Scroll the minimum amount to make it visible
+        if (elRect.bottom > visibleBottom) {
+          scrollParent.scrollBy({ top: elRect.bottom - visibleBottom, behavior: "smooth" });
+        } else if (elRect.top < parentRect.top) {
+          scrollParent.scrollBy({ top: elRect.top - parentRect.top, behavior: "smooth" });
+        }
+      });
+    }
+  }, [highlightTime, open]);
 
   const today = localDateStr(new Date());
   const fetchStartDate = date || (waitForDate ? null : today);
@@ -284,7 +308,7 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
   const noaaUrl = `https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=${sauna.noaaTideStation}`;
 
   return (
-    <div>
+    <div ref={sectionRef}>
       <button
         type="button"
         onClick={() => setOpen(!open)}
