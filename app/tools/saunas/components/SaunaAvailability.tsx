@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface SaunaAvailabilityProps {
   sauna: Sauna;
   onHasAvailability?: (hasAvailability: boolean) => void;
+  onFirstAvailableDate?: (date: string | null) => void;
 }
 
 function formatTime(isoString: string): string {
@@ -83,7 +84,7 @@ function groupByDate(appointmentTypes: AppointmentTypeAvailability[]) {
   return byDate;
 }
 
-export function SaunaAvailability({ sauna, onHasAvailability }: SaunaAvailabilityProps) {
+export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDate }: SaunaAvailabilityProps) {
   const [data, setData] = useState<AvailabilityResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -113,12 +114,13 @@ export function SaunaAvailability({ sauna, onHasAvailability }: SaunaAvailabilit
   }, [sauna.slug, sauna.bookingProvider]);
 
   useEffect(() => {
-    if (!onHasAvailability || loading) return;
-    const hasSlots =
-      !!data &&
-      Object.keys(groupByDate(data.appointmentTypes)).length > 0;
-    onHasAvailability(hasSlots);
-  }, [data, loading, onHasAvailability]);
+    if (loading) return;
+    const byDate = data ? groupByDate(data.appointmentTypes) : {};
+    const sortedDates = Object.keys(byDate).sort();
+    const hasSlots = sortedDates.length > 0;
+    onHasAvailability?.(hasSlots);
+    onFirstAvailableDate?.(hasSlots ? sortedDates[0] : null);
+  }, [data, loading, onHasAvailability, onFirstAvailableDate]);
 
   if (!sauna.bookingProvider) return null;
 

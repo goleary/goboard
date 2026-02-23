@@ -362,6 +362,10 @@ export interface Sauna {
   naturalPlunge: boolean;
   /** Whether the sauna is a floating structure (on a lake, bay, etc.) */
   floating?: boolean;
+  /** Whether the sauna is on tidal water (e.g. Puget Sound) */
+  tidal?: boolean;
+  /** NOAA tide station ID for fetching tide predictions */
+  noaaTideStation?: string;
   /** Whether showers are available */
   showers: boolean;
   /** Whether towels are included with admission */
@@ -555,6 +559,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    tidal: true,
+    noaaTideStation: "9447130",
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -580,6 +586,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    tidal: true,
+    noaaTideStation: "9447265",
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -770,6 +778,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    tidal: true,
+    noaaTideStation: "9447130",
     showers: false,
     towelsIncluded: false,
     capacity: 15,
@@ -810,6 +820,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    tidal: true,
+    noaaTideStation: "9445882",
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -2665,14 +2677,14 @@ export const saunas: Sauna[] = [
       appointmentTypes: [
         {
           acuityAppointmentId: 69916653,
-          acuityCalendarId: 0,
+          acuityCalendarId: "any",
           name: "Mist Experience (90 min)",
           price: 199,
           durationMinutes: 90,
         },
         {
           acuityAppointmentId: 74108106,
-          acuityCalendarId: 0,
+          acuityCalendarId: "any",
           name: "Mist Experience (120 min)",
           price: 249,
           durationMinutes: 120,

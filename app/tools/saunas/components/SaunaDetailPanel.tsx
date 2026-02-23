@@ -5,6 +5,7 @@ import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SaunaAvailability } from "./SaunaAvailability";
+import { SaunaTides } from "./SaunaTides";
 import {
   ExternalLink,
   MapPin,
@@ -47,7 +48,9 @@ function AmenityBadge({
 
 export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
   const [hasAvailability, setHasAvailability] = useState(false);
+  const [firstAvailableDate, setFirstAvailableDate] = useState<string | null>(null);
   const handleHasAvailability = useCallback((v: boolean) => setHasAvailability(v), []);
+  const handleFirstAvailableDate = useCallback((d: string | null) => setFirstAvailableDate(d), []);
 
   return (
     <div className="flex flex-col min-h-0 h-full">
@@ -112,7 +115,10 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
         </div>
 
         {/* Availability */}
-        <SaunaAvailability sauna={sauna} onHasAvailability={handleHasAvailability} />
+        <SaunaAvailability sauna={sauna} onHasAvailability={handleHasAvailability} onFirstAvailableDate={handleFirstAvailableDate} />
+
+        {/* Tides */}
+        <SaunaTides sauna={sauna} date={firstAvailableDate} waitForDate={!!sauna.bookingProvider} />
 
         {/* Temperature */}
         {sauna.temperatureRangeF && (
