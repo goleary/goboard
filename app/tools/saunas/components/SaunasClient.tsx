@@ -13,9 +13,12 @@ import {
   getDefaultFilters,
   filterAndSortSaunas,
 } from "./SaunaFilters";
+import { useAvailabilityOn } from "./useAvailabilityOn";
 import { SaunaTable } from "./SaunaTable";
 import { SaunaDetailPanel } from "./SaunaDetailPanel";
 import type { LatLngBounds } from "leaflet";
+
+const AVAILABILITY_ZOOM_THRESHOLD = 8;
 
 // Dynamic import for map (client-only)
 const SaunaMap = dynamic(() => import("./SaunaMap"), {
@@ -72,6 +75,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   const [sheetHeight, setSheetHeight] = useState(MIN_SHEET_HEIGHT);
   const [isDragging, setIsDragging] = useState(false);
   const [mapBounds, setMapBounds] = useState<LatLngBounds | null>(null);
+  const [currentZoom, setCurrentZoom] = useState<number>(0);
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -87,6 +91,20 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   const handleBoundsChange = useCallback((bounds: LatLngBounds) => {
     setMapBounds(bounds);
   }, []);
+
+  // Handle zoom level change — auto-reset availability filter when zooming out
+  const handleZoomChange = useCallback((zoom: number) => {
+    setCurrentZoom(zoom);
+    if (zoom < AVAILABILITY_ZOOM_THRESHOLD) {
+      setFilters((prev) =>
+        prev.availabilityDate !== null
+          ? { ...prev, availabilityDate: null }
+          : prev
+      );
+    }
+  }, []);
+
+  const showAvailabilityFilter = currentZoom >= AVAILABILITY_ZOOM_THRESHOLD;
 
   // Handle drag start
   const handleDragStart = useCallback((clientY: number) => {
@@ -190,6 +208,32 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       mapBounds.contains([sauna.lat, sauna.lng])
     );
   }, [filteredSaunas, mapBounds]);
+
+  // Availability checking: only check saunas in viewport that have a booking provider
+  const checkableSlugs = useMemo(
+    () =>
+      viewportSaunas
+        .filter((s) => s.bookingProvider)
+        .map((s) => s.slug),
+    [viewportSaunas]
+  );
+
+  const { availability, loading: availabilityLoading } = useAvailabilityOn(
+    showAvailabilityFilter ? checkableSlugs : [],
+    filters.availabilityDate
+  );
+
+  // When availability filter is active, filter the viewport list
+  const displaySaunas = useMemo(() => {
+    if (!filters.availabilityDate) return viewportSaunas;
+    return viewportSaunas.filter((sauna) => {
+      // Saunas without a booking provider can't be checked — hide them when filtering
+      if (!sauna.bookingProvider) return false;
+      // Still loading — keep in list
+      if (availability[sauna.slug] === undefined) return true;
+      return availability[sauna.slug];
+    });
+  }, [viewportSaunas, filters.availabilityDate, availability]);
 
   // Global mouse handlers for desktop drag
   useEffect(() => {
@@ -377,11 +421,13 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     <div className={`px-3 pb-2 border-b ${isMobile ? "pt-0" : "pt-2"}`}>
       <div className="flex items-baseline justify-between mb-2">
         <h2 className="font-semibold text-lg">{title}</h2>
-        <span className="text-sm text-muted-foreground">{viewportSaunas.length} in view</span>
+        <span className="text-sm text-muted-foreground">{displaySaunas.length} in view</span>
       </div>
       <SaunaFilters
         filters={filters}
         onFiltersChange={setFilters}
+        showAvailabilityFilter={showAvailabilityFilter}
+        availabilityLoading={availabilityLoading}
       />
     </div>
   );
@@ -396,6 +442,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
             onSaunaClick={handleMarkerClick}
             onMapClick={selectedSauna ? handleCloseDetail : undefined}
             onBoundsChange={handleBoundsChange}
+            onZoomChange={handleZoomChange}
             selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={false}
@@ -424,7 +471,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
               {filtersSection(false)}
               <div className="flex-1 overflow-auto">
                 <SaunaTable
-                  saunas={viewportSaunas}
+                  saunas={displaySaunas}
                   compact
                   onSaunaClick={handleListClick}
                   selectedSlug={selectedSlug ?? undefined}
@@ -445,6 +492,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
             onSaunaClick={handleMarkerClick}
             onMapClick={selectedSauna ? handleCloseDetail : undefined}
             onBoundsChange={handleBoundsChange}
+            onZoomChange={handleZoomChange}
             selectedSlug={selectedSlug ?? undefined}
             selectedSauna={selectedSauna}
             isMobile={true}
@@ -492,7 +540,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                 <div className="flex-1 overflow-auto flex flex-col min-h-0">
                   <div className="flex-1 overflow-auto">
                     <SaunaTable
-                      saunas={viewportSaunas}
+                      saunas={displaySaunas}
                       compact
                       onSaunaClick={handleListClick}
                       selectedSlug={selectedSlug ?? undefined}
