@@ -4377,6 +4377,7 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://cascada.try.be/items/66e0cdadce72b654de090522/thermal-springs",
     bookingPlatform: "trybe",
+    googleMapsUrl: "https://maps.app.goo.gl/6BtD3qVzK5UqjBdH7",
     sessionPrice: 100,
     sessionLengthMinutes: 150,
     steamRoom: true,
