@@ -3,50 +3,69 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { AvailabilityResponse } from "@/app/api/saunas/availability/route";
 
+export interface SlotInfo {
+  time: string;
+  appointmentType: string;
+  slotsAvailable: number | null;
+}
+
 function localDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function hasAvailableSlots(
+function extractSlots(
   data: AvailabilityResponse,
   date: string
-): boolean {
+): SlotInfo[] {
   const isToday = date === localDateStr(new Date());
   const now = Date.now();
+  const slots: SlotInfo[] = [];
 
   for (const apt of data.appointmentTypes) {
-    const slots = apt.dates[date];
-    if (!slots) continue;
+    const dateSlots = apt.dates[date];
+    if (!dateSlots) continue;
 
-    for (const slot of slots) {
+    for (const slot of dateSlots) {
       const hasCapacity =
         slot.slotsAvailable === null || slot.slotsAvailable > 0;
       if (!hasCapacity) continue;
 
-      // For today, only count future slots
-      if (isToday) {
-        if (new Date(slot.time).getTime() > now) return true;
-      } else {
-        return true;
-      }
+      if (isToday && new Date(slot.time).getTime() <= now) continue;
+
+      slots.push({
+        time: slot.time,
+        appointmentType: apt.name,
+        slotsAvailable: slot.slotsAvailable,
+      });
     }
   }
-  return false;
+
+  slots.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+  return slots;
 }
 
 const MAX_CONCURRENT = 5;
 
+interface AvailabilityResult {
+  hasAvailability: boolean;
+  slots: SlotInfo[];
+}
+
 /**
  * Hook that checks availability for multiple saunas on a given date.
- * Returns a map of slug → hasAvailability, plus loading state.
+ * Returns a map of slug → { hasAvailability, slots }, plus loading state.
  */
 export function useAvailabilityOn(
   slugs: string[],
   date: string | null
-): { availability: Record<string, boolean>; loading: boolean } {
-  const [availability, setAvailability] = useState<Record<string, boolean>>({});
+): {
+  availability: Record<string, boolean>;
+  slots: Record<string, SlotInfo[]>;
+  loading: boolean;
+} {
+  const [results, setResults] = useState<Record<string, AvailabilityResult>>({});
   const [loading, setLoading] = useState(false);
-  const cacheRef = useRef<Map<string, boolean>>(new Map());
+  const cacheRef = useRef<Map<string, AvailabilityResult>>(new Map());
   const abortRef = useRef<AbortController | null>(null);
 
   // Stable slug list key to avoid re-fetching on every render
@@ -54,7 +73,7 @@ export function useAvailabilityOn(
 
   const fetchAvailability = useCallback(async () => {
     if (!date || slugs.length === 0) {
-      setAvailability({});
+      setResults({});
       setLoading(false);
       return;
     }
@@ -67,7 +86,7 @@ export function useAvailabilityOn(
     setLoading(true);
 
     // Check cache for already-fetched results
-    const result: Record<string, boolean> = {};
+    const result: Record<string, AvailabilityResult> = {};
     const toFetch: string[] = [];
 
     for (const slug of slugs) {
@@ -81,7 +100,7 @@ export function useAvailabilityOn(
 
     // If everything is cached, return immediately
     if (toFetch.length === 0) {
-      setAvailability(result);
+      setResults(result);
       setLoading(false);
       return;
     }
@@ -91,31 +110,32 @@ export function useAvailabilityOn(
       if (controller.signal.aborted) return;
 
       const batch = toFetch.slice(i, i + MAX_CONCURRENT);
-      const results = await Promise.allSettled(
+      const batchResults = await Promise.allSettled(
         batch.map(async (slug) => {
           const res = await fetch(
             `/api/saunas/availability?slug=${encodeURIComponent(slug)}&startDate=${date}`,
             { signal: controller.signal }
           );
-          if (!res.ok) return { slug, hasAvailability: false };
+          if (!res.ok) return { slug, data: { hasAvailability: false, slots: [] as SlotInfo[] } };
           const data: AvailabilityResponse = await res.json();
-          return { slug, hasAvailability: hasAvailableSlots(data, date) };
+          const slots = extractSlots(data, date);
+          return { slug, data: { hasAvailability: slots.length > 0, slots } };
         })
       );
 
       if (controller.signal.aborted) return;
 
-      for (const r of results) {
+      for (const r of batchResults) {
         if (r.status === "fulfilled") {
-          const { slug, hasAvailability } = r.value;
-          result[slug] = hasAvailability;
-          cacheRef.current.set(`${slug}:${date}`, hasAvailability);
+          const { slug, data } = r.value;
+          result[slug] = data;
+          cacheRef.current.set(`${slug}:${date}`, data);
         }
       }
     }
 
     if (!controller.signal.aborted) {
-      setAvailability(result);
+      setResults(result);
       setLoading(false);
     }
   }, [slugKey, date]);
@@ -132,5 +152,13 @@ export function useAvailabilityOn(
     cacheRef.current.clear();
   }, [date]);
 
-  return { availability, loading };
+  // Derive simple availability map for filtering
+  const availability: Record<string, boolean> = {};
+  const slots: Record<string, SlotInfo[]> = {};
+  for (const [slug, r] of Object.entries(results)) {
+    availability[slug] = r.hasAvailability;
+    slots[slug] = r.slots;
+  }
+
+  return { availability, slots, loading };
 }

@@ -218,7 +218,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     [viewportSaunas]
   );
 
-  const { availability, loading: availabilityLoading } = useAvailabilityOn(
+  const { availability, slots, loading: availabilityLoading } = useAvailabilityOn(
     showAvailabilityFilter ? checkableSlugs : [],
     filters.availabilityDate
   );
@@ -476,6 +476,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                   onSaunaClick={handleListClick}
                   selectedSlug={selectedSlug ?? undefined}
                   isMobile={false}
+                  availabilitySlots={filters.availabilityDate ? slots : undefined}
                 />
               </div>
             </>
@@ -545,6 +546,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                       onSaunaClick={handleListClick}
                       selectedSlug={selectedSlug ?? undefined}
                       isMobile={true}
+                      availabilitySlots={filters.availabilityDate ? slots : undefined}
                     />
                   </div>
                   {/* Sticky footer - only show when sheet is expanded */}
