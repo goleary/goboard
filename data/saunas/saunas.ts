@@ -20,7 +20,8 @@ export type LocationSlug =
   | "tennessee"
   | "chicago"
   | "boston"
-  | "new-york";
+  | "new-york"
+  | "philadelphia";
 
 /**
  * Location metadata for display and routing
@@ -205,6 +206,15 @@ export const locations: Location[] = [
       "New York City is emerging as the center of America's new bathing movement, with a wave of bathhouses and sauna clubs opening across Manhattan and Brooklyn.",
     center: { lat: 40.73, lng: -73.998 },
     zoom: 13,
+  },
+  {
+    slug: "philadelphia",
+    name: "Philadelphia",
+    state: "PA",
+    description:
+      "Philadelphia's sauna scene features wood-fired experiences along the Schuylkill River, with outdoor saunas and cold plunges in natural settings.",
+    center: { lat: 40.055, lng: -75.258 },
+    zoom: 12,
   },
 ];
 
@@ -4258,6 +4268,105 @@ export const saunas: Sauna[] = [
     lat: 41.7217,
     lng: -88.0417,
     updatedAt: "2026-02-11",
+  },
+  {
+    slug: "fiorst-riverside",
+    name: "Fiorst - Riverside",
+    address: "32 River Road, Conshohocken, PA 19428",
+    website: "https://www.fiorst.com/",
+    bookingUrl: "https://fiorst.as.me/schedule/4ee5a478",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/SbzFH1yzitaKncc88",
+    sessionPrice: 75,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired cedar sauna along the Schuylkill River with cold plunge. Social sessions ($75/person, up to 3 guests) and private sessions ($300, up to 8 guests) available. Firepit area for post-session relaxation. Bring two towels, swimwear, and sandals. Restroom facilities available for changing.",
+    lat: 40.05509923738114,
+    lng: -75.26407447417756,
+    updatedAt: "2026-02-23",
+    bookingProvider: {
+      type: "acuity",
+      owner: "4ee5a478",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 73916119,
+          acuityCalendarId: "any",
+          name: "The Social Session",
+          price: 75,
+          durationMinutes: 90,
+        },
+        {
+          acuityAppointmentId: 70502326,
+          acuityCalendarId: "any",
+          name: "Private Session (Up to 8 Guests)",
+          price: 300,
+          durationMinutes: 90,
+        },
+      ],
+    },
+  },
+  {
+    slug: "fiorst-schuylkill-center",
+    name: "Fiorst - Schuylkill Center",
+    address: "8480 Hagy's Mill Road, Philadelphia, PA 19128",
+    website: "https://www.fiorst.com/",
+    bookingUrl: "https://fiorst.as.me/schedule/4ee5a478",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/SbzFH1yzitaKncc88",
+    sessionPrice: 75,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired cedar sauna at the Schuylkill Center for Environmental Education. Social sessions ($75/person) and private sessions ($300 for 1 sauna/8 guests, $600 for 2 saunas/16 guests) available. Firepit area for post-session relaxation. Bring two towels, swimwear, and sandals.",
+    lat: 40.05573187938797,
+    lng: -75.25230839689085,
+    updatedAt: "2026-02-23",
+    bookingProvider: {
+      type: "acuity",
+      owner: "4ee5a478",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 88609063,
+          acuityCalendarId: "any",
+          name: "The Social Session",
+          price: 75,
+          durationMinutes: 90,
+        },
+        {
+          acuityAppointmentId: 89136665,
+          acuityCalendarId: "any",
+          name: "Private Session (1 Sauna, up to 8 Guests)",
+          price: 300,
+          durationMinutes: 90,
+        },
+        {
+          acuityAppointmentId: 88698188,
+          acuityCalendarId: "any",
+          name: "Private Session (2 Saunas, up to 16 Guests)",
+          price: 600,
+          durationMinutes: 90,
+        },
+      ],
+    },
   },
 ];
 
