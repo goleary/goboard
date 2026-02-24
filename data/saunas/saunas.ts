@@ -364,7 +364,8 @@ export interface Sauna {
     | "mariana-tek"
     | "momence"
     | "tock"
-    | "boulevard";
+    | "boulevard"
+    | "trybe";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -4367,6 +4368,31 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  {
+    slug: "cascada",
+    name: "Cascada",
+    address: "1150 NE Alberta St, Portland, OR 97211",
+    website: "https://cascada.me/",
+    bookingUrl:
+      "https://cascada.try.be/items/66e0cdadce72b654de090522/thermal-springs",
+    bookingPlatform: "trybe",
+    sessionPrice: 100,
+    sessionLengthMinutes: 150,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Boutique hotel and thermal springs spa in Portland's Alberta Arts District. 2.5-hour thermal springs day pass includes access to vitality pools, saunas, steam, cold plunge, and relaxation spaces across three areas: the Conservatory, Secret Garden, and Silent Sanctuary. 21+ only. Fitness classes available separately ($22/class). Hotel guests receive unlimited thermal access.",
+    lat: 45.55891246250745,
+    lng: -122.65373332667728,
+    updatedAt: "2026-02-23",
   },
 ];
 
