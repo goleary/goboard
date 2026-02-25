@@ -62,6 +62,11 @@ export default function RootLayout({
                 Sauna Map
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/tools/seattle-transit">
+                Seattle Transit
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </ul>
