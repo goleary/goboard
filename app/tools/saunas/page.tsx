@@ -22,11 +22,11 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         openGraph: {
           title,
           description,
-          url: `https://goleary.com/tools/saunas?sauna=${sauna.slug}`,
+          url: `https://goleary.com/tools/saunas/s/${sauna.slug}`,
           type: "website",
         },
         alternates: {
-          canonical: `https://goleary.com/tools/saunas?sauna=${sauna.slug}`,
+          canonical: `https://goleary.com/tools/saunas/s/${sauna.slug}`,
         },
       };
     }
@@ -59,7 +59,7 @@ function generateItemListSchema() {
     itemListElement: saunas.map((sauna, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      url: `https://goleary.com/tools/saunas?sauna=${sauna.slug}`,
+      url: `https://goleary.com/tools/saunas/s/${sauna.slug}`,
       name: sauna.name,
       description: buildSaunaSchemaDescription(sauna),
     })),

@@ -94,7 +94,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   const saunaDetailPages: MetadataRoute.Sitemap = saunas.map((sauna) => ({
-    url: `${baseUrl}/tools/saunas?sauna=${sauna.slug}`,
+    url: `${baseUrl}/tools/saunas/s/${sauna.slug}`,
     lastModified: new Date(sauna.updatedAt),
     changeFrequency: "monthly" as const,
     priority: 0.7,
