@@ -208,7 +208,7 @@ export default function SeattleTransitClient() {
         <p className="text-xs text-slate-400 mt-6 text-center">
           Data from{" "}
           <a
-            href="https://pugetsound.onebusaway.org"
+            href="https://onebusaway.org"
             className="text-blue-500 hover:text-blue-400"
             target="_blank"
             rel="noopener noreferrer"
