@@ -305,6 +305,33 @@ export interface GlofoxBookingProviderConfig {
 }
 
 /**
+ * Periode booking manifest type configuration.
+ */
+export interface PeriodeManifestType {
+  /** Periode booking manifest ID */
+  manifestId: string;
+  /** Display name (e.g. "Social Sauna") */
+  name: string;
+  /** Price in the sauna's currency */
+  price: number;
+  /** Duration in minutes */
+  durationMinutes: number;
+}
+
+/**
+ * Periode (periode.no) booking provider configuration.
+ */
+export interface PeriodeBookingProviderConfig {
+  type: "periode";
+  /** Periode merchant ID (first path segment in the booking URL) */
+  merchantId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Booking manifests (service types) to show availability for */
+  manifests: PeriodeManifestType[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -312,7 +339,8 @@ export interface GlofoxBookingProviderConfig {
 export type BookingProviderConfig =
   | AcuityBookingProviderConfig
   | WixBookingProviderConfig
-  | GlofoxBookingProviderConfig;
+  | GlofoxBookingProviderConfig
+  | PeriodeBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -817,6 +845,21 @@ export const saunas: Sauna[] = [
     lng: -122.2077221912926,
     googleMapsUrl: "https://maps.app.goo.gl/qLPor8mT4ycxEqCe9",
     updatedAt: "2025-01-04",
+    bookingProvider: {
+      type: "periode",
+      merchantId: "PqrVGDw50fAmCwkYGrxY",
+      timezone: "America/Los_Angeles",
+      manifests: [
+        {
+          manifestId: "ledXa8zrCUgv2dEgSyy8",
+          name: "Social Sauna",
+          price: 40,
+          durationMinutes: 75,
+        },
+        // Private Sauna (ICOjDjUjlZuJgXiJMppn) and Sauna Ritual (tbfQkWkaMkoOafpng2Bc)
+        // currently have no slot data in Periode — all dates disabled on their site.
+      ],
+    },
   },
   {
     slug: "tuli-lodge",
@@ -910,6 +953,19 @@ export const saunas: Sauna[] = [
     lng: -122.54906706776069,
     googleMapsUrl: "https://maps.app.goo.gl/VyE9xPAczrJhch9h8",
     updatedAt: "2025-01-04",
+    bookingProvider: {
+      type: "periode",
+      merchantId: "7Rnv6gI4q8eaTuU5uSQA",
+      timezone: "America/Los_Angeles",
+      manifests: [
+        {
+          manifestId: "PFtBW8NkrXgbf3Ay78Hh",
+          name: "Community Sauna Session",
+          price: 30,
+          durationMinutes: 75,
+        },
+      ],
+    },
   },
   {
     slug: "fyre-sauna",
@@ -2174,6 +2230,25 @@ export const saunas: Sauna[] = [
     lat: 45.6018646,
     lng: -122.6631804,
     updatedAt: "2026-01-05",
+    bookingProvider: {
+      type: "periode",
+      merchantId: "wE4l5rKVuae2oCBE93gz",
+      timezone: "America/Los_Angeles",
+      manifests: [
+        {
+          manifestId: "w5FpVIGDc7DPhwYo5u3w",
+          name: "Social Sauna",
+          price: 59,
+          durationMinutes: 105,
+        },
+        {
+          manifestId: "Hy1DLi3fx7KiCgYCtAuT",
+          name: "Private Sauna",
+          price: 539,
+          durationMinutes: 105,
+        },
+      ],
+    },
   },
   {
     slug: "archimedes-banya",
@@ -3242,6 +3317,19 @@ export const saunas: Sauna[] = [
     lat: 49.8479,
     lng: -124.5314,
     updatedAt: "2026-01-06",
+    bookingProvider: {
+      type: "periode",
+      merchantId: "aoy42QDbXlX69KNH6ook",
+      timezone: "America/Vancouver",
+      manifests: [
+        {
+          manifestId: "HTj3APooRPh93WMtVFlq",
+          name: "Community Sauna",
+          price: 25,
+          durationMinutes: 75,
+        },
+      ],
+    },
   },
   // ============================================================================
   // PEMBERTON, BC - EXCLUDED (no dry sauna)
@@ -3979,6 +4067,7 @@ export const saunas: Sauna[] = [
     lat: 42.3385,
     lng: -71.0564,
     updatedAt: "2026-02-09",
+    // Periode publishNightly=false — no pre-generated slot data in Firestore
   },
   {
     slug: "moki-sauna-allston",
@@ -4005,6 +4094,7 @@ export const saunas: Sauna[] = [
     lat: 42.3625,
     lng: -71.1285,
     updatedAt: "2026-02-09",
+    // Periode publishNightly=false — no pre-generated slot data in Firestore
   },
   // New York City
   {

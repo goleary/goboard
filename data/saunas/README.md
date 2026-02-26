@@ -208,6 +208,75 @@ Class types (programs) and their prices/durations are auto-detected from the API
 | `bookingProvider.facilityId` | network tab (step 2) | Facility ID for this specific location |
 | `bookingProvider.timezone` | — | IANA timezone (e.g. `America/Los_Angeles`) |
 
+## Adding Periode Availability
+
+Some saunas use [Periode](https://periode.no) (a Norwegian booking platform). Periode is backed by Google Cloud Firestore, and slot data is publicly readable via the Firestore REST API using the public API key from their client app — no authentication required.
+
+### Step 1: Find the merchant ID
+
+The merchant ID is the first path segment after the page type in the Periode booking URL:
+```
+https://minside.periode.no/bookinggroups/<merchantId>/<groupKey>
+https://minside.periode.no/booking/<merchantId>/<manifestId>
+https://minside.periode.no/eventlist/<merchantId>/<eventKey>
+```
+
+### Step 2: Find manifest IDs
+
+1. Navigate to the sauna's Periode booking page (the `bookinggroups` or `eventlist` URL).
+2. Each bookable service links to a URL like:
+   ```
+   https://minside.periode.no/booking/<merchantId>/<manifestId>/<date>
+   ```
+3. The `<manifestId>` in each link is the manifest ID you need.
+
+### Step 3: Get manifest metadata
+
+Fetch the manifest details from Firestore:
+```
+https://firestore.googleapis.com/v1/projects/periode-prod/databases/(default)/documents/bookingManifests/<manifestId>?key=AIzaSyDmV1nOZSBcpndV1SwLFNUFFPQbpTEl4AI
+```
+
+The response contains `name`, `price` (in cents), `length` (in hours), `timezone`, and `currency`.
+
+### Step 4: Add the config to the sauna entry
+
+```ts
+{
+  slug: "von-sauna",
+  // ...other fields...
+  bookingUrl: "https://minside.periode.no/bookinggroups/PqrVGDw50fAmCwkYGrxY/Off8bTkjMxsqCHc84gDD",
+  bookingPlatform: "periode",
+  // ...other fields...
+  bookingProvider: {
+    type: "periode",
+    merchantId: "PqrVGDw50fAmCwkYGrxY",
+    timezone: "America/Los_Angeles",
+    manifests: [
+      {
+        manifestId: "ledXa8zrCUgv2dEgSyy8",
+        name: "Social Sauna",
+        price: 40,
+        durationMinutes: 75,
+      },
+    ],
+  },
+},
+```
+
+### Field reference
+
+| Field | Source | Description |
+|---|---|---|
+| `bookingPlatform` | — | Set to `"periode"` |
+| `bookingProvider.type` | — | Must be `"periode"` |
+| `bookingProvider.merchantId` | booking URL (step 1) | First path segment after page type |
+| `bookingProvider.timezone` | Firestore manifest (step 3) | IANA timezone |
+| `manifestId` | booking links (step 2) | Manifest ID from the booking link |
+| `name` | Firestore manifest (step 3) | Display name |
+| `price` | Firestore manifest (step 3) | Price per session (convert from cents) |
+| `durationMinutes` | Firestore manifest (step 3) | Computed from `length` in hours × 60 |
+
 ## How it works
 
 The availability API (`/api/saunas/availability`) reads the `bookingProvider` config and calls the appropriate provider API to fetch available time slots. Results are cached for 5 minutes. The `BookingProviderConfig` type is a discriminated union, so new providers can be added by extending the union in `saunas.ts` and adding a corresponding case in the API route.
@@ -215,3 +284,5 @@ The availability API (`/api/saunas/availability`) reads the `bookingProvider` co
 For Wix, the auth token is fetched dynamically from `https://<siteUrl>/_api/v2/dynamicmodel` on each request (also cached 5 minutes), so no tokens need to be stored or refreshed manually.
 
 For Glofox, a guest JWT is obtained via `POST https://api.glofox.com/2.0/login` (also cached 5 minutes). Events are fetched from the branch's events API and filtered by facility ID to show only the relevant location's classes.
+
+For Periode, slot data is fetched directly from Google Cloud Firestore using the public REST API. Each date's slots are fetched as individual Firestore documents at `dateSlots/<merchantId>/manifests/<manifestId>/slots/<date>`. The API key (`AIzaSyDmV1nOZSBcpndV1SwLFNUFFPQbpTEl4AI`) is from Periode's public `env-config.js` at `https://minside.periode.no/env-config.js`.
