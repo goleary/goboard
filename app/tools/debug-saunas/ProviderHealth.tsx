@@ -253,10 +253,10 @@ export default function ProviderHealth({
 }
 
 const toggleColorClass: Record<string, string> = {
-  ok: "text-green-600",
+  ok: "text-green-500",
   warn: "text-amber-500",
-  error: "text-red-600",
-  pending: "text-gray-400 animate-pulse",
+  error: "text-red-500",
+  pending: "text-gray-300 animate-pulse",
 };
 
 function platformToggleColor(
@@ -267,9 +267,9 @@ function platformToggleColor(
 ): string {
   if (configured === 0) return "text-gray-400";
   if (!done) return "text-gray-400 animate-pulse";
-  if (errors > 0) return "text-red-600";
+  if (errors > 0) return "text-red-500";
   if (warns > 0) return "text-amber-500";
-  return "text-green-600";
+  return "text-green-500";
 }
 
 function PlatformRow({
@@ -390,7 +390,6 @@ function SaunaRow({
             </span>
           )}
           {!sauna.providerType && <span className="inline-block w-4" />}
-          <StatusDot status={result?.status ?? null} />
           <a
             href={`/tools/saunas?sauna=${encodeURIComponent(sauna.slug)}`}
             className="ml-2 hover:text-blue-600 hover:underline"
@@ -490,17 +489,3 @@ function SlotDetails({ types }: { types: TypeData[] }) {
   );
 }
 
-const statusStyles: Record<string, string> = {
-  ok: "bg-green-500",
-  warn: "bg-amber-500",
-  error: "bg-red-500",
-  pending: "bg-gray-300 animate-pulse",
-};
-
-function StatusDot({ status }: { status: string | null }) {
-  return (
-    <span
-      className={`inline-block w-1.5 h-1.5 rounded-full ${statusStyles[status ?? ""] ?? "bg-gray-200"}`}
-    />
-  );
-}
