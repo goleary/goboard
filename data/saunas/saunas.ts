@@ -2505,32 +2505,9 @@ export const saunas: Sauna[] = [
     website: "https://banyasf.com/",
     bookingUrl: "https://go.booker.com/location/ARCHIMEDESBANYASF/service-menu",
     bookingPlatform: "booker",
-    bookingProvider: {
-      type: "booker",
-      locationSlug: "ARCHIMEDESBANYASF",
-      locationId: 50873,
-      timezone: "America/Los_Angeles",
-      services: [
-        {
-          serviceId: 3916438,
-          name: "Venik Platza",
-          price: 47,
-          durationMinutes: 15,
-        },
-        {
-          serviceId: 3904073,
-          name: "Archimedes Hammam",
-          price: 65,
-          durationMinutes: 30,
-        },
-        {
-          serviceId: 4203760,
-          name: "Turkish Hammam",
-          price: 140,
-          durationMinutes: 50,
-        },
-      ],
-    },
+    // Booker provider disabled — available services (platza, hammam) are add-on
+    // treatments, not general banya admission. Re-enable if admission booking is
+    // added: locationSlug "ARCHIMEDESBANYASF", locationId 50873.
     googleMapsUrl: "https://maps.app.goo.gl/JAT6Wr8q8EDNeqJi9",
     sessionPrice: 55, // Happy Hour Pass; Basic Banya Pass $67
     sessionLengthMinutes: 180,
