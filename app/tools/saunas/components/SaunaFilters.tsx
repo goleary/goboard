@@ -104,14 +104,19 @@ export function SaunaFilters({
   const today = new Date();
   const todayStr = localDateStr(today);
 
+  // After 8pm, default to tomorrow since most slots today are gone
+  const defaultDate = today.getHours() >= 20
+    ? localDateStr(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1))
+    : todayStr;
+
   const handleAvailabilityToggle = useCallback(
     (checked: boolean) => {
       onFiltersChange({
         ...filters,
-        availabilityDate: checked ? todayStr : null,
+        availabilityDate: checked ? defaultDate : null,
       });
     },
-    [filters, onFiltersChange, todayStr]
+    [filters, onFiltersChange, defaultDate]
   );
 
   const handleDateSelect = useCallback(
