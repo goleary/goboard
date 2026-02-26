@@ -17,6 +17,8 @@ export interface AppointmentTypeAvailability {
   name: string;
   price: number;
   durationMinutes: number;
+  private?: boolean;
+  seats?: number;
   dates: Record<string, AvailabilitySlot[]>;
 }
 
@@ -70,6 +72,8 @@ async function fetchAcuityAvailability(
         name: apt.name,
         price: apt.price,
         durationMinutes: apt.durationMinutes,
+        ...(apt.private && { private: apt.private }),
+        ...(apt.seats != null && { seats: apt.seats }),
         dates,
       };
     })
@@ -170,6 +174,8 @@ async function fetchWixAvailability(
       name: svc.name,
       price: svc.price,
       durationMinutes: svc.durationMinutes,
+      ...(svc.private && { private: svc.private }),
+      ...(svc.seats != null && { seats: svc.seats }),
       dates: serviceMap.get(svc.serviceId) ?? {},
     }));
 }
@@ -300,11 +306,13 @@ async function fetchGlofoxAvailability(
       });
     }
 
+    const privateSeats = provider.privatePrograms?.[programId];
     return {
       appointmentTypeId: programId,
       name: program.name,
       price: program.price,
       durationMinutes: program.duration,
+      ...(privateSeats != null && { private: true, seats: privateSeats }),
       dates,
     };
   });
