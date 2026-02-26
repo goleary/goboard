@@ -4093,7 +4093,7 @@ export const saunas: Sauna[] = [
     address: "West Soldier Hollow Ln, Midway, UT 84049",
     website: "https://sohosaunas.com/",
     bookingUrl: "https://www.zettlor.com/c/sohosaunas",
-    bookingPlatform: "zettlor",
+    bookingPlatform: "acuity",
     googleMapsUrl: "https://maps.app.goo.gl/WJJqd5UxSn1twaYC6",
     sessionPrice: 38,
     sessionLengthMinutes: 120,
@@ -4111,7 +4111,6 @@ export const saunas: Sauna[] = [
     lat: 40.4809,
     lng: -111.501,
     updatedAt: "2026-02-11",
-    // bookingPlatform is "zettlor" but Zettlor uses Acuity under the hood here
     bookingProvider: {
       type: "acuity",
       owner: "d90563ca",
