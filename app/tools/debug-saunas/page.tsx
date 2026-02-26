@@ -1,6 +1,6 @@
 import { saunas } from "@/data/saunas/saunas";
 import type { Metadata } from "next";
-import ProviderHealth from "./ProviderHealth";
+import ProviderHealth, { type PlatformGroup } from "./ProviderHealth";
 
 export const metadata: Metadata = {
   title: "Sauna Booking Providers Debug",
@@ -8,19 +8,27 @@ export const metadata: Metadata = {
 };
 
 export default function DebugSaunasPage() {
+  const withBookingUrl = saunas.filter((s) => s.bookingUrl);
   const withPlatform = saunas.filter((s) => s.bookingPlatform);
   const withProvider = saunas.filter((s) => s.bookingProvider);
-  const withBookingUrl = saunas.filter((s) => s.bookingUrl);
   const missingPlatform = withBookingUrl.filter((s) => !s.bookingPlatform);
 
-  const platformCounts = new Map<string, typeof saunas>();
+  // Group saunas by platform
+  const platformMap = new Map<string, PlatformGroup>();
   for (const s of withPlatform) {
     const platform = s.bookingPlatform!;
-    if (!platformCounts.has(platform)) platformCounts.set(platform, []);
-    platformCounts.get(platform)!.push(s);
+    if (!platformMap.has(platform)) {
+      platformMap.set(platform, { platform, saunas: [] });
+    }
+    platformMap.get(platform)!.saunas.push({
+      slug: s.slug,
+      name: s.name,
+      providerType: s.bookingProvider?.type ?? null,
+      bookingUrl: s.bookingUrl,
+    });
   }
-  const sortedPlatforms = [...platformCounts.entries()].sort(
-    (a, b) => b[1].length - a[1].length
+  const platforms = [...platformMap.values()].sort(
+    (a, b) => b.saunas.length - a.saunas.length
   );
 
   return (
@@ -35,83 +43,7 @@ export default function DebugSaunasPage() {
         </p>
       </div>
 
-      {/* Live health checks */}
-      <ProviderHealth
-        saunas={withProvider.map((s) => ({
-          slug: s.slug,
-          name: s.name,
-          providerType: s.bookingProvider!.type,
-        }))}
-      />
-
-      {/* Platforms by usage */}
-      <section>
-        <h2 className="text-lg font-semibold mb-3">Platforms by Usage</h2>
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="border-b text-left">
-              <th className="py-2 pr-4">Platform</th>
-              <th className="py-2 pr-4 text-right">Total</th>
-              <th className="py-2 pr-4 text-right">Configured</th>
-              <th className="py-2">Saunas</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedPlatforms.map(([platform, list]) => {
-              const configured = list.filter((s) => s.bookingProvider).length;
-              return (
-                <tr key={platform} className="border-b">
-                  <td className="py-2 pr-4 font-mono">{platform}</td>
-                  <td className="py-2 pr-4 text-right">{list.length}</td>
-                  <td className="py-2 pr-4 text-right">
-                    {configured > 0 ? (
-                      <span className="text-green-700">
-                        {configured}/{list.length}
-                      </span>
-                    ) : (
-                      <span className="text-gray-400">0</span>
-                    )}
-                  </td>
-                  <td className="py-2 text-gray-500 text-xs">
-                    {list.map((s) => s.name).join(", ")}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </section>
-
-      {/* Configured saunas (with live availability) */}
-      <section>
-        <h2 className="text-lg font-semibold mb-3">
-          Live Availability Configured ({withProvider.length})
-        </h2>
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="border-b text-left">
-              <th className="py-2 pr-4">Sauna</th>
-              <th className="py-2 pr-4">Provider</th>
-              <th className="py-2 text-right">Appointment Types</th>
-            </tr>
-          </thead>
-          <tbody>
-            {withProvider.map((s) => (
-              <tr key={s.slug} className="border-b">
-                <td className="py-2 pr-4">{s.name}</td>
-                <td className="py-2 pr-4 font-mono">
-                  {s.bookingProvider!.type}
-                </td>
-                <td className="py-2 text-right">
-                  {s.bookingProvider!.type === "acuity"
-                    ? s.bookingProvider!.appointmentTypes.length
-                    : "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <ProviderHealth platforms={platforms} />
 
       {/* Missing platform identification */}
       {missingPlatform.length > 0 && (
