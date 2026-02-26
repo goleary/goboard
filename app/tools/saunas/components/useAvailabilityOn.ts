@@ -7,6 +7,8 @@ export interface SlotInfo {
   time: string;
   appointmentType: string;
   slotsAvailable: number | null;
+  private?: boolean;
+  seats?: number;
 }
 
 function localDateStr(d: Date): string {
@@ -35,7 +37,9 @@ function extractSlots(
       slots.push({
         time: slot.time,
         appointmentType: apt.name,
-        slotsAvailable: slot.slotsAvailable,
+        slotsAvailable: apt.private ? (apt.seats ?? null) : slot.slotsAvailable,
+        ...(apt.private && { private: true }),
+        ...(apt.seats != null && { seats: apt.seats }),
       });
     }
   }

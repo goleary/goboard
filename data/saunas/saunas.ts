@@ -758,6 +758,7 @@ export const saunas: Sauna[] = [
           price: 270,
           durationMinutes: 75,
           private: true,
+          seats: 8,
         },
       ],
     },
