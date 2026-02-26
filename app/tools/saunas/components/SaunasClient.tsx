@@ -223,13 +223,21 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     filters.availabilityDate
   );
 
-  // When availability filter is active, filter the viewport list
+  // Apply availability filter to the full sauna list (for the map)
+  const mapSaunas = useMemo(() => {
+    if (!filters.availabilityDate) return filteredSaunas;
+    return filteredSaunas.filter((sauna) => {
+      if (!sauna.bookingProvider) return false;
+      if (availability[sauna.slug] === undefined) return true;
+      return availability[sauna.slug];
+    });
+  }, [filteredSaunas, filters.availabilityDate, availability]);
+
+  // Apply availability filter to viewport saunas (for the list)
   const displaySaunas = useMemo(() => {
     if (!filters.availabilityDate) return viewportSaunas;
     return viewportSaunas.filter((sauna) => {
-      // Saunas without a booking provider can't be checked — hide them when filtering
       if (!sauna.bookingProvider) return false;
-      // Still loading — keep in list
       if (availability[sauna.slug] === undefined) return true;
       return availability[sauna.slug];
     });
@@ -438,7 +446,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       <div className="hidden lg:block relative h-full">
         <div className="absolute inset-0">
           <SaunaMap
-            saunas={filteredSaunas}
+            saunas={mapSaunas}
             onSaunaClick={handleMarkerClick}
             onMapClick={selectedSauna ? handleCloseDetail : undefined}
             onBoundsChange={handleBoundsChange}
@@ -489,7 +497,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
         {/* Full-screen map */}
         <div className="absolute inset-0">
           <SaunaMap
-            saunas={filteredSaunas}
+            saunas={mapSaunas}
             onSaunaClick={handleMarkerClick}
             onMapClick={selectedSauna ? handleCloseDetail : undefined}
             onBoundsChange={handleBoundsChange}
