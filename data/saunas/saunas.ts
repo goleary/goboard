@@ -247,6 +247,10 @@ export interface AcuityAppointmentType {
   price: number;
   /** Duration in minutes (e.g. 60) */
   durationMinutes: number;
+  /** Whether this is a private session (entire sauna reserved) */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
 }
 
 /**
@@ -274,6 +278,10 @@ export interface WixServiceType {
   price: number;
   /** Duration in minutes */
   durationMinutes: number;
+  /** Whether this is a private session (entire sauna reserved) */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
 }
 
 /**
@@ -302,6 +310,43 @@ export interface GlofoxBookingProviderConfig {
   timezone: string;
   /** Override prices by Glofox program ID (guest API returns $0) */
   priceOverrides?: Record<string, number>;
+  /** Mark programs as private with seat count, by Glofox program ID */
+  privatePrograms?: Record<string, number>;
+}
+
+/**
+ * FareHarbor bookable item configuration.
+ */
+export interface FareHarborItem {
+  /** FareHarbor item PK (numeric ID from the items API) */
+  itemPk: number;
+  /** Display name override (if not provided, uses the API name) */
+  name?: string;
+  /** Price override (if not provided, parsed from headline) */
+  price?: number;
+  /** Duration override in minutes (if not provided, parsed from headline) */
+  durationMinutes?: number;
+  /** Whether this is a private session (entire sauna reserved) */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
+}
+
+/**
+ * FareHarbor booking provider configuration.
+ */
+export interface FareHarborBookingProviderConfig {
+  type: "fareharbor";
+  /** Company shortname from the FareHarbor booking URL
+   *  (e.g., "cedarandstonesauna" from fareharbor.com/embeds/book/cedarandstonesauna/) */
+  shortname: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Optional: specific items to show availability for.
+   *  If omitted, auto-discovers all non-archived, non-private, bookable items. */
+  items?: FareHarborItem[];
+  /** Optional: item PKs to exclude from auto-discovery */
+  excludeItemPks?: number[];
 }
 
 /**
@@ -340,7 +385,8 @@ export type BookingProviderConfig =
   | AcuityBookingProviderConfig
   | WixBookingProviderConfig
   | GlofoxBookingProviderConfig
-  | PeriodeBookingProviderConfig;
+  | PeriodeBookingProviderConfig
+  | FareHarborBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -775,6 +821,8 @@ export const saunas: Sauna[] = [
           name: "Private Session",
           price: 270,
           durationMinutes: 75,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -1350,6 +1398,8 @@ export const saunas: Sauna[] = [
           name: "90 min Daytime Weekday",
           price: 190,
           durationMinutes: 90,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 67383995,
@@ -1357,6 +1407,8 @@ export const saunas: Sauna[] = [
           name: "90 min Eve/Weekend",
           price: 240,
           durationMinutes: 90,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 62947500,
@@ -1364,6 +1416,8 @@ export const saunas: Sauna[] = [
           name: "2 Hour Daytime Weekdays",
           price: 220,
           durationMinutes: 120,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 62947509,
@@ -1371,6 +1425,8 @@ export const saunas: Sauna[] = [
           name: "2 Hour Evenings & Weekends",
           price: 270,
           durationMinutes: 120,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 67384119,
@@ -1378,6 +1434,8 @@ export const saunas: Sauna[] = [
           name: "3 Hour Daytime Weekdays",
           price: 300,
           durationMinutes: 180,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 67384126,
@@ -1385,6 +1443,8 @@ export const saunas: Sauna[] = [
           name: "3 Hour Evenings & Weekends",
           price: 350,
           durationMinutes: 180,
+          private: true,
+          seats: 4,
         },
       ],
     },
@@ -1591,6 +1651,11 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://fareharbor.com/embeds/book/cedarandstonesauna/?full-items=yes",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "cedarandstonesauna",
+      timezone: "America/Chicago",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/kxzGvHoJ6bTw1Rsg6",
     sessionPrice: 49, // Social session price
     sessionLengthMinutes: 75,
@@ -2547,6 +2612,8 @@ export const saunas: Sauna[] = [
           name: "Private Sauna (1-4 people)",
           price: 135,
           durationMinutes: 90,
+          private: true,
+          seats: 4,
         },
       ],
     },
@@ -2672,6 +2739,8 @@ export const saunas: Sauna[] = [
           name: "Private Session - Riverbend",
           price: 250,
           durationMinutes: 75,
+          private: true,
+          seats: 12,
         },
         {
           acuityAppointmentId: 87599235,
@@ -3043,6 +3112,15 @@ export const saunas: Sauna[] = [
     website: "https://nyubu.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/nyubu/?full-items=yes",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "nyubu",
+      timezone: "America/Vancouver",
+      items: [
+        { itemPk: 497244, name: "Community Spa Session", price: 30, durationMinutes: 90 },
+        { itemPk: 497276, name: "Private Spa Session", price: 270, durationMinutes: 90, private: true, seats: 10 },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/bq4BvBhhtuYgAoFa7",
     sessionPrice: 30,
     currency: "CAD",
@@ -3158,6 +3236,18 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://fareharbor.com/embeds/book/tofinoresortandmarina/?full-items=yes&flow=1039132",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "tofinoresortandmarina",
+      timezone: "America/Vancouver",
+      // Tofino Resort has many non-sauna activities (fishing, whale watching, etc.)
+      // so we explicitly specify the sauna items
+      items: [
+        { itemPk: 492418, name: "Winter Floating Sauna Experience", price: 800, private: true, seats: 12 },
+        { itemPk: 661714, name: "Community Floating Sauna Experience", price: 179 },
+        { itemPk: 368145, name: "Spring + Summer Floating Sauna Experience", price: 1000, private: true, seats: 12 },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/wKtMwNTh4ahGiQzJ7",
     sessionPrice: 179, // CA$179/person community session (Sun/Wed)
     currency: "CAD",
@@ -3974,6 +4064,8 @@ export const saunas: Sauna[] = [
           name: "90-Minute Private Rental",
           price: 300,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
         {
           acuityAppointmentId: 76724657,
@@ -3988,6 +4080,8 @@ export const saunas: Sauna[] = [
           name: "Private Daily Rental",
           price: 750,
           durationMinutes: 480,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -4038,6 +4132,8 @@ export const saunas: Sauna[] = [
           name: "Private Session",
           price: 150,
           durationMinutes: 60,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -4234,6 +4330,14 @@ export const saunas: Sauna[] = [
     website: "https://www.dryypsauna.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/dryypsauna/?full-items=yes",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "dryypsauna",
+      timezone: "America/New_York",
+      items: [
+        { itemPk: 679964, name: "Community Sauna Session", price: 35, durationMinutes: 60 },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/YLBk4xcULW9pF46B9",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
@@ -4263,6 +4367,16 @@ export const saunas: Sauna[] = [
     website: "https://www.gethuht.com/gather/sauna-village-bousquet",
     bookingUrl: "https://www.gethuht.com/gather/sauna-village-bousquet",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "huht",
+      timezone: "America/New_York",
+      items: [
+        { itemPk: 688205, name: "Single Session", price: 39, durationMinutes: 60 },
+        { itemPk: 627902, name: "Private Rental: 8 Seater", price: 742, private: true, seats: 8 },
+        { itemPk: 636095, name: "Private Rental: 12 Seater", price: 1166, private: true, seats: 12 },
+      ],
+    },
     sessionPrice: 39,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -4289,6 +4403,14 @@ export const saunas: Sauna[] = [
     website: "https://www.gethuht.com/gather/ps21",
     bookingUrl: "https://www.gethuht.com/gather/ps21",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "huht",
+      timezone: "America/New_York",
+      items: [
+        { itemPk: 688205, name: "Single Session", price: 25, durationMinutes: 60 },
+      ],
+    },
     sessionPrice: 25,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -4402,6 +4524,8 @@ export const saunas: Sauna[] = [
           name: "Private Session (Up to 8 Guests)",
           price: 300,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -4448,6 +4572,8 @@ export const saunas: Sauna[] = [
           name: "Private Session (1 Sauna, up to 8 Guests)",
           price: 300,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
         {
           acuityAppointmentId: 88698188,
@@ -4455,6 +4581,8 @@ export const saunas: Sauna[] = [
           name: "Private Session (2 Saunas, up to 16 Guests)",
           price: 600,
           durationMinutes: 90,
+          private: true,
+          seats: 16,
         },
       ],
     },
