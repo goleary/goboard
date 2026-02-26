@@ -16,7 +16,7 @@ export interface AvailabilitySlot {
 export interface AppointmentTypeAvailability {
   appointmentTypeId: string;
   name: string;
-  price: number;
+  price?: number;
   durationMinutes: number;
   private?: boolean;
   seats?: number;
@@ -405,7 +405,7 @@ async function fetchFareHarborAvailability(
   let itemsToFetch: Array<{
     pk: number;
     name: string;
-    price: number;
+    price?: number;
     durationMinutes: number;
     private?: boolean;
     seats?: number;
@@ -421,7 +421,7 @@ async function fetchFareHarborAvailability(
       return {
         pk: configured.itemPk,
         name: configured.name ?? apiItem?.name ?? `Item ${configured.itemPk}`,
-        price: configured.price ?? parsed.price ?? 0,
+        price: configured.price ?? parsed.price ?? undefined,
         durationMinutes:
           configured.durationMinutes ?? parsed.durationMinutes ?? 60,
         private: configured.private,
@@ -445,7 +445,7 @@ async function fetchFareHarborAvailability(
         return {
           pk: item.pk,
           name: item.name,
-          price: parsed.price ?? 0,
+          price: parsed.price ?? undefined,
           durationMinutes: parsed.durationMinutes ?? 60,
         };
       });

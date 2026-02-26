@@ -4283,8 +4283,8 @@ export const saunas: Sauna[] = [
       timezone: "America/New_York",
       items: [
         { itemPk: 688205, name: "Single Session", price: 39, durationMinutes: 60 },
-        { itemPk: 627902, name: "Private Rental: 8 Seater", private: true, seats: 8 },
-        { itemPk: 636095, name: "Private Rental: 12 Seater", private: true, seats: 12 },
+        { itemPk: 627902, name: "Private Rental: 8 Seater", price: 742, private: true, seats: 8 },
+        { itemPk: 636095, name: "Private Rental: 12 Seater", price: 1166, private: true, seats: 12 },
       ],
     },
     sessionPrice: 39,
