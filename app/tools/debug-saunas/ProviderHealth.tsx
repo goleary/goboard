@@ -1,14 +1,30 @@
 "use client";
 
+import { TimeSlotBadge } from "@/app/tools/saunas/components/TimeSlotBadge";
 import { useCallback, useEffect, useState } from "react";
+
+interface SlotData {
+  time: string;
+  slotsAvailable: number | null;
+}
+
+interface TypeData {
+  name: string;
+  price?: number;
+  durationMinutes: number;
+  private?: boolean;
+  seats?: number;
+  dates: Record<string, SlotData[]>;
+}
 
 interface HealthResult {
   slug: string;
-  status: "pending" | "ok" | "error";
+  status: "pending" | "ok" | "warn" | "error";
   responseMs?: number;
   slotCount?: number;
   appointmentTypes?: number;
   error?: string;
+  data?: TypeData[];
 }
 
 export interface PlatformSauna {
@@ -33,6 +49,7 @@ export default function ProviderHealth({
   const [results, setResults] = useState<Map<string, HealthResult>>(new Map());
   const [running, setRunning] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [expandedSaunas, setExpandedSaunas] = useState<Set<string>>(new Set());
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -45,6 +62,15 @@ export default function ProviderHealth({
       const next = new Set(prev);
       if (next.has(platform)) next.delete(platform);
       else next.add(platform);
+      return next;
+    });
+  };
+
+  const toggleSauna = (slug: string) => {
+    setExpandedSaunas((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
       return next;
     });
   };
@@ -97,10 +123,12 @@ export default function ProviderHealth({
           const next = new Map(prev);
           next.set(sauna.slug, {
             slug: sauna.slug,
-            status: "ok",
+            status:
+              types.length === 0 || slotCount === 0 ? "warn" : "ok",
             responseMs: elapsed,
             slotCount,
             appointmentTypes: types.length,
+            data: types,
           });
           return next;
         });
@@ -142,6 +170,7 @@ export default function ProviderHealth({
 
   const done = results.size > 0 && ![...results.values()].some((r) => r.status === "pending");
   const okCount = [...results.values()].filter((r) => r.status === "ok").length;
+  const warnCount = [...results.values()].filter((r) => r.status === "warn").length;
   const errorCount = [...results.values()].filter((r) => r.status === "error").length;
 
   return (
@@ -158,6 +187,12 @@ export default function ProviderHealth({
         {done && (
           <span className="text-xs text-gray-500">
             <span className="text-green-700">{okCount} healthy</span>
+            {warnCount > 0 && (
+              <>
+                {" / "}
+                <span className="text-amber-600">{warnCount} warn</span>
+              </>
+            )}
             {errorCount > 0 && (
               <>
                 {" / "}
@@ -186,6 +221,9 @@ export default function ProviderHealth({
             const healthy = configured.filter(
               (s) => results.get(s.slug)?.status === "ok"
             ).length;
+            const warns = configured.filter(
+              (s) => results.get(s.slug)?.status === "warn"
+            ).length;
             const errors = configured.filter(
               (s) => results.get(s.slug)?.status === "error"
             ).length;
@@ -197,11 +235,14 @@ export default function ProviderHealth({
                 platform={p}
                 configured={configured.length}
                 healthy={healthy}
+                warns={warns}
                 errors={errors}
                 done={done}
                 isExpanded={isExpanded}
                 onToggle={() => toggle(p.platform)}
                 results={results}
+                expandedSaunas={expandedSaunas}
+                onToggleSauna={toggleSauna}
               />
             );
           })}
@@ -211,25 +252,53 @@ export default function ProviderHealth({
   );
 }
 
+const toggleColorClass: Record<string, string> = {
+  ok: "text-green-600",
+  warn: "text-amber-500",
+  error: "text-red-600",
+  pending: "text-gray-400 animate-pulse",
+};
+
+function platformToggleColor(
+  configured: number,
+  done: boolean,
+  errors: number,
+  warns: number
+): string {
+  if (configured === 0) return "text-gray-400";
+  if (!done) return "text-gray-400 animate-pulse";
+  if (errors > 0) return "text-red-600";
+  if (warns > 0) return "text-amber-500";
+  return "text-green-600";
+}
+
 function PlatformRow({
   platform,
   configured,
   healthy,
+  warns,
   errors,
   done,
   isExpanded,
   onToggle,
   results,
+  expandedSaunas,
+  onToggleSauna,
 }: {
   platform: PlatformGroup;
   configured: number;
   healthy: number;
+  warns: number;
   errors: number;
   done: boolean;
   isExpanded: boolean;
   onToggle: () => void;
   results: Map<string, HealthResult>;
+  expandedSaunas: Set<string>;
+  onToggleSauna: (slug: string) => void;
 }) {
+  const arrowColor = platformToggleColor(configured, done, errors, warns);
+
   return (
     <>
       <tr
@@ -237,7 +306,7 @@ function PlatformRow({
         onClick={onToggle}
       >
         <td className="py-2 pr-4 font-mono">
-          <span className="inline-block w-4 text-gray-400 text-xs">
+          <span className={`inline-block w-4 text-xs ${arrowColor}`}>
             {isExpanded ? "▼" : "▶"}
           </span>
           {platform.platform}
@@ -261,6 +330,10 @@ function PlatformRow({
             <span className="text-red-700">
               {healthy}/{configured}
             </span>
+          ) : warns > 0 ? (
+            <span className="text-amber-600">
+              {healthy}/{configured}
+            </span>
           ) : (
             <span className="text-green-700">
               {healthy}/{configured}
@@ -271,49 +344,155 @@ function PlatformRow({
       {isExpanded &&
         platform.saunas.map((s) => {
           const r = results.get(s.slug);
+          const saunaExpanded = expandedSaunas.has(s.slug);
+          const saunaArrowColor = s.providerType
+            ? (toggleColorClass[r?.status ?? ""] ?? "text-gray-400")
+            : "text-gray-300";
+
           return (
-            <tr key={s.slug} className="border-b bg-gray-50/50">
-              <td className="py-1.5 pr-4 pl-8 text-xs" colSpan={s.providerType ? 1 : 4}>
-                <StatusDot status={r?.status ?? null} />
-                <a
-                  href={`/tools/saunas?sauna=${encodeURIComponent(s.slug)}`}
-                  className="ml-2 hover:text-blue-600 hover:underline"
-                >
-                  {s.name}
-                </a>
-                {!s.providerType && (
-                  <span className="ml-2 text-gray-400">not configured</span>
-                )}
-              </td>
-              {s.providerType && (
-                <>
-                  <td className="py-1.5 pr-4 text-right font-mono text-xs text-gray-500">
-                    {r?.responseMs != null ? `${r.responseMs}ms` : "—"}
-                  </td>
-                  <td className="py-1.5 pr-4 text-right text-xs text-gray-500">
-                    {r?.appointmentTypes != null
-                      ? `${r.appointmentTypes} types`
-                      : "—"}
-                  </td>
-                  <td className="py-1.5 pr-4 text-right text-xs text-gray-500">
-                    {r?.slotCount != null ? `${r.slotCount} slots` : "—"}
-                    {r?.error && (
-                      <span className="ml-2 text-red-600 truncate max-w-xs inline-block align-bottom">
-                        {r.error}
-                      </span>
-                    )}
-                  </td>
-                </>
-              )}
-            </tr>
+            <SaunaRow
+              key={s.slug}
+              sauna={s}
+              result={r}
+              isExpanded={saunaExpanded}
+              arrowColor={saunaArrowColor}
+              onToggle={() => s.providerType && onToggleSauna(s.slug)}
+            />
           );
         })}
     </>
   );
 }
 
+function SaunaRow({
+  sauna,
+  result,
+  isExpanded,
+  arrowColor,
+  onToggle,
+}: {
+  sauna: PlatformSauna;
+  result: HealthResult | undefined;
+  isExpanded: boolean;
+  arrowColor: string;
+  onToggle: () => void;
+}) {
+  return (
+    <>
+      <tr
+        className={`border-b bg-gray-50/50 ${sauna.providerType ? "cursor-pointer hover:bg-gray-100/50" : ""}`}
+        onClick={onToggle}
+      >
+        <td className="py-1.5 pr-4 pl-6 text-xs" colSpan={sauna.providerType ? 1 : 4}>
+          {sauna.providerType && (
+            <span className={`inline-block w-4 text-xs ${arrowColor}`}>
+              {isExpanded ? "▼" : "▶"}
+            </span>
+          )}
+          {!sauna.providerType && <span className="inline-block w-4" />}
+          <StatusDot status={result?.status ?? null} />
+          <a
+            href={`/tools/saunas?sauna=${encodeURIComponent(sauna.slug)}`}
+            className="ml-2 hover:text-blue-600 hover:underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {sauna.name}
+          </a>
+          {!sauna.providerType && (
+            <span className="ml-2 text-gray-400">not configured</span>
+          )}
+        </td>
+        {sauna.providerType && (
+          <>
+            <td className="py-1.5 pr-4 text-right font-mono text-xs text-gray-500">
+              {result?.responseMs != null ? `${result.responseMs}ms` : "—"}
+            </td>
+            <td className="py-1.5 pr-4 text-right text-xs text-gray-500">
+              {result?.appointmentTypes != null
+                ? `${result.appointmentTypes} types`
+                : "—"}
+            </td>
+            <td className="py-1.5 pr-4 text-right text-xs text-gray-500">
+              {result?.slotCount != null ? `${result.slotCount} slots` : "—"}
+              {result?.error && (
+                <span className="ml-2 text-red-600 truncate max-w-xs inline-block align-bottom">
+                  {result.error}
+                </span>
+              )}
+            </td>
+          </>
+        )}
+      </tr>
+      {isExpanded && result?.data && (
+        <tr className="border-b bg-gray-100/50">
+          <td colSpan={4} className="py-2 pl-14 pr-4">
+            <SlotDetails types={result.data} />
+          </td>
+        </tr>
+      )}
+    </>
+  );
+}
+
+function SlotDetails({ types }: { types: TypeData[] }) {
+  if (types.length === 0) {
+    return <p className="text-xs text-gray-400 italic">No appointment types returned</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      {types.map((t, i) => {
+        const allDates = Object.keys(t.dates).sort();
+        const totalSlots = allDates.reduce(
+          (sum, d) => sum + t.dates[d].length,
+          0
+        );
+
+        return (
+          <div key={i} className="text-xs">
+            <div className="font-medium text-gray-700 mb-1">
+              {t.name}
+              <span className="ml-2 font-normal text-gray-400">
+                {t.price != null && `$${t.price} / `}{t.durationMinutes}min
+                {t.private && " / private"}
+                {t.seats && ` / ${t.seats} seats`}
+                {" — "}
+                {totalSlots} slot{totalSlots !== 1 ? "s" : ""}
+              </span>
+            </div>
+            {allDates.length === 0 ? (
+              <p className="text-gray-400 italic pl-2">No dates with availability</p>
+            ) : (
+              <div className="pl-2 space-y-1">
+                {allDates.map((date) => (
+                  <div key={date} className="flex gap-2 items-start">
+                    <span className="text-gray-500 font-mono w-20 shrink-0 pt-0.5">
+                      {date}
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {t.dates[date].map((slot, j) => (
+                        <TimeSlotBadge
+                          key={j}
+                          time={slot.time}
+                          slotsAvailable={slot.slotsAvailable}
+                          className="text-xs gap-1"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 const statusStyles: Record<string, string> = {
   ok: "bg-green-500",
+  warn: "bg-amber-500",
   error: "bg-red-500",
   pending: "bg-gray-300 animate-pulse",
 };
