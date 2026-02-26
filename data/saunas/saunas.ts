@@ -315,6 +315,39 @@ export interface GlofoxBookingProviderConfig {
 }
 
 /**
+ * Mariana Tek class type configuration.
+ */
+export interface MarianaTekClassType {
+  /** Mariana Tek class_type ID from the Customer API */
+  classTypeId: string;
+  /** Display name (e.g. "Sauna Session") */
+  name: string;
+  /** Price in the sauna's currency */
+  price: number;
+  /** Duration in minutes */
+  durationMinutes: number;
+  /** Whether this is a private session (entire sauna reserved) */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
+}
+
+/**
+ * Mariana Tek booking provider configuration.
+ */
+export interface MarianaTekBookingProviderConfig {
+  type: "mariana-tek";
+  /** Mariana Tek tenant subdomain (e.g. "hideout", "joinframework") */
+  tenant: string;
+  /** Mariana Tek location ID (required when tenant has multiple locations) */
+  locationId?: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Class types to show availability for */
+  classTypes: MarianaTekClassType[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -322,7 +355,8 @@ export interface GlofoxBookingProviderConfig {
 export type BookingProviderConfig =
   | AcuityBookingProviderConfig
   | WixBookingProviderConfig
-  | GlofoxBookingProviderConfig;
+  | GlofoxBookingProviderConfig
+  | MarianaTekBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -852,6 +886,19 @@ export const saunas: Sauna[] = [
     lng: -122.3445952181373,
     googleMapsUrl: "https://maps.app.goo.gl/MJbPogPMmEuQTraD9",
     updatedAt: "2025-01-04",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "tuli",
+      timezone: "America/Los_Angeles",
+      classTypes: [
+        {
+          classTypeId: "5889",
+          name: "Sauna Session",
+          price: 27,
+          durationMinutes: 60,
+        },
+      ],
+    },
   },
   {
     slug: "good-day-sauna",
@@ -3814,6 +3861,28 @@ export const saunas: Sauna[] = [
     lat: 36.1447,
     lng: -86.7786,
     updatedAt: "2026-02-06",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "joinframework",
+      locationId: "48717",
+      timezone: "America/Chicago",
+      classTypes: [
+        {
+          classTypeId: "5889",
+          name: "Sauna Session",
+          price: 35,
+          durationMinutes: 60,
+        },
+        {
+          classTypeId: "5943",
+          name: "Private Room",
+          price: 80,
+          durationMinutes: 60,
+          private: true,
+          seats: 4,
+        },
+      ],
+    },
   },
   {
     slug: "framework-backyard-nashville",
@@ -3841,6 +3910,20 @@ export const saunas: Sauna[] = [
     lat: 36.1887,
     lng: -86.7506,
     updatedAt: "2026-02-06",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "joinframework",
+      locationId: "48751",
+      timezone: "America/Chicago",
+      classTypes: [
+        {
+          classTypeId: "5889",
+          name: "Sauna Session",
+          price: 25,
+          durationMinutes: 60,
+        },
+      ],
+    },
   },
   {
     slug: "glidden-point-oyster-farms",
@@ -4170,6 +4253,33 @@ export const saunas: Sauna[] = [
     lat: 41.0676,
     lng: -73.5365,
     updatedAt: "2026-02-11",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "hideout",
+      timezone: "America/New_York",
+      classTypes: [
+        {
+          classTypeId: "6517",
+          name: "Free Flow",
+          price: 30,
+          durationMinutes: 75,
+        },
+        {
+          classTypeId: "6021",
+          name: "Guided Group Session",
+          price: 30,
+          durationMinutes: 75,
+        },
+        {
+          classTypeId: "6615",
+          name: "Private Sauna",
+          price: 200,
+          durationMinutes: 120,
+          private: true,
+          seats: 16,
+        },
+      ],
+    },
   },
   {
     slug: "dryyp-sauna",
