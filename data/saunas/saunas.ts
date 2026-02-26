@@ -4111,6 +4111,31 @@ export const saunas: Sauna[] = [
     lat: 40.4809,
     lng: -111.501,
     updatedAt: "2026-02-11",
+    // bookingPlatform is "zettlor" but Zettlor uses Acuity under the hood here
+    bookingProvider: {
+      type: "acuity",
+      owner: "d90563ca",
+      timezone: "America/Denver",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 84092048,
+          acuityCalendarId: 12586589,
+          name: "Sauna Session",
+          price: 38,
+          durationMinutes: 120,
+          seats: 8,
+        },
+        {
+          acuityAppointmentId: 87591104,
+          acuityCalendarId: 12586589,
+          name: "Private Barrel Rental",
+          price: 0,
+          durationMinutes: 120,
+          private: true,
+          seats: 1,
+        },
+      ],
+    },
   },
   // ============================================================================
   // COLORADO
