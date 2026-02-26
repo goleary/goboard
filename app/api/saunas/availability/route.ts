@@ -954,8 +954,7 @@ async function fetchBookerAvailability(
               }
               dateMap[date].push({
                 time: slot.startDateTime,
-                slotsAvailable:
-                  slot.employees.length > 0 ? slot.employees.length : null,
+                slotsAvailable: null,
               });
             }
           }
