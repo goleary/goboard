@@ -2,6 +2,10 @@
 
 This directory contains all sauna definitions and booking provider configurations. The main file is `saunas.ts`.
 
+## Availability scope
+
+We only care about timeslots for **facility use** — sauna sessions, steam room, hot tub, cold plunge, thermal springs, etc. We do **not** track availability for personal services like massage, facials, bodywork, or other spa treatments. When configuring a new booking provider, only include service/session types that represent facility access.
+
 ## Adding Acuity (Squarespace Scheduling) Availability
 
 Many saunas use Acuity / Squarespace Scheduling for bookings. To enable live availability checking, you need to gather info from their scheduling page.

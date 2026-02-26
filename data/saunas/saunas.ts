@@ -450,6 +450,52 @@ export interface BookerBookingProviderConfig {
 }
 
 /**
+ * SimplyBook.me booking provider configuration.
+ */
+export interface SimplyBookBookingProviderConfig {
+  type: "simplybook";
+  /** SimplyBook company slug (e.g. "backyardblisspdx") */
+  companySlug: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Services to fetch availability for */
+  services: {
+    serviceId: number;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
+ * Zettlor booking provider configuration (wraps Momence).
+ */
+export interface ZettlorBookingProviderConfig {
+  type: "zettlor";
+  /** Zettlor business handle/slug (e.g. "fjord") */
+  handle: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
+/**
+ * Trybe booking provider configuration.
+ */
+export interface TrybeBookingProviderConfig {
+  type: "trybe";
+  /** Trybe site ID (UUID) */
+  siteId: string;
+  /** Trybe session type ID (offering ID from booking URL) */
+  sessionTypeId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Display name for the session type */
+  name: string;
+  /** Session duration in minutes */
+  durationMinutes: number;
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -462,7 +508,10 @@ export type BookingProviderConfig =
   | MarianaTekBookingProviderConfig
   | FareHarborBookingProviderConfig
   | ZenotiBookingProviderConfig
-  | BookerBookingProviderConfig;
+  | BookerBookingProviderConfig
+  | SimplyBookBookingProviderConfig
+  | ZettlorBookingProviderConfig
+  | TrybeBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -2349,6 +2398,23 @@ export const saunas: Sauna[] = [
     lat: 45.5706761,
     lng: -122.6855365,
     updatedAt: "2026-01-06",
+    bookingProvider: {
+      type: "simplybook",
+      companySlug: "backyardblisspdx",
+      timezone: "America/Los_Angeles",
+      services: [
+        { serviceId: 19, name: "Mid Week Special: 90 Minutes - Sauna, Hot Tub, and Cold Plunge", price: 100, durationMinutes: 90 },
+        { serviceId: 22, name: "Weekend Special: 90 Minutes - Sauna, Hot Tub, and Cold Plunge", price: 125, durationMinutes: 90 },
+        { serviceId: 16, name: "Mid Week Special: 2 Hours - Sauna, Hot Tub, and Cold Plunge", price: 130, durationMinutes: 120 },
+        { serviceId: 23, name: "Weekend Special: 2 Hours - Sauna, Hot Tub, and Cold Plunge", price: 155, durationMinutes: 120 },
+        { serviceId: 21, name: "Mid Week Special: 3 Hours - Sauna, Hot Tub, and Cold Plunge", price: 200, durationMinutes: 180 },
+        { serviceId: 24, name: "Weekend Special: 3 Hours - Sauna, Hot Tub, and Cold Plunge", price: 255, durationMinutes: 180 },
+        { serviceId: 14, name: "Hot Tub and Shower - Mon/Thurs", price: 45, durationMinutes: 60 },
+        { serviceId: 5, name: "Hot Tub and Shower - Fri/Sun", price: 50, durationMinutes: 60 },
+        { serviceId: 20, name: "Sauna and Shower - Mon/Thurs", price: 45, durationMinutes: 60 },
+        { serviceId: 13, name: "Hot Bath - Mon/Thurs", price: 30, durationMinutes: 60 },
+      ],
+    },
   },
   {
     slug: "fusion-bodyworks-pdx",
@@ -2558,6 +2624,11 @@ export const saunas: Sauna[] = [
     lat: 37.866355519413275,
     lng: -122.49567078054073,
     updatedAt: "2026-01-06",
+    bookingProvider: {
+      type: "zettlor",
+      handle: "fjord",
+      timezone: "America/Los_Angeles",
+    },
   },
   {
     slug: "almonte-spa",
@@ -4965,6 +5036,14 @@ export const saunas: Sauna[] = [
     lat: 45.55891246250745,
     lng: -122.65373332667728,
     updatedAt: "2026-02-23",
+    bookingProvider: {
+      type: "trybe",
+      siteId: "9cf17a22-42ba-4192-92e2-c03bc7a6fa6c",
+      sessionTypeId: "66e0cdadce72b654de090522",
+      timezone: "America/Los_Angeles",
+      name: "Thermal Springs",
+      durationMinutes: 150,
+    },
   },
 ];
 

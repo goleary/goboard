@@ -69,6 +69,22 @@ export default function RootLayout({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        {process.env.NODE_ENV === "development" && (
+          <DropdownMenu>
+            <DropdownMenuTrigger>Debug</DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
+                <Link href="/tools/debug-saunas">Saunas</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/tools/debug-icons">Icons</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/tools/debug-seo">SEO</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </ul>
       <div className="w-full px-4 md:px-0">{children}</div>
     </div>
