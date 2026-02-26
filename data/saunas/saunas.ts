@@ -3041,6 +3041,10 @@ export const saunas: Sauna[] = [
       type: "fareharbor",
       shortname: "nyubu",
       timezone: "America/Vancouver",
+      items: [
+        { itemPk: 497244, name: "Community Spa Session", price: 30, durationMinutes: 90 },
+        { itemPk: 497276, name: "Private Spa Session", price: 270, durationMinutes: 90, private: true, seats: 10 },
+      ],
     },
     googleMapsUrl: "https://maps.app.goo.gl/bq4BvBhhtuYgAoFa7",
     sessionPrice: 30,
@@ -4240,6 +4244,9 @@ export const saunas: Sauna[] = [
       type: "fareharbor",
       shortname: "dryypsauna",
       timezone: "America/New_York",
+      items: [
+        { itemPk: 679964, name: "Community Sauna Session", price: 35, durationMinutes: 60 },
+      ],
     },
     googleMapsUrl: "https://maps.app.goo.gl/YLBk4xcULW9pF46B9",
     sessionPrice: 35,
