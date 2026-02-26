@@ -254,7 +254,7 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
                         )}
                       </p>
                       <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
-                        ${appointmentType.price} / {appointmentType.durationMinutes}min
+                        {appointmentType.price != null && `$${appointmentType.price} / `}{appointmentType.durationMinutes}min
                       </span>
                     </div>
                   )}

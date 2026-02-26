@@ -333,6 +333,24 @@ export interface MarianaTekClassType {
 }
 
 /**
+ * FareHarbor bookable item configuration.
+ */
+export interface FareHarborItem {
+  /** FareHarbor item PK (numeric ID from the items API) */
+  itemPk: number;
+  /** Display name override (if not provided, uses the API name) */
+  name?: string;
+  /** Price override (if not provided, parsed from headline) */
+  price?: number;
+  /** Duration override in minutes (if not provided, parsed from headline) */
+  durationMinutes?: number;
+  /** Whether this is a private session (entire sauna reserved) */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
+}
+
+/**
  * Mariana Tek booking provider configuration.
  */
 export interface MarianaTekBookingProviderConfig {
@@ -348,6 +366,23 @@ export interface MarianaTekBookingProviderConfig {
 }
 
 /**
+ * FareHarbor booking provider configuration.
+ */
+export interface FareHarborBookingProviderConfig {
+  type: "fareharbor";
+  /** Company shortname from the FareHarbor booking URL
+   *  (e.g., "cedarandstonesauna" from fareharbor.com/embeds/book/cedarandstonesauna/) */
+  shortname: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Optional: specific items to show availability for.
+   *  If omitted, auto-discovers all non-archived, non-private, bookable items. */
+  items?: FareHarborItem[];
+  /** Optional: item PKs to exclude from auto-discovery */
+  excludeItemPks?: number[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -356,7 +391,8 @@ export type BookingProviderConfig =
   | AcuityBookingProviderConfig
   | WixBookingProviderConfig
   | GlofoxBookingProviderConfig
-  | MarianaTekBookingProviderConfig;
+  | MarianaTekBookingProviderConfig
+  | FareHarborBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1606,6 +1642,11 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://fareharbor.com/embeds/book/cedarandstonesauna/?full-items=yes",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "cedarandstonesauna",
+      timezone: "America/Chicago",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/kxzGvHoJ6bTw1Rsg6",
     sessionPrice: 49, // Social session price
     sessionLengthMinutes: 75,
@@ -3043,6 +3084,15 @@ export const saunas: Sauna[] = [
     website: "https://nyubu.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/nyubu/?full-items=yes",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "nyubu",
+      timezone: "America/Vancouver",
+      items: [
+        { itemPk: 497244, name: "Community Spa Session", price: 30, durationMinutes: 90 },
+        { itemPk: 497276, name: "Private Spa Session", price: 270, durationMinutes: 90, private: true, seats: 10 },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/bq4BvBhhtuYgAoFa7",
     sessionPrice: 30,
     currency: "CAD",
@@ -3158,6 +3208,18 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://fareharbor.com/embeds/book/tofinoresortandmarina/?full-items=yes&flow=1039132",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "tofinoresortandmarina",
+      timezone: "America/Vancouver",
+      // Tofino Resort has many non-sauna activities (fishing, whale watching, etc.)
+      // so we explicitly specify the sauna items
+      items: [
+        { itemPk: 492418, name: "Winter Floating Sauna Experience", price: 800, private: true, seats: 12 },
+        { itemPk: 661714, name: "Community Floating Sauna Experience", price: 179 },
+        { itemPk: 368145, name: "Spring + Summer Floating Sauna Experience", price: 1000, private: true, seats: 12 },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/wKtMwNTh4ahGiQzJ7",
     sessionPrice: 179, // CA$179/person community session (Sun/Wed)
     currency: "CAD",
@@ -4288,6 +4350,14 @@ export const saunas: Sauna[] = [
     website: "https://www.dryypsauna.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/dryypsauna/?full-items=yes",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "dryypsauna",
+      timezone: "America/New_York",
+      items: [
+        { itemPk: 679964, name: "Community Sauna Session", price: 35, durationMinutes: 60 },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/YLBk4xcULW9pF46B9",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
@@ -4317,6 +4387,16 @@ export const saunas: Sauna[] = [
     website: "https://www.gethuht.com/gather/sauna-village-bousquet",
     bookingUrl: "https://www.gethuht.com/gather/sauna-village-bousquet",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "huht",
+      timezone: "America/New_York",
+      items: [
+        { itemPk: 688205, name: "Single Session", price: 39, durationMinutes: 60 },
+        { itemPk: 627902, name: "Private Rental: 8 Seater", price: 742, private: true, seats: 8 },
+        { itemPk: 636095, name: "Private Rental: 12 Seater", price: 1166, private: true, seats: 12 },
+      ],
+    },
     sessionPrice: 39,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -4343,6 +4423,14 @@ export const saunas: Sauna[] = [
     website: "https://www.gethuht.com/gather/ps21",
     bookingUrl: "https://www.gethuht.com/gather/ps21",
     bookingPlatform: "fareharbor",
+    bookingProvider: {
+      type: "fareharbor",
+      shortname: "huht",
+      timezone: "America/New_York",
+      items: [
+        { itemPk: 688205, name: "Single Session", price: 25, durationMinutes: 60 },
+      ],
+    },
     sessionPrice: 25,
     sessionLengthMinutes: 60,
     steamRoom: false,
