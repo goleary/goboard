@@ -15,6 +15,7 @@ export type LocationSlug =
   | "idaho"
   | "nevada"
   | "utah"
+  | "denver"
   | "colorado"
   | "minnesota"
   | "tennessee"
@@ -170,6 +171,15 @@ export const locations: Location[] = [
       "Utah's growing sauna scene features Nordic-inspired contrast therapy from Salt Lake City to lakeside experiences at Utah Lake near Provo.",
     center: { lat: 40.5, lng: -111.5 },
     zoom: 7,
+  },
+  {
+    slug: "denver",
+    name: "Denver",
+    state: "CO",
+    description:
+      "Denver's sauna scene spans from a historic 1927 Russian bathhouse to modern Finnish contrast therapy clubs, with options in Golden, Boulder, and across the Front Range.",
+    center: { lat: 39.83, lng: -105.05 },
+    zoom: 9,
   },
   {
     slug: "colorado",
@@ -515,7 +525,10 @@ export interface Sauna {
     | "momence"
     | "tock"
     | "boulevard"
-    | "trybe";
+    | "trybe"
+    | "shopify"
+    | "fresha"
+    | "envision";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -4123,6 +4136,185 @@ export const saunas: Sauna[] = [
     lat: 39.7419,
     lng: -104.9706,
     updatedAt: "2026-01-06",
+  },
+  {
+    slug: "lake-steam-baths",
+    name: "Lake Steam Baths",
+    address: "3540 W Colfax Ave, Denver, CO 80204",
+    website: "https://www.lakesteam.com/",
+    bookingPlatform: "envision",
+    googleMapsUrl: "https://maps.app.goo.gl/DijMA1Aq3KAGnSuj9",
+    sessionPrice: 32,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true, // Hot tub included
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    hours: "Mon 8:30am-9pm, Tue closed, Wed 8:30am-10pm, Thu 8:30am-9pm, Fri 8:30am-10pm, Sat 8:30am-10pm, Sun 6am-9pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Nude",
+    notes:
+      "Historic Russian bathhouse operating since 1927. $32 admission includes unlimited access to hot tub, steam room, dry sauna, showers, and cold plunge. Affordable add-on services: salt scrubs ($10), massage ($35/55min, $52/80min), reflexology ($18/30min), detox foot baths ($20/30min).",
+    lat: 39.74019517146539,
+    lng: -105.03420445995344,
+    updatedAt: "2026-02-26",
+  },
+  {
+    slug: "r3-spa",
+    name: "R3 Spa",
+    address: "2805 S Broadway, Englewood, CO 80113",
+    website: "https://www.r3experience.com/",
+    bookingUrl: "https://www.r3experience.com/booking-calendar/sauna-cold-plunge-session",
+    bookingPlatform: "wix",
+    googleMapsUrl: "https://maps.app.goo.gl/2UpansqpxQZXUTK49",
+    sessionPrice: 35,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // 3 cold plunge temperatures
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    temperatureRangeF: { min: 190, max: 190 },
+    hours: "Mon/Tue/Thu/Fri/Sat 7am-10pm, Wed closed, Sun closed",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Clean, alcohol-free Finnish sauna and cold plunge studio. 190°F Finnish sauna with 3 cold plunge temperatures. $35 drop-in (60 min), towels included. Session packs: $20/session. Unlimited membership $125/mo.",
+    lat: 39.665618894957504,
+    lng: -104.98821795997937,
+    updatedAt: "2026-02-26",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.r3experience.com",
+      timezone: "America/Denver",
+      services: [
+        {
+          serviceId: "173e870c-7c72-4f12-92c7-89ba1863c3d2",
+          name: "Sauna + Cold Plunge Session",
+          price: 35,
+          durationMinutes: 60,
+        },
+      ],
+    },
+  },
+  {
+    slug: "hooga-house",
+    name: "Hooga House",
+    address: "16305 S Golden Rd Unit C, Golden, CO 80401",
+    website: "https://www.hoogahouse.co/",
+    bookingUrl: "https://www.hoogahouse.co/booking-calendar/contrast-therapy-booking",
+    bookingPlatform: "wix",
+    googleMapsUrl: "https://maps.app.goo.gl/b5vXG4hWa19LvhTs8",
+    sessionPrice: 45,
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true, // Blue Cube cold plunges at 37-45°F
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 150, max: 195 },
+    hours: "Mon-Fri 7am-10am & 1pm-9pm, Sat-Sun 7am-7pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Outdoor contrast therapy wellness center in Golden. Features traditional dry sauna and infrared sauna with Blue Cube cold plunge units at 37-45°F. Stretching zone and cozy lounge on site.",
+    lat: 39.73551616648868,
+    lng: -105.1829639599772,
+    updatedAt: "2026-02-26",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.hoogahouse.co",
+      timezone: "America/Denver",
+      services: [
+        {
+          serviceId: "9525e025-441b-45e6-9310-87bc6aba5f55",
+          name: "Contrast Therapy Booking",
+          price: 45,
+          durationMinutes: 90,
+        },
+      ],
+    },
+  },
+  // The Cove — excluded: infrared-only facility
+  // {
+  //   slug: "the-cove-denver",
+  //   name: "The Cove",
+  //   address: "1361 S Broadway, Denver, CO 80210",
+  //   website: "https://thecovesauna.com/",
+  //   googleMapsUrl: "https://maps.app.goo.gl/gv3EZWef5Qz8bupy6",
+  //   sessionPrice: 24,
+  //   steamRoom: false,
+  //   coldPlunge: true,
+  //   soakingTub: true,
+  //   waterfront: false,
+  //   naturalPlunge: false,
+  //   showers: true,
+  //   towelsIncluded: false,
+  //   temperatureRangeF: { min: 175, max: 200 },
+  //   hours: "Mon 12pm-9pm, Tue closed, Wed-Sun 12pm-9pm",
+  //   genderPolicy: "Co-ed",
+  //   clothingPolicy: "Swimsuit required",
+  //   notes:
+  //     "Wellness center with multiple sauna types including infrared saunas, healing salt mist sauna, and vibrational resonance sauna. Also features 3 cold plunges, 2 hot tubs, red light therapy, lounge chair sauna, leg-compression boots, and gym. Passes from $24.",
+  //   lat: 39.6993,
+  //   lng: -104.9876,
+  //   updatedAt: "2026-02-26",
+  // },
+  {
+    slug: "red-rock-sauna",
+    name: "Red Rock Sauna",
+    address: "4460 W 29th Ave, Denver, CO 80212",
+    website: "https://redrocksauna.com/",
+    bookingUrl: "https://redrocksauna.com/products/private-sauna-session",
+    bookingPlatform: "shopify",
+    googleMapsUrl: "https://maps.app.goo.gl/XxRcCbQeQnSjtUF87",
+    sessionPrice: 50,
+    sessionLengthMinutes: 60,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: true,
+    hours: "Mon/Fri 7am-10am & 4pm-9pm, Tue-Thu 4pm-9pm, Sat 9am-8pm, Sun 9am-8pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Private group sauna experience at Hogshead Brewery. 8-person cedar sauna with gas stove, cold plunge, cold waterfall bucket, and steam room. $50/person/hour ($40/person/hour for parties of 2+). Private rentals available for parties and retreats. Towels, lounging area, water bucket, and ladle included.",
+    lat: 39.75821833272818,
+    lng: -105.04508446441803,
+    updatedAt: "2026-02-26",
+  },
+  {
+    slug: "denver-sports-recovery",
+    name: "Denver Sports Recovery",
+    address: "2242 W 29th Ave, Denver, CO 80211",
+    website: "https://www.denversportsrecovery.com/",
+    bookingPlatform: "fresha",
+    googleMapsUrl: "https://maps.app.goo.gl/y5qPsqaR1anajCsGA",
+    sessionPrice: 35,
+    steamRoom: false,
+    coldPlunge: true, // 3 cold plunge pools at 35-52°F
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    hours: "Mon-Thu 9am-9pm, Fri 9am-6pm, Sat 10am-5pm, Sun 12pm-5pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Sports recovery center in LoHi with dry sauna and 3 cold plunge pools at varying temperatures (35-52°F). Also offers infrared saunas, NormaTec compression, and other recovery modalities. $35 day pass includes sauna, cold plunge, and more. Private cold plunge + sauna session $45/50min. Memberships from $120/mo.",
+    lat: 39.75827077792347,
+    lng: -105.01409132883606,
+    updatedAt: "2026-02-26",
   },
   {
     slug: "mountlake-terrace-recreation-pavilion",
