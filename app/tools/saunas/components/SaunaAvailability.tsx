@@ -7,11 +7,11 @@ import type {
   AppointmentTypeAvailability,
 } from "@/app/api/saunas/availability/route";
 import type { TideDataPoint, TidesResponse } from "@/app/api/saunas/tides/route";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowUpRight, Minus, ArrowDownRight } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { getTideLevelForSlot, type TideLevel } from "./tideUtils";
+import { TimeSlotBadge } from "./TimeSlotBadge";
 
 
 interface SaunaAvailabilityProps {
@@ -20,15 +20,6 @@ interface SaunaAvailabilityProps {
   onFirstAvailableDate?: (date: string | null) => void;
   onLastAvailableDate?: (date: string | null) => void;
   onTideTimeClick?: (slotTime: string, color: string) => void;
-}
-
-function formatTime(isoString: string): string {
-  const d = new Date(isoString);
-  return d.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    ...(d.getMinutes() !== 0 && { minute: "2-digit" }),
-    hour12: true,
-  });
 }
 
 function localDateStr(d: Date): string {
@@ -269,13 +260,12 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
                       const hourly = tideDataByDate[dateStr];
                       const tideLevel = hourly ? getTideLevelForSlot(slot.time, hourly) : null;
                       return (
-                        <Badge key={slot.time} variant="outline" className="text-xs gap-1">
-                          {formatTime(slot.time)}
-                          {slot.slotsAvailable !== null && (
-                            <span className="text-muted-foreground">
-                              ({slot.slotsAvailable} seats)
-                            </span>
-                          )}
+                        <TimeSlotBadge
+                          key={slot.time}
+                          time={slot.time}
+                          slotsAvailable={appointmentType.private ? (appointmentType.seats ?? null) : slot.slotsAvailable}
+                          className="text-xs gap-1"
+                        >
                           {tideLevel && (
                             <TooltipProvider delayDuration={300}>
                               <Tooltip>
@@ -295,7 +285,7 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
                               </Tooltip>
                             </TooltipProvider>
                           )}
-                        </Badge>
+                        </TimeSlotBadge>
                       );
                     })}
                   </div>

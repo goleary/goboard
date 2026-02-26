@@ -1,5 +1,6 @@
 import { saunas } from "@/data/saunas/saunas";
 import type { Metadata } from "next";
+import ProviderHealth from "./ProviderHealth";
 
 export const metadata: Metadata = {
   title: "Sauna Booking Providers Debug",
@@ -33,6 +34,15 @@ export default function DebugSaunasPage() {
           {withProvider.length} with live availability
         </p>
       </div>
+
+      {/* Live health checks */}
+      <ProviderHealth
+        saunas={withProvider.map((s) => ({
+          slug: s.slug,
+          name: s.name,
+          providerType: s.bookingProvider!.type,
+        }))}
+      />
 
       {/* Platforms by usage */}
       <section>

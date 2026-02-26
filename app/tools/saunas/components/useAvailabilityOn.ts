@@ -65,8 +65,16 @@ export function useAvailabilityOn(
 } {
   const [results, setResults] = useState<Record<string, AvailabilityResult>>({});
   const [loading, setLoading] = useState(false);
+  const [prevDate, setPrevDate] = useState(date);
   const cacheRef = useRef<Map<string, AvailabilityResult>>(new Map());
   const abortRef = useRef<AbortController | null>(null);
+
+  // Clear cache synchronously when date changes so we re-fetch,
+  // but keep old results visible until new data arrives
+  if (date !== prevDate) {
+    setPrevDate(date);
+    cacheRef.current.clear();
+  }
 
   // Stable slug list key to avoid re-fetching on every render
   const slugKey = slugs.slice().sort().join(",");
@@ -74,6 +82,7 @@ export function useAvailabilityOn(
   const fetchAvailability = useCallback(async () => {
     if (!date || slugs.length === 0) {
       setResults({});
+
       setLoading(false);
       return;
     }
@@ -101,6 +110,7 @@ export function useAvailabilityOn(
     // If everything is cached, return immediately
     if (toFetch.length === 0) {
       setResults(result);
+
       setLoading(false);
       return;
     }
@@ -136,6 +146,7 @@ export function useAvailabilityOn(
 
     if (!controller.signal.aborted) {
       setResults(result);
+
       setLoading(false);
     }
   }, [slugKey, date]);
@@ -146,11 +157,6 @@ export function useAvailabilityOn(
       abortRef.current?.abort();
     };
   }, [fetchAvailability]);
-
-  // Clear cache when date changes
-  useEffect(() => {
-    cacheRef.current.clear();
-  }, [date]);
 
   // Derive simple availability map for filtering
   const availability: Record<string, boolean> = {};
