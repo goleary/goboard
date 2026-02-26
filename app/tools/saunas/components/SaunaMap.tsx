@@ -18,16 +18,18 @@ const MarkerClusterGroup = dynamic(
 
 export type { LatLngBounds };
 
-// Component to track map bounds and report changes
+// Component to track map bounds and zoom level, reporting changes
 function BoundsTracker({
   onBoundsChange,
+  onZoomChange,
 }: {
   onBoundsChange?: (bounds: LatLngBounds) => void;
+  onZoomChange?: (zoom: number) => void;
 }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!onBoundsChange) return;
+    if (!onBoundsChange && !onZoomChange) return;
 
     const reportBounds = () => {
       // Only report if the map container is visible and has a valid size
@@ -43,8 +45,9 @@ function BoundsTracker({
       const bounds = map.getBounds();
       // Only report if bounds are valid (non-zero area)
       if (bounds.isValid()) {
-        onBoundsChange(bounds);
+        onBoundsChange?.(bounds);
       }
+      onZoomChange?.(map.getZoom());
     };
 
     // Listen for move/zoom events
@@ -61,7 +64,7 @@ function BoundsTracker({
       map.off("moveend", reportBounds);
       map.off("zoomend", reportBounds);
     };
-  }, [map, onBoundsChange]);
+  }, [map, onBoundsChange, onZoomChange]);
 
   return null;
 }
@@ -171,6 +174,7 @@ interface SaunaMapProps {
   onSaunaClick?: (sauna: Sauna) => void;
   onMapClick?: () => void;
   onBoundsChange?: (bounds: LatLngBounds) => void;
+  onZoomChange?: (zoom: number) => void;
   selectedSlug?: string | null;
   selectedSauna?: Sauna | null;
   isMobile?: boolean;
@@ -189,6 +193,7 @@ export function SaunaMap({
   onSaunaClick,
   onMapClick,
   onBoundsChange,
+  onZoomChange,
   selectedSlug,
   selectedSauna,
   isMobile = false,
@@ -209,7 +214,7 @@ export function SaunaMap({
           attribution='&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, &copy;<a href="https://carto.com/attributions" target="_blank">CARTO</a>'
         />
         <ZoomControl position="bottomright" />
-        <BoundsTracker onBoundsChange={onBoundsChange} />
+        <BoundsTracker onBoundsChange={onBoundsChange} onZoomChange={onZoomChange} />
         <MapPanner
           selectedSauna={selectedSauna || null}
           isMobile={isMobile}

@@ -10,8 +10,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Waves, Leaf, Snowflake, Mail } from "lucide-react";
+import { Check, X, Waves, Leaf, Snowflake, Mail, User } from "lucide-react";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
+import { type SlotInfo } from "./useAvailabilityOn";
+
+function formatTime(isoString: string): string {
+  const d = new Date(isoString);
+  return d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    ...(d.getMinutes() !== 0 && { minute: "2-digit" }),
+    hour12: true,
+  });
+}
 
 interface SaunaTableProps {
   saunas: Sauna[];
@@ -19,6 +29,7 @@ interface SaunaTableProps {
   onSaunaClick?: (sauna: Sauna) => void;
   selectedSlug?: string;
   isMobile?: boolean;
+  availabilitySlots?: Record<string, SlotInfo[]>;
 }
 
 function BooleanCell({ value }: { value: boolean }) {
@@ -29,65 +40,112 @@ function BooleanCell({ value }: { value: boolean }) {
   );
 }
 
-function CompactSaunaList({ 
-  saunas, 
+function SlotBadges({ slots }: { slots: SlotInfo[] }) {
+  if (slots.length === 0) return null;
+
+  // Group by appointment type
+  const byType = new Map<string, SlotInfo[]>();
+  for (const slot of slots) {
+    const existing = byType.get(slot.appointmentType) ?? [];
+    existing.push(slot);
+    byType.set(slot.appointmentType, existing);
+  }
+
+  return (
+    <div className="mt-1.5 space-y-1">
+      {Array.from(byType.entries()).map(([typeName, typeSlots]) => (
+        <div key={typeName}>
+          {byType.size > 1 && (
+            <p className="text-[10px] text-muted-foreground mb-0.5">{typeName}</p>
+          )}
+          <div className="flex flex-wrap gap-1">
+            {typeSlots.map((slot) => (
+              <Badge
+                key={slot.time}
+                variant="outline"
+                className="text-[10px] px-1.5 py-0 h-5 font-normal gap-1"
+              >
+                {formatTime(slot.time)}
+                {slot.slotsAvailable !== null && (
+                  <span className="inline-flex items-center gap-px text-muted-foreground">
+                    <User className="h-2.5 w-2.5" />
+                    {slot.slotsAvailable}
+                  </span>
+                )}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CompactSaunaList({
+  saunas,
   onSaunaClick,
   selectedSlug,
-  isMobile = false
-}: { 
-  saunas: Sauna[]; 
+  isMobile = false,
+  availabilitySlots,
+}: {
+  saunas: Sauna[];
   onSaunaClick?: (sauna: Sauna) => void;
   selectedSlug?: string;
   isMobile?: boolean;
+  availabilitySlots?: Record<string, SlotInfo[]>;
 }) {
   return (
     <div className="divide-y">
-      {saunas.map((sauna) => (
-        <button
-          key={sauna.slug}
-          type="button"
-          onClick={() => onSaunaClick?.(sauna)}
-          data-umami-event="list-sauna-click"
-          data-umami-event-sauna={sauna.slug}
-          className={`block w-full text-left p-3 hover:bg-muted/50 transition-colors ${
-            selectedSlug === sauna.slug ? "bg-muted" : ""
-          }`}
-        >
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="font-medium text-sm truncate">{sauna.name}</p>
-              <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
-                {sauna.sessionLengthMinutes != null && sauna.sessionLengthMinutes > 0 && (
-                  <span>{sauna.sessionLengthMinutes} min</span>
-                )}
-                {sauna.coldPlunge && (
-                  <span title="Cold Plunge" className="flex items-center">
-                    <Snowflake className="h-3 w-3 text-sky-500" />
-                  </span>
-                )}
-                {sauna.waterfront && (
-                  <span title="Waterfront" className="flex items-center">
-                    <Waves className="h-3 w-3 text-blue-500" />
-                  </span>
-                )}
-                {sauna.naturalPlunge && (
-                  <span title="Natural Plunge" className="flex items-center">
-                    <Leaf className="h-3 w-3 text-green-600" />
-                  </span>
-                )}
-                {sauna.soakingTub && (
-                  <span title="Soaking Tub">♨️</span>
-                )}
+      {saunas.map((sauna) => {
+        const slots = availabilitySlots?.[sauna.slug];
+        return (
+          <button
+            key={sauna.slug}
+            type="button"
+            onClick={() => onSaunaClick?.(sauna)}
+            data-umami-event="list-sauna-click"
+            data-umami-event-sauna={sauna.slug}
+            className={`block w-full text-left p-3 hover:bg-muted/50 transition-colors ${
+              selectedSlug === sauna.slug ? "bg-muted" : ""
+            }`}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="font-medium text-sm truncate">{sauna.name}</p>
+                <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
+                  {sauna.sessionLengthMinutes != null && sauna.sessionLengthMinutes > 0 && (
+                    <span>{sauna.sessionLengthMinutes} min</span>
+                  )}
+                  {sauna.coldPlunge && (
+                    <span title="Cold Plunge" className="flex items-center">
+                      <Snowflake className="h-3 w-3 text-sky-500" />
+                    </span>
+                  )}
+                  {sauna.waterfront && (
+                    <span title="Waterfront" className="flex items-center">
+                      <Waves className="h-3 w-3 text-blue-500" />
+                    </span>
+                  )}
+                  {sauna.naturalPlunge && (
+                    <span title="Natural Plunge" className="flex items-center">
+                      <Leaf className="h-3 w-3 text-green-600" />
+                    </span>
+                  )}
+                  {sauna.soakingTub && (
+                    <span title="Soaking Tub">♨️</span>
+                  )}
+                </div>
               </div>
+              {sauna.sessionPrice > 0 && (
+                <Badge variant="secondary" className="shrink-0 text-xs">
+                  {formatPrice(sauna)}
+                </Badge>
+              )}
             </div>
-            {sauna.sessionPrice > 0 && (
-              <Badge variant="secondary" className="shrink-0 text-xs">
-                {formatPrice(sauna)}
-              </Badge>
-            )}
-          </div>
-        </button>
-      ))}
+            {slots && slots.length > 0 && <SlotBadges slots={slots} />}
+          </button>
+        );
+      })}
       {/* Only show link on desktop - mobile has it in sticky footer */}
       {!isMobile && (
         <a
@@ -102,7 +160,7 @@ function CompactSaunaList({
   );
 }
 
-export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug, isMobile = false }: SaunaTableProps) {
+export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug, isMobile = false, availabilitySlots }: SaunaTableProps) {
   if (saunas.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
@@ -112,7 +170,7 @@ export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug
   }
 
   if (compact) {
-    return <CompactSaunaList saunas={saunas} onSaunaClick={onSaunaClick} selectedSlug={selectedSlug} isMobile={isMobile} />;
+    return <CompactSaunaList saunas={saunas} onSaunaClick={onSaunaClick} selectedSlug={selectedSlug} isMobile={isMobile} availabilitySlots={availabilitySlots} />;
   }
 
   return (
@@ -181,4 +239,3 @@ export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug
     </div>
   );
 }
-
