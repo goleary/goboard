@@ -242,7 +242,10 @@ export function SaunaAvailability({ sauna, onHasAvailability, onFirstAvailableDa
                 <div key={appointmentType.appointmentTypeId}>
                   {(!isSingleType || appointmentType.private) && (
                     <div className="flex items-center justify-between gap-2 mb-1">
-                      <p className="text-xs text-muted-foreground truncate min-w-0" title={appointmentType.name}>
+                      <p
+                        className="text-xs text-muted-foreground truncate min-w-0"
+                        title={`${appointmentType.name}${appointmentType.private ? ` · Private${appointmentType.seats != null ? ` · up to ${appointmentType.seats}` : ""}` : ""}`}
+                      >
                         {appointmentType.name}
                         {appointmentType.private && (
                           <span className="ml-1 text-xs text-muted-foreground">
