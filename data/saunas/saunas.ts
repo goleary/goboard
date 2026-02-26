@@ -247,6 +247,10 @@ export interface AcuityAppointmentType {
   price: number;
   /** Duration in minutes (e.g. 60) */
   durationMinutes: number;
+  /** Whether this is a private session (entire sauna reserved) */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
 }
 
 /**
@@ -274,6 +278,10 @@ export interface WixServiceType {
   price: number;
   /** Duration in minutes */
   durationMinutes: number;
+  /** Whether this is a private session (entire sauna reserved) */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
 }
 
 /**
@@ -302,6 +310,8 @@ export interface GlofoxBookingProviderConfig {
   timezone: string;
   /** Override prices by Glofox program ID (guest API returns $0) */
   priceOverrides?: Record<string, number>;
+  /** Mark programs as private with seat count, by Glofox program ID */
+  privatePrograms?: Record<string, number>;
 }
 
 /**
@@ -747,6 +757,8 @@ export const saunas: Sauna[] = [
           name: "Private Session",
           price: 270,
           durationMinutes: 75,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -1294,6 +1306,8 @@ export const saunas: Sauna[] = [
           name: "90 min Daytime Weekday",
           price: 190,
           durationMinutes: 90,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 67383995,
@@ -1301,6 +1315,8 @@ export const saunas: Sauna[] = [
           name: "90 min Eve/Weekend",
           price: 240,
           durationMinutes: 90,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 62947500,
@@ -1308,6 +1324,8 @@ export const saunas: Sauna[] = [
           name: "2 Hour Daytime Weekdays",
           price: 220,
           durationMinutes: 120,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 62947509,
@@ -1315,6 +1333,8 @@ export const saunas: Sauna[] = [
           name: "2 Hour Evenings & Weekends",
           price: 270,
           durationMinutes: 120,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 67384119,
@@ -1322,6 +1342,8 @@ export const saunas: Sauna[] = [
           name: "3 Hour Daytime Weekdays",
           price: 300,
           durationMinutes: 180,
+          private: true,
+          seats: 4,
         },
         {
           acuityAppointmentId: 67384126,
@@ -1329,6 +1351,8 @@ export const saunas: Sauna[] = [
           name: "3 Hour Evenings & Weekends",
           price: 350,
           durationMinutes: 180,
+          private: true,
+          seats: 4,
         },
       ],
     },
@@ -2472,6 +2496,8 @@ export const saunas: Sauna[] = [
           name: "Private Sauna (1-4 people)",
           price: 135,
           durationMinutes: 90,
+          private: true,
+          seats: 4,
         },
       ],
     },
@@ -2597,6 +2623,8 @@ export const saunas: Sauna[] = [
           name: "Private Session - Riverbend",
           price: 250,
           durationMinutes: 75,
+          private: true,
+          seats: 12,
         },
         {
           acuityAppointmentId: 87599235,
@@ -3886,6 +3914,8 @@ export const saunas: Sauna[] = [
           name: "90-Minute Private Rental",
           price: 300,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
         {
           acuityAppointmentId: 76724657,
@@ -3900,6 +3930,8 @@ export const saunas: Sauna[] = [
           name: "Private Daily Rental",
           price: 750,
           durationMinutes: 480,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -3950,6 +3982,8 @@ export const saunas: Sauna[] = [
           name: "Private Session",
           price: 150,
           durationMinutes: 60,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -4312,6 +4346,8 @@ export const saunas: Sauna[] = [
           name: "Private Session (Up to 8 Guests)",
           price: 300,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -4358,6 +4394,8 @@ export const saunas: Sauna[] = [
           name: "Private Session (1 Sauna, up to 8 Guests)",
           price: 300,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
         {
           acuityAppointmentId: 88698188,
@@ -4365,6 +4403,8 @@ export const saunas: Sauna[] = [
           name: "Private Session (2 Saunas, up to 16 Guests)",
           price: 600,
           durationMinutes: 90,
+          private: true,
+          seats: 16,
         },
       ],
     },

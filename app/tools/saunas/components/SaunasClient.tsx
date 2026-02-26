@@ -223,25 +223,32 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     filters.availabilityDate
   );
 
+  // Don't apply the filter until we actually have availability data
+  const awaitingData =
+    checkableSlugs.length > 0 &&
+    !checkableSlugs.some((s) => s in availability);
+
   // Apply availability filter to the full sauna list (for the map)
+  // awaitingData: don't filter until initial data arrives (first toggle)
+  // After that, stale results from a previous date are kept visible until new data arrives
   const mapSaunas = useMemo(() => {
-    if (!filters.availabilityDate) return filteredSaunas;
+    if (!filters.availabilityDate || awaitingData) return filteredSaunas;
     return filteredSaunas.filter((sauna) => {
       if (!sauna.bookingProvider) return false;
-      if (availability[sauna.slug] === undefined) return true;
+      if (availability[sauna.slug] === undefined) return true; // not checked (outside viewport)
       return availability[sauna.slug];
     });
-  }, [filteredSaunas, filters.availabilityDate, availability]);
+  }, [filteredSaunas, filters.availabilityDate, availability, awaitingData]);
 
   // Apply availability filter to viewport saunas (for the list)
   const displaySaunas = useMemo(() => {
-    if (!filters.availabilityDate) return viewportSaunas;
+    if (!filters.availabilityDate || awaitingData) return viewportSaunas;
     return viewportSaunas.filter((sauna) => {
       if (!sauna.bookingProvider) return false;
-      if (availability[sauna.slug] === undefined) return true;
+      if (availability[sauna.slug] === undefined) return true; // not checked (outside viewport)
       return availability[sauna.slug];
     });
-  }, [viewportSaunas, filters.availabilityDate, availability]);
+  }, [viewportSaunas, filters.availabilityDate, availability, awaitingData]);
 
   // Global mouse handlers for desktop drag
   useEffect(() => {

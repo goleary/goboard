@@ -10,18 +10,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Waves, Leaf, Snowflake, Mail, User } from "lucide-react";
+import { Check, X, Waves, Leaf, Snowflake, Mail } from "lucide-react";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { type SlotInfo } from "./useAvailabilityOn";
-
-function formatTime(isoString: string): string {
-  const d = new Date(isoString);
-  return d.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    ...(d.getMinutes() !== 0 && { minute: "2-digit" }),
-    hour12: true,
-  });
-}
+import { TimeSlotBadge } from "./TimeSlotBadge";
 
 interface SaunaTableProps {
   saunas: Sauna[];
@@ -60,19 +52,12 @@ function SlotBadges({ slots }: { slots: SlotInfo[] }) {
           )}
           <div className="flex flex-wrap gap-1">
             {typeSlots.map((slot) => (
-              <Badge
+              <TimeSlotBadge
                 key={slot.time}
-                variant="outline"
+                time={slot.time}
+                slotsAvailable={slot.slotsAvailable}
                 className="text-[10px] px-1.5 py-0 h-5 font-normal gap-1"
-              >
-                {formatTime(slot.time)}
-                {slot.slotsAvailable !== null && (
-                  <span className="inline-flex items-center gap-px text-muted-foreground">
-                    <User className="h-2.5 w-2.5" />
-                    {slot.slotsAvailable}
-                  </span>
-                )}
-              </Badge>
+              />
             ))}
           </div>
         </div>
