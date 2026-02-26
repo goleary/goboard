@@ -430,6 +430,26 @@ export interface ZenotiBookingProviderConfig {
 }
 
 /**
+ * Booker (by Mindbody) booking provider configuration.
+ */
+export interface BookerBookingProviderConfig {
+  type: "booker";
+  /** Booker location slug (e.g., "WatercourseWay") */
+  locationSlug: string;
+  /** Numeric Booker location ID */
+  locationId: number;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Services to fetch availability for */
+  services: {
+    serviceId: number;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -441,7 +461,8 @@ export type BookingProviderConfig =
   | PeriodeBookingProviderConfig
   | MarianaTekBookingProviderConfig
   | FareHarborBookingProviderConfig
-  | ZenotiBookingProviderConfig;
+  | ZenotiBookingProviderConfig
+  | BookerBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1524,6 +1545,26 @@ export const saunas: Sauna[] = [
     website: "https://yuanspa.com/",
     bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
     bookingPlatform: "booker",
+    bookingProvider: {
+      type: "booker",
+      locationSlug: "yuanspabellevue",
+      locationId: 3708,
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: 4016064,
+          name: "1-Hour Hydrotherapy Pass (Co-ed)",
+          price: 59,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 4587860,
+          name: "1-Hour Hydrotherapy Pass (Co-ed, Fri-Sun)",
+          price: 69,
+          durationMinutes: 60,
+        },
+      ],
+    },
     googleMapsUrl: "https://goo.gl/maps/UphkRHkShgbc5kMa8",
     sessionPrice: 59, // Weekday price, $69 on weekends
     sessionLengthMinutes: 60,
@@ -1666,6 +1707,26 @@ export const saunas: Sauna[] = [
     website: "https://yuanspa.com/",
     bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
     bookingPlatform: "booker",
+    bookingProvider: {
+      type: "booker",
+      locationSlug: "yuanspaTotemlake",
+      locationId: 51266,
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: 4016065,
+          name: "1-Hour Hydrotherapy Pass (Co-ed)",
+          price: 59,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 4587861,
+          name: "1-Hour Hydrotherapy Pass (Co-ed, Fri-Sun)",
+          price: 69,
+          durationMinutes: 60,
+        },
+      ],
+    },
     googleMapsUrl: "https://goo.gl/maps/HtTVeP2ihv92JdH36",
     sessionPrice: 59, // Weekday price, $69 on weekends
     sessionLengthMinutes: 60,
@@ -2418,6 +2479,32 @@ export const saunas: Sauna[] = [
     website: "https://banyasf.com/",
     bookingUrl: "https://go.booker.com/location/ARCHIMEDESBANYASF/service-menu",
     bookingPlatform: "booker",
+    bookingProvider: {
+      type: "booker",
+      locationSlug: "ARCHIMEDESBANYASF",
+      locationId: 50873,
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: 3916438,
+          name: "Venik Platza",
+          price: 47,
+          durationMinutes: 15,
+        },
+        {
+          serviceId: 3904073,
+          name: "Archimedes Hammam",
+          price: 65,
+          durationMinutes: 30,
+        },
+        {
+          serviceId: 4203760,
+          name: "Turkish Hammam",
+          price: 140,
+          durationMinutes: 50,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/JAT6Wr8q8EDNeqJi9",
     sessionPrice: 55, // Happy Hour Pass; Basic Banya Pass $67
     sessionLengthMinutes: 180,
@@ -2476,6 +2563,32 @@ export const saunas: Sauna[] = [
     website: "https://www.almontespa.com/",
     bookingUrl: "https://www.almontespa.com/book",
     bookingPlatform: "booker",
+    bookingProvider: {
+      type: "booker",
+      locationSlug: "SI",
+      locationId: 19061,
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: 1318371,
+          name: "Finnish Sauna - for 1 (30 min)",
+          price: 35,
+          durationMinutes: 30,
+        },
+        {
+          serviceId: 3914467,
+          name: "Finnish Sauna - for 1 (60 min)",
+          price: 55,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 1400414,
+          name: "Hot Tub - for 1 (30 min)",
+          price: 35,
+          durationMinutes: 30,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/4c1sTy9dAZeBDLq16",
     sessionPrice: 35, // Finnish sauna 30 min; also $45/45min, $55/60min
     sessionLengthMinutes: 30,
@@ -2747,6 +2860,50 @@ export const saunas: Sauna[] = [
     website: "https://watercourseway.com/",
     bookingUrl: "https://go.booker.com/location/WatercourseWay/service-menu",
     bookingPlatform: "booker",
+    bookingProvider: {
+      type: "booker",
+      locationSlug: "WatercourseWay",
+      locationId: 49647,
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: 3700085,
+          name: "Eight Stars - 1 person (60 min, Mon-Thu)",
+          price: 55,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 3901769,
+          name: "Eight Stars - 1 person (60 min, Fri-Sun)",
+          price: 60,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 3700079,
+          name: "One Pine - 1 person (60 min, Mon-Thu)",
+          price: 55,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 3901934,
+          name: "One Pine - 1 person (60 min, Fri-Sun)",
+          price: 60,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 3700080,
+          name: "Two Stones - 1 person (60 min, Mon-Thu)",
+          price: 55,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 3901950,
+          name: "Two Stones - 1 person (60 min, Fri-Sun)",
+          price: 60,
+          durationMinutes: 60,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/gqMVsmoqDNEqPBHw5",
     sessionPrice: 55, // Premium hot tub room with sauna (Mon-Thu); $60 Fri-Sun
     sessionLengthMinutes: 60,
