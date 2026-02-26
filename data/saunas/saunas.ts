@@ -4274,6 +4274,11 @@ export const saunas: Sauna[] = [
       type: "fareharbor",
       shortname: "huht",
       timezone: "America/New_York",
+      items: [
+        { itemPk: 688205, name: "Single Session", price: 39, durationMinutes: 60 },
+        { itemPk: 627902, name: "Private Rental: 8 Seater", private: true, seats: 8 },
+        { itemPk: 636095, name: "Private Rental: 12 Seater", private: true, seats: 12 },
+      ],
     },
     sessionPrice: 39,
     sessionLengthMinutes: 60,
@@ -4305,6 +4310,9 @@ export const saunas: Sauna[] = [
       type: "fareharbor",
       shortname: "huht",
       timezone: "America/New_York",
+      items: [
+        { itemPk: 688205, name: "Single Session", price: 25, durationMinutes: 60 },
+      ],
     },
     sessionPrice: 25,
     sessionLengthMinutes: 60,
