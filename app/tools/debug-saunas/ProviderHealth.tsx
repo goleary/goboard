@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 interface HealthResult {
   slug: string;
-  status: "pending" | "ok" | "error";
+  status: "pending" | "ok" | "warn" | "error";
   responseMs?: number;
   slotCount?: number;
   appointmentTypes?: number;
@@ -97,7 +97,8 @@ export default function ProviderHealth({
           const next = new Map(prev);
           next.set(sauna.slug, {
             slug: sauna.slug,
-            status: "ok",
+            status:
+              types.length === 0 || slotCount === 0 ? "warn" : "ok",
             responseMs: elapsed,
             slotCount,
             appointmentTypes: types.length,
@@ -142,6 +143,7 @@ export default function ProviderHealth({
 
   const done = results.size > 0 && ![...results.values()].some((r) => r.status === "pending");
   const okCount = [...results.values()].filter((r) => r.status === "ok").length;
+  const warnCount = [...results.values()].filter((r) => r.status === "warn").length;
   const errorCount = [...results.values()].filter((r) => r.status === "error").length;
 
   return (
@@ -158,6 +160,12 @@ export default function ProviderHealth({
         {done && (
           <span className="text-xs text-gray-500">
             <span className="text-green-700">{okCount} healthy</span>
+            {warnCount > 0 && (
+              <>
+                {" / "}
+                <span className="text-amber-600">{warnCount} warn</span>
+              </>
+            )}
             {errorCount > 0 && (
               <>
                 {" / "}
@@ -186,6 +194,9 @@ export default function ProviderHealth({
             const healthy = configured.filter(
               (s) => results.get(s.slug)?.status === "ok"
             ).length;
+            const warns = configured.filter(
+              (s) => results.get(s.slug)?.status === "warn"
+            ).length;
             const errors = configured.filter(
               (s) => results.get(s.slug)?.status === "error"
             ).length;
@@ -197,6 +208,7 @@ export default function ProviderHealth({
                 platform={p}
                 configured={configured.length}
                 healthy={healthy}
+                warns={warns}
                 errors={errors}
                 done={done}
                 isExpanded={isExpanded}
@@ -215,6 +227,7 @@ function PlatformRow({
   platform,
   configured,
   healthy,
+  warns,
   errors,
   done,
   isExpanded,
@@ -224,6 +237,7 @@ function PlatformRow({
   platform: PlatformGroup;
   configured: number;
   healthy: number;
+  warns: number;
   errors: number;
   done: boolean;
   isExpanded: boolean;
@@ -259,6 +273,10 @@ function PlatformRow({
             <span className="text-gray-400 animate-pulse">...</span>
           ) : errors > 0 ? (
             <span className="text-red-700">
+              {healthy}/{configured}
+            </span>
+          ) : warns > 0 ? (
+            <span className="text-amber-600">
               {healthy}/{configured}
             </span>
           ) : (
@@ -314,6 +332,7 @@ function PlatformRow({
 
 const statusStyles: Record<string, string> = {
   ok: "bg-green-500",
+  warn: "bg-amber-500",
   error: "bg-red-500",
   pending: "bg-gray-300 animate-pulse",
 };
