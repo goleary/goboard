@@ -356,11 +356,25 @@ function parseFareHarborHeadline(headline: string): {
   let durationMinutes: number | null = null;
   let price: number | null = null;
 
-  const durMatch = headline.match(/(\d+)\s*(minutes?|mins?|hours?)/i);
-  if (durMatch) {
-    const value = parseInt(durMatch[1], 10);
-    const unit = durMatch[2].toLowerCase();
+  // Match numeric durations: "75 minutes", "2 Hours", "45 Mins"
+  const numDurMatch = headline.match(/(\d+)\s*(minutes?|mins?|hours?)/i);
+  if (numDurMatch) {
+    const value = parseInt(numDurMatch[1], 10);
+    const unit = numDurMatch[2].toLowerCase();
     durationMinutes = unit.startsWith("hour") ? value * 60 : value;
+  } else {
+    // Match word-form hours: "Four hours", "Five hours"
+    const wordHours: Record<string, number> = {
+      one: 1, two: 2, three: 3, four: 4, five: 5,
+      six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+    };
+    const wordDurMatch = headline.match(
+      /\b(one|two|three|four|five|six|seven|eight|nine|ten)\s+hours?\b/i
+    );
+    if (wordDurMatch) {
+      const hours = wordHours[wordDurMatch[1].toLowerCase()];
+      if (hours) durationMinutes = hours * 60;
+    }
   }
 
   const priceMatch = headline.match(/\$(\d+(?:\.\d+)?)/);

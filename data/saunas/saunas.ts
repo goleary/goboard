@@ -3164,9 +3164,9 @@ export const saunas: Sauna[] = [
       // Tofino Resort has many non-sauna activities (fishing, whale watching, etc.)
       // so we explicitly specify the sauna items
       items: [
-        { itemPk: 492418, name: "Winter Floating Sauna Experience" },
-        { itemPk: 661714, name: "Community Floating Sauna Experience" },
-        { itemPk: 368145, name: "Spring + Summer Floating Sauna Experience" },
+        { itemPk: 492418, name: "Winter Floating Sauna Experience", price: 800, private: true, seats: 12 },
+        { itemPk: 661714, name: "Community Floating Sauna Experience", price: 179 },
+        { itemPk: 368145, name: "Spring + Summer Floating Sauna Experience", price: 1000, private: true, seats: 12 },
       ],
     },
     googleMapsUrl: "https://maps.app.goo.gl/wKtMwNTh4ahGiQzJ7",
