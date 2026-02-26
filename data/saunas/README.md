@@ -2,6 +2,13 @@
 
 This directory contains all sauna definitions and booking provider configurations. The main file is `saunas.ts`.
 
+## Listing criteria
+
+Not all sauna-related businesses qualify for inclusion. We do **not** list:
+
+- **Gyms with saunas** — the sauna must be the primary offering, not an amenity tacked onto a gym membership.
+- **Infrared-only facilities** — the venue must have at least one traditional (Finnish/dry) or steam sauna. Places that only offer infrared saunas are excluded.
+
 ## Availability scope
 
 We only care about timeslots for **facility use** — sauna sessions, steam room, hot tub, cold plunge, thermal springs, etc. We do **not** track availability for personal services like massage, facials, bodywork, or other spa treatments. When configuring a new booking provider, only include service/session types that represent facility access.
