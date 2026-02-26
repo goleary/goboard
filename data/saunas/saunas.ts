@@ -410,6 +410,26 @@ export interface PeriodeBookingProviderConfig {
 }
 
 /**
+ * Zenoti booking provider configuration.
+ */
+export interface ZenotiBookingProviderConfig {
+  type: "zenoti";
+  /** Zenoti webstore subdomain (e.g., "loylysauna") */
+  subdomain: string;
+  /** UUID of the specific center/location */
+  centerId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Services to fetch availability for */
+  services: {
+    serviceId: string;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -420,7 +440,8 @@ export type BookingProviderConfig =
   | GlofoxBookingProviderConfig
   | PeriodeBookingProviderConfig
   | MarianaTekBookingProviderConfig
-  | FareHarborBookingProviderConfig;
+  | FareHarborBookingProviderConfig
+  | ZenotiBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1860,6 +1881,20 @@ export const saunas: Sauna[] = [
     website: "https://www.loyly.net/",
     bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
     bookingPlatform: "zenoti",
+    bookingProvider: {
+      type: "zenoti",
+      subdomain: "loylysauna",
+      centerId: "e1256f48-ef61-4047-815e-3139392311c1",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "ad539819-879e-4a96-bbd4-e25f61d46c2a",
+          name: "Sauna Lounge - 2 hours",
+          price: 40,
+          durationMinutes: 120,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/oRJtXBpuSshfED5S7",
     sessionPrice: 30, // Mon-Thu price; $40 Fri-Sun
     sessionLengthMinutes: 120,
@@ -1886,6 +1921,20 @@ export const saunas: Sauna[] = [
     website: "https://www.loyly.net/",
     bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
     bookingPlatform: "zenoti",
+    bookingProvider: {
+      type: "zenoti",
+      subdomain: "loylysauna",
+      centerId: "a09def69-5adb-4b2f-b030-6908911fb8ee",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "ad539819-879e-4a96-bbd4-e25f61d46c2a",
+          name: "Sauna Lounge - 2 hours",
+          price: 40,
+          durationMinutes: 120,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/woXtQYh8kmyJuwud7",
     sessionPrice: 30, // Mon-Thu price; $40 Fri-Sun
     sessionLengthMinutes: 120,
@@ -3060,6 +3109,26 @@ export const saunas: Sauna[] = [
     website: "https://ritualnordicspa.com/",
     bookingUrl: "https://ritualnordicspa.zenoti.com/webstorenew",
     bookingPlatform: "zenoti",
+    bookingProvider: {
+      type: "zenoti",
+      subdomain: "ritualnordicspa",
+      centerId: "442384e8-d2be-4a5e-b235-4f1224cfbc2d",
+      timezone: "America/Vancouver",
+      services: [
+        {
+          serviceId: "39294234-1dbf-4c90-9787-ca9eb18a814f",
+          name: "Nordic Circuit - Midweek 2HR",
+          price: 59,
+          durationMinutes: 120,
+        },
+        {
+          serviceId: "2c5fdc34-ccba-400d-87da-7bf0e436388e",
+          name: "Nordic Circuit - Weekend 2HR",
+          price: 69,
+          durationMinutes: 120,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/Q8X9e7VQnLkj2fxr5",
     sessionPrice: 59,
     currency: "CAD",
@@ -3328,6 +3397,20 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://scandinave.zenoti.com/webstoreNew/services/69bb2568-7d3c-4353-afc5-ad61c51bed79",
     bookingPlatform: "zenoti",
+    bookingProvider: {
+      type: "zenoti",
+      subdomain: "scandinave",
+      centerId: "69bb2568-7d3c-4353-afc5-ad61c51bed79",
+      timezone: "America/Vancouver",
+      services: [
+        {
+          serviceId: "17713992-c38c-401b-a381-428c707c3315",
+          name: "Thermal Journey with Reservation",
+          price: 138,
+          durationMinutes: 120,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/u9j8cDT5TySgqNrJ8",
     sessionPrice: 138,
     currency: "CAD",
