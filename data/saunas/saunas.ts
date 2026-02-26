@@ -1916,6 +1916,32 @@ export const saunas: Sauna[] = [
     website: "https://www.piedmontsprings.com/",
     bookingUrl: "https://www.piedmontsprings.com/online-booking",
     bookingPlatform: "booker",
+    bookingProvider: {
+      type: "booker",
+      locationSlug: "PiedmontSprings",
+      locationId: 49414,
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: 3626390,
+          name: "30 Minute Sauna",
+          price: 20,
+          durationMinutes: 30,
+        },
+        {
+          serviceId: 3626391,
+          name: "45 Minute Sauna",
+          price: 22,
+          durationMinutes: 45,
+        },
+        {
+          serviceId: 3668786,
+          name: "30 Minute Steam",
+          price: 20,
+          durationMinutes: 30,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/oRvFr6f97Kbaxgds8",
     sessionPrice: 20, // $20 per 30 min, $22 per 45 min
     sessionLengthMinutes: 30,
