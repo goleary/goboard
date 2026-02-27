@@ -10,6 +10,9 @@ import {
   type FareHarborBookingProviderConfig,
   type ZenotiBookingProviderConfig,
   type BookerBookingProviderConfig,
+  type SimplyBookBookingProviderConfig,
+  type ZettlorBookingProviderConfig,
+  type TrybeBookingProviderConfig,
 } from "@/data/saunas/saunas";
 
 export interface AvailabilitySlot {
@@ -974,6 +977,239 @@ async function fetchBookerAvailability(
   return results;
 }
 
+interface SimplyBookSlot {
+  id: string;
+  date: string;
+  time: string;
+  type: "free" | "busy";
+  slots_count: number;
+}
+
+async function fetchSimplyBookAvailability(
+  provider: SimplyBookBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+  const toDate = to.toISOString().split("T")[0];
+
+  const results = await Promise.all(
+    provider.services.map(async (svc) => {
+      const url = new URL(
+        `https://${provider.companySlug}.simplybook.me/v2/booking/time-slots/`
+      );
+      url.searchParams.set("from", startDate);
+      url.searchParams.set("to", toDate);
+      url.searchParams.set("provider", "any");
+      url.searchParams.set("service", String(svc.serviceId));
+      url.searchParams.set("count", "1");
+
+      const res = await fetch(url.toString(), {
+        next: { revalidate: 300 },
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          `SimplyBook API returned ${res.status} for service ${svc.serviceId}`
+        );
+      }
+
+      const slots: SimplyBookSlot[] = await res.json();
+
+      // Group free slots by date
+      const dates: Record<string, AvailabilitySlot[]> = {};
+      for (const slot of slots) {
+        if (slot.type !== "free") continue;
+        if (!dates[slot.date]) {
+          dates[slot.date] = [];
+        }
+        dates[slot.date].push({
+          time: `${slot.date} ${slot.time}`,
+          slotsAvailable: slot.slots_count,
+        });
+      }
+
+      return {
+        appointmentTypeId: String(svc.serviceId),
+        name: svc.name,
+        price: svc.price,
+        durationMinutes: svc.durationMinutes,
+        dates,
+      };
+    })
+  );
+
+  return results;
+}
+
+interface ZettlorSession {
+  id: string;
+  datetime: string;
+  time: string;
+  availability: number;
+  slotsAvailable: number;
+  maxCapacity: number;
+  scheduled: number;
+  price: number;
+  duration: number;
+  label: string;
+  location: string;
+  timezone: string;
+  category: string;
+  bookingUrl: string;
+}
+
+async function fetchZettlorAvailability(
+  provider: ZettlorBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+  const endDate = to.toISOString().split("T")[0];
+
+  const url = new URL("https://www.zettlor.com/api/momence/sessions");
+  url.searchParams.set("handle", provider.handle);
+  url.searchParams.set("startDate", startDate);
+  url.searchParams.set("endDate", endDate);
+  url.searchParams.set("includeWaitlist", "true");
+  url.searchParams.set("windowType", "critical");
+
+  const res = await fetch(url.toString(), {
+    next: { revalidate: 300 },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Zettlor API returned ${res.status} for ${provider.handle}`);
+  }
+
+  const data = await res.json();
+  const sessions: ZettlorSession[] = data.sessions ?? [];
+
+  // Group sessions by label (session type)
+  const labelMap = new Map<
+    string,
+    { price: number; duration: number; sessions: ZettlorSession[] }
+  >();
+
+  for (const session of sessions) {
+    if (!labelMap.has(session.label)) {
+      labelMap.set(session.label, {
+        price: session.price,
+        duration: session.duration,
+        sessions: [],
+      });
+    }
+    labelMap.get(session.label)!.sessions.push(session);
+  }
+
+  return Array.from(labelMap.entries()).map(([label, group]) => {
+    const dates: Record<string, AvailabilitySlot[]> = {};
+
+    for (const session of group.sessions) {
+      const dateObj = new Date(session.datetime);
+      const dateKey = dateObj.toLocaleDateString("en-CA", {
+        timeZone: provider.timezone,
+      });
+      const localTime = dateObj.toLocaleString("sv-SE", {
+        timeZone: provider.timezone,
+      });
+
+      if (!dates[dateKey]) {
+        dates[dateKey] = [];
+      }
+      dates[dateKey].push({
+        time: localTime,
+        slotsAvailable: session.slotsAvailable,
+      });
+    }
+
+    const isPrivate = label.toLowerCase().includes("private");
+    return {
+      appointmentTypeId: label,
+      name: label,
+      price: group.price,
+      durationMinutes: group.duration,
+      ...(isPrivate && { private: true, seats: 1 }),
+      dates,
+    };
+  });
+}
+
+interface TrybeSession {
+  id: string;
+  start_time: string;
+  end_time: string;
+  duration: number;
+  capacity: string;
+  remaining_capacity: number;
+  is_valid: boolean;
+  price: number;
+  currency: string;
+  room?: {
+    id: string;
+    name: string;
+    capacity: number;
+  };
+}
+
+async function fetchTrybeAvailability(
+  provider: TrybeBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+  const endDate = to.toISOString().split("T")[0];
+
+  const url = `https://api.try.be/shop/item-availability/sessions/${provider.siteId}/${provider.sessionTypeId}?date_from=${startDate}&date_to=${endDate}`;
+
+  const res = await fetch(url, {
+    next: { revalidate: 300 },
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Trybe API returned ${res.status} for ${provider.sessionTypeId}`
+    );
+  }
+
+  const data = await res.json();
+  const sessions: TrybeSession[] = data.data ?? data;
+
+  // Group sessions by date
+  const dates: Record<string, AvailabilitySlot[]> = {};
+
+  for (const session of sessions) {
+    const dateObj = new Date(session.start_time);
+    const dateKey = dateObj.toLocaleDateString("en-CA", {
+      timeZone: provider.timezone,
+    });
+    const localTime = dateObj.toLocaleString("sv-SE", {
+      timeZone: provider.timezone,
+    });
+
+    if (!dates[dateKey]) {
+      dates[dateKey] = [];
+    }
+    dates[dateKey].push({
+      time: localTime,
+      slotsAvailable: session.remaining_capacity,
+    });
+  }
+
+  return [
+    {
+      appointmentTypeId: provider.sessionTypeId,
+      name: provider.name,
+      price: sessions[0] ? sessions[0].price / 100 : undefined,
+      durationMinutes: provider.durationMinutes,
+      dates,
+    },
+  ];
+}
+
 export async function GET(request: NextRequest) {
   const parsed = querySchema.safeParse({
     slug: request.nextUrl.searchParams.get("slug"),
@@ -1028,6 +1264,18 @@ export async function GET(request: NextRequest) {
         break;
       case "booker":
         appointmentTypes = await fetchBookerAvailability(provider, startDate);
+        break;
+      case "simplybook":
+        appointmentTypes = await fetchSimplyBookAvailability(
+          provider,
+          startDate
+        );
+        break;
+      case "zettlor":
+        appointmentTypes = await fetchZettlorAvailability(provider, startDate);
+        break;
+      case "trybe":
+        appointmentTypes = await fetchTrybeAvailability(provider, startDate);
         break;
     }
 
