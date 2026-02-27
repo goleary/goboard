@@ -2124,13 +2124,13 @@ async function fetchMangomintAvailability(
 // --- Roller types and fetch function ---
 
 interface RollerProduct {
-  id: number;
+  id: string;
   name: string;
-  productTypeId: number;
+  type: string;
   products: {
-    id: number;
+    id: string;
     name: string;
-    price: number;
+    cost: number;
   }[];
 }
 
@@ -2144,9 +2144,10 @@ interface RollerSession {
 }
 
 interface RollerProductAvailability {
-  id: number;
+  id: string;
   name: string;
-  sessions: RollerSession[];
+  type: string;
+  sessions: RollerSession[] | null;
 }
 
 async function fetchRollerAvailability(
@@ -2171,10 +2172,10 @@ async function fetchRollerAvailability(
   const productGroups: RollerProduct[] = await productsRes.json();
 
   // Build a flat map of product ID -> product info
-  const productMap = new Map<number, { name: string; price: number }>();
+  const productMap = new Map<string, { name: string; price: number }>();
   for (const group of productGroups) {
     for (const prod of group.products) {
-      productMap.set(prod.id, { name: prod.name, price: prod.price / 100 });
+      productMap.set(prod.id, { name: prod.name, price: prod.cost });
     }
   }
 
@@ -2211,7 +2212,8 @@ async function fetchRollerAvailability(
 
   for (const dayProducts of dailyAvailability) {
     for (const product of dayProducts) {
-      const key = String(product.id);
+      if (product.type !== "sessionpass") continue;
+      const key = product.id;
       if (!productSessions.has(key)) {
         const info = productMap.get(product.id);
         productSessions.set(key, {
@@ -2223,7 +2225,7 @@ async function fetchRollerAvailability(
       }
 
       const entry = productSessions.get(key)!;
-      for (const session of product.sessions) {
+      for (const session of product.sessions ?? []) {
         if (!session.onlineSalesOpen || session.capacityRemaining <= 0)
           continue;
 
