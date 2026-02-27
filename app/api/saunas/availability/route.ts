@@ -1497,7 +1497,7 @@ async function fetchCheckfrontAvailability(
 
 interface PeekAvailabilityTime {
   id: string;
-  type: "availability-times";
+  type: "availability-time";
   attributes: {
     date: string; // "2026-03-01"
     time: string; // "3:00PM" or "12:15PM" (12h format)
@@ -1525,7 +1525,7 @@ function peekTimeTo24h(time12: string): string {
 
 interface PeekAvailabilityDate {
   id: string;
-  type: "availability-dates";
+  type: "availability-date";
   attributes: {
     date: string; // "2026-03-01"
     "num-start-times": number;
@@ -1580,7 +1580,7 @@ async function fetchPeekAvailability(
       // Build a lookup of included availability-times by ID
       const timeMap = new Map<string, PeekAvailabilityTime>();
       for (const included of data.included ?? []) {
-        if (included.type === "availability-times") {
+        if (included.type === "availability-time") {
           timeMap.set(included.id, included);
         }
       }
