@@ -13,6 +13,15 @@ import {
   type SimplyBookBookingProviderConfig,
   type ZettlorBookingProviderConfig,
   type TrybeBookingProviderConfig,
+  type VagaroBookingProviderConfig,
+  type CheckfrontBookingProviderConfig,
+  type PeekBookingProviderConfig,
+  type SquareBookingProviderConfig,
+  type MindbodyBookingProviderConfig,
+  type ClinicSenseBookingProviderConfig,
+  type MangomintBookingProviderConfig,
+  type RollerBookingProviderConfig,
+  type BoulevardBookingProviderConfig,
 } from "@/data/saunas/saunas";
 
 export interface AvailabilitySlot {
@@ -1210,6 +1219,1176 @@ async function fetchTrybeAvailability(
   ];
 }
 
+const VAGARO_USER_AGENT =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+interface VagaroBookingGroup {
+  BookingGroup: number;
+  AppDate: string;
+  AvailableTime: string;
+  ServicepPoviderData: {
+    AvailableTime: string;
+    ServiceProviderName: string;
+    ServiceID: number;
+    Duration: number;
+    SerivcePrice: number;
+    ServiceName: string;
+    AppDate: string;
+  }[];
+}
+
+async function fetchVagaroAvailability(
+  provider: VagaroBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  // Build 7 days of dates
+  const from = new Date(startDate);
+  const dates: string[] = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(from);
+    d.setDate(d.getDate() + i);
+    // Format as M/D/YYYY which is what Vagaro expects
+    dates.push(
+      `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`
+    );
+  }
+
+  // Fetch availability for each service x date in parallel
+  const results = await Promise.all(
+    provider.services.map(async (svc) => {
+      const dayResults = await Promise.all(
+        dates.map(async (dateStr) => {
+          const res = await fetch(
+            `https://www.vagaro.com/${provider.region}/websiteapi/homepage/getavailablemultiappointments`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "User-Agent": VAGARO_USER_AGENT,
+              },
+              body: JSON.stringify({
+                lAppointmentID: 0,
+                businessID: provider.businessId,
+                csvServiceID: String(svc.serviceId),
+                csvSPID: "",
+                AppDate: dateStr,
+                StyleID: null,
+                isPublic: true,
+                isOutcallAppointment: false,
+                strCurrencySymbol: "$",
+                IsFromWidgetPage: false,
+                isFromShopAdmin: false,
+                isMoveBack: false,
+                BusinessPackageID: 0,
+                PromotionID: "",
+              }),
+              next: { revalidate: 300 },
+            }
+          );
+
+          if (!res.ok) {
+            console.error(
+              `Vagaro API returned ${res.status} for service ${svc.serviceId} date ${dateStr}`
+            );
+            return { date: dateStr, groups: [] as VagaroBookingGroup[] };
+          }
+
+          const data = await res.json();
+          return {
+            date: dateStr,
+            groups: (data.d ?? []) as VagaroBookingGroup[],
+          };
+        })
+      );
+
+      // Merge all provider time slots across all days into a single set of
+      // unique times per date. Each booking group represents one provider/room
+      // for the same service; we union the available times across all providers
+      // to get the overall availability for the service.
+      const dateMap: Record<string, AvailabilitySlot[]> = {};
+
+      for (const { groups } of dayResults) {
+        if (groups.length === 0) continue;
+
+        // Use the AppDate from the first group (format "DD Mon YYYY")
+        const appDateRaw = groups[0].AppDate;
+        // Parse "27 Feb 2026" -> Date -> YYYY-MM-DD
+        const parsedDate = new Date(appDateRaw);
+        const dateKey = parsedDate.toISOString().split("T")[0];
+
+        // Collect all unique time slots across all providers for this date
+        const timeSet = new Set<string>();
+        for (const group of groups) {
+          if (group.AvailableTime) {
+            for (const time of group.AvailableTime.split(",")) {
+              timeSet.add(time.trim());
+            }
+          }
+        }
+
+        if (timeSet.size === 0) continue;
+
+        // Sort times chronologically
+        const sortedTimes = Array.from(timeSet).sort((a, b) => {
+          const toMinutes = (t: string) => {
+            const match = t.match(/(\d+):(\d+)\s*(AM|PM)/i);
+            if (!match) return 0;
+            let h = parseInt(match[1], 10);
+            const m = parseInt(match[2], 10);
+            const period = match[3].toUpperCase();
+            if (period === "PM" && h !== 12) h += 12;
+            if (period === "AM" && h === 12) h = 0;
+            return h * 60 + m;
+          };
+          return toMinutes(a) - toMinutes(b);
+        });
+
+        // Convert time strings to full datetime strings and count available providers
+        dateMap[dateKey] = sortedTimes.map((time) => {
+          // Count how many providers/rooms have this time available
+          let providerCount = 0;
+          for (const group of groups) {
+            if (
+              group.AvailableTime &&
+              group.AvailableTime.split(",")
+                .map((t) => t.trim())
+                .includes(time)
+            ) {
+              providerCount++;
+            }
+          }
+
+          // Convert "02:30 PM" to 24h format for the time string
+          const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+          let hours = 0;
+          let minutes = 0;
+          if (match) {
+            hours = parseInt(match[1], 10);
+            minutes = parseInt(match[2], 10);
+            const period = match[3].toUpperCase();
+            if (period === "PM" && hours !== 12) hours += 12;
+            if (period === "AM" && hours === 12) hours = 0;
+          }
+
+          return {
+            time: `${dateKey} ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`,
+            slotsAvailable: providerCount,
+          };
+        });
+      }
+
+      return {
+        appointmentTypeId: String(svc.serviceId),
+        name: svc.name,
+        price: svc.price,
+        durationMinutes: svc.durationMinutes,
+        dates: dateMap,
+      };
+    })
+  );
+
+  return results;
+}
+
+// --- Checkfront types (rate API response shapes) ---
+
+interface CheckfrontTimeslot {
+  A: number; // available
+  B: number; // booked
+  start_time: string; // "09:00"
+  end_time: string; // "10:30"
+  status: string; // "A" = available
+  days_span: number;
+  start_date: number; // unix timestamp
+  end_date: number; // unix timestamp
+}
+
+interface CheckfrontDateData {
+  timeslots: CheckfrontTimeslot[];
+  status: string;
+  stock: { A: number; B: number; T: number };
+}
+
+interface CheckfrontRateResponse {
+  item: {
+    item_id: number;
+    name: string;
+    stock: number;
+    rate: {
+      status: string;
+      available: number;
+      dates: Record<string, CheckfrontDateData>;
+    };
+  };
+}
+
+async function fetchCheckfrontAvailability(
+  provider: CheckfrontBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+  const endDate = to.toISOString().split("T")[0];
+
+  const results = await Promise.all(
+    provider.items.map(async (item) => {
+      const url = `${provider.baseUrl}/reserve/api/?call=rate`;
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-Requested-With": "XMLHttpRequest",
+          Referer: `${provider.baseUrl}/reserve/`,
+        },
+        body: new URLSearchParams({
+          item_id: String(item.itemId),
+          start_date: startDate,
+          end_date: endDate,
+          timeslot: "0",
+          "param[adult]": "1",
+        }).toString(),
+        next: { revalidate: 300 },
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          `Checkfront rate API returned ${res.status} for item ${item.itemId}`
+        );
+      }
+
+      const data: CheckfrontRateResponse = await res.json();
+      const rateDates = data.item?.rate?.dates ?? {};
+
+      const dates: Record<string, AvailabilitySlot[]> = {};
+
+      for (const [dateKey, dateData] of Object.entries(rateDates)) {
+        // dateKey is YYYYMMDD format, convert to YYYY-MM-DD
+        const isoDate = `${dateKey.slice(0, 4)}-${dateKey.slice(4, 6)}-${dateKey.slice(6, 8)}`;
+        const timeslots = dateData.timeslots ?? [];
+
+        // Filter to timeslots that have availability
+        const availableSlots = timeslots.filter((ts) => ts.A > 0);
+        if (availableSlots.length === 0) continue;
+
+        dates[isoDate] = availableSlots.map((ts) => ({
+          time: `${isoDate} ${ts.start_time}:00`,
+          slotsAvailable: ts.A,
+        }));
+      }
+
+      return {
+        appointmentTypeId: String(item.itemId),
+        name: item.name,
+        price: item.price,
+        durationMinutes: item.durationMinutes,
+        ...(item.private && { private: item.private }),
+        ...(item.seats != null && { seats: item.seats }),
+        dates,
+      };
+    })
+  );
+
+  return results;
+}
+
+// --- Peek types (REST API response shapes) ---
+
+interface PeekAvailabilityTime {
+  id: string;
+  type: "availability-times";
+  attributes: {
+    date: string; // "2026-03-01"
+    time: string; // "3:00PM" or "12:15PM" (12h format)
+    end: string; // "4:30PM"
+    spots: number;
+    price: { amount: string; currency: string };
+    duration: { amount: number; unit: string }; // { amount: 90, unit: "minute" }
+    "availability-mode": string; // "available" | "sold_out"
+  };
+}
+
+/**
+ * Convert Peek 12h time format (e.g. "3:00PM", "12:15AM") to 24h format "HH:MM:00"
+ */
+function peekTimeTo24h(time12: string): string {
+  const match = time12.match(/^(\d{1,2}):(\d{2})(AM|PM)$/i);
+  if (!match) return time12;
+  let hours = parseInt(match[1], 10);
+  const minutes = match[2];
+  const period = match[3].toUpperCase();
+  if (period === "PM" && hours !== 12) hours += 12;
+  if (period === "AM" && hours === 12) hours = 0;
+  return `${String(hours).padStart(2, "0")}:${minutes}:00`;
+}
+
+interface PeekAvailabilityDate {
+  id: string;
+  type: "availability-dates";
+  attributes: {
+    date: string; // "2026-03-01"
+    "num-start-times": number;
+  };
+  relationships?: {
+    "availability-times"?: {
+      data: Array<{ id: string; type: string }>;
+    };
+  };
+}
+
+interface PeekAvailabilityResponse {
+  data: PeekAvailabilityDate[];
+  included?: PeekAvailabilityTime[];
+}
+
+async function fetchPeekAvailability(
+  provider: PeekBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+  const endDate = to.toISOString().split("T")[0];
+
+  const results = await Promise.all(
+    provider.activities.map(async (activity) => {
+      const url = new URL(
+        "https://book.peek.com/services/api/availability-dates"
+      );
+      url.searchParams.set("activity-id", activity.activityId);
+      url.searchParams.set("start-date", startDate);
+      url.searchParams.set("end-date", endDate);
+      url.searchParams.set("include", "availability-times");
+
+      const res = await fetch(url.toString(), {
+        headers: {
+          Authorization: `Key ${provider.key}`,
+          Accept: "application/vnd.api+json",
+        },
+        next: { revalidate: 300 },
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          `Peek availability API returned ${res.status} for activity ${activity.activityId}`
+        );
+      }
+
+      const data: PeekAvailabilityResponse = await res.json();
+
+      // Build a lookup of included availability-times by ID
+      const timeMap = new Map<string, PeekAvailabilityTime>();
+      for (const included of data.included ?? []) {
+        if (included.type === "availability-times") {
+          timeMap.set(included.id, included);
+        }
+      }
+
+      const dates: Record<string, AvailabilitySlot[]> = {};
+      let inferredDuration = activity.durationMinutes;
+      let inferredPrice = activity.price;
+
+      for (const dateEntry of data.data) {
+        const dateStr = dateEntry.attributes.date;
+        const timeRefs =
+          dateEntry.relationships?.["availability-times"]?.data ?? [];
+
+        const slots: AvailabilitySlot[] = [];
+        for (const ref of timeRefs) {
+          const timeData = timeMap.get(ref.id);
+          if (!timeData) continue;
+
+          const attrs = timeData.attributes;
+          if (attrs["availability-mode"] === "sold_out") continue;
+
+          // Convert 12h time (e.g. "3:00PM") to 24h format
+          const time24 = peekTimeTo24h(attrs.time);
+
+          slots.push({
+            time: `${dateStr} ${time24}`,
+            slotsAvailable: attrs.spots > 0 ? attrs.spots : null,
+          });
+
+          // Infer duration and price from API if not configured
+          if (!inferredDuration && attrs.duration?.amount) {
+            inferredDuration = attrs.duration.amount;
+          }
+          if (inferredPrice == null && attrs.price?.amount) {
+            const parsed = parseFloat(attrs.price.amount);
+            if (parsed > 0) inferredPrice = parsed;
+          }
+        }
+
+        if (slots.length > 0) {
+          dates[dateStr] = slots;
+        }
+      }
+
+      return {
+        appointmentTypeId: activity.activityId,
+        name: activity.name,
+        price: inferredPrice,
+        durationMinutes: inferredDuration ?? 60,
+        ...(activity.private && { private: activity.private }),
+        ...(activity.seats != null && { seats: activity.seats }),
+        dates,
+      };
+    })
+  );
+
+  return results;
+}
+
+// --- Square types and fetch function ---
+
+interface SquareWidgetService {
+  id: string;
+  name: string;
+  description: string;
+  variations: {
+    id: string;
+    name: string;
+    price_cents: number;
+    service_time: number; // seconds
+    staff_ids: string[];
+  }[];
+}
+
+interface SquareWidgetStaff {
+  id: string;
+  employee_token: string;
+  display_name: string;
+}
+
+interface SquareWidgetData {
+  id: string;
+  unit_token: string;
+  business: {
+    name: string;
+    timezone: string;
+    merchant_token: string;
+  };
+  services: SquareWidgetService[];
+  staff: SquareWidgetStaff[];
+}
+
+async function fetchSquareWidgetData(
+  widgetId: string,
+  locationToken: string
+): Promise<SquareWidgetData> {
+  const url = `https://book.squareup.com/appointments/${widgetId}/location/${locationToken}/services`;
+  const res = await fetch(url, { next: { revalidate: 300 } });
+  if (!res.ok) {
+    throw new Error(`Square booking page returned ${res.status}`);
+  }
+  const html = await res.text();
+
+  // Extract <meta name="widget" content="..."> tag
+  const metaMatch = html.match(
+    /<meta\s+name="widget"\s+content="([^"]*)"/
+  );
+  if (!metaMatch) {
+    throw new Error("Could not find widget meta tag in Square booking page");
+  }
+
+  // HTML-unescape the content attribute
+  const escaped = metaMatch[1];
+  const unescaped = escaped
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&#x27;/g, "'")
+    .replace(/&#x2F;/g, "/");
+
+  return JSON.parse(unescaped);
+}
+
+interface SquareAvailabilitySlot {
+  start: number; // unix timestamp (seconds)
+  end: number;
+  available: boolean;
+  staff_id: string;
+}
+
+async function fetchSquareAvailability(
+  provider: SquareBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const widget = await fetchSquareWidgetData(
+    provider.widgetId,
+    provider.locationToken
+  );
+
+  // Build staff employee_token lookup
+  const staffTokenMap = new Map<string, string>();
+  for (const s of widget.staff) {
+    staffTokenMap.set(s.id, s.employee_token);
+  }
+
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 7);
+
+  const results = await Promise.all(
+    widget.services
+      .filter((svc) => svc.variations.length > 0)
+      .flatMap((svc) =>
+        svc.variations
+          .filter((v) => v.service_time > 0)
+          .map(async (variation) => {
+            // Get employee tokens for staff assigned to this variation
+            const employeeTokens = variation.staff_ids
+              .map((id) => staffTokenMap.get(id))
+              .filter((t): t is string => !!t);
+
+            if (employeeTokens.length === 0) return null;
+
+            const res = await fetch(
+              "https://app.squareup.com/appointments/api/buyer/availability",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                  Origin: "https://book.squareup.com",
+                },
+                body: JSON.stringify({
+                  search_availability_request: {
+                    query: {
+                      filter: {
+                        start_at_range: {
+                          start_at: `${startDate}T00:00:00Z`,
+                          end_at: to.toISOString().split("T")[0] + "T00:00:00Z",
+                        },
+                        location_id: provider.locationToken,
+                        segment_filters: [
+                          {
+                            service_variation_id: variation.id,
+                            team_member_id_filter: {
+                              any: employeeTokens,
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  },
+                }),
+                next: { revalidate: 300 },
+              }
+            );
+
+            if (!res.ok) {
+              console.error(
+                `Square availability API returned ${res.status} for variation ${variation.id}`
+              );
+              return null;
+            }
+
+            const data = await res.json();
+            const slots: SquareAvailabilitySlot[] = data.availability ?? [];
+
+            // Group by date in the provider's timezone
+            const dates: Record<string, AvailabilitySlot[]> = {};
+            for (const slot of slots) {
+              if (!slot.available) continue;
+              const slotDate = new Date(slot.start * 1000);
+              const dateKey = slotDate.toLocaleDateString("en-CA", {
+                timeZone: provider.timezone,
+              });
+              const timeStr = slotDate.toLocaleString("sv-SE", {
+                timeZone: provider.timezone,
+              });
+
+              if (!dates[dateKey]) {
+                dates[dateKey] = [];
+              }
+              dates[dateKey].push({
+                time: timeStr,
+                slotsAvailable: null,
+              });
+            }
+
+            return {
+              appointmentTypeId: variation.id,
+              name:
+                variation.name !== "Regular" && variation.name !== svc.name
+                  ? `${svc.name} - ${variation.name}`
+                  : svc.name,
+              ...(variation.price_cents > 0 && {
+                price: variation.price_cents / 100,
+              }),
+              durationMinutes: Math.round(variation.service_time / 60),
+              dates,
+            };
+          })
+      )
+  );
+
+  return results.filter(
+    (r): r is NonNullable<typeof r> =>
+      r !== null && Object.keys(r.dates).length > 0
+  ) as AppointmentTypeAvailability[];
+}
+
+// --- Mindbody types and fetch function ---
+
+interface MindbodyScheduleAttributes {
+  startTime: string; // ISO 8601 UTC
+  endTime: string;
+  duration: number;
+  capacity: number;
+  openings: number;
+  webOpenings: number;
+  isCancelled: boolean;
+  course: {
+    name: string;
+    description?: string;
+    category?: string;
+  };
+  status?: {
+    id: number;
+    status: string;
+  };
+  contentFormats?: string[];
+}
+
+interface MindbodyScheduleEntry {
+  id: string;
+  type: string;
+  attributes: {
+    subType: string;
+    attributes: MindbodyScheduleAttributes;
+  };
+}
+
+async function fetchMindbodyAvailability(
+  provider: MindbodyBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const locationRefJson = JSON.stringify({
+    mb_site_id: provider.siteId,
+    mb_location_id: provider.locationId,
+    inventory_source: "MB",
+  });
+
+  const res = await fetch(
+    "https://prod-mkt-gateway.mindbody.io/v1/location/schedules",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        location_ref_json: locationRefJson,
+        start_time_from: `${startDate}T00:00:00`,
+        location_timezone: provider.timezone,
+      }),
+      next: { revalidate: 300 },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(`Mindbody schedules API returned ${res.status}`);
+  }
+
+  const data = await res.json();
+  const entries: MindbodyScheduleEntry[] = data.data ?? [];
+
+  // Group by course name, filtering out cancelled classes
+  const courseMap = new Map<
+    string,
+    {
+      duration: number;
+      capacity: number;
+      entries: { startTime: string; openings: number }[];
+    }
+  >();
+
+  // Only include classes within the 7-day window
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 7);
+
+  for (const entry of entries) {
+    const attrs = entry.attributes?.attributes;
+    if (!attrs || attrs.isCancelled) continue;
+
+    const entryDate = new Date(attrs.startTime);
+    if (entryDate < from || entryDate >= to) continue;
+
+    const courseName = attrs.course?.name ?? "Session";
+    if (!courseMap.has(courseName)) {
+      courseMap.set(courseName, {
+        duration: attrs.duration,
+        capacity: attrs.capacity,
+        entries: [],
+      });
+    }
+    courseMap.get(courseName)!.entries.push({
+      startTime: attrs.startTime,
+      openings: attrs.openings,
+    });
+  }
+
+  return Array.from(courseMap.entries()).map(([courseName, course]) => {
+    const dates: Record<string, AvailabilitySlot[]> = {};
+
+    for (const entry of course.entries) {
+      const entryDate = new Date(entry.startTime);
+      const dateKey = entryDate.toLocaleDateString("en-CA", {
+        timeZone: provider.timezone,
+      });
+      const timeStr = entryDate.toLocaleString("sv-SE", {
+        timeZone: provider.timezone,
+      });
+
+      if (!dates[dateKey]) {
+        dates[dateKey] = [];
+      }
+      dates[dateKey].push({
+        time: timeStr,
+        slotsAvailable: entry.openings,
+      });
+    }
+
+    return {
+      appointmentTypeId: courseName,
+      name: courseName,
+      durationMinutes: course.duration,
+      dates,
+    };
+  });
+}
+
+// --- ClinicSense types and fetch function ---
+
+async function fetchClinicSenseAvailability(
+  provider: ClinicSenseBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const results = await Promise.all(
+    provider.services.map(async (svc) => {
+      const url = `https://${provider.slug}.clinicsense.com/api/2/appointment-booker/calendar/?service_duration_id=${svc.serviceDurationId}&date=${startDate}`;
+
+      const res = await fetch(url, { next: { revalidate: 300 } });
+      if (!res.ok) {
+        throw new Error(
+          `ClinicSense calendar API returned ${res.status} for service ${svc.serviceDurationId}`
+        );
+      }
+
+      // Response format: { "YYYY-MM-DD": [["HH:MM:SS", [practitioner_ids]], ...], ... }
+      const data: Record<string, [string, number[]][]> = await res.json();
+
+      const dates: Record<string, AvailabilitySlot[]> = {};
+      for (const [dateStr, timeEntries] of Object.entries(data)) {
+        if (!timeEntries || timeEntries.length === 0) continue;
+
+        dates[dateStr] = timeEntries.map(([time, practitioners]) => ({
+          time: `${dateStr} ${time}`,
+          slotsAvailable: practitioners.length,
+        }));
+      }
+
+      return {
+        appointmentTypeId: String(svc.serviceDurationId),
+        name: svc.name,
+        price: svc.price,
+        durationMinutes: svc.durationMinutes,
+        dates,
+      };
+    })
+  );
+
+  return results;
+}
+
+// --- Mangomint types and fetch function ---
+
+interface MangomintStartupResponse {
+  appInstanceId: string;
+  companyId: number;
+  timezoneId: string;
+}
+
+interface MangomintAvailabilityDay {
+  morningAvailableSlots: { startAtLocal: string }[];
+  afternoonAvailableSlots: { startAtLocal: string }[];
+  eveningAvailableSlots: { startAtLocal: string }[];
+}
+
+async function fetchMangomintAvailability(
+  provider: MangomintBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  // Step 1: Get appInstanceId from startup
+  const startupRes = await fetch(
+    "https://booking.mangomint.com/api/v1/booking/app/startup",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-Mt-Booking-CompanyId": String(provider.companyId),
+      },
+      body: "{}",
+      next: { revalidate: 300 },
+    }
+  );
+
+  if (!startupRes.ok) {
+    throw new Error(`Mangomint startup API returned ${startupRes.status}`);
+  }
+
+  const startup: MangomintStartupResponse = await startupRes.json();
+
+  // Step 2: Fetch availability for each service
+  const results = await Promise.all(
+    provider.services.map(async (svc) => {
+      const res = await fetch(
+        "https://booking.mangomint.com/api/v1/booking/service-providers/availability",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-Mt-Booking-CompanyId": String(provider.companyId),
+            "X-Mt-App-Instance-Id": startup.appInstanceId,
+          },
+          body: JSON.stringify({
+            startDate,
+            numDays: 7,
+            initialLoad: true,
+            services: [
+              {
+                serviceId: svc.serviceId,
+                staffId: null,
+                staffCategory: "Any",
+                additionalStaffId: null,
+                additionalStaffCategory: null,
+                serviceOptionIds: [],
+                guestIndex: 0,
+              },
+            ],
+          }),
+          next: { revalidate: 300 },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(
+          `Mangomint availability API returned ${res.status} for service ${svc.serviceId}`
+        );
+      }
+
+      const data = await res.json();
+      const days: MangomintAvailabilityDay[] = data.availabilityByDays ?? [];
+
+      const dates: Record<string, AvailabilitySlot[]> = {};
+      const startDateObj = new Date(startDate);
+
+      for (let i = 0; i < days.length; i++) {
+        const day = days[i];
+        const d = new Date(startDateObj);
+        d.setDate(d.getDate() + i);
+        const dateKey = d.toISOString().split("T")[0];
+
+        const allSlots = [
+          ...day.morningAvailableSlots,
+          ...day.afternoonAvailableSlots,
+          ...day.eveningAvailableSlots,
+        ];
+
+        if (allSlots.length === 0) continue;
+
+        dates[dateKey] = allSlots.map((slot) => ({
+          time: slot.startAtLocal,
+          slotsAvailable: null,
+        }));
+      }
+
+      return {
+        appointmentTypeId: String(svc.serviceId),
+        name: svc.name,
+        price: svc.price,
+        durationMinutes: svc.durationMinutes,
+        dates,
+      };
+    })
+  );
+
+  return results;
+}
+
+// --- Roller types and fetch function ---
+
+interface RollerProduct {
+  id: number;
+  name: string;
+  productTypeId: number;
+  products: {
+    id: number;
+    name: string;
+    price: number;
+  }[];
+}
+
+interface RollerSession {
+  date: string;
+  startTime: string;
+  endTime: string;
+  capacityRemaining: number;
+  ticketCapacityRemaining: number;
+  onlineSalesOpen: boolean;
+}
+
+interface RollerProductAvailability {
+  id: number;
+  name: string;
+  sessions: RollerSession[];
+}
+
+async function fetchRollerAvailability(
+  provider: RollerBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const headers = {
+    "X-Api-Key": provider.venueSlug,
+    "X-Cell-Id": "a",
+    "X-Checkout": provider.checkoutSlug,
+    Accept: "application/json",
+  };
+
+  // Fetch products to get names and prices
+  const productsRes = await fetch(
+    `https://api.roller.app/api/checkout/${provider.checkoutSlug}/products`,
+    { headers, next: { revalidate: 300 } }
+  );
+  if (!productsRes.ok) {
+    throw new Error(`Roller products API returned ${productsRes.status}`);
+  }
+  const productGroups: RollerProduct[] = await productsRes.json();
+
+  // Build a flat map of product ID -> product info
+  const productMap = new Map<number, { name: string; price: number }>();
+  for (const group of productGroups) {
+    for (const prod of group.products) {
+      productMap.set(prod.id, { name: prod.name, price: prod.price / 100 });
+    }
+  }
+
+  // Fetch availability for each day in the 7-day window
+  const from = new Date(startDate);
+  const dayPromises = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(from);
+    d.setDate(d.getDate() + i);
+    const dateStr = d.toISOString().split("T")[0];
+    dayPromises.push(
+      fetch(
+        `https://api.roller.app/api/checkout/${provider.checkoutSlug}/product-availability?date=${dateStr}`,
+        { headers, next: { revalidate: 300 } }
+      ).then(async (res) => {
+        if (!res.ok) return [];
+        return (await res.json()) as RollerProductAvailability[];
+      })
+    );
+  }
+
+  const dailyAvailability = await Promise.all(dayPromises);
+
+  // Group sessions by product name across all days
+  const productSessions = new Map<
+    string,
+    {
+      name: string;
+      price: number;
+      durationMinutes: number;
+      dates: Record<string, AvailabilitySlot[]>;
+    }
+  >();
+
+  for (const dayProducts of dailyAvailability) {
+    for (const product of dayProducts) {
+      const key = String(product.id);
+      if (!productSessions.has(key)) {
+        const info = productMap.get(product.id);
+        productSessions.set(key, {
+          name: info?.name ?? product.name,
+          price: info?.price ?? 0,
+          durationMinutes: 60,
+          dates: {},
+        });
+      }
+
+      const entry = productSessions.get(key)!;
+      for (const session of product.sessions) {
+        if (!session.onlineSalesOpen || session.capacityRemaining <= 0)
+          continue;
+
+        const dateKey = session.date;
+        if (!entry.dates[dateKey]) {
+          entry.dates[dateKey] = [];
+        }
+        entry.dates[dateKey].push({
+          time: `${session.date} ${session.startTime}`,
+          slotsAvailable: session.capacityRemaining,
+        });
+
+        // Infer duration from start/end time
+        if (session.startTime && session.endTime) {
+          const [sh, sm] = session.startTime.split(":").map(Number);
+          const [eh, em] = session.endTime.split(":").map(Number);
+          const dur = (eh * 60 + em) - (sh * 60 + sm);
+          if (dur > 0) entry.durationMinutes = dur;
+        }
+      }
+    }
+  }
+
+  return Array.from(productSessions.entries()).map(([id, product]) => ({
+    appointmentTypeId: id,
+    name: product.name,
+    price: product.price,
+    durationMinutes: product.durationMinutes,
+    dates: product.dates,
+  }));
+}
+
+// --- Boulevard types and fetch function ---
+
+const BOULEVARD_API_HEADERS = {
+  "Content-Type": "application/json",
+  Accept: "application/json",
+  "x-blvd-app-name": "booking-widget",
+};
+
+async function fetchBoulevardAvailability(
+  provider: BoulevardBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const apiUrl = `https://www.joinblvd.com/b/.api/graph`;
+  const headers = {
+    ...BOULEVARD_API_HEADERS,
+    "x-blvd-bid": provider.businessId,
+  };
+
+  const results = await Promise.all(
+    provider.services.map(async (svc) => {
+      // Step 1: Create a cart
+      const createCartRes = await fetch(apiUrl, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          query: `mutation { createCart(locationId: "${provider.locationId}") { cartToken cart { id } } }`,
+        }),
+        next: { revalidate: 300 },
+      });
+
+      if (!createCartRes.ok) {
+        throw new Error(
+          `Boulevard createCart returned ${createCartRes.status}`
+        );
+      }
+
+      const createCartData = await createCartRes.json();
+      const cartId = createCartData.data?.createCart?.cart?.id;
+      const cartToken = createCartData.data?.createCart?.cartToken;
+      if (!cartId) {
+        throw new Error("Boulevard createCart did not return cart ID");
+      }
+
+      // Step 2: Add the service to the cart
+      const addItemRes = await fetch(apiUrl, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          query: `mutation { cartAddSelectedBookableItem(input: { idOrToken: "${cartToken}", itemId: "${svc.serviceId}" }) { cart { id } } }`,
+        }),
+        next: { revalidate: 300 },
+      });
+
+      if (!addItemRes.ok) {
+        throw new Error(
+          `Boulevard addItem returned ${addItemRes.status}`
+        );
+      }
+
+      // Step 3: Query available dates
+      const datesRes = await fetch(apiUrl, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          query: `query { cartBookableDates(idOrToken: "${cartId}", limit: 14, tz: "${provider.timezone}") { date } }`,
+        }),
+        next: { revalidate: 300 },
+      });
+
+      if (!datesRes.ok) {
+        throw new Error(`Boulevard cartBookableDates returned ${datesRes.status}`);
+      }
+
+      const datesData = await datesRes.json();
+      const availableDates: { date: string }[] =
+        datesData.data?.cartBookableDates ?? [];
+
+      // Filter to 7-day window
+      const from = new Date(startDate);
+      const to = new Date(from);
+      to.setDate(to.getDate() + 7);
+      const filteredDates = availableDates.filter((d) => {
+        const dt = new Date(d.date);
+        return dt >= from && dt < to;
+      });
+
+      // Step 4: Query available times for each date
+      const dates: Record<string, AvailabilitySlot[]> = {};
+      const timePromises = filteredDates.map(async (d) => {
+        const timesRes = await fetch(apiUrl, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            query: `query { cartBookableTimes(idOrToken: "${cartId}", searchDate: "${d.date}", tz: "${provider.timezone}") { id startTime } }`,
+          }),
+          next: { revalidate: 300 },
+        });
+
+        if (!timesRes.ok) return;
+
+        const timesData = await timesRes.json();
+        const times: { id: string; startTime: string }[] =
+          timesData.data?.cartBookableTimes ?? [];
+
+        if (times.length > 0) {
+          dates[d.date] = times.map((t) => {
+            const dt = new Date(t.startTime);
+            const timeStr = dt.toLocaleString("sv-SE", {
+              timeZone: provider.timezone,
+            });
+            return {
+              time: timeStr,
+              slotsAvailable: null,
+            };
+          });
+        }
+      });
+
+      await Promise.all(timePromises);
+
+      return {
+        appointmentTypeId: svc.serviceId,
+        name: svc.name,
+        price: svc.price,
+        durationMinutes: svc.durationMinutes,
+        dates,
+      };
+    })
+  );
+
+  return results;
+}
+
 export async function GET(request: NextRequest) {
   const parsed = querySchema.safeParse({
     slug: request.nextUrl.searchParams.get("slug"),
@@ -1276,6 +2455,45 @@ export async function GET(request: NextRequest) {
         break;
       case "trybe":
         appointmentTypes = await fetchTrybeAvailability(provider, startDate);
+        break;
+      case "vagaro":
+        appointmentTypes = await fetchVagaroAvailability(provider, startDate);
+        break;
+      case "checkfront":
+        appointmentTypes = await fetchCheckfrontAvailability(
+          provider,
+          startDate
+        );
+        break;
+      case "peek":
+        appointmentTypes = await fetchPeekAvailability(provider, startDate);
+        break;
+      case "square":
+        appointmentTypes = await fetchSquareAvailability(provider, startDate);
+        break;
+      case "mindbody":
+        appointmentTypes = await fetchMindbodyAvailability(provider, startDate);
+        break;
+      case "clinicsense":
+        appointmentTypes = await fetchClinicSenseAvailability(
+          provider,
+          startDate
+        );
+        break;
+      case "mangomint":
+        appointmentTypes = await fetchMangomintAvailability(
+          provider,
+          startDate
+        );
+        break;
+      case "roller":
+        appointmentTypes = await fetchRollerAvailability(provider, startDate);
+        break;
+      case "boulevard":
+        appointmentTypes = await fetchBoulevardAvailability(
+          provider,
+          startDate
+        );
         break;
     }
 
