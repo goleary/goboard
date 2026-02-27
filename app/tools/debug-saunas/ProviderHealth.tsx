@@ -473,7 +473,7 @@ function SlotDetails({ types }: { types: TypeData[] }) {
                         <TimeSlotBadge
                           key={j}
                           time={slot.time}
-                          slotsAvailable={slot.slotsAvailable}
+                          slotsAvailable={t.private ? (t.seats ?? null) : slot.slotsAvailable}
                           className="text-xs gap-1"
                         />
                       ))}
