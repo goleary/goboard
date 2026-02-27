@@ -4413,7 +4413,7 @@ export const saunas: Sauna[] = [
         },
       ],
     },
-    googleMapsUrl: "https://maps.app.goo.gl/YXmn9XKZQ5Yvq1xZ7",
+    googleMapsUrl: "https://maps.app.goo.gl/ggoiJKj2YDjFpxt37",
     sessionPrice: 35,
     sessionLengthMinutes: 0, // No time limit
     steamRoom: false,

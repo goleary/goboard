@@ -2089,21 +2089,17 @@ async function fetchMangomintAvailability(
       }
 
       const data = await res.json();
-      const days: MangomintAvailabilityDay[] = data.availabilityByDays ?? [];
+      const daysByDate: Record<string, MangomintAvailabilityDay> =
+        data.availabilityByDays ?? {};
 
       const dates: Record<string, AvailabilitySlot[]> = {};
-      const startDateObj = new Date(startDate);
 
-      for (let i = 0; i < days.length; i++) {
-        const day = days[i];
-        const d = new Date(startDateObj);
-        d.setDate(d.getDate() + i);
-        const dateKey = d.toISOString().split("T")[0];
-
+      for (const [dateKey, day] of Object.entries(daysByDate)) {
+        const dayData = day as MangomintAvailabilityDay;
         const allSlots = [
-          ...day.morningAvailableSlots,
-          ...day.afternoonAvailableSlots,
-          ...day.eveningAvailableSlots,
+          ...dayData.morningAvailableSlots,
+          ...dayData.afternoonAvailableSlots,
+          ...dayData.eveningAvailableSlots,
         ];
 
         if (allSlots.length === 0) continue;
