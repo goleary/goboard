@@ -195,12 +195,19 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   useEffect(() => {
     if (loading) return;
     const byDate = data ? groupByDate(data.appointmentTypes) : {};
-    const sortedDates = Object.keys(byDate).sort();
-    const hasSlots = sortedDates.length > 0;
+    const allDates = Object.keys(byDate).sort();
+    const hasSlots = allDates.length > 0;
     onHasAvailability?.(hasSlots);
-    onFirstAvailableDate?.(hasSlots ? sortedDates[0] : null);
-    onLastAvailableDate?.(hasSlots ? sortedDates[sortedDates.length - 1] : null);
-  }, [data, loading, onHasAvailability, onFirstAvailableDate, onLastAvailableDate]);
+
+    // Report only the dates currently visible (respects expand state and date filter)
+    const visible = availabilityDate
+      ? allDates.filter((d) => d === availabilityDate)
+      : expanded
+        ? allDates
+        : allDates.slice(0, DEFAULT_MAX_DAYS);
+    onFirstAvailableDate?.(visible.length > 0 ? visible[0] : null);
+    onLastAvailableDate?.(visible.length > 0 ? visible[visible.length - 1] : null);
+  }, [data, loading, availabilityDate, expanded, onHasAvailability, onFirstAvailableDate, onLastAvailableDate]);
 
   useEffect(() => {
     if (!data || !sauna.tidal || !sauna.noaaTideStation) return;
@@ -345,7 +352,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
     <div>
       <div className="flex items-center justify-between mb-2">
         <p className="text-xs text-muted-foreground uppercase tracking-wide">
-          Upcoming Availability
+          Availability
         </p>
         {datePicker}
       </div>
