@@ -1732,100 +1732,105 @@ async function fetchSquareAvailability(
   const to = new Date(from);
   to.setDate(to.getDate() + 7);
 
-  const results = await Promise.all(
-    widget.services
-      .filter((svc) => svc.variations.length > 0)
-      .flatMap((svc) =>
-        svc.variations
-          .filter((v) => v.service_time > 0)
-          .map(async (variation) => {
-            // Get employee tokens for staff assigned to this variation
-            const employeeTokens = variation.staff_ids
-              .map((id) => staffTokenMap.get(id))
-              .filter((t): t is string => !!t);
+  // Serialize requests to avoid Square's rate limiting (429s)
+  const variations = widget.services
+    .filter((svc) => svc.variations.length > 0)
+    .flatMap((svc) =>
+      svc.variations
+        .filter((v) => v.service_time > 0)
+        .map((variation) => ({ svc, variation }))
+    );
 
-            if (employeeTokens.length === 0) return null;
+  const results: (AppointmentTypeAvailability | null)[] = [];
+  for (const { svc, variation } of variations) {
+    const employeeTokens = variation.staff_ids
+      .map((id) => staffTokenMap.get(id))
+      .filter((t): t is string => !!t);
 
-            const res = await fetch(
-              "https://app.squareup.com/appointments/api/buyer/availability",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json",
-                  Origin: "https://book.squareup.com",
+    if (employeeTokens.length === 0) {
+      results.push(null);
+      continue;
+    }
+
+    const res = await fetch(
+      "https://app.squareup.com/appointments/api/buyer/availability",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Origin: "https://book.squareup.com",
+        },
+        body: JSON.stringify({
+          search_availability_request: {
+            query: {
+              filter: {
+                start_at_range: {
+                  start_at: `${startDate}T00:00:00Z`,
+                  end_at: to.toISOString().split("T")[0] + "T00:00:00Z",
                 },
-                body: JSON.stringify({
-                  search_availability_request: {
-                    query: {
-                      filter: {
-                        start_at_range: {
-                          start_at: `${startDate}T00:00:00Z`,
-                          end_at: to.toISOString().split("T")[0] + "T00:00:00Z",
-                        },
-                        location_id: provider.locationToken,
-                        segment_filters: [
-                          {
-                            service_variation_id: variation.id,
-                            team_member_id_filter: {
-                              any: employeeTokens,
-                            },
-                          },
-                        ],
-                      },
+                location_id: provider.locationToken,
+                segment_filters: [
+                  {
+                    service_variation_id: variation.id,
+                    team_member_id_filter: {
+                      any: employeeTokens,
                     },
                   },
-                }),
-                next: { revalidate: 300 },
-              }
-            );
+                ],
+              },
+            },
+          },
+        }),
+        next: { revalidate: 300 },
+      }
+    );
 
-            if (!res.ok) {
-              console.error(
-                `Square availability API returned ${res.status} for variation ${variation.id}`
-              );
-              return null;
-            }
+    if (!res.ok) {
+      console.error(
+        `Square availability API returned ${res.status} for variation ${variation.id}`
+      );
+      results.push(null);
+      continue;
+    }
 
-            const data = await res.json();
-            const slots: SquareAvailabilitySlot[] = data.availability ?? [];
+    const data = await res.json();
+    const slots: SquareAvailabilitySlot[] = data.availability ?? [];
 
-            // Group by date in the provider's timezone
-            const dates: Record<string, AvailabilitySlot[]> = {};
-            for (const slot of slots) {
-              if (!slot.available) continue;
-              const slotDate = new Date(slot.start * 1000);
-              const dateKey = slotDate.toLocaleDateString("en-CA", {
-                timeZone: provider.timezone,
-              });
-              const timeStr = slotDate.toLocaleString("sv-SE", {
-                timeZone: provider.timezone,
-              });
+    // Group by date in the provider's timezone
+    const dates: Record<string, AvailabilitySlot[]> = {};
+    for (const slot of slots) {
+      if (!slot.available) continue;
+      const slotDate = new Date(slot.start * 1000);
+      const dateKey = slotDate.toLocaleDateString("en-CA", {
+        timeZone: provider.timezone,
+      });
+      const timeStr = slotDate.toLocaleString("sv-SE", {
+        timeZone: provider.timezone,
+      });
 
-              if (!dates[dateKey]) {
-                dates[dateKey] = [];
-              }
-              dates[dateKey].push({
-                time: timeStr,
-                slotsAvailable: null,
-              });
-            }
+      if (!dates[dateKey]) {
+        dates[dateKey] = [];
+      }
+      dates[dateKey].push({
+        time: timeStr,
+        slotsAvailable: null,
+      });
+    }
 
-            return {
-              appointmentTypeId: variation.id,
-              name:
-                variation.name !== "Regular" && variation.name !== svc.name
-                  ? `${svc.name} - ${variation.name}`
-                  : svc.name,
-              ...(variation.price_cents > 0 && {
-                price: variation.price_cents / 100,
-              }),
-              durationMinutes: Math.round(variation.service_time / 60),
-              dates,
-            };
-          })
-      )
-  );
+    results.push({
+      appointmentTypeId: variation.id,
+      name:
+        variation.name !== "Regular" && variation.name !== svc.name
+          ? `${svc.name} - ${variation.name}`
+          : svc.name,
+      ...(variation.price_cents > 0 && {
+        price: variation.price_cents / 100,
+      }),
+      durationMinutes: Math.round(variation.service_time / 60),
+      dates,
+    });
+  }
 
   return results.filter(
     (r): r is NonNullable<typeof r> =>
@@ -1882,6 +1887,7 @@ async function fetchMindbodyAvailability(
       body: JSON.stringify({
         location_ref_json: locationRefJson,
         start_time_from: `${startDate}T00:00:00`,
+        start_time_to: `${(() => { const d = new Date(startDate); d.setDate(d.getDate() + 7); return d.toISOString().split("T")[0]; })()}T00:00:00`,
         location_timezone: provider.timezone,
       }),
       next: { revalidate: 300 },
