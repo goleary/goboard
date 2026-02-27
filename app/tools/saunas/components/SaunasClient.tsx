@@ -36,7 +36,7 @@ interface SaunasClientProps {
   zoom?: number;
 }
 
-const MIN_SHEET_HEIGHT = 200;
+const MIN_SHEET_HEIGHT = 240;
 const MAX_SHEET_PERCENT = 0.85;
 
 // Check if we should allow dragging from this element
@@ -71,7 +71,53 @@ function shouldAllowDrag(target: EventTarget | null): boolean {
 export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [filters, setFilters] = useState<FilterState>(getDefaultFilters());
+  const [filters, setFilters] = useState<FilterState>(() => {
+    const dateParam = searchParams.get("date");
+    const defaults = getDefaultFilters();
+    if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
+      return { ...defaults, availabilityDate: dateParam };
+    }
+    return defaults;
+  });
+
+  // Sync availabilityDate filter to/from URL query params
+  const updateFilters = useCallback((newFilters: FilterState) => {
+    setFilters(newFilters);
+    const params = new URLSearchParams(searchParams.toString());
+    if (newFilters.availabilityDate) {
+      params.set("date", newFilters.availabilityDate);
+    } else {
+      params.delete("date");
+    }
+    const queryString = params.toString();
+    router.replace(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
+  }, [searchParams, basePath, router]);
+
+  const handleAvailabilityDateChange = useCallback((date: string | null) => {
+    setFilters((prev) => {
+      const newFilters = { ...prev, availabilityDate: date };
+      const params = new URLSearchParams(searchParams.toString());
+      if (date) {
+        params.set("date", date);
+      } else {
+        params.delete("date");
+      }
+      const queryString = params.toString();
+      router.replace(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
+      return newFilters;
+    });
+  }, [searchParams, basePath, router]);
+
+  // Sync URL back to state on browser back/forward
+  useEffect(() => {
+    const dateParam = searchParams.get("date");
+    const newDate = dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? dateParam : null;
+    setFilters((prev) => {
+      if (prev.availabilityDate === newDate) return prev;
+      return { ...prev, availabilityDate: newDate };
+    });
+  }, [searchParams]);
+
   const [sheetHeight, setSheetHeight] = useState(MIN_SHEET_HEIGHT);
   const [isDragging, setIsDragging] = useState(false);
   const [mapBounds, setMapBounds] = useState<LatLngBounds | null>(null);
@@ -96,13 +142,18 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   const handleZoomChange = useCallback((zoom: number) => {
     setCurrentZoom(zoom);
     if (zoom < AVAILABILITY_ZOOM_THRESHOLD) {
-      setFilters((prev) =>
-        prev.availabilityDate !== null
-          ? { ...prev, availabilityDate: null }
-          : prev
-      );
+      setFilters((prev) => {
+        if (prev.availabilityDate === null) return prev;
+        const newFilters = { ...prev, availabilityDate: null };
+        // Also clear date from URL
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("date");
+        const queryString = params.toString();
+        router.replace(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
+        return newFilters;
+      });
     }
-  }, []);
+  }, [searchParams, basePath, router]);
 
   const showAvailabilityFilter = currentZoom >= AVAILABILITY_ZOOM_THRESHOLD;
 
@@ -440,7 +491,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       </div>
       <SaunaFilters
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={updateFilters}
         showAvailabilityFilter={showAvailabilityFilter}
         availabilityLoading={availabilityLoading}
       />
@@ -478,7 +529,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                 Back to list
               </button>
               <div className="flex-1 overflow-hidden">
-                <SaunaDetailPanel sauna={selectedSauna} />
+                <SaunaDetailPanel sauna={selectedSauna} availabilityDate={filters.availabilityDate} onAvailabilityDateChange={handleAvailabilityDateChange} />
               </div>
             </>
           ) : (
@@ -547,7 +598,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                   Back to list
                 </button>
                 <div className="flex-1 overflow-auto min-h-0">
-                  <SaunaDetailPanel sauna={selectedSauna} />
+                  <SaunaDetailPanel sauna={selectedSauna} availabilityDate={filters.availabilityDate} onAvailabilityDateChange={handleAvailabilityDateChange} />
                 </div>
               </>
             ) : (

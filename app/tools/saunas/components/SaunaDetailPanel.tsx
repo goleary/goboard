@@ -22,6 +22,8 @@ import {
 
 interface SaunaDetailPanelProps {
   sauna: Sauna;
+  availabilityDate?: string | null;
+  onAvailabilityDateChange?: (date: string | null) => void;
 }
 
 function AmenityBadge({
@@ -46,7 +48,7 @@ function AmenityBadge({
   );
 }
 
-export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
+export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateChange }: SaunaDetailPanelProps) {
   const [hasAvailability, setHasAvailability] = useState(false);
   const [firstAvailableDate, setFirstAvailableDate] = useState<string | null>(null);
   const [lastAvailableDate, setLastAvailableDate] = useState<string | null>(null);
@@ -136,7 +138,7 @@ export function SaunaDetailPanel({ sauna }: SaunaDetailPanelProps) {
         </div>
 
         {/* Availability */}
-        <SaunaAvailability sauna={sauna} onHasAvailability={handleHasAvailability} onFirstAvailableDate={handleFirstAvailableDate} onLastAvailableDate={handleLastAvailableDate} onTideTimeClick={handleTideTimeClick} />
+        <SaunaAvailability sauna={sauna} availabilityDate={availabilityDate} onAvailabilityDateChange={onAvailabilityDateChange} onHasAvailability={handleHasAvailability} onFirstAvailableDate={handleFirstAvailableDate} onLastAvailableDate={handleLastAvailableDate} onTideTimeClick={handleTideTimeClick} />
 
         {/* Tides */}
         <SaunaTides sauna={sauna} date={firstAvailableDate} endDate={lastAvailableDate} waitForDate={!!sauna.bookingProvider} open={tideOpen} onOpenChange={setTideOpen} highlightTime={tideHighlightTime} highlightColor={tideHighlightColor} scrollNonce={tideScrollNonce} />
