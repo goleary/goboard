@@ -1200,8 +1200,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "Mobile wood-fired cedar barrel sauna at Alki Beach with cold plunge into Puget Sound.",
-    lat: 47.57631,
-    lng: -122.40983,
+    lat: 47.579690752543705,
+    lng: -122.40965128425405,
     updatedAt: "2026-02-27",
     bookingProvider: {
       type: "acuity",
