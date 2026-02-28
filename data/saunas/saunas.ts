@@ -5154,7 +5154,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Private booking",
     clothingPolicy: "Up to your group",
     notes:
-      "Mobile wood-fired sauna delivered to your location. Family-owned, serving Indianapolis and northside suburbs. Half-day (4hr, $400) and full-day (8hr, $700) rentals include delivery, setup, fire supplies, and pickup. Seats 6-10. Cold plunge available as add-on ($75). Off-grid operation — no electricity needed.",
+      "Mobile wood-fired sauna delivered to your location. Family-owned, serving Indianapolis and northside suburbs. Half-day (4hr, $400) and full-day (8hr, $700) rentals include delivery, setup, fire supplies, and pickup. Seats 4-8. Cold plunge available as add-on ($75). Off-grid operation — no electricity needed.",
     lat: 39.8669548,
     lng: -86.1565051,
     updatedAt: "2026-02-27",
