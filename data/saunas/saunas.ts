@@ -332,6 +332,8 @@ export interface GlofoxBookingProviderConfig {
   priceOverrides?: Record<string, number>;
   /** Mark programs as private with seat count, by Glofox program ID */
   privatePrograms?: Record<string, number>;
+  /** Exclude programs whose name contains any of these strings */
+  excludeNamePatterns?: string[];
 }
 
 /**
@@ -1010,6 +1012,7 @@ export const saunas: Sauna[] = [
       branchId: "666cd839c3e964051d0e4307",
       facilityId: "667117c9d33bf18a0e021529",
       timezone: "America/Los_Angeles",
+      excludeNamePatterns: ["[Member Only]"],
     },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
@@ -1175,6 +1178,86 @@ export const saunas: Sauna[] = [
           durationMinutes: 75,
           private: true,
           seats: 8,
+        },
+      ],
+    },
+  },
+  {
+    slug: "sauna-moon-alki",
+    name: "Sauna Moon Alki Beach",
+    address: "2701 Alki Ave SW, Seattle, WA 98116",
+    website: "https://www.hotrockssaunaclub.com/",
+    bookingUrl: "https://app.acuityscheduling.com/schedule/fab325db",
+    bookingPlatform: "acuity",
+    sessionPrice: 35,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 14,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Mobile wood-fired cedar barrel sauna at Alki Beach with cold plunge into Puget Sound.",
+    lat: 47.579690752543705,
+    lng: -122.40965128425405,
+    updatedAt: "2026-02-27",
+    bookingProvider: {
+      type: "acuity",
+      owner: "fab325db",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 85171004,
+          acuityCalendarId: 12674009,
+          name: "Alki Beach Park Seattle Sauna + Cold Plunge",
+          price: 35,
+          durationMinutes: 60,
+          seats: 14,
+        },
+      ],
+    },
+  },
+  {
+    slug: "sauna-moon-seacrest-park",
+    name: "Sauna Moon Seacrest Park",
+    address: "1660 Harbor Ave SW, Seattle, WA 98126",
+    website: "https://www.hotrockssaunaclub.com/",
+    bookingUrl: "https://app.acuityscheduling.com/schedule/fab325db",
+    bookingPlatform: "acuity",
+    sessionPrice: 35,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 14,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Mobile wood-fired cedar barrel sauna at Seacrest Park Cove with cold plunge into Puget Sound.",
+    lat: 47.58723118931083,
+    lng: -122.37805356401263,
+    updatedAt: "2026-02-27",
+    bookingProvider: {
+      type: "acuity",
+      owner: "fab325db",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 89571960,
+          acuityCalendarId: 12674009,
+          name: "Alki Beach (Seacrest Park Cove 1) Seattle Sauna + Cold Plunge",
+          price: 35,
+          durationMinutes: 60,
+          seats: 14,
         },
       ],
     },
