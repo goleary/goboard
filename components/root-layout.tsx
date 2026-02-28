@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isAuthenticated } from "@/lib/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,11 +7,12 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const loggedIn = await isAuthenticated();
   // Create any shared layout or styles here
   return (
     <div className="max-w-2xl m-auto text-md py-6 flex flex-col gap-4 items-center">
@@ -69,7 +71,7 @@ export default function RootLayout({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        {process.env.NODE_ENV === "development" && (
+        {(process.env.NODE_ENV === "development" || loggedIn) && (
           <DropdownMenu>
             <DropdownMenuTrigger>Debug</DropdownMenuTrigger>
             <DropdownMenuContent>
