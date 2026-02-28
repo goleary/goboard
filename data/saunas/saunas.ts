@@ -506,6 +506,201 @@ export interface TrybeBookingProviderConfig {
 }
 
 /**
+ * Vagaro booking provider configuration.
+ * Uses the Vagaro public web API to fetch available time slots.
+ */
+export interface VagaroBookingProviderConfig {
+  type: "vagaro";
+  /** Vagaro business slug (e.g. "dripinfraredsaunastudio") */
+  businessSlug: string;
+  /** Vagaro numeric business ID (found in page source as AppBookBusinessID) */
+  businessId: string;
+  /** Vagaro region/tenant group (e.g. "us02", "us03") from the tenant_group cookie */
+  region: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Services to fetch availability for */
+  services: {
+    serviceId: number;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
+ * Checkfront bookable item configuration.
+ */
+export interface CheckfrontItem {
+  /** Checkfront item ID (numeric) from the inventory page */
+  itemId: number;
+  /** Display name (e.g. "Communal Sauna Voyage") */
+  name: string;
+  /** Price in the sauna's currency */
+  price: number;
+  /** Duration in minutes */
+  durationMinutes: number;
+  /** Whether this is a private session */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
+}
+
+/**
+ * Checkfront booking provider configuration.
+ * Uses the public reserve/api endpoint for availability.
+ */
+export interface CheckfrontBookingProviderConfig {
+  type: "checkfront";
+  /** Base URL for the Checkfront reserve page
+   *  (e.g. "https://havn-saunas.checkfront.com" or
+   *  "https://wild-haus.manage.na1.bookingplatform.app") */
+  baseUrl: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Bookable items to show availability for */
+  items: CheckfrontItem[];
+}
+
+/**
+ * Peek bookable activity configuration.
+ */
+export interface PeekActivity {
+  /** Peek activity UUID (from the availability-dates API) */
+  activityId: string;
+  /** Display name (e.g. "PRIVATE Beachfront Sauna") */
+  name: string;
+  /** Price in the sauna's currency (overrides API price if set) */
+  price?: number;
+  /** Duration in minutes (overrides API duration if set) */
+  durationMinutes?: number;
+  /** Whether this is a private session */
+  private?: boolean;
+  /** Number of seats (people) supported in this session */
+  seats?: number;
+}
+
+/**
+ * Peek (book.peek.com) booking provider configuration.
+ * Uses the public REST API with the booking page key for auth.
+ */
+export interface PeekBookingProviderConfig {
+  type: "peek";
+  /** API key (UUID from the booking URL path: /s/{key}/{programId}) */
+  key: string;
+  /** Program ID (short code from the booking URL path: /s/{key}/{programId}) */
+  programId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Activities to show availability for */
+  activities: PeekActivity[];
+}
+
+/**
+ * Square Appointments booking provider configuration.
+ * Scrapes the widget meta tag from the booking page to discover
+ * services, then queries the public buyer availability API.
+ */
+export interface SquareBookingProviderConfig {
+  type: "square";
+  /** Widget ID from the booking URL (e.g. "xkixhokqjj5m3m") */
+  widgetId: string;
+  /** Location token from the booking URL (e.g. "LBCF5TC30K6Y1") */
+  locationToken: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
+/**
+ * Mindbody booking provider configuration.
+ * Uses the public prod-mkt-gateway consumer API.
+ */
+export interface MindbodyBookingProviderConfig {
+  type: "mindbody";
+  /** Mindbody studio/site ID (from studioid= parameter in the classic booking URL) */
+  siteId: number;
+  /** Location ID within the site (typically 1 for single-location businesses) */
+  locationId: number;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
+/**
+ * ClinicSense booking provider configuration.
+ * Uses the public appointment-booker REST API.
+ */
+export interface ClinicSenseBookingProviderConfig {
+  type: "clinicsense";
+  /** ClinicSense subdomain slug (e.g. "fusionbodyworkspdx2") */
+  slug: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Services to fetch availability for */
+  services: {
+    /** ClinicSense service_duration_id (from settings API) */
+    serviceDurationId: number;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
+ * Mangomint booking provider configuration.
+ * Uses the public booking API (startup + availability endpoints).
+ */
+export interface MangomintBookingProviderConfig {
+  type: "mangomint";
+  /** Mangomint company ID (numeric, discovered from startup API) */
+  companyId: number;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Services to fetch availability for */
+  services: {
+    serviceId: number;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
+ * Roller booking provider configuration.
+ * Uses the public checkout API for venue product availability.
+ */
+export interface RollerBookingProviderConfig {
+  type: "roller";
+  /** Venue slug from the URL (e.g. "thesprings"), used as X-Api-Key */
+  venueSlug: string;
+  /** Checkout slug (typically "checkout") */
+  checkoutSlug: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
+/**
+ * Boulevard booking provider configuration.
+ * Uses the public GraphQL widget API with a cart-based flow.
+ */
+export interface BoulevardBookingProviderConfig {
+  type: "boulevard";
+  /** Boulevard business ID (UUID from the booking URL) */
+  businessId: string;
+  /** Boulevard location ID (UUID, discovered from cart creation) */
+  locationId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Services to fetch availability for */
+  services: {
+    /** Boulevard service item ID (e.g. "s_d0b150ed-...") */
+    serviceId: string;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -521,7 +716,16 @@ export type BookingProviderConfig =
   | BookerBookingProviderConfig
   | SimplyBookBookingProviderConfig
   | ZettlorBookingProviderConfig
-  | TrybeBookingProviderConfig;
+  | TrybeBookingProviderConfig
+  | VagaroBookingProviderConfig
+  | CheckfrontBookingProviderConfig
+  | PeekBookingProviderConfig
+  | SquareBookingProviderConfig
+  | MindbodyBookingProviderConfig
+  | ClinicSenseBookingProviderConfig
+  | MangomintBookingProviderConfig
+  | RollerBookingProviderConfig
+  | BoulevardBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1213,6 +1417,20 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://www.joinblvd.com/b/34303b6d-5682-4a50-b816-c4901c2b1072/widget",
     bookingPlatform: "boulevard",
+    bookingProvider: {
+      type: "boulevard",
+      businessId: "34303b6d-5682-4a50-b816-c4901c2b1072",
+      locationId: "beadba55-20ae-431b-bd4f-e2057183727c",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: "s_d0b150ed-95de-42bf-adfe-87c79f98cef6",
+          name: "2 Hour Sauna Spa Pass",
+          price: 75,
+          durationMinutes: 120,
+        },
+      ],
+    },
     sessionPrice: 75,
     sessionLengthMinutes: 120,
     steamRoom: true,
@@ -1325,6 +1543,41 @@ export const saunas: Sauna[] = [
     website: "https://thewildhaus.com/",
     bookingUrl: "https://wild-haus.checkfront.com/reserve/",
     bookingPlatform: "checkfront",
+    bookingProvider: {
+      type: "checkfront",
+      baseUrl: "https://wild-haus.manage.na1.bookingplatform.app",
+      timezone: "America/Los_Angeles",
+      items: [
+        {
+          itemId: 4240,
+          name: "Communal Captained Sauna Voyage",
+          price: 150,
+          durationMinutes: 90,
+        },
+        {
+          itemId: 5342,
+          name: "Private Captained Sauna Voyage (1.5 Hours)",
+          price: 900,
+          durationMinutes: 90,
+          private: true,
+          seats: 6,
+        },
+        {
+          itemId: 3401,
+          name: "Private Captained Sauna Voyage (2.5 Hours)",
+          price: 1200,
+          durationMinutes: 150,
+          private: true,
+          seats: 12,
+        },
+        {
+          itemId: 106550,
+          name: "Wild Wednesdays",
+          price: 95,
+          durationMinutes: 90,
+        },
+      ],
+    },
     sessionPrice: 150,
     sessionLengthMinutes: 90,
     steamRoom: false,
@@ -1441,6 +1694,12 @@ export const saunas: Sauna[] = [
     website: "https://www.hotspotbellingham.com/",
     bookingUrl: "https://www.hotspotbellingham.com/bookings",
     bookingPlatform: "mindbody",
+    bookingProvider: {
+      type: "mindbody",
+      siteId: 5743493,
+      locationId: 1,
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/5EpaLT2r57PqxSN37",
     sessionPrice: 35,
     sessionLengthMinutes: 50,
@@ -1469,6 +1728,12 @@ export const saunas: Sauna[] = [
     website: "https://www.hotspotbellingham.com/",
     bookingUrl: "https://www.hotspotbellingham.com/bookings",
     bookingPlatform: "mindbody",
+    bookingProvider: {
+      type: "mindbody",
+      siteId: 5743493,
+      locationId: 1,
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/5EpaLT2r57PqxSN37",
     sessionPrice: 35,
     sessionLengthMinutes: 50,
@@ -2136,6 +2401,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://app.squareup.com/appointments/book/xkixhokqjj5m3m/LBCF5TC30K6Y1/start",
     bookingPlatform: "square",
+    bookingProvider: {
+      type: "square",
+      widgetId: "xkixhokqjj5m3m",
+      locationToken: "LBCF5TC30K6Y1",
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/wV4N4MEm7jbvuxdu8",
     sessionPrice: 50, // Price varies by group size; estimate for private session
     sessionLengthMinutes: 90,
@@ -2163,6 +2434,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://clients.mindbodyonline.com/classic/ws?studioid=47269&stype=-101",
     bookingPlatform: "mindbody",
+    bookingProvider: {
+      type: "mindbody",
+      siteId: 47269,
+      locationId: 1,
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/WwuiZuSaPTu5y3Zv9",
     sessionPrice: 28, // 60 min; 30 min $18, 90 min $39
     sessionLengthMinutes: 60,
@@ -2191,6 +2468,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://book.squareup.com/appointments/sdr909jlzvzvv8/location/L05M6ZMRXDHXZ/services",
     bookingPlatform: "square",
+    bookingProvider: {
+      type: "square",
+      widgetId: "sdr909jlzvzvv8",
+      locationToken: "L05M6ZMRXDHXZ",
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/zB2mFo97osPvVUZr8",
     sessionPrice: 60, // 1 hr All Inclusive; 2 hr $120, 3 hr $180
     sessionLengthMinutes: 60,
@@ -2276,6 +2559,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://clients.mindbodyonline.com/classic/ws?studioid=337004&stype=-103&sView=week&sLoc=0",
     bookingPlatform: "mindbody",
+    bookingProvider: {
+      type: "mindbody",
+      siteId: 337004,
+      locationId: 1,
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/nHaJyxDfqGuLcD7M7",
     sessionPrice: 69, // Tue-Thu before 3pm; $89 all other times
     sessionLengthMinutes: 120,
@@ -2436,6 +2725,19 @@ export const saunas: Sauna[] = [
     website: "https://www.fusionpdx.com/",
     bookingUrl: "http://fusionbodyworkspdx2.clinicsense.com/book/",
     bookingPlatform: "clinicsense",
+    bookingProvider: {
+      type: "clinicsense",
+      slug: "fusionbodyworkspdx2",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceDurationId: 327920,
+          name: "Community Sauna and Soak",
+          price: 34,
+          durationMinutes: 90,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/YoBZYagBtnN3wkm57",
     sessionPrice: 30, // Community sauna 90 min; Private $200/90min, $250/120min
     sessionLengthMinutes: 90,
@@ -2768,6 +3070,20 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://book.peek.com/s/2530f333-35eb-43fc-b661-6c7d3c95dfea/wqA07",
     bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "2530f333-35eb-43fc-b661-6c7d3c95dfea",
+      programId: "wqA07",
+      timezone: "America/Los_Angeles",
+      activities: [
+        {
+          activityId: "052acf51-ff36-4fd8-a3a9-fffd5931181a",
+          name: "Sauna (Public)",
+          price: 25,
+          durationMinutes: 60,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8",
     sessionPrice: 25, // Public session; Private $100
     sessionLengthMinutes: 60,
@@ -2848,6 +3164,12 @@ export const saunas: Sauna[] = [
     website: "https://www.thesprings.us/",
     bookingUrl: "https://ecom.roller.app/thesprings/checkout/en-us/products",
     bookingPlatform: "roller",
+    bookingProvider: {
+      type: "roller",
+      venueSlug: "thesprings",
+      checkoutSlug: "checkout",
+      timezone: "America/Los_Angeles",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/qaB6GfHQLbDP8GPYA",
     sessionPrice: 35, // $35 Sun-Thu, $45 Fri-Sat
     sessionLengthMinutes: 120,
@@ -3205,6 +3527,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://squareup.com/appointments/book/p860or5934mejb/Y9NQRV2CZP0BT/services",
     bookingPlatform: "square",
+    bookingProvider: {
+      type: "square",
+      widgetId: "p860or5934mejb",
+      locationToken: "Y9NQRV2CZP0BT",
+      timezone: "America/Vancouver",
+    },
     sessionPrice: 37,
     currency: "CAD",
     sessionLengthMinutes: 90,
@@ -3323,6 +3651,25 @@ export const saunas: Sauna[] = [
     website: "https://www.havnsaunas.com/",
     bookingUrl: "https://www.havnsaunas.com/book",
     bookingPlatform: "checkfront",
+    bookingProvider: {
+      type: "checkfront",
+      baseUrl: "https://havn-saunas.checkfront.com",
+      timezone: "America/Vancouver",
+      items: [
+        {
+          itemId: 178,
+          name: "Book a Visit (3 Hours)",
+          price: 94,
+          durationMinutes: 180,
+        },
+        {
+          itemId: 179,
+          name: "Late Night 2-Hour Booking",
+          price: 84,
+          durationMinutes: 120,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/tMQ7JM7VZ2VWLD8y6",
     sessionPrice: 94,
     currency: "CAD",
@@ -3444,6 +3791,12 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://square.site/book/A3DZSYC1ZD77J/the-lost-faucet-courtenay-bc",
     bookingPlatform: "square",
+    bookingProvider: {
+      type: "square",
+      widgetId: "nraxk8eafyr8nl",
+      locationToken: "A3DZSYC1ZD77J",
+      timezone: "America/Vancouver",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/mxJDKJa5kPv6VFEZ7",
     sessionPrice: 38,
     currency: "CAD",
@@ -3510,6 +3863,28 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://book.peek.com/s/6182797e-e84c-474f-bdb6-261fd070df1e/N3xJ8",
     bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "6182797e-e84c-474f-bdb6-261fd070df1e",
+      programId: "N3xJ8",
+      timezone: "America/Vancouver",
+      activities: [
+        {
+          activityId: "b2467d5b-61b0-42c2-be8c-222c2a18ae78",
+          name: "Social Sauna Session",
+          price: 38,
+          durationMinutes: 120,
+        },
+        {
+          activityId: "ccc760b7-5367-4827-a274-7803ff2c3a53",
+          name: "Private Sauna Session",
+          price: 190,
+          durationMinutes: 120,
+          private: true,
+          seats: 2,
+        },
+      ],
+    },
     sessionPrice: 38, // CA$37.50 rounded up
     currency: "CAD",
     sessionLengthMinutes: 120,
@@ -3538,6 +3913,28 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://book.peek.com/s/6182797e-e84c-474f-bdb6-261fd070df1e/0lYdX",
     bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "6182797e-e84c-474f-bdb6-261fd070df1e",
+      programId: "0lYdX",
+      timezone: "America/Vancouver",
+      activities: [
+        {
+          activityId: "b0000fa1-6a63-4dde-8b77-d064dad8bb7f",
+          name: "Social Sauna Session",
+          price: 35,
+          durationMinutes: 90,
+        },
+        {
+          activityId: "a2e6c68f-c8d9-4e6f-8d8a-5726337748d4",
+          name: "Private Sauna Session",
+          price: 190,
+          durationMinutes: 90,
+          private: true,
+          seats: 2,
+        },
+      ],
+    },
     sessionPrice: 35, // CA$35 for social session
     currency: "CAD",
     sessionLengthMinutes: 90,
@@ -3566,6 +3963,30 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://book.peek.com/s/cb68db65-f54b-43a1-b5d6-3d11dd60c422/4X0Ax",
     bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "cb68db65-f54b-43a1-b5d6-3d11dd60c422",
+      programId: "4X0Ax",
+      timezone: "America/Vancouver",
+      activities: [
+        {
+          activityId: "20d17f93-39c1-4bb2-9c64-3bde93e291ad",
+          name: "PRIVATE Beachfront Sauna #1",
+          price: 199,
+          durationMinutes: 120,
+          private: true,
+          seats: 6,
+        },
+        {
+          activityId: "d6abdc08-959d-449c-a626-c03fa9f410af",
+          name: "PRIVATE Beachfront Sauna #2",
+          price: 199,
+          durationMinutes: 120,
+          private: true,
+          seats: 6,
+        },
+      ],
+    },
     googleMapsUrl:
       "https://www.google.com/maps/place/Pacific+Sands+Beach+Resort/@49.1066474,-125.8729172,17z",
     sessionPrice: 199, // CA$199 for private 2hr session (up to 6 people)
@@ -3979,7 +4400,20 @@ export const saunas: Sauna[] = [
     website: "https://www.saunapublic.com/",
     bookingUrl: "https://booking.mangomint.com/saunapublic1",
     bookingPlatform: "mangomint",
-    googleMapsUrl: "https://maps.app.goo.gl/YXmn9XKZQ5Yvq1xZ7",
+    bookingProvider: {
+      type: "mangomint",
+      companyId: 386824,
+      timezone: "America/Denver",
+      services: [
+        {
+          serviceId: 23,
+          name: "Day Pass",
+          price: 35,
+          durationMinutes: 120,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/ggoiJKj2YDjFpxt37",
     sessionPrice: 35,
     sessionLengthMinutes: 0, // No time limit
     steamRoom: false,
@@ -4493,6 +4927,33 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://book.peek.com/s/c483e16c-9ecf-4e56-a76d-d3155e7c0646/0b7pw",
     bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "c483e16c-9ecf-4e56-a76d-d3155e7c0646",
+      programId: "0b7pw",
+      timezone: "America/Chicago",
+      activities: [
+        {
+          activityId: "1051083c-9b8a-49f1-94b5-8767defd3ed1",
+          name: "Happy Hour Free Flow (90 min)",
+          price: 55,
+          durationMinutes: 90,
+        },
+        {
+          activityId: "6999ca1e-ec4b-4002-9a46-df37114ff85a",
+          name: "Guided Session (90 min)",
+          price: 55,
+          durationMinutes: 90,
+        },
+        {
+          activityId: "7d89d215-24e3-461a-95e1-9fdc0879325a",
+          name: "Private Buy-out",
+          price: 399,
+          durationMinutes: 180,
+          private: true,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/7wBuqNnCzB4LzBBd8",
     sessionPrice: 55,
     sessionLengthMinutes: 90,
@@ -5077,6 +5538,12 @@ export const saunas: Sauna[] = [
     website: "https://fire-ice-sauna-experience.square.site/",
     bookingUrl: "https://fire-ice-sauna-experience.square.site/",
     bookingPlatform: "square",
+    bookingProvider: {
+      type: "square",
+      widgetId: "zanikeqfx5ru7j",
+      locationToken: "L1SJ2HM473E1H",
+      timezone: "America/Chicago",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/GJdxDD68Qf49ofQD6",
     sessionPrice: 30,
     sessionLengthMinutes: 30,
