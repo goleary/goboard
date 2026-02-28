@@ -332,6 +332,8 @@ export interface GlofoxBookingProviderConfig {
   priceOverrides?: Record<string, number>;
   /** Mark programs as private with seat count, by Glofox program ID */
   privatePrograms?: Record<string, number>;
+  /** Exclude programs whose name contains any of these strings */
+  excludeNamePatterns?: string[];
 }
 
 /**
@@ -1010,6 +1012,7 @@ export const saunas: Sauna[] = [
       branchId: "666cd839c3e964051d0e4307",
       facilityId: "667117c9d33bf18a0e021529",
       timezone: "America/Los_Angeles",
+      excludeNamePatterns: ["[Member Only]"],
     },
     sessionPrice: 35,
     sessionLengthMinutes: 60,

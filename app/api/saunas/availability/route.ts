@@ -274,9 +274,11 @@ async function fetchGlofoxAvailability(
     page++;
   }
 
-  // Filter events to this facility
+  // Filter events to this facility, excluding name patterns
   const facilityEvents = allEvents.filter(
-    (e) => e.facility === provider.facilityId
+    (e) =>
+      e.facility === provider.facilityId &&
+      !(provider.excludeNamePatterns ?? []).some((p) => e.name.includes(p))
   );
 
   // Group by program_id
