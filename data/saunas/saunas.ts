@@ -1180,8 +1180,8 @@ export const saunas: Sauna[] = [
     },
   },
   {
-    slug: "hot-rocks-alki",
-    name: "Hot Rocks Alki Beach",
+    slug: "sauna-moon-alki",
+    name: "Sauna Moon Alki Beach",
     address: "2701 Alki Ave SW, Seattle, WA 98116",
     website: "https://www.hotrockssaunaclub.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule/fab325db",
@@ -1220,8 +1220,8 @@ export const saunas: Sauna[] = [
     },
   },
   {
-    slug: "hot-rocks-seacrest-park",
-    name: "Hot Rocks Seacrest Park",
+    slug: "sauna-moon-seacrest-park",
+    name: "Sauna Moon Seacrest Park",
     address: "1660 Harbor Ave SW, Seattle, WA 98126",
     website: "https://www.hotrockssaunaclub.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule/fab325db",
