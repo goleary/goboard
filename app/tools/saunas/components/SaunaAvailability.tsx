@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { ArrowUpRight, Minus, ArrowDownRight, CalendarIcon, X, Loader2 } from "lucide-react";
+import { ArrowUpRight, Minus, ArrowDownRight, CalendarIcon, X, Loader2, User, Users } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { getTideLevelForSlot, type TideLevel } from "./tideUtils";
 import { TimeSlotBadge } from "./TimeSlotBadge";
@@ -23,6 +23,8 @@ interface SaunaAvailabilityProps {
   sauna: Sauna;
   availabilityDate?: string | null;
   onAvailabilityDateChange?: (date: string | null) => void;
+  guests?: number | null;
+  onGuestsChange?: (guests: number) => void;
   onHasAvailability?: (hasAvailability: boolean) => void;
   onFirstAvailableDate?: (date: string | null) => void;
   onLastAvailableDate?: (date: string | null) => void;
@@ -84,16 +86,19 @@ function filterPastSlots(
 }
 
 /** Collect all dates across appointment types, then group slots by date → appointment type */
-function groupByDate(appointmentTypes: AppointmentTypeAvailability[]) {
+function groupByDate(appointmentTypes: AppointmentTypeAvailability[], minGuests: number = 1) {
   const byDate: Record<
     string,
     { appointmentType: AppointmentTypeAvailability; slots: { time: string; slotsAvailable: number | null }[] }[]
   > = {};
 
   for (const apt of appointmentTypes) {
+    // For private sessions, skip if guest count exceeds seats
+    if (apt.private && apt.seats != null && minGuests > apt.seats) continue;
+
     const filteredDates = filterPastSlots(apt.dates);
     for (const [dateStr, slots] of Object.entries(filteredDates)) {
-      const available = slots.filter((s) => s.slotsAvailable === null || s.slotsAvailable > 0);
+      const available = slots.filter((s) => s.slotsAvailable === null || s.slotsAvailable >= minGuests);
       if (available.length === 0) continue;
       if (!byDate[dateStr]) byDate[dateStr] = [];
       byDate[dateStr].push({ appointmentType: apt, slots: available });
@@ -126,7 +131,7 @@ const TIDE_LEVEL_COLORS: Record<TideLevel, string> = {
   low: "rgb(252, 165, 165)",   // red-300
 };
 
-export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateChange, onHasAvailability, onFirstAvailableDate, onLastAvailableDate, onTideTimeClick }: SaunaAvailabilityProps) {
+export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateChange, guests, onGuestsChange, onHasAvailability, onFirstAvailableDate, onLastAvailableDate, onTideTimeClick }: SaunaAvailabilityProps) {
   const [data, setData] = useState<AvailabilityResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -192,9 +197,11 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sauna.slug, sauna.bookingProvider, availabilityDate]);
 
+  const minGuests = guests ?? 1;
+
   useEffect(() => {
     if (loading) return;
-    const byDate = data ? groupByDate(data.appointmentTypes) : {};
+    const byDate = data ? groupByDate(data.appointmentTypes, minGuests) : {};
     const allDates = Object.keys(byDate).sort();
     const hasSlots = allDates.length > 0;
     onHasAvailability?.(hasSlots);
@@ -207,7 +214,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
         : allDates.slice(0, DEFAULT_MAX_DAYS);
     onFirstAvailableDate?.(visible.length > 0 ? visible[0] : null);
     onLastAvailableDate?.(visible.length > 0 ? visible[visible.length - 1] : null);
-  }, [data, loading, availabilityDate, expanded, onHasAvailability, onFirstAvailableDate, onLastAvailableDate]);
+  }, [data, loading, availabilityDate, expanded, minGuests, onHasAvailability, onFirstAvailableDate, onLastAvailableDate]);
 
   useEffect(() => {
     if (!data || !sauna.tidal || !sauna.noaaTideStation) return;
@@ -272,7 +279,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
     );
   }
 
-  const byDate = data ? groupByDate(data.appointmentTypes) : {};
+  const byDate = data ? groupByDate(data.appointmentTypes, minGuests) : {};
   const allSortedDates = Object.keys(byDate).sort();
   const isSingleType = data ? data.appointmentTypes.length <= 1 : false;
 
@@ -284,21 +291,25 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
       : allSortedDates.slice(0, DEFAULT_MAX_DAYS);
   const hasMoreDates = !availabilityDate && !expanded && allSortedDates.length > displayDates.length;
 
-  if (!data || allSortedDates.length === 0) {
-    return (
-      <div>
-        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-          Availability
-        </p>
-        <p className="text-sm text-muted-foreground">
-          No upcoming availability found
-        </p>
-      </div>
-    );
-  }
+  const guestsPicker = onGuestsChange ? (
+    <div className="flex items-center gap-1.5">
+      {(guests ?? 1) > 1 ? <Users className="h-3 w-3 text-muted-foreground" /> : <User className="h-3 w-3 text-muted-foreground" />}
+      <select
+        value={guests ?? 1}
+        onChange={(e) => onGuestsChange(parseInt(e.target.value, 10))}
+        className="h-6 rounded-md border border-input bg-background px-1.5 text-xs"
+      >
+        {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+          <option key={n} value={n}>
+            {n}
+          </option>
+        ))}
+      </select>
+    </div>
+  ) : null;
 
   const datePicker = onAvailabilityDateChange ? (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="h-6 gap-1.5 text-xs">
@@ -320,10 +331,14 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
           />
         </PopoverContent>
       </Popover>
-      {availabilityDate && (
+      {guestsPicker}
+      {(availabilityDate || (guests ?? 1) > 1) && (
         <button
           type="button"
-          onClick={() => onAvailabilityDateChange(null)}
+          onClick={() => {
+            onAvailabilityDateChange(null);
+            if (onGuestsChange) onGuestsChange(1);
+          }}
           className="h-6 w-6 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
           <X className="h-3.5 w-3.5" />
@@ -331,6 +346,22 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
       )}
     </div>
   ) : null;
+
+  if (!data || allSortedDates.length === 0) {
+    return (
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Availability
+          </p>
+          {datePicker}
+        </div>
+        <p className="text-sm text-muted-foreground">
+          No upcoming availability found
+        </p>
+      </div>
+    );
+  }
 
   if (displayDates.length === 0) {
     return (
@@ -359,9 +390,11 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
       <div className="space-y-4">
         {displayDates.map((dateStr) => (
           <div key={dateStr}>
-            <p className="text-sm font-medium mb-2">
-              {formatDateLabel(dateStr)}
-            </p>
+            {!availabilityDate && (
+              <p className="text-sm font-medium mb-2">
+                {formatDateLabel(dateStr)}
+              </p>
+            )}
             <div className="space-y-2">
               {byDate[dateStr].map(({ appointmentType, slots }) => (
                 <div key={appointmentType.appointmentTypeId}>
@@ -384,12 +417,12 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
                     </div>
                   )}
                   <div className="flex flex-wrap gap-1.5">
-                    {slots.map((slot) => {
+                    {slots.map((slot, i) => {
                       const hourly = tideDataByDate[dateStr];
                       const tideLevel = hourly ? getTideLevelForSlot(slot.time, hourly) : null;
                       return (
                         <TimeSlotBadge
-                          key={slot.time}
+                          key={`${slot.time}-${i}`}
                           time={slot.time}
                           slotsAvailable={appointmentType.private ? (appointmentType.seats ?? null) : slot.slotsAvailable}
                           className="text-xs gap-1"

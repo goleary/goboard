@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { CalendarIcon, Loader2, RefreshCw } from "lucide-react";
+import { CalendarIcon, Loader2, Minus, Plus, User, Users } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ export interface FilterState {
   waterfrontOnly: boolean;
   naturalPlungeOnly: boolean;
   availabilityDate: string | null;
+  guests: number | null;
 }
 
 interface SaunaFiltersProps {
@@ -51,6 +52,7 @@ export function getDefaultFilters(): FilterState {
     waterfrontOnly: false,
     naturalPlungeOnly: false,
     availabilityDate: null,
+    guests: null,
   };
 }
 
@@ -114,6 +116,7 @@ export function SaunaFilters({
       onFiltersChange({
         ...filters,
         availabilityDate: checked ? defaultDate : null,
+        guests: checked ? filters.guests : null,
       });
     },
     [filters, onFiltersChange, defaultDate]
@@ -184,20 +187,20 @@ export function SaunaFilters({
       {showAvailabilityFilter && (
         <>
           <Separator />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Checkbox
                 id="availability"
                 checked={filters.availabilityDate !== null}
                 onCheckedChange={(v) => handleAvailabilityToggle(v === true)}
               />
-              <Label htmlFor="availability" className="text-sm cursor-pointer">
-                Has Availability
+              <Label htmlFor="availability" className="text-sm cursor-pointer whitespace-nowrap">
+                {filters.availabilityDate !== null ? "Available" : "Has Availability"}
               </Label>
             </div>
 
             {filters.availabilityDate !== null && (
-              <>
+              <div className="flex items-center gap-1.5">
                 <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                   <PopoverTrigger asChild>
                     <Button
@@ -205,7 +208,11 @@ export function SaunaFilters({
                       size="sm"
                       className="h-7 gap-1.5 text-xs"
                     >
-                      <CalendarIcon className="h-3 w-3" />
+                      {availabilityLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <CalendarIcon className="h-3 w-3" />
+                      )}
                       {formatDateButton(filters.availabilityDate)}
                     </Button>
                   </PopoverTrigger>
@@ -220,10 +227,62 @@ export function SaunaFilters({
                   </PopoverContent>
                 </Popover>
 
-                {availabilityLoading && (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
-                )}
-              </>
+                {/* Desktop: select dropdown */}
+                <div className="hidden lg:flex items-center gap-1.5">
+                  {(filters.guests ?? 1) > 1 ? <Users className="h-3 w-3 text-muted-foreground" /> : <User className="h-3 w-3 text-muted-foreground" />}
+                  <select
+                    value={filters.guests ?? 1}
+                    onChange={(e) =>
+                      onFiltersChange({
+                        ...filters,
+                        guests: parseInt(e.target.value, 10),
+                      })
+                    }
+                    className="h-7 rounded-md border border-input bg-background px-2 text-xs"
+                  >
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Mobile: +/- stepper */}
+                <div className="flex lg:hidden items-center gap-1.5">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() =>
+                      onFiltersChange({
+                        ...filters,
+                        guests: Math.max(1, (filters.guests ?? 2) - 1),
+                      })
+                    }
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                  {(filters.guests ?? 1) > 1 ? <Users className="h-3 w-3 text-muted-foreground" /> : <User className="h-3 w-3 text-muted-foreground" />}
+                  <span className="text-xs w-3 text-center tabular-nums">
+                    {filters.guests ?? 1}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() =>
+                      onFiltersChange({
+                        ...filters,
+                        guests: Math.min(10, (filters.guests ?? 1) + 1),
+                      })
+                    }
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </div>
+
+              </div>
             )}
           </div>
         </>
