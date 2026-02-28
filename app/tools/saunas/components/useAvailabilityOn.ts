@@ -17,19 +17,24 @@ function localDateStr(d: Date): string {
 
 function extractSlots(
   data: AvailabilityResponse,
-  date: string
+  date: string,
+  guests: number | null
 ): SlotInfo[] {
   const isToday = date === localDateStr(new Date());
   const now = Date.now();
+  const minGuests = guests ?? 1;
   const slots: SlotInfo[] = [];
 
   for (const apt of data.appointmentTypes) {
+    // For private sessions, check if guest count fits within seats
+    if (apt.private && apt.seats != null && minGuests > apt.seats) continue;
+
     const dateSlots = apt.dates[date];
     if (!dateSlots) continue;
 
     for (const slot of dateSlots) {
       const hasCapacity =
-        slot.slotsAvailable === null || slot.slotsAvailable > 0;
+        slot.slotsAvailable === null || slot.slotsAvailable >= minGuests;
       if (!hasCapacity) continue;
 
       if (isToday && new Date(slot.time).getTime() <= now) continue;
@@ -61,16 +66,17 @@ interface AvailabilityResult {
  */
 export function useAvailabilityOn(
   slugs: string[],
-  date: string | null
+  date: string | null,
+  guests?: number | null
 ): {
   availability: Record<string, boolean>;
   slots: Record<string, SlotInfo[]>;
   loading: boolean;
 } {
-  const [results, setResults] = useState<Record<string, AvailabilityResult>>({});
+  const [rawData, setRawData] = useState<Record<string, AvailabilityResponse | null>>({});
   const [loading, setLoading] = useState(false);
   const [prevDate, setPrevDate] = useState(date);
-  const cacheRef = useRef<Map<string, AvailabilityResult>>(new Map());
+  const cacheRef = useRef<Map<string, AvailabilityResponse | null>>(new Map());
   const abortRef = useRef<AbortController | null>(null);
 
   // Clear cache synchronously when date changes so we re-fetch,
@@ -85,7 +91,7 @@ export function useAvailabilityOn(
 
   const fetchAvailability = useCallback(async () => {
     if (!date || slugs.length === 0) {
-      setResults({});
+      setRawData({});
 
       setLoading(false);
       return;
@@ -99,7 +105,7 @@ export function useAvailabilityOn(
     setLoading(true);
 
     // Check cache for already-fetched results
-    const result: Record<string, AvailabilityResult> = {};
+    const result: Record<string, AvailabilityResponse | null> = {};
     const toFetch: string[] = [];
 
     for (const slug of slugs) {
@@ -113,7 +119,7 @@ export function useAvailabilityOn(
 
     // If everything is cached, return immediately
     if (toFetch.length === 0) {
-      setResults(result);
+      setRawData(result);
 
       setLoading(false);
       return;
@@ -130,10 +136,9 @@ export function useAvailabilityOn(
             `/api/saunas/availability?slug=${encodeURIComponent(slug)}&startDate=${date}`,
             { signal: controller.signal }
           );
-          if (!res.ok) return { slug, data: { hasAvailability: false, slots: [] as SlotInfo[] } };
+          if (!res.ok) return { slug, data: null as AvailabilityResponse | null };
           const data: AvailabilityResponse = await res.json();
-          const slots = extractSlots(data, date);
-          return { slug, data: { hasAvailability: slots.length > 0, slots } };
+          return { slug, data };
         })
       );
 
@@ -149,7 +154,7 @@ export function useAvailabilityOn(
     }
 
     if (!controller.signal.aborted) {
-      setResults(result);
+      setRawData(result);
 
       setLoading(false);
     }
@@ -162,12 +167,18 @@ export function useAvailabilityOn(
     };
   }, [fetchAvailability]);
 
-  // Derive simple availability map for filtering
+  // Derive filtered availability from raw data + guests filter
   const availability: Record<string, boolean> = {};
   const slots: Record<string, SlotInfo[]> = {};
-  for (const [slug, r] of Object.entries(results)) {
-    availability[slug] = r.hasAvailability;
-    slots[slug] = r.slots;
+  for (const [slug, data] of Object.entries(rawData)) {
+    if (!data || !date) {
+      availability[slug] = false;
+      slots[slug] = [];
+    } else {
+      const filtered = extractSlots(data, date, guests ?? null);
+      availability[slug] = filtered.length > 0;
+      slots[slug] = filtered;
+    }
   }
 
   return { availability, slots, loading };

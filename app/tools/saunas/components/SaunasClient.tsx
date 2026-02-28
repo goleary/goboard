@@ -73,14 +73,20 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<FilterState>(() => {
     const dateParam = searchParams.get("date");
+    const guestsParam = searchParams.get("guests");
     const defaults = getDefaultFilters();
     if (dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
-      return { ...defaults, availabilityDate: dateParam };
+      const guests = guestsParam ? parseInt(guestsParam, 10) : null;
+      return {
+        ...defaults,
+        availabilityDate: dateParam,
+        guests: guests && guests >= 1 && guests <= 10 ? guests : null,
+      };
     }
     return defaults;
   });
 
-  // Sync availabilityDate filter to/from URL query params
+  // Sync availabilityDate and guests filter to/from URL query params
   const updateFilters = useCallback((newFilters: FilterState) => {
     setFilters(newFilters);
     const params = new URLSearchParams(searchParams.toString());
@@ -88,6 +94,11 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       params.set("date", newFilters.availabilityDate);
     } else {
       params.delete("date");
+    }
+    if (newFilters.guests && newFilters.guests > 1) {
+      params.set("guests", String(newFilters.guests));
+    } else {
+      params.delete("guests");
     }
     const queryString = params.toString();
     router.replace(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
@@ -102,6 +113,29 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
       } else {
         params.delete("date");
       }
+      if (prev.guests && prev.guests > 1) {
+        params.set("guests", String(prev.guests));
+      } else {
+        params.delete("guests");
+      }
+      const queryString = params.toString();
+      router.replace(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
+      return newFilters;
+    });
+  }, [searchParams, basePath, router]);
+
+  const handleGuestsChange = useCallback((guests: number) => {
+    setFilters((prev) => {
+      const newFilters = { ...prev, guests };
+      const params = new URLSearchParams(searchParams.toString());
+      if (prev.availabilityDate) {
+        params.set("date", prev.availabilityDate);
+      }
+      if (guests > 1) {
+        params.set("guests", String(guests));
+      } else {
+        params.delete("guests");
+      }
       const queryString = params.toString();
       router.replace(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
       return newFilters;
@@ -111,10 +145,13 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   // Sync URL back to state on browser back/forward
   useEffect(() => {
     const dateParam = searchParams.get("date");
+    const guestsParam = searchParams.get("guests");
     const newDate = dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? dateParam : null;
+    const parsed = guestsParam ? parseInt(guestsParam, 10) : null;
+    const newGuests = parsed && parsed >= 1 && parsed <= 20 ? parsed : null;
     setFilters((prev) => {
-      if (prev.availabilityDate === newDate) return prev;
-      return { ...prev, availabilityDate: newDate };
+      if (prev.availabilityDate === newDate && prev.guests === newGuests) return prev;
+      return { ...prev, availabilityDate: newDate, guests: newDate ? newGuests : null };
     });
   }, [searchParams]);
 
@@ -144,10 +181,11 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     if (zoom < AVAILABILITY_ZOOM_THRESHOLD) {
       setFilters((prev) => {
         if (prev.availabilityDate === null) return prev;
-        const newFilters = { ...prev, availabilityDate: null };
-        // Also clear date from URL
+        const newFilters = { ...prev, availabilityDate: null, guests: null };
+        // Also clear date and guests from URL
         const params = new URLSearchParams(searchParams.toString());
         params.delete("date");
+        params.delete("guests");
         const queryString = params.toString();
         router.replace(queryString ? `${basePath}?${queryString}` : basePath, { scroll: false });
         return newFilters;
@@ -271,7 +309,8 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
 
   const { availability, slots, loading: availabilityLoading } = useAvailabilityOn(
     showAvailabilityFilter ? checkableSlugs : [],
-    filters.availabilityDate
+    filters.availabilityDate,
+    filters.guests
   );
 
   // Don't apply the filter until we actually have availability data
@@ -529,7 +568,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                 Back to list
               </button>
               <div className="flex-1 overflow-hidden">
-                <SaunaDetailPanel sauna={selectedSauna} availabilityDate={filters.availabilityDate} onAvailabilityDateChange={handleAvailabilityDateChange} />
+                <SaunaDetailPanel sauna={selectedSauna} availabilityDate={filters.availabilityDate} onAvailabilityDateChange={handleAvailabilityDateChange} guests={filters.guests} onGuestsChange={handleGuestsChange} />
               </div>
             </>
           ) : (
@@ -598,7 +637,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                   Back to list
                 </button>
                 <div className="flex-1 overflow-auto min-h-0">
-                  <SaunaDetailPanel sauna={selectedSauna} availabilityDate={filters.availabilityDate} onAvailabilityDateChange={handleAvailabilityDateChange} />
+                  <SaunaDetailPanel sauna={selectedSauna} availabilityDate={filters.availabilityDate} onAvailabilityDateChange={handleAvailabilityDateChange} guests={filters.guests} onGuestsChange={handleGuestsChange} />
                 </div>
               </>
             ) : (
