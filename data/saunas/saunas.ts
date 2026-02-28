@@ -20,6 +20,7 @@ export type LocationSlug =
   | "minnesota"
   | "tennessee"
   | "chicago"
+  | "indianapolis"
   | "boston"
   | "new-york"
   | "philadelphia";
@@ -198,6 +199,15 @@ export const locations: Location[] = [
       "Chicago's sauna scene is heating up with lakefront contrast therapy experiences and Nordic-inspired wellness clubs along Lake Michigan.",
     center: { lat: 41.8781, lng: -87.6298 },
     zoom: 11,
+  },
+  {
+    slug: "indianapolis",
+    name: "Indianapolis",
+    state: "IN",
+    description:
+      "Indianapolis's sauna scene features mobile wood-fired experiences delivered directly to your door, bringing Nordic wellness to the heart of the Midwest.",
+    center: { lat: 39.7684, lng: -86.1581 },
+    zoom: 10,
   },
   {
     slug: "boston",
@@ -5588,6 +5598,80 @@ export const saunas: Sauna[] = [
     lat: 41.7217,
     lng: -88.0417,
     updatedAt: "2026-02-11",
+  },
+  // Indianapolis
+  {
+    slug: "sol-drift-sauna",
+    name: "Sol Drift Sauna",
+    address: "Westfield, IN 46074",
+    website: "https://www.soldriftsauna.com/",
+    bookingUrl: "https://www.soldriftsauna.com/book",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/KisQzfgcaax75HTn9",
+    sessionPrice: 400,
+    sessionLengthMinutes: 240,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 10,
+    genderPolicy: "Private booking",
+    clothingPolicy: "Up to your group",
+    notes:
+      "Mobile wood-fired sauna delivered to your location. Family-owned, serving Indianapolis and northside suburbs. Half-day (4hr, $400) and full-day (8hr, $700) rentals include delivery, setup, fire supplies, and pickup. Seats 4-8. Cold plunge available as add-on ($75). Off-grid operation — no electricity needed.",
+    lat: 39.8669548,
+    lng: -86.1565051,
+    updatedAt: "2026-02-27",
+    bookingProvider: {
+      type: "acuity",
+      owner: "0c565062",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 82500589,
+          acuityCalendarId: 12626933,
+          name: "Half Day Rental",
+          price: 400,
+          durationMinutes: 240,
+          private: true,
+        },
+        {
+          acuityAppointmentId: 82501047,
+          acuityCalendarId: 12626933,
+          name: "Full Day Rental",
+          price: 700,
+          durationMinutes: 480,
+          private: true,
+        },
+        {
+          acuityAppointmentId: 82501132,
+          acuityCalendarId: 12626933,
+          name: "Overnight Rental",
+          price: 1000,
+          durationMinutes: 720,
+          private: true,
+        },
+        {
+          acuityAppointmentId: 83056778,
+          acuityCalendarId: 12626933,
+          name: "Weekend Rental",
+          price: 1500,
+          durationMinutes: 720,
+          private: true,
+        },
+        {
+          acuityAppointmentId: 86325150,
+          acuityCalendarId: 12626933,
+          name: "Weeklong Rental",
+          price: 1750,
+          durationMinutes: 720,
+          private: true,
+        },
+      ],
+    },
   },
   {
     slug: "fiorst-riverside",
