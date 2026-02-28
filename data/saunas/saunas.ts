@@ -5170,7 +5170,6 @@ export const saunas: Sauna[] = [
           price: 400,
           durationMinutes: 240,
           private: true,
-          seats: 1,
         },
         {
           acuityAppointmentId: 82501047,
@@ -5179,7 +5178,6 @@ export const saunas: Sauna[] = [
           price: 700,
           durationMinutes: 480,
           private: true,
-          seats: 1,
         },
         {
           acuityAppointmentId: 82501132,
@@ -5188,7 +5186,6 @@ export const saunas: Sauna[] = [
           price: 1000,
           durationMinutes: 720,
           private: true,
-          seats: 1,
         },
         {
           acuityAppointmentId: 83056778,
@@ -5197,7 +5194,6 @@ export const saunas: Sauna[] = [
           price: 1500,
           durationMinutes: 720,
           private: true,
-          seats: 1,
         },
         {
           acuityAppointmentId: 86325150,
@@ -5206,7 +5202,6 @@ export const saunas: Sauna[] = [
           price: 1750,
           durationMinutes: 720,
           private: true,
-          seats: 1,
         },
       ],
     },
