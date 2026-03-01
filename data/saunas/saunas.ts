@@ -869,6 +869,8 @@ export interface Sauna {
   updatedAt: string;
   /** Booking provider config for live availability checking */
   bookingProvider?: BookingProviderConfig;
+  /** Optional images of the sauna facility */
+  images?: { url: string; alt: string }[];
 }
 
 export const saunas: Sauna[] = [
@@ -1329,6 +1331,16 @@ export const saunas: Sauna[] = [
     lng: -122.1118042997229,
     googleMapsUrl: "https://maps.app.goo.gl/CDbBkrwehr3fHGjG9",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/vihta/lake-sammamish.jpg",
+        alt: "Vihta sauna on Lake Sammamish",
+      },
+      {
+        url: "/saunas/vihta/sauna-interior.jpg",
+        alt: "Vihta sauna interior",
+      },
+    ],
     bookingProvider: {
       type: "wix",
       siteUrl: "www.vihtasauna.co",
