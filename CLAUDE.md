@@ -1,4 +1,4 @@
-# GoBoard Tacoma
+# GoBoard
 
 ## Adding Sauna Listings
 
