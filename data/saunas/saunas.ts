@@ -724,6 +724,14 @@ export interface BoulevardBookingProviderConfig {
   }[];
 }
 
+export interface ArketaBookingProviderConfig {
+  type: "arketa";
+  /** Widget name from the Arketa booking URL (e.g. "campfiresaunaandsocial") */
+  widgetName: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
 /**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
@@ -749,7 +757,8 @@ export type BookingProviderConfig =
   | ClinicSenseBookingProviderConfig
   | MangomintBookingProviderConfig
   | RollerBookingProviderConfig
-  | BoulevardBookingProviderConfig;
+  | BoulevardBookingProviderConfig
+  | ArketaBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -5807,6 +5816,11 @@ export const saunas: Sauna[] = [
     website: "https://www.campfiresauna.com/",
     bookingUrl: "https://app.arketa.co/campfiresaunaandsocial",
     bookingPlatform: "arketa",
+    bookingProvider: {
+      type: "arketa",
+      widgetName: "campfiresaunaandsocial",
+      timezone: "America/Chicago",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/rubvLaSM1iPJnyK56",
     sessionPrice: 40,
     sessionLengthMinutes: 50,
