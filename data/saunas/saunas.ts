@@ -5599,6 +5599,7 @@ export const saunas: Sauna[] = [
     website: "https://sojospaclub.com/",
     bookingUrl: "https://shop.sojospaclub.com/reservation/admission",
     bookingPlatform: "sojo",
+    googleMapsUrl: "https://maps.app.goo.gl/XU2bkRWjJVYUjbmeA",
     sessionPrice: 90,
     sessionLengthMinutes: null,
     steamRoom: false,
