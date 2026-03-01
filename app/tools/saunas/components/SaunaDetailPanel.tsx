@@ -13,7 +13,7 @@ import {
   Clock,
   Thermometer,
   Snowflake,
-  Waves,
+
   ShowerHead,
   Shirt,
   Leaf,
@@ -131,7 +131,7 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
             <AmenityBadge icon={Flame} label="Sauna" available={true} iconClassName="text-orange-500" />
             <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge} iconClassName="text-sky-500" />
             <AmenityBadge emoji="♨️" label="Soaking Tub" available={sauna.soakingTub} />
-            <AmenityBadge icon={Waves} label="Waterfront" available={sauna.waterfront} iconClassName="text-blue-500" />
+            <SaunaWaterTemp sauna={sauna} />
             <AmenityBadge icon={Leaf} label="Natural Plunge" available={sauna.naturalPlunge} iconClassName="text-green-600" />
             <AmenityBadge icon={Thermometer} label="Steam Room" available={sauna.steamRoom} />
             <AmenityBadge icon={ShowerHead} label="Showers" available={sauna.showers} />
@@ -142,9 +142,6 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
 
         {/* Availability */}
         <SaunaAvailability sauna={sauna} availabilityDate={availabilityDate} onAvailabilityDateChange={onAvailabilityDateChange} guests={guests} onGuestsChange={onGuestsChange} onHasAvailability={handleHasAvailability} onFirstAvailableDate={handleFirstAvailableDate} onLastAvailableDate={handleLastAvailableDate} onTideTimeClick={handleTideTimeClick} />
-
-        {/* Live Water Temperature */}
-        <SaunaWaterTemp sauna={sauna} />
 
         {/* Tides */}
         <SaunaTides sauna={sauna} date={firstAvailableDate} endDate={lastAvailableDate} waitForDate={!!sauna.bookingProvider} open={tideOpen} onOpenChange={setTideOpen} highlightTime={tideHighlightTime} highlightColor={tideHighlightColor} scrollNonce={tideScrollNonce} />
