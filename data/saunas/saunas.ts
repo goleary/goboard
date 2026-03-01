@@ -724,6 +724,14 @@ export interface BoulevardBookingProviderConfig {
   }[];
 }
 
+export interface ArketaBookingProviderConfig {
+  type: "arketa";
+  /** Widget name from the Arketa booking URL (e.g. "campfiresaunaandsocial") */
+  widgetName: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
 export interface SojoBookingProviderConfig {
   type: "sojo";
   /** Base URL for the SoJo shop API (e.g. "https://shop.sojospaclub.com") */
@@ -758,6 +766,7 @@ export type BookingProviderConfig =
   | MangomintBookingProviderConfig
   | RollerBookingProviderConfig
   | BoulevardBookingProviderConfig
+  | ArketaBookingProviderConfig
   | SojoBookingProviderConfig;
 
 /**
@@ -815,6 +824,7 @@ export interface Sauna {
     | "shopify"
     | "fresha"
     | "envision"
+    | "arketa"
     | "sojo";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
@@ -5841,6 +5851,36 @@ export const saunas: Sauna[] = [
     lat: 41.7217,
     lng: -88.0417,
     updatedAt: "2026-02-11",
+  },
+  {
+    slug: "campfire-sauna-and-social",
+    name: "Campfire Sauna and Social",
+    address: "Gillson Beach, Wilmette, IL 60091",
+    website: "https://www.campfiresauna.com/",
+    bookingUrl: "https://app.arketa.co/campfiresaunaandsocial",
+    bookingPlatform: "arketa",
+    bookingProvider: {
+      type: "arketa",
+      widgetName: "campfiresaunaandsocial",
+      timezone: "America/Chicago",
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/rubvLaSM1iPJnyK56",
+    sessionPrice: 40,
+    sessionLengthMinutes: 50,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired lakeside sauna at Gillson Beach on Lake Michigan. 50-minute sessions with multiple heat/cool cycles. First-time visitors get 50% off with code NEWBIE. 5-pack ($175) and 10-pack ($300) available. Private after-hours rentals from $350/hr.",
+    lat: 42.079996994323395,
+    lng: -87.68712500358089,
+    updatedAt: "2026-02-28",
   },
   // Indianapolis
   {
