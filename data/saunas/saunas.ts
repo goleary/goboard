@@ -23,7 +23,8 @@ export type LocationSlug =
   | "indianapolis"
   | "boston"
   | "new-york"
-  | "philadelphia";
+  | "philadelphia"
+  | "north-carolina";
 
 /**
  * Location metadata for display and routing
@@ -235,6 +236,15 @@ export const locations: Location[] = [
       "Philadelphia's sauna scene features wood-fired experiences along the Schuylkill River, with outdoor saunas and cold plunges in natural settings.",
     center: { lat: 40.055, lng: -75.258 },
     zoom: 12,
+  },
+  {
+    slug: "north-carolina",
+    name: "North Carolina",
+    state: "NC",
+    description:
+      "North Carolina's sauna scene features wood-fired Nordic experiences in the Blue Ridge Mountains, combining traditional heat with cold plunges and stunning mountain views.",
+    center: { lat: 36.2177, lng: -81.6835 },
+    zoom: 10,
   },
 ];
 
@@ -5158,6 +5168,61 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  // ============================================================================
+  // NORTH CAROLINA
+  // ============================================================================
+  {
+    slug: "river-birch-nordic-sauna",
+    name: "River Birch Nordic Sauna",
+    address: "2543 Broadstone Rd, Banner Elk, NC 28604",
+    website: "https://www.riverbirchsauna.com/",
+    bookingUrl:
+      "https://book.peek.com/s/9c0bbf73-2460-47fa-86d4-504afae5c5a0/BLeN2",
+    bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "9c0bbf73-2460-47fa-86d4-504afae5c5a0",
+      programId: "BLeN2",
+      timezone: "America/New_York",
+      activities: [
+        {
+          activityId: "338641be-2e7b-490d-aa85-fbcd87edc3b0",
+          name: "60 Minute Private Sauna Experience",
+          price: 59,
+          durationMinutes: 60,
+          private: true,
+          seats: 8,
+        },
+        {
+          activityId: "e1f5861d-0e42-42be-ab36-b47d34aa240a",
+          name: "120 Minute Private Sauna Experience",
+          price: 99,
+          durationMinutes: 120,
+          private: true,
+          seats: 8,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/i4YLSog9AmRBxXJL6",
+    sessionPrice: 59,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false, // Cold water bucket shower only
+    towelsIncluded: false,
+    capacity: 8,
+    hours: "Mon/Wed/Thu/Sun 10am-8pm, Fri-Sat 10am-9:30pm",
+    genderPolicy: "Co-ed (private booking)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired Nordic sauna at The Mast Farm Inn in Valle Crucis, NC. Private sessions for up to 8 guests with outdoor cold plunge tubs and cold water bucket shower. Set in the Blue Ridge Mountains with scenic mountain views. 60-min sessions $59, 120-min sessions $99. Session packs available (6 for the price of 5).",
+    lat: 36.207028602161,
+    lng: -81.77167177687609,
+    updatedAt: "2026-02-28",
   },
   {
     slug: "glidden-point-oyster-farms",
