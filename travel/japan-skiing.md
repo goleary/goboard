@@ -20,9 +20,9 @@ We stayed in town at the [Art Hotel Morioka](https://maps.app.goo.gl/UWdgaiQDyDU
 
 From here we skied 5 different resorts that were all pretty small mom & pop operations with only a few lifts, but even fewer people and delicious food on the mountain. It felt like we had the mountains to ourselves. We rarely waited more than 5 minutes total per day in lift lines.
 
-The day that we skied at [Tazawako](https://maps.app.goo.gl/Hd13hyjSgD1WZdk26) we went to a 600 year old onsen. It's a mixed onsen (most are separated by gender), but the water is super cloudy and women can enter the joint pool from inside (already underwater).
+The day that we skied at [Tazawako](https://maps.app.goo.gl/Hd13hyjSgD1WZdk26) we went to a [600 year old onsen](https://maps.app.goo.gl/scYQuQb5pK3QLB1b6). It's a mixed onsen (most are separated by gender), but the water is super cloudy and women can enter the joint pool from inside (already underwater).
 
-We also spent one night at a fancier ryokan with half board — an amazing dinner and breakfast and a cool onsen. The last night in the area we spent at the [Hachimantai Mountain Hotel](https://maps.app.goo.gl/joWZnYSsYy1M66JY7) at the base of a ski area. It's also near [Shimokura](https://maps.app.goo.gl/zKhLenbx86E7obJu6) which has more interesting skiing.
+We also spent one night at a [fancier ryokan](https://maps.app.goo.gl/uVw7aCFmc2pFhh8K9) with half board — an amazing dinner and breakfast and a cool onsen. The last night in the area we spent at the [Hachimantai Mountain Hotel](https://maps.app.goo.gl/joWZnYSsYy1M66JY7) at the base of a ski area. It's also near [Shimokura](https://maps.app.goo.gl/zKhLenbx86E7obJu6) which has more interesting skiing.
 
 Angela Crampton has a [good blog post about Tohoku](https://angelatravels.com/7-days-skiing-in-japan-where-to-ski-in-tohoku-region/) if you're looking for more detail on the area.
 
