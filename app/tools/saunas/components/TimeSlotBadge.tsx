@@ -30,7 +30,7 @@ export function TimeSlotBadge({
       {slotsAvailable !== null && (
         <span className="inline-flex items-center gap-px text-muted-foreground">
           <User className="h-2.5 w-2.5" />
-          {slotsAvailable}
+          {slotsAvailable > 9 ? "9+" : slotsAvailable}
         </span>
       )}
       {children}
