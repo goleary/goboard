@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SaunaAvailability } from "./SaunaAvailability";
 import { SaunaTides } from "./SaunaTides";
+import { SaunaWaterTemp } from "./SaunaWaterTemp";
 import {
   ExternalLink,
   MapPin,
@@ -144,6 +145,9 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
 
         {/* Tides */}
         <SaunaTides sauna={sauna} date={firstAvailableDate} endDate={lastAvailableDate} waitForDate={!!sauna.bookingProvider} open={tideOpen} onOpenChange={setTideOpen} highlightTime={tideHighlightTime} highlightColor={tideHighlightColor} scrollNonce={tideScrollNonce} />
+
+        {/* Live Water Temperature */}
+        <SaunaWaterTemp sauna={sauna} />
 
         {/* Temperature */}
         {sauna.temperatureRangeF && (

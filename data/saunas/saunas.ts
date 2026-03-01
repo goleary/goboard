@@ -751,6 +751,25 @@ export type BookingProviderConfig =
   | RollerBookingProviderConfig
   | BoulevardBookingProviderConfig;
 
+// --- Water Temperature Provider Types ---
+
+/**
+ * King County lake buoy data provider configuration.
+ * Uses the King County lake buoy API to fetch real-time water temperature.
+ * Supports: Lake Washington, Lake Sammamish
+ */
+export interface KingCountyBuoyWaterTempProviderConfig {
+  type: "king-county-buoy";
+  /** Lake name as it appears in the buoy API data (e.g., "washington", "sammamish") */
+  lakeName: string;
+}
+
+/**
+ * Discriminated union of water temperature data providers.
+ * Add new provider interfaces here and union them in to support additional data sources.
+ */
+export type WaterTempProviderConfig = KingCountyBuoyWaterTempProviderConfig;
+
 /**
  * Represents a sauna facility with its amenities and details.
  *
@@ -833,6 +852,8 @@ export interface Sauna {
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
   noaaTideStation?: string;
+  /** Water temperature data provider for live plunge temperature display */
+  waterTempProvider?: WaterTempProviderConfig;
   /** Whether showers are available */
   showers: boolean;
   /** Whether towels are included with admission */
@@ -1123,6 +1144,10 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "washington",
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1309,6 +1334,10 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "sammamish",
+    },
     showers: true,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1350,6 +1379,10 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     floating: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "washington",
+    },
     showers: false,
     towelsIncluded: false,
     hours: "7AM - 7PM, 7 Days/Week",
