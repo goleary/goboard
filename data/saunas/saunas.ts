@@ -805,7 +805,8 @@ export interface Sauna {
     | "trybe"
     | "shopify"
     | "fresha"
-    | "envision";
+    | "envision"
+    | "arketa";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -5805,6 +5806,7 @@ export const saunas: Sauna[] = [
     address: "Gillson Beach, Wilmette, IL 60091",
     website: "https://www.campfiresauna.com/",
     bookingUrl: "https://app.arketa.co/campfiresaunaandsocial",
+    bookingPlatform: "arketa",
     googleMapsUrl: "https://maps.app.goo.gl/rubvLaSM1iPJnyK56",
     sessionPrice: 40,
     sessionLengthMinutes: 50,
