@@ -16,7 +16,7 @@ import {
 
   ShowerHead,
   Shirt,
-  Leaf,
+
   Flame,
   UtensilsCrossed,
 } from "lucide-react";
@@ -129,10 +129,9 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
           </p>
           <div className="flex flex-wrap gap-1.5">
             <AmenityBadge icon={Flame} label="Sauna" available={true} iconClassName="text-orange-500" />
-            <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge} iconClassName="text-sky-500" />
+            <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge && !sauna.naturalPlunge} iconClassName="text-sky-500" />
             <AmenityBadge emoji="♨️" label="Soaking Tub" available={sauna.soakingTub} />
             <SaunaWaterTemp sauna={sauna} />
-            <AmenityBadge icon={Leaf} label="Natural Plunge" available={sauna.naturalPlunge} iconClassName="text-green-600" />
             <AmenityBadge icon={Thermometer} label="Steam Room" available={sauna.steamRoom} />
             <AmenityBadge icon={ShowerHead} label="Showers" available={sauna.showers} />
             <AmenityBadge icon={Shirt} label="Towels" available={sauna.towelsIncluded} />

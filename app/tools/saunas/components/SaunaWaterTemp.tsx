@@ -1,14 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { type Sauna } from "@/data/saunas/saunas";
 import type { WaterTempResponse } from "@/app/api/saunas/water-temp/route";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
 import { Waves } from "lucide-react";
 
 function getWaterTempColor(tempF: number): string {
@@ -40,7 +36,11 @@ interface SaunaWaterTempProps {
 export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
   const [data, setData] = useState<WaterTempResponse | null>(null);
   const [open, setOpen] = useState(false);
-  const [hoverTimeout, setHoverTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const openTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const closeTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!sauna.waterTempProvider) return;
@@ -56,17 +56,59 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
       .catch(() => {});
   }, [sauna.slug, sauna.waterTempProvider]);
 
+  // Position the tooltip when it opens
+  useEffect(() => {
+    if (open && badgeRef.current) {
+      const rect = badgeRef.current.getBoundingClientRect();
+      setPos({
+        top: rect.bottom + 6,
+        left: rect.left + rect.width / 2,
+      });
+    }
+  }, [open]);
+
+  // Close on click outside (for mobile tap-to-open)
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      const target = e.target as Node;
+      if (
+        badgeRef.current?.contains(target) ||
+        tooltipRef.current?.contains(target)
+      )
+        return;
+      setOpen(false);
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, [open]);
+
   const handleMouseEnter = useCallback(() => {
-    const id = setTimeout(() => setOpen(true), 300);
-    setHoverTimeout(id);
+    const wasPendingClose = closeTimeout.current !== undefined;
+    clearTimeout(closeTimeout.current);
+    closeTimeout.current = undefined;
+    clearTimeout(openTimeout.current);
+    if (wasPendingClose) return;
+    openTimeout.current = setTimeout(() => {
+      setOpen(true);
+      openTimeout.current = undefined;
+    }, 300);
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    if (hoverTimeout) clearTimeout(hoverTimeout);
-    setOpen(false);
-  }, [hoverTimeout]);
+    clearTimeout(openTimeout.current);
+    openTimeout.current = undefined;
+    closeTimeout.current = setTimeout(() => {
+      setOpen(false);
+      closeTimeout.current = undefined;
+    }, 200);
+  }, []);
 
-  if (!sauna.waterfront) return null;
+  const handleTap = useCallback(() => {
+    setOpen((o) => !o);
+  }, []);
+
+  if (!sauna.naturalPlunge) return null;
 
   // No provider or still loading/errored — show plain Waterfront badge
   if (!sauna.waterTempProvider || !data) {
@@ -79,37 +121,51 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <>
       <div
+        ref={badgeRef}
+        className="inline-flex"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <PopoverTrigger asChild>
-          <Badge variant="secondary" className="gap-1 cursor-pointer">
-            <Waves className="h-3 w-3 text-blue-500" />
-            Waterfront
-            <span
-              className={`font-medium ${getWaterTempColor(data.waterTempF)}`}
-            >
-              {data.waterTempF.toFixed(1)}°F
-            </span>
-          </Badge>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-auto bg-foreground text-background border-0 px-3 py-1.5"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+        <Badge
+          variant="secondary"
+          className="gap-1 cursor-pointer"
+          onClick={handleTap}
         >
-          <a
-            href={data.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-background hover:underline text-sm"
+          <Waves className="h-3 w-3 text-blue-500" />
+          Waterfront ·
+          <span
+            className={`font-medium ${getWaterTempColor(data.waterTempF)}`}
           >
-            {data.source} · {formatRelativeTime(data.measuredAt)}
-          </a>
-        </PopoverContent>
+            {Math.round(data.waterTempF)}°F
+          </span>
+        </Badge>
       </div>
-    </Popover>
+      {open &&
+        createPortal(
+          <div
+            ref={tooltipRef}
+            className="fixed z-50 rounded-md bg-foreground px-3 py-1.5 shadow-md"
+            style={{
+              top: pos.top,
+              left: pos.left,
+              transform: "translateX(-50%)",
+            }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <a
+              href={data.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-background hover:underline text-sm whitespace-nowrap"
+            >
+              {data.waterTempF.toFixed(1)}°F · {data.source} · {formatRelativeTime(data.measuredAt)}
+            </a>
+          </div>,
+          document.body
+        )}
+    </>
   );
 }
