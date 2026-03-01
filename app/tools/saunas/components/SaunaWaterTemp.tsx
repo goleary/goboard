@@ -37,8 +37,8 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
   const [data, setData] = useState<WaterTempResponse | null>(null);
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
-  const openTimeout = useRef<ReturnType<typeof setTimeout>>();
-  const closeTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const openTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const closeTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const badgeRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
