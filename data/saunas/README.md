@@ -288,6 +288,72 @@ The response contains `name`, `price` (in cents), `length` (in hours), `timezone
 | `price` | Firestore manifest (step 3) | Price per session (convert from cents) |
 | `durationMinutes` | Firestore manifest (step 3) | Computed from `length` in hours × 60 |
 
+## Adding Boulevard Availability
+
+Some saunas use [Boulevard](https://www.joinblvd.com/) for bookings. Boulevard uses a GraphQL API with a cart-based flow.
+
+### Step 1: Find the business ID
+
+The business ID is in the booking widget URL:
+```
+https://www.joinblvd.com/b/<businessId>/widget
+```
+
+**Note:** Some businesses (e.g. Sauna House) use a white-label Boulevard setup with a custom domain (e.g. `book.saunahouse.com`). In these cases, the business ID is not publicly exposed and the standard Boulevard integration will not work without modification.
+
+### Step 2: Find the location ID
+
+1. Open the booking widget page and inspect the HTML source.
+2. Look for URLs containing `urn:blvd:Location:<locationId>`.
+3. If the business has multiple locations, each will have its own location UUID.
+
+### Step 3: Find service IDs
+
+1. Navigate through the booking flow (continue as guest if possible).
+2. On the service selection page, look for `urn:blvd:Service:<serviceId>` in the HTML.
+3. Note the service name, price, and duration from the page.
+4. **Only include facility access services** (e.g. "Bathhouse Visit", "Sauna Session"), not massage or membership services.
+
+### Step 4: Add the config to the sauna entry
+
+```ts
+{
+  slug: "soak-and-sage",
+  // ...other fields...
+  bookingUrl: "https://www.joinblvd.com/b/34303b6d-5682-4a50-b816-c4901c2b1072/widget",
+  bookingPlatform: "boulevard",
+  // ...other fields...
+  bookingProvider: {
+    type: "boulevard",
+    businessId: "34303b6d-5682-4a50-b816-c4901c2b1072",
+    locationId: "beadba55-20ae-431b-bd4f-e2057183727c",
+    timezone: "America/Los_Angeles",
+    services: [
+      {
+        serviceId: "s_d0b150ed-95de-42bf-adfe-87c79f98cef6",
+        name: "2 Hour Sauna Spa Pass",
+        price: 75,
+        durationMinutes: 120,
+      },
+    ],
+  },
+},
+```
+
+### Field reference
+
+| Field | Source | Description |
+|---|---|---|
+| `bookingPlatform` | — | Set to `"boulevard"` |
+| `bookingProvider.type` | — | Must be `"boulevard"` |
+| `bookingProvider.businessId` | booking URL (step 1) | UUID from the widget URL |
+| `bookingProvider.locationId` | HTML source (step 2) | UUID from `urn:blvd:Location:` |
+| `bookingProvider.timezone` | — | IANA timezone (e.g. `America/New_York`) |
+| `serviceId` | HTML source (step 3) | Service ID (with or without `urn:blvd:Service:` prefix) |
+| `name` | booking page | Service display name |
+| `price` | booking page | Price per session |
+| `durationMinutes` | booking page | Session duration |
+
 ## How it works
 
 The availability API (`/api/saunas/availability`) reads the `bookingProvider` config and calls the appropriate provider API to fetch available time slots. Results are cached for 5 minutes. The `BookingProviderConfig` type is a discriminated union, so new providers can be added by extending the union in `saunas.ts` and adding a corresponding case in the API route.
