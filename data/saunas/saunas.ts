@@ -962,7 +962,9 @@ export interface Sauna {
   /** Whether cold plunge is into a natural body of water (bay, lake, etc.) */
   naturalPlunge: boolean;
   /** Whether the sauna is a floating structure (on a lake, bay, etc.) */
-  floating?: boolean;
+  isFloating?: boolean;
+  /** Whether the sauna experience is primarily outdoors */
+  isOutside?: boolean;
   /** Whether the sauna is on tidal water (e.g. Puget Sound) */
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
@@ -1035,6 +1037,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
@@ -1198,6 +1201,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
@@ -1236,6 +1240,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447265",
     waterTempProvider: {
@@ -1277,6 +1282,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "washington",
@@ -1312,6 +1318,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Daily",
@@ -1338,6 +1345,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447659",
     waterTempProvider: {
@@ -1392,6 +1400,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
@@ -1443,6 +1452,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
@@ -1494,6 +1504,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "sammamish",
@@ -1548,7 +1559,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "washington",
@@ -1599,6 +1611,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: true,
     genderPolicy: "Co-ed",
@@ -1637,6 +1650,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
@@ -1690,6 +1704,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9445882",
     waterTempProvider: {
@@ -1826,7 +1841,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: false,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: true,
     towelsIncluded: true,
     genderPolicy: "Co-ed",
@@ -1862,6 +1878,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447427",
     waterTempProvider: {
@@ -1969,6 +1986,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: true,
     towelsIncluded: true,
     genderPolicy: "Co-ed",
@@ -2014,6 +2032,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
@@ -2117,6 +2136,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // On quarry
     naturalPlunge: true, // Freshwater quarry cold plunge
+    isOutside: true,
     showers: true,
     towelsIncluded: false, // Towels available to rent $4
     temperatureRangeF: { min: 175, max: 194 },
@@ -2161,6 +2181,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // On Lake Whatcom
     naturalPlunge: true, // Lake Whatcom
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Check website for session times (soft opening Feb 2026)",
@@ -2195,6 +2216,7 @@ export const saunas: Sauna[] = [
     soakingTub: true,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     hours: "Sun-Thu 10am-8pm, Fri-Sat 10am-10pm",
@@ -2559,7 +2581,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: true, // Outdoor cold showers
     towelsIncluded: true,
     hours: "Thu-Mon 9am-9pm, Closed Tue-Wed",
@@ -2591,6 +2614,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true, // Lake access at Caribou Lake
+    isOutside: true,
     showers: false,
     towelsIncluded: false, // Bring your own small towel
     hours: "Wed, Thu, Sat, plus by request",
@@ -2677,6 +2701,7 @@ export const saunas: Sauna[] = [
     soakingTub: false, // Coming in 2026 full opening
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor showers
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -3041,6 +3066,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // On Willamette River
     naturalPlunge: true, // River plunge
+    isOutside: true,
     showers: false,
     towelsIncluded: false, // Bring two towels
     hours: "Check website for session times",
@@ -3111,6 +3137,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor showers
     towelsIncluded: false,
     temperatureRangeF: { min: 185, max: 195 },
@@ -3169,6 +3196,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Warm soaking tub
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 165, max: 190 },
@@ -3209,6 +3237,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Hot tub
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor shower
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
@@ -3267,6 +3296,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Two hot soaking tubs with salt infusions
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false, // $5 towel and robe rental
     temperatureRangeF: { min: 170, max: 190 },
@@ -3332,6 +3362,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor hot/cold shower with soaps provided
     towelsIncluded: false,
     hours:
@@ -3379,7 +3410,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating on Columbia River
     naturalPlunge: true, // River plunge
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: true, // Freshwater showers (no soap for environmental reasons)
     towelsIncluded: false, // Bring two towels
     hours: "Social Fri-Sun 7am-7pm; Private available all week",
@@ -3464,7 +3496,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating on Richardson Bay
     naturalPlunge: true, // Bay plunge
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414863",
@@ -3561,6 +3594,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Point San Pablo waterfront
     naturalPlunge: true, // Bay plunge at beach
+    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414863",
@@ -3655,6 +3689,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Crane Cove Park on the Bay
     naturalPlunge: true, // Bay plunge
+    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414750",
@@ -3752,6 +3787,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Hot and warm pools
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Individual shower rooms
     towelsIncluded: true, // Robes and towels included
     hours: "Reservations recommended, walk-ins welcome",
@@ -3784,6 +3820,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Hot bath available
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor showers
     towelsIncluded: false,
     hours: "By appointment only; Community sessions Thu/Sun 6pm",
@@ -3853,6 +3890,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Hot soaking pool
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false, // Bring your own towel
     hours: "Day guest passes subject to availability, book within 3 days",
@@ -3987,6 +4025,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // On the Deschutes River
     naturalPlunge: true, // Deschutes River
+    isOutside: true,
     showers: true, // Rain and bucket showers
     towelsIncluded: false,
     hours: "Seasonal Oct-May (Riverside); Hanai Garden year-round",
@@ -4134,6 +4173,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     hours: "Check website for session times",
@@ -4203,6 +4243,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Transition tub
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor hot/cold shower
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4259,6 +4300,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanside at Jericho Beach
     naturalPlunge: true, // Ocean access
+    isOutside: true,
     showers: true, // Freshwater rinse showers
     towelsIncluded: false, // Bring two towels
     hours: "Seasonal winter pop-up, check schedule for session times",
@@ -4321,7 +4363,8 @@ export const saunas: Sauna[] = [
     soakingTub: true, // 2 hot mineral tubs
     waterfront: true, // Floating in Victoria's Inner Harbour
     naturalPlunge: false,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: true,
     towelsIncluded: true, // Plush robe and towels included
     servesFood: true, // Light food and beverage service in lounge
@@ -4412,6 +4455,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanfront at Sea Edge Beachside Hotel
     naturalPlunge: true, // Ocean access
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4497,6 +4541,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor shower
     towelsIncluded: false, // Bring your own
     temperatureRangeF: { min: 170, max: 200 },
@@ -4553,6 +4598,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Creekside location
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Hot shower
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4603,6 +4649,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Lakeside
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4657,6 +4704,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Beachfront at Cox Bay
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Cold shower for cold-water-therapy
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4704,7 +4752,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating in Clayoquot Sound
     naturalPlunge: true, // Pacific Ocean cold plunges
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: false,
     towelsIncluded: true,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4757,6 +4806,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Multiple hot pools
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: true, // Robe rental, towels, locker included
     temperatureRangeF: { min: 160, max: 200 },
@@ -4824,6 +4874,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Beside glacier-fed river
     naturalPlunge: true, // Glacier-fed river just 10m away
+    isOutside: true,
     showers: false, // Off-grid, river bathing only
     towelsIncluded: false, // Bring your own towel
     temperatureRangeF: { min: 170, max: 200 },
@@ -4869,6 +4920,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanside on the beach
     naturalPlunge: true, // Salish Sea cold plunge
+    isOutside: true,
     showers: true, // Outdoor cold shower
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 176 }, // Up to 80°C
@@ -5164,6 +5216,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Lakeside at Utah Lake State Park
     naturalPlunge: true, // Lake access
+    isOutside: true,
     showers: true, // Outdoor shower
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -5245,6 +5298,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -5297,6 +5351,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Rinse stations
     towelsIncluded: false, // Available to rent
     temperatureRangeF: { min: 170, max: 200 },
@@ -5447,6 +5502,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 150, max: 195 },
@@ -5598,6 +5654,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Wed-Fri 7am-7:30am, Sun 9am-9:30am (quiet time); other times vary",
@@ -5623,6 +5680,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Tue & Thu 4pm-9pm",
@@ -5677,6 +5735,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: true,
     hours: "Check booking calendar for session times",
@@ -5761,6 +5820,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor showers
     towelsIncluded: false,
     temperatureRangeF: { min: 190, max: 190 }, // Social sauna at 190°F
@@ -5836,6 +5896,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false, // Cold water bucket shower only
     towelsIncluded: false,
     capacity: 8,
@@ -5872,7 +5933,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: false,
     towelsIncluded: false,
     hours: "Thu-Sun sunrise to sunset, Oct 2-May 8",
@@ -5900,6 +5962,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447855",
     waterTempProvider: {
@@ -5977,6 +6040,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447905",
     waterTempProvider: {
@@ -6196,6 +6260,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Williamsburg waterfront
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     hours: "Feb 12 – Mar 1, 2026, daily 7am-10pm",
@@ -6255,6 +6320,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     capacity: 16,
@@ -6322,6 +6388,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: true,
     temperatureRangeF: { min: 160, max: 190 },
@@ -6366,6 +6433,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours:
@@ -6400,6 +6468,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // PS21 Pond
     naturalPlunge: true, // Cold plunge in natural pond
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Daily 10am-7pm (Jan 31 – Mar 1, 2026)",
@@ -6433,6 +6502,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 185 },
@@ -6490,6 +6560,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -6516,6 +6587,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     capacity: 10,
@@ -6595,6 +6667,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -6643,6 +6716,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -7040,6 +7114,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     capacity: 8,
@@ -7149,7 +7224,7 @@ export function buildSaunaSchemaDescription(sauna: Sauna): string {
 /** Build a concise amenity summary string for SEO descriptions. */
 export function describeSaunaAmenities(sauna: Sauna): string {
   const parts: string[] = [];
-  if (sauna.floating) parts.push("Floating sauna");
+  if (sauna.isFloating) parts.push("Floating sauna");
   else if (sauna.waterfront) parts.push("Waterfront location");
   if (sauna.naturalPlunge) parts.push("natural cold plunge");
   else if (sauna.coldPlunge) parts.push("cold plunge");
@@ -7162,7 +7237,7 @@ export function describeSaunaAmenities(sauna: Sauna): string {
 /** Build a dynamic SEO description for a location based on its saunas. */
 export function describeLocationAmenities(locationSaunas: Sauna[]): string {
   const total = locationSaunas.length;
-  const floating = locationSaunas.filter((s) => s.floating).length;
+  const floating = locationSaunas.filter((s) => s.isFloating).length;
   const waterfront = locationSaunas.filter((s) => s.waterfront).length;
   const coldPlunge = locationSaunas.filter((s) => s.coldPlunge).length;
   const naturalPlunge = locationSaunas.filter((s) => s.naturalPlunge).length;

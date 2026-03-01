@@ -14,14 +14,12 @@ import {
   Clock,
   Thermometer,
   Snowflake,
-
+  Waves,
   ShowerHead,
   Shirt,
-
+  Leaf,
   Flame,
   UtensilsCrossed,
-  Waves,
-  Leaf,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -189,6 +187,16 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
               <AmenityBadge icon={Flame} label="Sauna" available={true} iconClassName="text-orange-500" />
               <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge} iconClassName="text-sky-500" />
               <AmenityBadge emoji="♨️" label="Soaking Tub" available={sauna.soakingTub} />
+              <SaunaWaterTemp sauna={sauna} />
+              {(sauna.isFloating ?? false) && (
+                <Badge variant="secondary" className="gap-1">
+                  <svg className="h-3 w-3 text-blue-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path fill="currentColor" fillRule="evenodd" d="M12 4 L21 11 H19 V18 H5 V11 H3 Z M10 14 H14 V18 H10 Z" />
+                    <path d="M0 21c.65.5 1.3 1 2.7 1 2.7 0 2.7-2 5.4-2 2.8 0 2.6 2 5.4 2 2.7 0 2.7-2 5.4-2 2.7 0 2.7 2 5.1 2" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  Floating
+                </Badge>
+              )}
               <AmenityBadge icon={Waves} label="Waterfront" available={sauna.waterfront} iconClassName="text-blue-500" />
               <AmenityBadge icon={Leaf} label="Natural Plunge" available={sauna.naturalPlunge} iconClassName="text-green-600" />
               <AmenityBadge icon={Thermometer} label="Steam Room" available={sauna.steamRoom} />
