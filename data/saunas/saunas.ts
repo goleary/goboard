@@ -3147,6 +3147,11 @@ export const saunas: Sauna[] = [
     waterfront: true, // Floating on Richardson Bay
     naturalPlunge: true, // Bay plunge
     floating: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414863",
+      fallbackStationIds: ["9414750", "9414290"],
+    },
     showers: false, // No showers, must bring towels
     towelsIncluded: false, // Must bring 2 towels
     temperatureRangeF: { min: 180, max: 190 },
@@ -3232,6 +3237,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Point San Pablo waterfront
     naturalPlunge: true, // Bay plunge at beach
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414863",
+      fallbackStationIds: ["9414750", "9414290"],
+    },
     showers: true, // Communal cold rinse showers
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 180 },
@@ -3311,6 +3321,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Crane Cove Park on the Bay
     naturalPlunge: true, // Bay plunge
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414750",
+      fallbackStationIds: ["9414863", "9414290"],
+    },
     showers: true, // Cold rinse shower available
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
