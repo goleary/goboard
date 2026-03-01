@@ -5471,7 +5471,6 @@ export const saunas: Sauna[] = [
     address: "660 River Rd, Edgewater, NJ 07020",
     website: "https://sojospaclub.com/",
     bookingUrl: "https://shop.sojospaclub.com/reservation/admission",
-    // Booking platform is custom ("NavyZebra" / "Edge Reservations") — not a supported provider
     sessionPrice: 75,
     sessionLengthMinutes: null,
     steamRoom: false,
