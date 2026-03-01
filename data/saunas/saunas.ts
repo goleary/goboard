@@ -24,6 +24,7 @@ export type LocationSlug =
   | "boston"
   | "new-york"
   | "philadelphia"
+  | "north-carolina"
   | "asheville"
   | "charlotte"
   | "durham"
@@ -243,6 +244,15 @@ export const locations: Location[] = [
       "Philadelphia's sauna scene features wood-fired experiences along the Schuylkill River, with outdoor saunas and cold plunges in natural settings.",
     center: { lat: 40.055, lng: -75.258 },
     zoom: 12,
+  },
+  {
+    slug: "north-carolina",
+    name: "North Carolina",
+    state: "NC",
+    description:
+      "North Carolina's sauna scene features wood-fired Nordic experiences in the Blue Ridge Mountains, combining traditional heat with cold plunges and stunning mountain views.",
+    center: { lat: 36.2177, lng: -81.6835 },
+    zoom: 10,
   },
   {
     slug: "asheville",
@@ -611,6 +621,8 @@ export interface VagaroBookingProviderConfig {
   region: string;
   /** IANA timezone for availability display */
   timezone: string;
+  /** If true, uses the classes/events API instead of the appointments API */
+  isClassBased?: boolean;
   /** Services to fetch availability for */
   services: {
     serviceId: number;
@@ -937,6 +949,27 @@ export const saunas: Sauna[] = [
     website: "https://www.815refresh.com/",
     bookingUrl: "https://www.vagaro.com/815refresh/book-now",
     bookingPlatform: "vagaro",
+    bookingProvider: {
+      type: "vagaro",
+      businessSlug: "815refresh",
+      businessId: "404046",
+      region: "us02",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: 36320697,
+          name: "1 hr Sauna Session",
+          price: 35,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 36320768,
+          name: "2 hr Sauna Session",
+          price: 50,
+          durationMinutes: 120,
+        },
+      ],
+    },
     sessionPrice: 25,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -3416,6 +3449,28 @@ export const saunas: Sauna[] = [
     website: "https://snowpeakcampfield.com/ofuro/",
     bookingUrl: "https://www.vagaro.com/spcpyc3/classes",
     bookingPlatform: "vagaro",
+    bookingProvider: {
+      type: "vagaro",
+      businessSlug: "spcpyc3",
+      businessId: "375772",
+      region: "us05",
+      timezone: "America/Los_Angeles",
+      isClassBased: true,
+      services: [
+        {
+          serviceId: 13880,
+          name: "Ofuro Spa Day Guest Pass",
+          price: 35,
+          durationMinutes: 120,
+        },
+        {
+          serviceId: 68079,
+          name: "Ofuro Day Guest Adults Only",
+          price: 35,
+          durationMinutes: 120,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/XDiU6yWXPVXeaHf76",
     sessionPrice: 35, // Day guest pass; included for overnight guests
     sessionLengthMinutes: 120,
@@ -4974,7 +5029,7 @@ export const saunas: Sauna[] = [
     address: "4460 W 29th Ave, Denver, CO 80212",
     website: "https://redrocksauna.com/",
     bookingUrl: "https://redrocksauna.com/products/private-sauna-session",
-    bookingPlatform: "shopify",
+    bookingPlatform: "momence",
     googleMapsUrl: "https://maps.app.goo.gl/XxRcCbQeQnSjtUF87",
     sessionPrice: 50,
     sessionLengthMinutes: 60,
@@ -4999,7 +5054,14 @@ export const saunas: Sauna[] = [
     name: "Denver Sports Recovery",
     address: "2242 W 29th Ave, Denver, CO 80211",
     website: "https://www.denversportsrecovery.com/",
-    bookingPlatform: "fresha",
+    bookingPlatform: "mindbody",
+    bookingUrl: "https://www.denversportsrecovery.com/book-online",
+    bookingProvider: {
+      type: "mindbody",
+      siteId: 38008,
+      locationId: 1,
+      timezone: "America/Denver",
+    },
     googleMapsUrl: "https://maps.app.goo.gl/y5qPsqaR1anajCsGA",
     sessionPrice: 35,
     steamRoom: false,
@@ -5238,6 +5300,61 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  // ============================================================================
+  // NORTH CAROLINA
+  // ============================================================================
+  {
+    slug: "river-birch-nordic-sauna",
+    name: "River Birch Nordic Sauna",
+    address: "2543 Broadstone Rd, Banner Elk, NC 28604",
+    website: "https://www.riverbirchsauna.com/",
+    bookingUrl:
+      "https://book.peek.com/s/9c0bbf73-2460-47fa-86d4-504afae5c5a0/BLeN2",
+    bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "9c0bbf73-2460-47fa-86d4-504afae5c5a0",
+      programId: "BLeN2",
+      timezone: "America/New_York",
+      activities: [
+        {
+          activityId: "338641be-2e7b-490d-aa85-fbcd87edc3b0",
+          name: "60 Minute Private Sauna Experience",
+          price: 59,
+          durationMinutes: 60,
+          private: true,
+          seats: 8,
+        },
+        {
+          activityId: "e1f5861d-0e42-42be-ab36-b47d34aa240a",
+          name: "120 Minute Private Sauna Experience",
+          price: 99,
+          durationMinutes: 120,
+          private: true,
+          seats: 8,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/i4YLSog9AmRBxXJL6",
+    sessionPrice: 59,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false, // Cold water bucket shower only
+    towelsIncluded: false,
+    capacity: 8,
+    hours: "Mon/Wed/Thu/Sun 10am-8pm, Fri-Sat 10am-9:30pm",
+    genderPolicy: "Co-ed (private booking)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired Nordic sauna at The Mast Farm Inn in Valle Crucis, NC. Private sessions for up to 8 guests with outdoor cold plunge tubs and cold water bucket shower. Set in the Blue Ridge Mountains with scenic mountain views. 60-min sessions $59, 120-min sessions $99. Session packs available (6 for the price of 5).",
+    lat: 36.207028602161,
+    lng: -81.77167177687609,
+    updatedAt: "2026-02-28",
   },
   {
     slug: "glidden-point-oyster-farms",
@@ -6182,6 +6299,66 @@ export const saunas: Sauna[] = [
     lat: 30.3247522,
     lng: -97.7380251,
     updatedAt: "2026-02-28",
+  },
+  {
+    slug: "pnw-sauna-cda",
+    name: "PNW Sauna",
+    address: "Coeur d'Alene, ID 83814",
+    website: "https://pnwsaunacda.com/",
+    bookingUrl: "https://pnwsaunacda.com/book/",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/RunGGJBbC451sreh8",
+    sessionPrice: 70,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 8,
+    genderPolicy: "Private booking",
+    clothingPolicy: "Up to your group",
+    notes:
+      "Mobile wood-fired Finnish sauna delivered to your location in Coeur d'Alene, Hayden, and Post Falls. Includes setup, firewood, essential oils, and breakdown. Optional cold plunge tub add-on available ($65).",
+    lat: 47.69059478343702,
+    lng: -116.78791453211564,
+    updatedAt: "2026-02-28",
+    bookingProvider: {
+      type: "acuity",
+      owner: "9511b063",
+      timezone: "America/Los_Angeles",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 89218122,
+          acuityCalendarId: 12953190,
+          name: "Week-day Special",
+          price: 70,
+          durationMinutes: 75,
+          private: true,
+          seats: 8,
+        },
+        {
+          acuityAppointmentId: 85032314,
+          acuityCalendarId: 12953190,
+          name: "Local SaunaStream Rental",
+          price: 100,
+          durationMinutes: 60,
+          private: true,
+          seats: 8,
+        },
+        {
+          acuityAppointmentId: 85778890,
+          acuityCalendarId: 12953190,
+          name: "Full Day Sauna Rental",
+          price: 400,
+          durationMinutes: 1440,
+          private: true,
+          seats: 8,
+        },
+      ],
+    },
   },
 ];
 
