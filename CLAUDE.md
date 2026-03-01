@@ -7,7 +7,7 @@ When adding a new sauna listing to `data/saunas/saunas.ts`, every listing MUST i
 ### Required checklist for every new listing
 
 1. **Verify actual pricing** — navigate to the booking page and extract the real drop-in session price. Do not guess or use prices from review sites.
-2. **Get precise coordinates** — search Google Maps for the business and extract lat/lng from the URL.
+2. **Get precise coordinates and Google Maps link** — search Google Maps for the business, extract lat/lng from the URL, and copy the **share short link** (`maps.app.goo.gl/...`) for `googleMapsUrl`. Never fabricate or construct Google Maps URLs — always use the actual short link from the Share button.
 3. **Identify the booking platform** — check the booking page for:
    - `acuityscheduling.com` or `squarespacescheduling.com` → Acuity
    - Wix sites (check network tab for `_api/service-availability`) → Wix
