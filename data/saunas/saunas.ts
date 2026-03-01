@@ -5464,6 +5464,32 @@ export const saunas: Sauna[] = [
     lng: -73.96838781492237,
     updatedAt: "2026-02-18",
   },
+  // New Jersey
+  {
+    slug: "sojo-spa-club",
+    name: "SoJo Spa Club",
+    address: "660 River Rd, Edgewater, NJ 07020",
+    website: "https://sojospaclub.com/",
+    bookingUrl: "https://shop.sojospaclub.com/reservation/admission",
+    sessionPrice: 75,
+    sessionLengthMinutes: null,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: true,
+    waterfront: true,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    hours: "Mon-Sun 9am-9:30pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Reimagined Korean bathhouse spanning 140,000 sq ft on the Hudson River waterfront with NYC skyline views. Features outdoor dry sauna, Himalayan salt sauna, far-infrared sauna, and ganbanyoku heated stone beds. Ten heated pools and baths open year-round including infinity pool, hydrotherapy pool, volcanic sand bath, and silk bath. ESPA spa treatments, Korean body scrubs, yoga classes, and fitness center. Rooftop garden and cowork space. Dining with diverse menu. Complimentary robes, towels, and locker. Must be 18+. Reservations recommended.",
+    lat: 40.8218,
+    lng: -73.9748,
+    updatedAt: "2026-02-28",
+  },
   // Connecticut
   {
     slug: "hideout-social-club",
