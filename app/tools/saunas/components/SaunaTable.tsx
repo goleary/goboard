@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   Table,
@@ -14,6 +15,8 @@ import { Check, X, Waves, Leaf, Snowflake, Mail } from "lucide-react";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { type SlotInfo } from "./useAvailabilityOn";
 import { TimeSlotBadge } from "./TimeSlotBadge";
+
+const MAX_SLOTS_PER_GROUP = 10;
 
 interface SaunaTableProps {
   saunas: Sauna[];
@@ -33,6 +36,8 @@ function BooleanCell({ value }: { value: boolean }) {
 }
 
 function SlotBadges({ slots }: { slots: SlotInfo[] }) {
+  const [expandedTypes, setExpandedTypes] = useState<Set<string>>(new Set());
+
   if (slots.length === 0) return null;
 
   // Group by appointment type
@@ -45,23 +50,37 @@ function SlotBadges({ slots }: { slots: SlotInfo[] }) {
 
   return (
     <div className="mt-1.5 space-y-1">
-      {Array.from(byType.entries()).map(([typeName, typeSlots]) => (
-        <div key={typeName}>
-          {byType.size > 1 && (
-            <p className="text-[10px] text-muted-foreground mb-0.5">{typeName}</p>
-          )}
-          <div className="flex flex-wrap gap-1">
-            {typeSlots.map((slot) => (
-              <TimeSlotBadge
-                key={slot.time}
-                time={slot.time}
-                slotsAvailable={slot.slotsAvailable}
-                className="text-[10px] px-1.5 py-0 h-5 font-normal gap-1"
-              />
-            ))}
+      {Array.from(byType.entries()).map(([typeName, typeSlots]) => {
+        const isExpanded = expandedTypes.has(typeName);
+        const visibleSlots = isExpanded ? typeSlots : typeSlots.slice(0, MAX_SLOTS_PER_GROUP);
+        const hiddenCount = typeSlots.length - MAX_SLOTS_PER_GROUP;
+        return (
+          <div key={typeName}>
+            {byType.size > 1 && (
+              <p className="text-[10px] text-muted-foreground mb-0.5">{typeName}</p>
+            )}
+            <div className="flex flex-wrap gap-1">
+              {visibleSlots.map((slot) => (
+                <TimeSlotBadge
+                  key={slot.time}
+                  time={slot.time}
+                  slotsAvailable={slot.slotsAvailable}
+                  className="text-[10px] px-1.5 py-0 h-5 font-normal gap-1"
+                />
+              ))}
+              {!isExpanded && hiddenCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setExpandedTypes((prev) => new Set(prev).add(typeName))}
+                  className="text-[10px] text-muted-foreground hover:text-foreground transition-colors self-center"
+                >
+                  + {hiddenCount} more
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
