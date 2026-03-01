@@ -3232,7 +3232,7 @@ export const saunas: Sauna[] = [
     bookingUrl: "https://www.good-hot-booking.com/book",
     bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/ESCG9k97EtiJmrnp8",
-    sessionPrice: 130, // Saunas 1-3; Saunas 4-5 are $150
+    sessionPrice: 110, // Saunas 1-3; Saunas 4-5 are $130
     sessionLengthMinutes: 90,
     steamRoom: false,
     coldPlunge: true, // Beach access to SF Bay
@@ -3246,7 +3246,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Private rental",
     clothingPolicy: "Swimsuit in common areas, nude OK in saunas",
     notes:
-      "Bayside saunas on Point San Pablo with 5 private saunas for rent. Saunas 1-3: $130 (1-6 ppl), Saunas 4-5: $150 (1-8 ppl). Beach access for bay plunge (check tides). 18+ only. QTBIPOC reduced rate program available. 4.8 stars with 48 reviews. Water shoes required for beach.",
+      "Bayside saunas on Point San Pablo with 5 private saunas for rent. Saunas 1-3: $110 (1-6 ppl), Saunas 4-5: $130 (1-8 ppl). Beach access for bay plunge (check tides). 18+ only. QTBIPOC reduced rate program available. 4.8 stars with 48 reviews. Water shoes required for beach.",
     lat: 37.962097,
     lng: -122.4270183,
     updatedAt: "2026-01-06",
@@ -3260,30 +3260,40 @@ export const saunas: Sauna[] = [
           name: "Sauna 1 - Circle Skylight",
           price: 110,
           durationMinutes: 90,
+          private: true,
+          seats: 6,
         },
         {
           serviceId: "6efce4a0-2bef-4d77-a785-3c886331b1cf",
           name: "Sauna 2 - Picture Window",
           price: 110,
           durationMinutes: 90,
+          private: true,
+          seats: 6,
         },
         {
           serviceId: "8569f2c2-124a-42b8-9716-16e57bee4a07",
           name: "Sauna 3 - Step Skylight",
           price: 110,
           durationMinutes: 90,
+          private: true,
+          seats: 6,
         },
         {
           serviceId: "d2e1d240-c496-41ff-b3fd-0341afd121ae",
           name: "Sauna 4 - Big View",
           price: 130,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
         {
           serviceId: "14bcb950-57de-499b-9454-772efb429096",
           name: "Sauna 5 - Big Sky",
           price: 130,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
       ],
     },
