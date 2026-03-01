@@ -2482,7 +2482,7 @@ async function fetchSojoAvailability(
     const slots: AvailabilitySlot[] = [];
 
     for (const ts of dateslot.timeslots) {
-      if (ts.status !== "open" || ts.available <= 0) continue;
+      if (ts.status !== "open" || ts.available < 9) continue;
 
       const time24 = sojoTimeTo24h(ts.time);
       slots.push({
