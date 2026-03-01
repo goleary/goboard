@@ -18,6 +18,7 @@ import { TimeSlotBadge } from "./TimeSlotBadge";
 
 
 const DEFAULT_MAX_DAYS = 3;
+const MAX_SLOTS_PER_GROUP = 10;
 
 interface SaunaAvailabilityProps {
   sauna: Sauna;
@@ -138,6 +139,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   const [tideDataByDate, setTideDataByDate] = useState<Record<string, TideDataPoint[]>>({});
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [expandedSlotGroups, setExpandedSlotGroups] = useState<Set<string>>(new Set());
 
   const today = new Date();
 
@@ -417,7 +419,13 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
                     </div>
                   )}
                   <div className="flex flex-wrap gap-1.5">
-                    {slots.map((slot, i) => {
+                    {(() => {
+                      const groupKey = `${dateStr}-${appointmentType.appointmentTypeId}`;
+                      const isGroupExpanded = expandedSlotGroups.has(groupKey);
+                      const visibleSlots = isGroupExpanded ? slots : slots.slice(0, MAX_SLOTS_PER_GROUP);
+                      const hiddenCount = slots.length - MAX_SLOTS_PER_GROUP;
+                      return (<>
+                    {visibleSlots.map((slot, i) => {
                       const hourly = tideDataByDate[dateStr];
                       const tideLevel = hourly ? getTideLevelForSlot(slot.time, hourly) : null;
                       return (
@@ -449,6 +457,17 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
                         </TimeSlotBadge>
                       );
                     })}
+                    {!isGroupExpanded && hiddenCount > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setExpandedSlotGroups((prev) => new Set(prev).add(groupKey))}
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors self-center"
+                      >
+                        + {hiddenCount} more
+                      </button>
+                    )}
+                      </>);
+                    })()}
                   </div>
                 </div>
               ))}
