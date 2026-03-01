@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { type Sauna } from "@/data/saunas/saunas";
 import type { WaterTempResponse } from "@/app/api/saunas/water-temp/route";
 import { Badge } from "@/components/ui/badge";
 import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Waves } from "lucide-react";
 
 function getWaterTempColor(tempF: number): string {
@@ -40,6 +39,8 @@ interface SaunaWaterTempProps {
 
 export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
   const [data, setData] = useState<WaterTempResponse | null>(null);
+  const [open, setOpen] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!sauna.waterTempProvider) return;
@@ -55,6 +56,16 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
       .catch(() => {});
   }, [sauna.slug, sauna.waterTempProvider]);
 
+  const handleMouseEnter = useCallback(() => {
+    const id = setTimeout(() => setOpen(true), 300);
+    setHoverTimeout(id);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (hoverTimeout) clearTimeout(hoverTimeout);
+    setOpen(false);
+  }, [hoverTimeout]);
+
   if (!sauna.waterfront) return null;
 
   // No provider or still loading/errored — show plain Waterfront badge
@@ -68,10 +79,13 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
   }
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Badge variant="secondary" className="gap-1">
+    <Popover open={open} onOpenChange={setOpen}>
+      <div
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <PopoverTrigger asChild>
+          <Badge variant="secondary" className="gap-1 cursor-pointer">
             <Waves className="h-3 w-3 text-blue-500" />
             Waterfront
             <span
@@ -80,18 +94,22 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
               {data.waterTempF.toFixed(1)}°F
             </span>
           </Badge>
-        </TooltipTrigger>
-        <TooltipContent className="bg-foreground text-background border-0 px-3 py-1.5">
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-auto bg-foreground text-background border-0 px-3 py-1.5"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <a
             href={data.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-background hover:underline"
+            className="text-background hover:underline text-sm"
           >
             {data.source} · {formatRelativeTime(data.measuredAt)}
           </a>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+        </PopoverContent>
+      </div>
+    </Popover>
   );
 }
