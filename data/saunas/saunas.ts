@@ -5871,7 +5871,7 @@ export const saunas: Sauna[] = [
     coldPlunge: false,
     soakingTub: false,
     waterfront: true,
-    naturalPlunge: false,
+    naturalPlunge: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
