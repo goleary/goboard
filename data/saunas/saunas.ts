@@ -849,6 +849,40 @@ export type BookingProviderConfig =
   | ArketaBookingProviderConfig
   | SojoBookingProviderConfig;
 
+// --- Water Temperature Provider Types ---
+
+/**
+ * King County lake buoy data provider configuration.
+ * Uses the King County lake buoy API to fetch real-time water temperature.
+ * Supports: Lake Washington, Lake Sammamish
+ */
+export interface KingCountyBuoyWaterTempProviderConfig {
+  type: "king-county-buoy";
+  /** Lake name as it appears in the buoy API data (e.g., "washington", "sammamish") */
+  lakeName: string;
+}
+
+/**
+ * NOAA CO-OPS water temperature provider configuration.
+ * Uses the same NOAA Tides & Currents API used for tide predictions.
+ * Not all stations have water temp sensors; use the metadata API to verify.
+ */
+export interface NoaaWaterTempProviderConfig {
+  type: "noaa";
+  /** Primary NOAA CO-OPS station ID */
+  stationId: string;
+  /** Fallback station IDs to try if the primary station has no data */
+  fallbackStationIds?: string[];
+}
+
+/**
+ * Discriminated union of water temperature data providers.
+ * Add new provider interfaces here and union them in to support additional data sources.
+ */
+export type WaterTempProviderConfig =
+  | KingCountyBuoyWaterTempProviderConfig
+  | NoaaWaterTempProviderConfig;
+
 /**
  * Represents a sauna facility with its amenities and details.
  *
@@ -933,6 +967,8 @@ export interface Sauna {
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
   noaaTideStation?: string;
+  /** Water temperature data provider for live plunge temperature display */
+  waterTempProvider?: WaterTempProviderConfig;
   /** Whether showers are available */
   showers: boolean;
   /** Whether towels are included with admission */
@@ -1156,6 +1192,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1189,6 +1230,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447265",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1223,6 +1269,10 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "washington",
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1282,6 +1332,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447659",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1329,6 +1384,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 14,
@@ -1369,6 +1429,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 14,
@@ -1409,6 +1474,10 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "sammamish",
+    },
     showers: true,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1450,6 +1519,10 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     floating: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "washington",
+    },
     showers: false,
     towelsIncluded: false,
     hours: "7AM - 7PM, 7 Days/Week",
@@ -1530,6 +1603,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 15,
@@ -1572,6 +1650,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9445882",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1717,6 +1800,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447427",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1848,6 +1936,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9446484",
+      fallbackStationIds: ["9447130"],
+    },
     showers: false, // No public showers at Owen Beach
     towelsIncluded: false,
     temperatureRangeF: { min: 180, max: 180 }, // Average 180°F
@@ -3154,6 +3247,11 @@ export const saunas: Sauna[] = [
     waterfront: true, // Floating on Richardson Bay
     naturalPlunge: true, // Bay plunge
     floating: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414863",
+      fallbackStationIds: ["9414750", "9414290"],
+    },
     showers: false, // No showers, must bring towels
     towelsIncluded: false, // Must bring 2 towels
     temperatureRangeF: { min: 180, max: 190 },
@@ -3239,6 +3337,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Point San Pablo waterfront
     naturalPlunge: true, // Bay plunge at beach
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414863",
+      fallbackStationIds: ["9414750", "9414290"],
+    },
     showers: true, // Communal cold rinse showers
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 180 },
@@ -3328,6 +3431,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Crane Cove Park on the Bay
     naturalPlunge: true, // Bay plunge
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414750",
+      fallbackStationIds: ["9414863", "9414290"],
+    },
     showers: true, // Cold rinse shower available
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
@@ -5430,6 +5538,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447855",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Check website for schedule",
@@ -5496,6 +5609,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447905",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false, // Bring two towels
     temperatureRangeF: { min: 140, max: 180 },
