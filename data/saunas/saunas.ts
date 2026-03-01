@@ -712,6 +712,14 @@ export interface BoulevardBookingProviderConfig {
   }[];
 }
 
+export interface SojoBookingProviderConfig {
+  type: "sojo";
+  /** Base URL for the SoJo shop API (e.g. "https://shop.sojospaclub.com") */
+  baseUrl: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
 /**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
@@ -737,7 +745,8 @@ export type BookingProviderConfig =
   | ClinicSenseBookingProviderConfig
   | MangomintBookingProviderConfig
   | RollerBookingProviderConfig
-  | BoulevardBookingProviderConfig;
+  | BoulevardBookingProviderConfig
+  | SojoBookingProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -793,7 +802,8 @@ export interface Sauna {
     | "trybe"
     | "shopify"
     | "fresha"
-    | "envision";
+    | "envision"
+    | "sojo";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -5471,7 +5481,8 @@ export const saunas: Sauna[] = [
     address: "660 River Rd, Edgewater, NJ 07020",
     website: "https://sojospaclub.com/",
     bookingUrl: "https://shop.sojospaclub.com/reservation/admission",
-    sessionPrice: 75,
+    bookingPlatform: "sojo",
+    sessionPrice: 90,
     sessionLengthMinutes: null,
     steamRoom: false,
     coldPlunge: false,
@@ -5489,6 +5500,11 @@ export const saunas: Sauna[] = [
     lat: 40.8218,
     lng: -73.9748,
     updatedAt: "2026-02-28",
+    bookingProvider: {
+      type: "sojo",
+      baseUrl: "https://shop.sojospaclub.com",
+      timezone: "America/New_York",
+    },
   },
   // Connecticut
   {
