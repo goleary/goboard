@@ -529,6 +529,8 @@ export interface VagaroBookingProviderConfig {
   region: string;
   /** IANA timezone for availability display */
   timezone: string;
+  /** If true, uses the classes/events API instead of the appointments API */
+  isClassBased?: boolean;
   /** Services to fetch availability for */
   services: {
     serviceId: number;
@@ -855,6 +857,27 @@ export const saunas: Sauna[] = [
     website: "https://www.815refresh.com/",
     bookingUrl: "https://www.vagaro.com/815refresh/book-now",
     bookingPlatform: "vagaro",
+    bookingProvider: {
+      type: "vagaro",
+      businessSlug: "815refresh",
+      businessId: "404046",
+      region: "us02",
+      timezone: "America/Los_Angeles",
+      services: [
+        {
+          serviceId: 36320697,
+          name: "1 hr Sauna Session",
+          price: 35,
+          durationMinutes: 60,
+        },
+        {
+          serviceId: 36320768,
+          name: "2 hr Sauna Session",
+          price: 50,
+          durationMinutes: 120,
+        },
+      ],
+    },
     sessionPrice: 25,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -3253,6 +3276,28 @@ export const saunas: Sauna[] = [
     website: "https://snowpeakcampfield.com/ofuro/",
     bookingUrl: "https://www.vagaro.com/spcpyc3/classes",
     bookingPlatform: "vagaro",
+    bookingProvider: {
+      type: "vagaro",
+      businessSlug: "spcpyc3",
+      businessId: "375772",
+      region: "us05",
+      timezone: "America/Los_Angeles",
+      isClassBased: true,
+      services: [
+        {
+          serviceId: 13880,
+          name: "Ofuro Spa Day Guest Pass",
+          price: 35,
+          durationMinutes: 120,
+        },
+        {
+          serviceId: 68079,
+          name: "Ofuro Day Guest Adults Only",
+          price: 35,
+          durationMinutes: 120,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/XDiU6yWXPVXeaHf76",
     sessionPrice: 35, // Day guest pass; included for overnight guests
     sessionLengthMinutes: 120,
