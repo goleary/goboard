@@ -71,24 +71,25 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>
+          <Badge variant="secondary" className="gap-1">
+            <Waves className="h-3 w-3 text-blue-500" />
+            Waterfront
+            <span
+              className={`font-medium ${getWaterTempColor(data.waterTempF)}`}
+            >
+              {data.waterTempF.toFixed(1)}°F
+            </span>
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent className="bg-foreground text-background border-0 px-3 py-1.5">
           <a
             href={data.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
+            className="text-background hover:underline"
           >
-            <Badge variant="secondary" className="gap-1 cursor-pointer">
-              <Waves className="h-3 w-3 text-blue-500" />
-              Waterfront
-              <span
-                className={`font-medium ${getWaterTempColor(data.waterTempF)}`}
-              >
-                {data.waterTempF.toFixed(1)}°F
-              </span>
-            </Badge>
+            {data.source} · {formatRelativeTime(data.measuredAt)}
           </a>
-        </TooltipTrigger>
-        <TooltipContent className="bg-foreground text-background border-0">
-          {data.source} · {formatRelativeTime(data.measuredAt)}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
