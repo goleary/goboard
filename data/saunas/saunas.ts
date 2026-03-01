@@ -6379,7 +6379,7 @@ export const saunas: Sauna[] = [
         },
       ],
     },
-    googleMapsUrl: "https://maps.app.goo.gl/WM3deQsSkuAgYNub6",
+    googleMapsUrl: "https://maps.app.goo.gl/pyFoLEMwNzW2XJfL6",
     sessionPrice: 50,
     sessionLengthMinutes: 75,
     steamRoom: false,
