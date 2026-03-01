@@ -765,10 +765,25 @@ export interface KingCountyBuoyWaterTempProviderConfig {
 }
 
 /**
+ * NOAA CO-OPS water temperature provider configuration.
+ * Uses the same NOAA Tides & Currents API used for tide predictions.
+ * Not all stations have water temp sensors; use the metadata API to verify.
+ */
+export interface NoaaWaterTempProviderConfig {
+  type: "noaa";
+  /** Primary NOAA CO-OPS station ID */
+  stationId: string;
+  /** Fallback station IDs to try if the primary station has no data */
+  fallbackStationIds?: string[];
+}
+
+/**
  * Discriminated union of water temperature data providers.
  * Add new provider interfaces here and union them in to support additional data sources.
  */
-export type WaterTempProviderConfig = KingCountyBuoyWaterTempProviderConfig;
+export type WaterTempProviderConfig =
+  | KingCountyBuoyWaterTempProviderConfig
+  | NoaaWaterTempProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1077,6 +1092,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1110,6 +1130,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447265",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1207,6 +1232,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447659",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1254,6 +1284,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 14,
@@ -1294,6 +1329,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 14,
@@ -1463,6 +1503,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 15,
@@ -1505,6 +1550,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9445882",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1650,6 +1700,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447427",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1781,6 +1836,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9446484",
+      fallbackStationIds: ["9447130"],
+    },
     showers: false, // No public showers at Owen Beach
     towelsIncluded: false,
     temperatureRangeF: { min: 180, max: 180 }, // Average 180°F
@@ -5353,6 +5413,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447855",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Check website for schedule",
@@ -5419,6 +5484,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447905",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false, // Bring two towels
     temperatureRangeF: { min: 140, max: 180 },

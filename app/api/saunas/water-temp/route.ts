@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getSaunaBySlug } from "@/data/saunas/saunas";
 import type { WaterTempResponse } from "./providers/types";
 import { fetchKingCountyBuoyWaterTemp } from "./providers/king-county-buoy";
+import { fetchNoaaWaterTemp } from "./providers/noaa";
 
 export type { WaterTempResponse };
 
@@ -39,6 +40,9 @@ export async function GET(request: NextRequest) {
     switch (provider.type) {
       case "king-county-buoy":
         result = await fetchKingCountyBuoyWaterTemp(provider);
+        break;
+      case "noaa":
+        result = await fetchNoaaWaterTemp(provider);
         break;
       default:
         return Response.json(
