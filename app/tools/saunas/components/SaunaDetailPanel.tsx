@@ -67,6 +67,12 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
     setTideHighlightColor(null);
   }, [sauna.slug]);
 
+  // Reset tide highlight when the availability date changes
+  useEffect(() => {
+    setTideHighlightTime(null);
+    setTideHighlightColor(null);
+  }, [availabilityDate]);
+
   const handleHasAvailability = useCallback((v: boolean) => setHasAvailability(v), []);
   const handleFirstAvailableDate = useCallback((d: string | null) => setFirstAvailableDate(d), []);
   const handleLastAvailableDate = useCallback((d: string | null) => setLastAvailableDate(d), []);
