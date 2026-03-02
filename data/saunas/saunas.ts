@@ -3999,6 +3999,12 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanside at Jericho Beach
     naturalPlunge: true, // Ocean access
+    waterTempProvider: {
+      type: "cioos-erddap",
+      stationId: "46304", // Entrance to English Bay
+      fallbackStationIds: ["46146", "46131"], // Halibut Bank, Sentry Shoal
+    },
+    waterTempUnit: "C",
     showers: true, // Freshwater rinse showers
     towelsIncluded: false, // Bring two towels
     hours: "Seasonal winter pop-up, check schedule for session times",
