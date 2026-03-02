@@ -1069,16 +1069,20 @@ export const saunas: Sauna[] = [
           name: "1 hr Sauna Session",
           price: 35,
           durationMinutes: 60,
+          private: true,
+          seats: 4,
         },
         {
           serviceId: 36320768,
           name: "2 hr Sauna Session",
           price: 50,
           durationMinutes: 120,
+          private: true,
+          seats: 4,
         },
       ],
     },
-    sessionPrice: 25,
+    sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
     coldPlunge: true,
@@ -6178,8 +6182,12 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-02-18",
     images: [
       {
-        url: "/saunas/driftwood-sauna-co/hero.JPG",
+        url: "/saunas/driftwood-sauna-co/hero.jpg",
         alt: "Driftwood Sauna Co interior",
+      },
+      {
+        url: "/saunas/driftwood-sauna-co/waterfront.jpg",
+        alt: "Beach view from Driftwood Sauna Co window",
       },
     ],
     bookingProvider: {
