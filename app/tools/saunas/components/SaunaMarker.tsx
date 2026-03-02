@@ -53,7 +53,7 @@ export function SaunaMarker({
         sauna.coldPlunge,
         sauna.naturalPlunge,
         sauna.soakingTub,
-        sauna.floating ?? false,
+        sauna.isFloating ?? false,
         sauna.markerIconOverride,
       ),
     [
@@ -62,7 +62,7 @@ export function SaunaMarker({
       sauna.coldPlunge,
       sauna.naturalPlunge,
       sauna.soakingTub,
-      sauna.floating,
+      sauna.isFloating,
       sauna.markerIconOverride,
     ],
   );

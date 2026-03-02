@@ -138,6 +138,14 @@ function CompactSaunaList({
                   {sauna.soakingTub && (
                     <span title="Soaking Tub">♨️</span>
                   )}
+                  {sauna.isFloating && (
+                    <span title="Floating Sauna" className="flex items-center text-blue-400">
+                      <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path fill="currentColor" fillRule="evenodd" d="M12 4 L21 11 H19 V18 H5 V11 H3 Z M10 14 H14 V18 H10 Z" />
+                        <path d="M0 21c.65.5 1.3 1 2.7 1 2.7 0 2.7-2 5.4-2 2.8 0 2.6 2 5.4 2 2.7 0 2.7-2 5.4-2 2.7 0 2.7 2 5.1 2" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                  )}
                 </div>
               </div>
               {sauna.sessionPrice > 0 && (
