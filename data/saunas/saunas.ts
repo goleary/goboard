@@ -6138,8 +6138,12 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-02-18",
     images: [
       {
-        url: "/saunas/driftwood-sauna-co/hero.JPG",
+        url: "/saunas/driftwood-sauna-co/hero.jpg",
         alt: "Driftwood Sauna Co interior",
+      },
+      {
+        url: "/saunas/driftwood-sauna-co/waterfront.jpg",
+        alt: "Beach view from Driftwood Sauna Co window",
       },
     ],
     bookingProvider: {
