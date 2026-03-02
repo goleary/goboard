@@ -19,6 +19,8 @@ import {
   Shirt,
   Leaf,
   Flame,
+  FlameKindling,
+  Zap,
   UtensilsCrossed,
   ChevronLeft,
   ChevronRight,
@@ -184,7 +186,7 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
               Amenities
             </p>
             <div className="flex flex-wrap gap-1.5">
-              <AmenityBadge icon={Flame} label="Sauna" available={true} iconClassName="text-orange-500" />
+              <AmenityBadge icon={sauna.heaterType === "wood" ? FlameKindling : sauna.heaterType === "electric" ? Zap : Flame} label="Sauna" available={true} iconClassName="text-orange-500" />
               <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge && !sauna.waterTempProvider} iconClassName="text-sky-500" />
               <AmenityBadge emoji="♨️" label="Soaking Tub" available={sauna.soakingTub} />
               <SaunaWaterTemp sauna={sauna} />
