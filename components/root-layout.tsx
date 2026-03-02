@@ -45,6 +45,11 @@ export default async function RootLayout({
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
+              <Link href="/tools/saunas">
+                Sauna Map
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link href="/tools/current-map">
                 PNW Current Map
               </Link>
@@ -57,11 +62,6 @@ export default async function RootLayout({
             <DropdownMenuItem asChild>
               <Link href="/tools/marriage-tax-calculator">
                 Marriage Tax Calculator
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/tools/saunas">
-                Sauna Map
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>

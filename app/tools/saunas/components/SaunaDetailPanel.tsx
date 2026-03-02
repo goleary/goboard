@@ -7,18 +7,21 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SaunaAvailability } from "./SaunaAvailability";
 import { SaunaTides } from "./SaunaTides";
+import { SaunaWaterTemp } from "./SaunaWaterTemp";
 import {
   ExternalLink,
   MapPin,
   Clock,
   Thermometer,
   Snowflake,
-  Waves,
+
   ShowerHead,
   Shirt,
-  Leaf,
+
   Flame,
   UtensilsCrossed,
+  Waves,
+  Leaf,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -71,6 +74,12 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
     setTideHighlightColor(null);
     setImageIndex(0);
   }, [sauna.slug]);
+
+  // Reset tide highlight when the availability date changes
+  useEffect(() => {
+    setTideHighlightTime(null);
+    setTideHighlightColor(null);
+  }, [availabilityDate]);
 
   const handleHasAvailability = useCallback((v: boolean) => setHasAvailability(v), []);
   const handleFirstAvailableDate = useCallback((d: string | null) => setFirstAvailableDate(d), []);
@@ -150,6 +159,7 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
               <span>{sauna.address}</span>
             </p>
           )}
+
         </div>
 
         <div className="px-4 pb-4 space-y-4">

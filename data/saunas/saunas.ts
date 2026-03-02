@@ -24,7 +24,15 @@ export type LocationSlug =
   | "boston"
   | "new-york"
   | "philadelphia"
-  | "north-carolina";
+  | "north-carolina"
+  | "asheville"
+  | "charlotte"
+  | "durham"
+  | "raleigh"
+  | "greenville"
+  | "knoxville"
+  | "bonita-springs"
+  | "austin";
 
 /**
  * Location metadata for display and routing
@@ -245,6 +253,78 @@ export const locations: Location[] = [
       "North Carolina's sauna scene features wood-fired Nordic experiences in the Blue Ridge Mountains, combining traditional heat with cold plunges and stunning mountain views.",
     center: { lat: 36.2177, lng: -81.6835 },
     zoom: 10,
+  },
+  {
+    slug: "asheville",
+    name: "Asheville",
+    state: "NC",
+    description:
+      "Asheville's sauna scene centers on modern Nordic bathhouses in the South Slope, offering traditional Finnish saunas, cold plunges, and contrast therapy.",
+    center: { lat: 35.5866, lng: -82.5534 },
+    zoom: 13,
+  },
+  {
+    slug: "charlotte",
+    name: "Charlotte",
+    state: "NC",
+    description:
+      "Charlotte's growing sauna culture features Nordic-inspired bathhouses with traditional saunas, cold plunges, and integrative wellness experiences.",
+    center: { lat: 35.2297, lng: -80.8656 },
+    zoom: 12,
+  },
+  {
+    slug: "durham",
+    name: "Durham",
+    state: "NC",
+    description:
+      "Durham's sauna scene brings Nordic contrast therapy to historic downtown buildings, with traditional saunas and cold plunges in revitalized spaces.",
+    center: { lat: 36.004, lng: -78.8996 },
+    zoom: 13,
+  },
+  {
+    slug: "raleigh",
+    name: "Raleigh",
+    state: "NC",
+    description:
+      "Raleigh's sauna scene features modern Nordic spa experiences with traditional saunas, cold plunges, and massage therapy.",
+    center: { lat: 35.7762, lng: -78.6482 },
+    zoom: 12,
+  },
+  {
+    slug: "greenville",
+    name: "Greenville",
+    state: "SC",
+    description:
+      "Greenville's sauna culture features Nordic-inspired bathhouses with traditional Finnish saunas, cold plunges, salt rooms, and private infrared suites.",
+    center: { lat: 34.8547, lng: -82.4093 },
+    zoom: 13,
+  },
+  {
+    slug: "knoxville",
+    name: "Knoxville",
+    state: "TN",
+    description:
+      "Knoxville's sauna scene brings Nordic bathhouse culture to North Knoxville, with traditional saunas and cold plunges in a revitalizing neighborhood.",
+    center: { lat: 35.9757, lng: -83.9248 },
+    zoom: 13,
+  },
+  {
+    slug: "bonita-springs",
+    name: "Bonita Springs",
+    state: "FL",
+    description:
+      "Bonita Springs' sauna scene features Nordic-inspired contrast therapy in Southwest Florida, bringing traditional saunas and cold plunges to the Gulf Coast.",
+    center: { lat: 26.3346, lng: -81.7786 },
+    zoom: 13,
+  },
+  {
+    slug: "austin",
+    name: "Austin",
+    state: "TX",
+    description:
+      "Austin's sauna scene features Nordic-inspired bathhouses with traditional saunas, cold plunges, and integrative wellness in the heart of Texas.",
+    center: { lat: 30.3248, lng: -97.738 },
+    zoom: 12,
   },
 ];
 
@@ -724,6 +804,22 @@ export interface BoulevardBookingProviderConfig {
   }[];
 }
 
+export interface ArketaBookingProviderConfig {
+  type: "arketa";
+  /** Widget name from the Arketa booking URL (e.g. "campfiresaunaandsocial") */
+  widgetName: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
+export interface SojoBookingProviderConfig {
+  type: "sojo";
+  /** Base URL for the SoJo shop API (e.g. "https://shop.sojospaclub.com") */
+  baseUrl: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+}
+
 /**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
@@ -749,7 +845,43 @@ export type BookingProviderConfig =
   | ClinicSenseBookingProviderConfig
   | MangomintBookingProviderConfig
   | RollerBookingProviderConfig
-  | BoulevardBookingProviderConfig;
+  | BoulevardBookingProviderConfig
+  | ArketaBookingProviderConfig
+  | SojoBookingProviderConfig;
+
+// --- Water Temperature Provider Types ---
+
+/**
+ * King County lake buoy data provider configuration.
+ * Uses the King County lake buoy API to fetch real-time water temperature.
+ * Supports: Lake Washington, Lake Sammamish
+ */
+export interface KingCountyBuoyWaterTempProviderConfig {
+  type: "king-county-buoy";
+  /** Lake name as it appears in the buoy API data (e.g., "washington", "sammamish") */
+  lakeName: string;
+}
+
+/**
+ * NOAA CO-OPS water temperature provider configuration.
+ * Uses the same NOAA Tides & Currents API used for tide predictions.
+ * Not all stations have water temp sensors; use the metadata API to verify.
+ */
+export interface NoaaWaterTempProviderConfig {
+  type: "noaa";
+  /** Primary NOAA CO-OPS station ID */
+  stationId: string;
+  /** Fallback station IDs to try if the primary station has no data */
+  fallbackStationIds?: string[];
+}
+
+/**
+ * Discriminated union of water temperature data providers.
+ * Add new provider interfaces here and union them in to support additional data sources.
+ */
+export type WaterTempProviderConfig =
+  | KingCountyBuoyWaterTempProviderConfig
+  | NoaaWaterTempProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -805,7 +937,9 @@ export interface Sauna {
     | "trybe"
     | "shopify"
     | "fresha"
-    | "envision";
+    | "envision"
+    | "arketa"
+    | "sojo";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -833,6 +967,8 @@ export interface Sauna {
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
   noaaTideStation?: string;
+  /** Water temperature data provider for live plunge temperature display */
+  waterTempProvider?: WaterTempProviderConfig;
   /** Whether showers are available */
   showers: boolean;
   /** Whether towels are included with admission */
@@ -1064,6 +1200,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1097,6 +1238,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447265",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1131,6 +1277,10 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "washington",
+    },
     showers: true,
     towelsIncluded: false,
     hours: "Daily",
@@ -1190,6 +1340,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447659",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1237,6 +1392,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 14,
@@ -1283,6 +1443,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 14,
@@ -1329,6 +1494,10 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "sammamish",
+    },
     showers: true,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1380,6 +1549,10 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     floating: true,
+    waterTempProvider: {
+      type: "king-county-buoy",
+      lakeName: "washington",
+    },
     showers: false,
     towelsIncluded: false,
     hours: "7AM - 7PM, 7 Days/Week",
@@ -1466,6 +1639,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     capacity: 15,
@@ -1514,6 +1692,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9445882",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1681,6 +1864,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447427",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -1828,6 +2016,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447130",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9446484",
+      fallbackStationIds: ["9447130"],
+    },
     showers: false, // No public showers at Owen Beach
     towelsIncluded: false,
     temperatureRangeF: { min: 180, max: 180 }, // Average 180°F
@@ -3272,6 +3465,11 @@ export const saunas: Sauna[] = [
     waterfront: true, // Floating on Richardson Bay
     naturalPlunge: true, // Bay plunge
     floating: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414863",
+      fallbackStationIds: ["9414750", "9414290"],
+    },
     showers: false, // No showers, must bring towels
     towelsIncluded: false, // Must bring 2 towels
     temperatureRangeF: { min: 180, max: 190 },
@@ -3356,13 +3554,18 @@ export const saunas: Sauna[] = [
     bookingUrl: "https://www.good-hot-booking.com/book",
     bookingPlatform: "wix",
     googleMapsUrl: "https://maps.app.goo.gl/ESCG9k97EtiJmrnp8",
-    sessionPrice: 130, // Saunas 1-3; Saunas 4-5 are $150
+    sessionPrice: 110, // Saunas 1-3; Saunas 4-5 are $130
     sessionLengthMinutes: 90,
     steamRoom: false,
     coldPlunge: true, // Beach access to SF Bay
     soakingTub: false,
     waterfront: true, // Point San Pablo waterfront
     naturalPlunge: true, // Bay plunge at beach
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414863",
+      fallbackStationIds: ["9414750", "9414290"],
+    },
     showers: true, // Communal cold rinse showers
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 180 },
@@ -3370,7 +3573,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Private rental",
     clothingPolicy: "Swimsuit in common areas, nude OK in saunas",
     notes:
-      "Bayside saunas on Point San Pablo with 5 private saunas for rent. Saunas 1-3: $130 (1-6 ppl), Saunas 4-5: $150 (1-8 ppl). Beach access for bay plunge (check tides). 18+ only. QTBIPOC reduced rate program available. 4.8 stars with 48 reviews. Water shoes required for beach.",
+      "Bayside saunas on Point San Pablo with 5 private saunas for rent. Saunas 1-3: $110 (1-6 ppl), Saunas 4-5: $130 (1-8 ppl). Beach access for bay plunge (check tides). 18+ only. QTBIPOC reduced rate program available. 4.8 stars with 48 reviews. Water shoes required for beach.",
     lat: 37.962097,
     lng: -122.4270183,
     updatedAt: "2026-01-06",
@@ -3384,30 +3587,40 @@ export const saunas: Sauna[] = [
           name: "Sauna 1 - Circle Skylight",
           price: 110,
           durationMinutes: 90,
+          private: true,
+          seats: 6,
         },
         {
           serviceId: "6efce4a0-2bef-4d77-a785-3c886331b1cf",
           name: "Sauna 2 - Picture Window",
           price: 110,
           durationMinutes: 90,
+          private: true,
+          seats: 6,
         },
         {
           serviceId: "8569f2c2-124a-42b8-9716-16e57bee4a07",
           name: "Sauna 3 - Step Skylight",
           price: 110,
           durationMinutes: 90,
+          private: true,
+          seats: 6,
         },
         {
           serviceId: "d2e1d240-c496-41ff-b3fd-0341afd121ae",
           name: "Sauna 4 - Big View",
           price: 130,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
         {
           serviceId: "14bcb950-57de-499b-9454-772efb429096",
           name: "Sauna 5 - Big Sky",
           price: 130,
           durationMinutes: 90,
+          private: true,
+          seats: 8,
         },
       ],
     },
@@ -3442,6 +3655,11 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Crane Cove Park on the Bay
     naturalPlunge: true, // Bay plunge
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9414750",
+      fallbackStationIds: ["9414863", "9414290"],
+    },
     showers: true, // Cold rinse shower available
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
@@ -5684,6 +5902,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447855",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Check website for schedule",
@@ -5756,6 +5979,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     tidal: true,
     noaaTideStation: "9447905",
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9447130",
+      fallbackStationIds: ["9446484"],
+    },
     showers: false,
     towelsIncluded: false, // Bring two towels
     temperatureRangeF: { min: 140, max: 180 },
@@ -5978,6 +6206,39 @@ export const saunas: Sauna[] = [
     lat: 40.71348874983753,
     lng: -73.96838781492237,
     updatedAt: "2026-02-18",
+  },
+  // New Jersey
+  {
+    slug: "sojo-spa-club",
+    name: "SoJo Spa Club",
+    address: "660 River Rd, Edgewater, NJ 07020",
+    website: "https://sojospaclub.com/",
+    bookingUrl: "https://shop.sojospaclub.com/reservation/admission",
+    bookingPlatform: "sojo",
+    googleMapsUrl: "https://maps.app.goo.gl/XU2bkRWjJVYUjbmeA",
+    sessionPrice: 90,
+    sessionLengthMinutes: null,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: true,
+    waterfront: true,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    hours: "Mon-Sun 9am-9:30pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Reimagined Korean bathhouse spanning 140,000 sq ft on the Hudson River waterfront with NYC skyline views. Features outdoor dry sauna, Himalayan salt sauna, far-infrared sauna, and ganbanyoku heated stone beds. Ten heated pools and baths open year-round including infinity pool, hydrotherapy pool, volcanic sand bath, and silk bath. ESPA spa treatments, Korean body scrubs, yoga classes, and fitness center. Rooftop garden and cowork space. Dining with diverse menu. Complimentary robes, towels, and locker. Must be 18+. Reservations recommended.",
+    lat: 40.8218,
+    lng: -73.9748,
+    updatedAt: "2026-02-28",
+    bookingProvider: {
+      type: "sojo",
+      baseUrl: "https://shop.sojospaclub.com",
+      timezone: "America/New_York",
+    },
   },
   // Connecticut
   {
@@ -6209,6 +6470,36 @@ export const saunas: Sauna[] = [
     lng: -88.0417,
     updatedAt: "2026-02-11",
   },
+  {
+    slug: "campfire-sauna-and-social",
+    name: "Campfire Sauna and Social",
+    address: "Gillson Beach, Wilmette, IL 60091",
+    website: "https://www.campfiresauna.com/",
+    bookingUrl: "https://app.arketa.co/campfiresaunaandsocial",
+    bookingPlatform: "arketa",
+    bookingProvider: {
+      type: "arketa",
+      widgetName: "campfiresaunaandsocial",
+      timezone: "America/Chicago",
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/rubvLaSM1iPJnyK56",
+    sessionPrice: 40,
+    sessionLengthMinutes: 50,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired lakeside sauna at Gillson Beach on Lake Michigan. 50-minute sessions with multiple heat/cool cycles. First-time visitors get 50% off with code NEWBIE. 5-pack ($175) and 10-pack ($300) available. Private after-hours rentals from $350/hr.",
+    lat: 42.079996994323395,
+    lng: -87.68712500358089,
+    updatedAt: "2026-02-28",
+  },
   // Indianapolis
   {
     slug: "sol-drift-sauna",
@@ -6427,6 +6718,312 @@ export const saunas: Sauna[] = [
       name: "Thermal Springs",
       durationMinutes: 150,
     },
+  },
+  {
+    slug: "sauna-house-asheville",
+    name: "Sauna House Asheville",
+    address: "230 Short Coxe Ave, Asheville, NC 28801",
+    website: "https://www.saunahouse.com/pages/asheville",
+    bookingUrl: "https://book.saunahouse.com/",
+    bookingPlatform: "boulevard",
+    bookingProvider: {
+      type: "boulevard",
+      businessId: "3e11c9a9-ca75-44a6-9884-775bf36501df",
+      locationId: "a69becec-f257-42d3-b442-d5c0047ba611",
+      timezone: "America/New_York",
+      services: [
+        {
+          serviceId: "s_1bcfd1a5-621d-4e69-a88a-26c39ce55a92",
+          name: "Bathhouse Visit (2 hours)",
+          price: 45,
+          durationMinutes: 120,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/YJGqNz1p4bARv9oo7",
+    sessionPrice: 45,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Sauna House's flagship Nordic bathhouse in downtown Asheville's South Slope. 2-hour bathing circuit includes traditional cedar and aspen wood saunas, cold plunge pools (45–48°F), cold showers, and Galanter & Jones heated lounge furniture. Private sauna and cold plunge rooms available. Café serves organic tea and sparkling beverages. Massage therapy on-site. Drop-in $45, memberships available.",
+    lat: 35.5866483,
+    lng: -82.5533711,
+    updatedAt: "2026-02-28",
+  },
+  {
+    slug: "sauna-house-charlotte",
+    name: "Sauna House Charlotte",
+    address: "1500 West Morehead Street Unit H, Charlotte, NC 28208",
+    website: "https://www.saunahouse.com/pages/charlotte",
+    bookingUrl: "https://book.saunahouse.com/",
+    bookingPlatform: "boulevard",
+    bookingProvider: {
+      type: "boulevard",
+      businessId: "3e11c9a9-ca75-44a6-9884-775bf36501df",
+      locationId: "7bff33f7-f477-4363-8c0c-420f7d53e621",
+      timezone: "America/New_York",
+      services: [
+        {
+          serviceId: "s_1bcfd1a5-621d-4e69-a88a-26c39ce55a92",
+          name: "Bathhouse Visit (2 hours)",
+          price: 50,
+          durationMinutes: 120,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/8gKnpvU6m3bf5Q4u6",
+    sessionPrice: 50,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Nordic bathhouse in a revitalized 1934 Wesley Heights pharmacy building. 2-hour bathing circuit with traditional saunas, cold plunges, and heated lounge furniture. Private sauna rooms and infrared suites available. Café and massage therapy on-site. Drop-in $50, memberships available.",
+    lat: 35.2297275,
+    lng: -80.8655545,
+    updatedAt: "2026-02-28",
+  },
+  {
+    slug: "sauna-house-durham",
+    name: "Sauna House Durham",
+    address: "326 West Geer Street, Durham, NC 27701",
+    website: "https://www.saunahouse.com/pages/durham",
+    bookingUrl: "https://book.saunahouse.com/",
+    bookingPlatform: "boulevard",
+    bookingProvider: {
+      type: "boulevard",
+      businessId: "3e11c9a9-ca75-44a6-9884-775bf36501df",
+      locationId: "9e42f187-9393-4f1f-aeae-b6d37248e62c",
+      timezone: "America/New_York",
+      services: [
+        {
+          serviceId: "s_1bcfd1a5-621d-4e69-a88a-26c39ce55a92",
+          name: "Bathhouse Visit (2 hours)",
+          price: 50,
+          durationMinutes: 120,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/4DuCcMp8GWmbDkTq9",
+    sessionPrice: 50,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Nordic bathhouse in a historic 1949 building in downtown Durham's Foster & West Geer Streets Historic District. 2-hour bathing circuit with traditional saunas, cold plunges, and heated lounge furniture. Private rooms and infrared suites available. Café and massage therapy on-site. Drop-in $50, memberships available.",
+    lat: 36.004012,
+    lng: -78.8995918,
+    updatedAt: "2026-02-28",
+  },
+  {
+    slug: "sauna-house-raleigh",
+    name: "Sauna House Raleigh",
+    address: "324 Dupont Circle, Raleigh, NC 27603",
+    website: "https://www.saunahouse.com/pages/raleigh",
+    bookingUrl: "https://book.saunahouse.com/",
+    bookingPlatform: "boulevard",
+    googleMapsUrl: "https://maps.app.goo.gl/P3e9Lf2mH23YfgYU8",
+    sessionPrice: 50,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Nordic bathhouse in Raleigh. Currently selling founding memberships (4/8/15 visits per month). 2-hour bathing circuit with traditional saunas, cold plunges, and heated lounge furniture. Private rooms and infrared suites available. Café and massage therapy on-site.",
+    lat: 35.7762469,
+    lng: -78.648247,
+    updatedAt: "2026-02-28",
+  },
+  {
+    slug: "sauna-house-greenville",
+    name: "Sauna House Greenville",
+    address: "711 W Washington St, Greenville, SC 29601",
+    website: "https://www.saunahouse.com/pages/greenville",
+    bookingUrl: "https://book.saunahouse.com/",
+    bookingPlatform: "boulevard",
+    bookingProvider: {
+      type: "boulevard",
+      businessId: "3e11c9a9-ca75-44a6-9884-775bf36501df",
+      locationId: "74e3b5d2-5b6a-4787-b636-5a2f24524839",
+      timezone: "America/New_York",
+      services: [
+        {
+          serviceId: "s_1bcfd1a5-621d-4e69-a88a-26c39ce55a92",
+          name: "Bathhouse Visit (2 hours)",
+          price: 45,
+          durationMinutes: 120,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/Uooc3uCfYvXke3QG9",
+    sessionPrice: 45,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Nordic bathhouse in the historic Borden Ice Cream Factory near Unity Park. 2-hour bathing circuit with traditional Finnish saunas, in-ground cold plunges, silent salt room, and Galanter & Jones heated lounge furniture. Private sauna cabanas, infrared suites, and party room for up to 10 guests. Café on-site. Drop-in $45, memberships available.",
+    lat: 34.8546809,
+    lng: -82.4093353,
+    updatedAt: "2026-02-28",
+  },
+  {
+    slug: "sauna-house-knoxville",
+    name: "Sauna House Knoxville",
+    address: "126 Jennings Ave, Knoxville, TN 37917",
+    website: "https://www.saunahouse.com/pages/knoxville",
+    bookingUrl: "https://book.saunahouse.com/",
+    bookingPlatform: "boulevard",
+    bookingProvider: {
+      type: "boulevard",
+      businessId: "3e11c9a9-ca75-44a6-9884-775bf36501df",
+      locationId: "ec2b3501-09a5-44f4-8606-e24becb3c52e",
+      timezone: "America/New_York",
+      services: [
+        {
+          serviceId: "s_1bcfd1a5-621d-4e69-a88a-26c39ce55a92",
+          name: "Bathhouse Visit (2 hours)",
+          price: 40,
+          durationMinutes: 120,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/qLyZQj4KnDPGtov86",
+    sessionPrice: 40,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Nordic bathhouse in North Knoxville's revitalizing Emory Place district. 2-hour bathing circuit with traditional saunas, cold plunges, and heated lounge furniture. Private rooms and infrared suites available. Café and massage therapy on-site. Drop-in $40, memberships available.",
+    lat: 35.9757102,
+    lng: -83.9248187,
+    updatedAt: "2026-02-28",
+  },
+  {
+    slug: "sauna-house-bonita-springs",
+    name: "Sauna House Bonita Springs",
+    address: "10610 Founders Way, Bonita Springs, FL 34135",
+    website: "https://www.saunahouse.com/pages/bonita-springs",
+    bookingUrl: "https://book.saunahouse.com/",
+    bookingPlatform: "boulevard",
+    bookingProvider: {
+      type: "boulevard",
+      businessId: "3e11c9a9-ca75-44a6-9884-775bf36501df",
+      locationId: "5f098b34-9be6-4d1d-8585-202720830fd1",
+      timezone: "America/New_York",
+      services: [
+        {
+          serviceId: "s_1bcfd1a5-621d-4e69-a88a-26c39ce55a92",
+          name: "Bathhouse Visit (2 hours)",
+          price: 50,
+          durationMinutes: 120,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/WM3deQsSkuAgYNub6",
+    sessionPrice: 50,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Nordic bathhouse in Southwest Florida. 2-hour bathing circuit with traditional saunas, cold plunges, and heated lounge furniture. Private rooms and infrared suites available. Café and massage therapy on-site. Drop-in $50, memberships available.",
+    lat: 26.334566,
+    lng: -81.7785592,
+    updatedAt: "2026-02-28",
+  },
+  {
+    slug: "sauna-house-austin",
+    name: "Sauna House Austin North Loop",
+    address: "1507 West North Loop Boulevard, Austin, TX 78756",
+    website: "https://www.saunahouse.com/pages/austin",
+    bookingUrl: "https://book.saunahouse.com/",
+    bookingPlatform: "boulevard",
+    bookingProvider: {
+      type: "boulevard",
+      businessId: "3e11c9a9-ca75-44a6-9884-775bf36501df",
+      locationId: "7e82ad38-63b7-4a3a-a121-455d1ca96c73",
+      timezone: "America/Chicago",
+      services: [
+        {
+          serviceId: "s_e74848dd-a622-4682-bf2d-f60a1a005b70",
+          name: "Sauna Garden 1 Hour 15 Min Visit",
+          price: 50,
+          durationMinutes: 75,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/pyFoLEMwNzW2XJfL6",
+    sessionPrice: 50,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Sauna House's Austin location on North Loop. 75-minute Sauna Garden visit with traditional saunas, cold plunges, and heated lounge furniture. Café on-site. Drop-in $50, memberships available.",
+    lat: 30.3247522,
+    lng: -97.7380251,
+    updatedAt: "2026-02-28",
   },
   {
     slug: "pnw-sauna-cda",
