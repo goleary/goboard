@@ -983,6 +983,8 @@ export interface Sauna {
   noaaTideStation?: string;
   /** Water temperature data provider for live plunge temperature display */
   waterTempProvider?: WaterTempProviderConfig;
+  /** Display unit for water temperature (defaults to "F") */
+  waterTempUnit?: "F" | "C";
   /** Whether showers are available */
   showers: boolean;
   /** Whether towels are included with admission */
@@ -4143,6 +4145,7 @@ export const saunas: Sauna[] = [
       stationId: "46131", // Sentry Shoal
       fallbackStationIds: ["46146", "46303"], // Halibut Bank, Southern Georgia Strait
     },
+    waterTempUnit: "C",
     showers: true,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4428,6 +4431,7 @@ export const saunas: Sauna[] = [
       stationId: "46206", // La Perouse Bank
       fallbackStationIds: ["46131", "46146"], // Sentry Shoal, Halibut Bank
     },
+    waterTempUnit: "C",
     floating: true,
     showers: false,
     towelsIncluded: true,
