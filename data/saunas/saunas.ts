@@ -2246,6 +2246,10 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-02-18",
     images: [
       {
+        url: "/saunas/hot-spot-bloedel-donovan/primary.jpg",
+        alt: "Hot Spot Sauna Club barrel sauna on Lake Whatcom at Bloedel Donovan Park",
+      },
+      {
         url: "/saunas/hot-spot-bloedel-donovan/interior.jpg",
         alt: "Hot Spot barrel sauna interior with heater and wooden benches",
       },
