@@ -154,7 +154,7 @@ export function SaunaFilters({
             onCheckedChange={(v) => updateFilter("woodFiredOnly", v === true)}
           />
           <Label htmlFor="woodFired" className="text-sm cursor-pointer">
-            Wood-Fired
+            Wood Stove
           </Label>
         </div>
         <div className="flex items-center gap-2">

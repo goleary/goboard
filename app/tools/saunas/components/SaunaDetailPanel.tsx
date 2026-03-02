@@ -40,16 +40,18 @@ function AmenityBadge({
   available,
   iconClassName,
   emoji,
+  title,
 }: {
   icon?: React.ElementType;
   label: string;
   available: boolean;
   iconClassName?: string;
   emoji?: string;
+  title?: string;
 }) {
   if (!available) return null;
   return (
-    <Badge variant="secondary" className="gap-1">
+    <Badge variant="secondary" className="gap-1" title={title}>
       {emoji ? <span>{emoji}</span> : Icon && <Icon className={`h-3 w-3 ${iconClassName || ""}`} />}
       {label}
     </Badge>
@@ -186,7 +188,7 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
               Amenities
             </p>
             <div className="flex flex-wrap gap-1.5">
-              <AmenityBadge icon={sauna.heaterType === "wood" ? FlameKindling : sauna.heaterType === "electric" ? Zap : Flame} label="Sauna" available={true} iconClassName="text-orange-500" />
+              <AmenityBadge icon={sauna.heaterType === "wood" ? FlameKindling : sauna.heaterType === "electric" ? Zap : Flame} label="Sauna" available={true} iconClassName="text-orange-500" title={sauna.heaterType === "wood" ? "Wood stove" : sauna.heaterType === "electric" ? "Electric stove" : sauna.heaterType === "gas" ? "Gas stove" : undefined} />
               <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge && !sauna.waterTempProvider} iconClassName="text-sky-500" />
               <AmenityBadge emoji="♨️" label="Soaking Tub" available={sauna.soakingTub} />
               <SaunaWaterTemp sauna={sauna} />

@@ -121,12 +121,12 @@ function CompactSaunaList({
                     <span>{sauna.sessionLengthMinutes} min</span>
                   )}
                   {sauna.heaterType === "wood" && (
-                    <span title="Wood-Fired" className="flex items-center">
+                    <span title="Wood stove" className="flex items-center">
                       <FlameKindling className="h-3 w-3 text-orange-500" />
                     </span>
                   )}
                   {sauna.heaterType === "electric" && (
-                    <span title="Electric" className="flex items-center">
+                    <span title="Electric stove" className="flex items-center">
                       <Zap className="h-3 w-3 text-orange-500" />
                     </span>
                   )}
