@@ -16,7 +16,7 @@ import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { type SlotInfo } from "./useAvailabilityOn";
 import { TimeSlotBadge } from "./TimeSlotBadge";
 
-const MAX_SLOTS_PER_GROUP = 10;
+const MAX_SLOTS_PER_GROUP = 8;
 
 interface SaunaTableProps {
   saunas: Sauna[];
@@ -71,7 +71,7 @@ function SlotBadges({ slots }: { slots: SlotInfo[] }) {
               {!isExpanded && hiddenCount > 0 && (
                 <button
                   type="button"
-                  onClick={() => setExpandedTypes((prev) => new Set(prev).add(typeName))}
+                  onClick={(e) => { e.stopPropagation(); setExpandedTypes((prev) => new Set(prev).add(typeName)); }}
                   className="text-[10px] text-muted-foreground hover:text-foreground transition-colors self-center"
                 >
                   + {hiddenCount} more
