@@ -30,6 +30,7 @@ function formatDateButton(dateStr: string): string {
 }
 
 export interface FilterState {
+  woodFiredOnly: boolean;
   coldPlungeOnly: boolean;
   soakingTubOnly: boolean;
   waterfrontOnly: boolean;
@@ -47,6 +48,7 @@ interface SaunaFiltersProps {
 
 export function getDefaultFilters(): FilterState {
   return {
+    woodFiredOnly: false,
     coldPlungeOnly: false,
     soakingTubOnly: false,
     waterfrontOnly: false,
@@ -63,6 +65,9 @@ export function filterAndSortSaunas(
   let filtered = [...saunas];
 
   // Boolean filters
+  if (filters.woodFiredOnly) {
+    filtered = filtered.filter((s) => s.heaterType === "wood");
+  }
   if (filters.coldPlungeOnly) {
     filtered = filtered.filter((s) => s.coldPlunge);
   }
@@ -142,6 +147,16 @@ export function SaunaFilters({
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="woodFired"
+            checked={filters.woodFiredOnly}
+            onCheckedChange={(v) => updateFilter("woodFiredOnly", v === true)}
+          />
+          <Label htmlFor="woodFired" className="text-sm cursor-pointer">
+            Wood-Fired
+          </Label>
+        </div>
         <div className="flex items-center gap-2">
           <Checkbox
             id="coldPlunge"
