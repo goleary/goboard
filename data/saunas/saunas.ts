@@ -32,7 +32,8 @@ export type LocationSlug =
   | "greenville"
   | "knoxville"
   | "bonita-springs"
-  | "austin";
+  | "austin"
+  | "san-diego";
 
 /**
  * Location metadata for display and routing
@@ -325,6 +326,15 @@ export const locations: Location[] = [
       "Austin's sauna scene features Nordic-inspired bathhouses with traditional saunas, cold plunges, and integrative wellness in the heart of Texas.",
     center: { lat: 30.3248, lng: -97.738 },
     zoom: 12,
+  },
+  {
+    slug: "san-diego",
+    name: "San Diego",
+    state: "CA",
+    description:
+      "San Diego's sauna scene brings wood-fired mobile saunas to the beach, pairing traditional heat with cold plunges in the Pacific Ocean.",
+    center: { lat: 33.085, lng: -117.312 },
+    zoom: 11,
   },
 ];
 
@@ -821,6 +831,26 @@ export interface SojoBookingProviderConfig {
 }
 
 /**
+ * Sweatpals event platform booking provider configuration.
+ * Uses the public events search API to find upcoming event instances.
+ */
+export interface SweatpalsBookingProviderConfig {
+  type: "sweatpals";
+  /** Sweatpals host/creator user ID (UUID) */
+  creatorId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Events to show availability for */
+  events: {
+    /** Base event ID (UUID) — identifies the recurring series */
+    baseEventId: string;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -847,7 +877,8 @@ export type BookingProviderConfig =
   | RollerBookingProviderConfig
   | BoulevardBookingProviderConfig
   | ArketaBookingProviderConfig
-  | SojoBookingProviderConfig;
+  | SojoBookingProviderConfig
+  | SweatpalsBookingProviderConfig;
 
 // --- Water Temperature Provider Types ---
 
@@ -939,7 +970,8 @@ export interface Sauna {
     | "fresha"
     | "envision"
     | "arketa"
-    | "sojo";
+    | "sojo"
+    | "sweatpals";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -4102,6 +4134,50 @@ export const saunas: Sauna[] = [
         alt: "Breitenbush Hot Springs pool",
       },
     ],
+  },
+  // ============================================================================
+  // SAN DIEGO, CA
+  // ============================================================================
+  {
+    slug: "beach-sauna-express",
+    name: "Beach Sauna Express",
+    address: "South Ponto Beach, 9969 Carlsbad Blvd, Encinitas, CA 92024",
+    website: "https://www.beachsaunaexpress.com",
+    bookingUrl:
+      "https://sweatpals.com/event/beach-sauna-sunday-detox-awaken-your-energy-naturally-a2",
+    googleMapsUrl: "https://maps.app.goo.gl/Xus1SLWsgmWsf8qDA",
+    sessionPrice: 70,
+    sessionLengthMinutes: 360,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Sundays 3pm-9pm (check Sweatpals for schedule)",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired mobile sauna on South Ponto Beach. Includes unlimited sauna access, Venik Platza rituals with eucalyptus branches, cold plunge in the Pacific Ocean, and tea service. Recurring weekly Sunday sessions booked through Sweatpals.",
+    lat: 33.085,
+    lng: -117.3117,
+    updatedAt: "2026-03-01",
+    bookingPlatform: "sweatpals",
+    bookingProvider: {
+      type: "sweatpals",
+      creatorId: "749852f8-7b60-48e6-a05f-70a049fc1a96",
+      timezone: "America/Los_Angeles",
+      events: [
+        {
+          baseEventId: "74f4bdb6-f860-42bc-a1f9-319a4192ca28",
+          name: "Beach Sauna Sunday",
+          price: 70,
+          durationMinutes: 360,
+        },
+      ],
+    },
   },
   // ============================================================================
   // VANCOUVER, BC, CANADA
