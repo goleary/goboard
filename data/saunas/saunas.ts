@@ -639,6 +639,10 @@ export interface VagaroBookingProviderConfig {
     name: string;
     price: number;
     durationMinutes: number;
+    /** Whether this is a private session */
+    private?: boolean;
+    /** Number of seats for private sessions */
+    seats?: number;
   }[];
 }
 
@@ -2271,6 +2275,10 @@ export const saunas: Sauna[] = [
     lng: -122.41836214427805,
     updatedAt: "2026-02-18",
     images: [
+      {
+        url: "/saunas/hot-spot-bloedel-donovan/primary.jpg",
+        alt: "Hot Spot Sauna Club barrel sauna on Lake Whatcom at Bloedel Donovan Park",
+      },
       {
         url: "/saunas/hot-spot-bloedel-donovan/interior.jpg",
         alt: "Hot Spot barrel sauna interior with heater and wooden benches",
