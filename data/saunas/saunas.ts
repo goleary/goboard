@@ -1029,6 +1029,8 @@ export interface Sauna {
   towelsIncluded: boolean;
   /** Whether the facility serves food (restaurant, cafe, or kitchen on-site) */
   servesFood?: boolean;
+  /** Type of heater used in the sauna */
+  heaterType?: "electric" | "wood" | "gas";
   /** Dry sauna temperature range in Fahrenheit */
   temperatureRangeF?: { min: number; max: number };
   /** Maximum guest capacity */
@@ -1057,6 +1059,7 @@ export const saunas: Sauna[] = [
   {
     slug: "815-refresh",
     name: "815 Refresh",
+    heaterType: "electric",
     address: "815 NE 72nd St, Seattle, WA 98115",
     website: "https://www.815refresh.com/",
     bookingUrl: "https://www.vagaro.com/815refresh/book-now",
@@ -1116,6 +1119,7 @@ export const saunas: Sauna[] = [
   {
     slug: "banya-5",
     name: "Banya 5",
+    heaterType: "electric",
     address: "217 9th Ave N, Seattle, WA 98109",
     website: "https://www.banya5.com/",
     bookingUrl:
@@ -1239,6 +1243,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bywater-alki",
     name: "Bywater Alki",
+    heaterType: "wood",
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
@@ -1279,6 +1284,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bywater-golden-gardens",
     name: "Bywater Golden Gardens",
+    heaterType: "wood",
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
@@ -1319,6 +1325,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bywater-leschi",
     name: "Bywater Leschi",
+    heaterType: "wood",
     address: "201 Lakeside Ave S, Seattle, WA 98122",
     website: "https://bywatersauna.com/",
     bookingUrl:
@@ -1357,6 +1364,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bywater-old-stove",
     name: "Bywater x Old Stove Brewing",
+    heaterType: "wood",
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
@@ -1389,6 +1397,7 @@ export const saunas: Sauna[] = [
   {
     slug: "evergreen-sauna",
     name: "Evergreen Sauna",
+    heaterType: "wood",
     address: "Mukilteo, WA",
     website: "https://evergreensauna.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule.php?owner=33228599",
@@ -1445,6 +1454,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-moon-alki",
     name: "Sauna Moon Alki Beach",
+    heaterType: "wood",
     address: "2701 Alki Ave SW, Seattle, WA 98116",
     website: "https://www.hotrockssaunaclub.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule/fab325db",
@@ -1497,6 +1507,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-moon-seacrest-park",
     name: "Sauna Moon Seacrest Park",
+    heaterType: "wood",
     address: "1660 Harbor Ave SW, Seattle, WA 98126",
     website: "https://www.hotrockssaunaclub.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule/fab325db",
@@ -1549,6 +1560,7 @@ export const saunas: Sauna[] = [
   {
     slug: "vihta",
     name: "Vihta",
+    heaterType: "wood",
     address: "3560 W Lake Sammamish Pkwy SE, Bellevue, WA 98008",
     website: "https://www.vihtasauna.co/",
     bookingUrl: "https://www.vihtasauna.co/bookings",
@@ -1602,6 +1614,7 @@ export const saunas: Sauna[] = [
   {
     slug: "von-sauna",
     name: "Von Sauna",
+    heaterType: "wood",
     markerIconOverride: "floating-sauna",
     address: "1200 Carillon Point, Kirkland, WA 98033",
     website: "https://www.vonsauna.co/",
@@ -1657,6 +1670,7 @@ export const saunas: Sauna[] = [
   {
     slug: "tuli-lodge",
     name: "Tuli Lodge",
+    heaterType: "wood",
     website: "https://www.tuli-lodge.com/",
     bookingUrl: "https://www.tuli-lodge.com/book",
     bookingPlatform: "mariana-tek",
@@ -1694,6 +1708,7 @@ export const saunas: Sauna[] = [
   {
     slug: "good-day-sauna",
     name: "Good Day Sauna",
+    heaterType: "wood",
     address: "Lincoln Park, West Seattle",
     website: "http://www.gooddaysauna.com/",
     bookingUrl:
@@ -1749,6 +1764,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fire-and-floe",
     name: "Fire+Floe",
+    heaterType: "wood",
     website: "https://fireandfloe.com/",
     bookingUrl:
       "https://minside.periode.no/bookinggroups/7Rnv6gI4q8eaTuU5uSQA/xJeWObTOZgRyDoyknG7C",
@@ -1801,6 +1817,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fyre-sauna",
     name: "Fyre Sauna",
+    heaterType: "wood",
     address: "14123 Redmond - Woodinville Rd NE, Redmond, WA 98052",
     website: "https://www.fyresauna.com/",
     bookingUrl: "https://www.fyresauna.com/book-online",
@@ -1840,6 +1857,7 @@ export const saunas: Sauna[] = [
   {
     slug: "soak-and-sage",
     name: "Soak & Sage",
+    heaterType: "electric",
     address: "1135 Lake Washington Blvd N Suite 60, Renton, WA 98057",
     website: "http://www.soakandsagespa.com/",
     bookingUrl:
@@ -1886,6 +1904,7 @@ export const saunas: Sauna[] = [
   {
     slug: "seattle-sauna",
     name: "Seattle Sauna",
+    heaterType: "wood",
     markerIconOverride: "floating-sauna",
     website: "https://seattlesauna.com/",
     bookingUrl: "https://bookeo.com/seattlesauna",
@@ -1922,6 +1941,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-n-soak",
     name: "Sauna n Soak",
+    heaterType: "wood",
     address: "Brackett's Landing North, Edmonds, WA",
     website: "https://www.saunansoak.com/services",
     bookingUrl: "https://www.saunansoak.com/appointments",
@@ -1996,6 +2016,7 @@ export const saunas: Sauna[] = [
   {
     slug: "wildhaus",
     name: "Wildhaus",
+    heaterType: "wood",
     markerIconOverride: "ship",
     website: "https://thewildhaus.com/",
     bookingUrl: "https://wild-haus.checkfront.com/reserve/",
@@ -2066,6 +2087,7 @@ export const saunas: Sauna[] = [
   {
     slug: "svette-sauna",
     name: "Svette Sauna",
+    heaterType: "wood",
     address: "5605 Owen Beach Rd, Tacoma, WA 98407",
     website: "https://svettetacoma.com/",
     bookingUrl:
@@ -2111,6 +2133,7 @@ export const saunas: Sauna[] = [
   {
     slug: "tacoma-banya",
     name: "Tacoma Banya",
+    heaterType: "electric",
     address: "4704 S Oakes St #6400, Tacoma, WA 98409",
     website: "https://www.tacomabanya.com/",
     googleMapsUrl: "https://maps.app.goo.gl/TacomaBanya123",
@@ -2136,6 +2159,7 @@ export const saunas: Sauna[] = [
   {
     slug: "everett-banya",
     name: "Banya",
+    heaterType: "wood",
     address: "2814 Colby Ave, Everett, WA 98201",
     website: "https://banyabyfgm.com/",
     bookingUrl: "https://banyabyfgm.com/book-now/",
@@ -2174,6 +2198,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hot-spot-lookout-arts-quarry",
     name: "Hot Spot Sauna Club (Lookout Arts Quarry)",
+    heaterType: "wood",
     address: "246 Old Hwy 99 N, Bellingham, WA 98229",
     website: "https://www.hotspotbellingham.com/",
     bookingUrl: "https://www.hotspotbellingham.com/bookings",
@@ -2219,6 +2244,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hot-spot-bloedel-donovan",
     name: "Hot Spot Sauna Club (Bloedel Donovan)",
+    heaterType: "wood",
     address: "Bloedel Donovan Park, Bellingham, WA",
     website: "https://www.hotspotbellingham.com/",
     bookingUrl: "https://www.hotspotbellingham.com/bookings",
@@ -2266,6 +2292,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sacred-rain-healing-center",
     name: "Sacred Rain Healing Center",
+    heaterType: "electric",
     address: "1100 NW 50th St, Seattle, WA 98107",
     website: "https://www.sacredrainhealing.com/",
     googleMapsUrl: "https://maps.app.goo.gl/4TvEQXXCKVcUyXa57",
@@ -2291,6 +2318,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hothouse-spa",
     name: "Hothouse Spa & Sauna",
+    heaterType: "electric",
     address: "1019 E Pike St, Seattle, WA 98122",
     website: "https://www.hothousespa.com/",
     bookingUrl: "https://www.hothousespa.com/schedule",
@@ -2389,6 +2417,7 @@ export const saunas: Sauna[] = [
   {
     slug: "yuan-spa-bellevue",
     name: "Yuan Spa (Bellevue)",
+    heaterType: "electric",
     address: "1032 106th Ave NE, Suite 125, Bellevue, WA 98004",
     website: "https://yuanspa.com/",
     bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
@@ -2436,6 +2465,7 @@ export const saunas: Sauna[] = [
   {
     slug: "rainier-beach-pool",
     name: "Rainier Beach Pool",
+    heaterType: "electric",
     address: "8825 Rainier Ave S, Seattle, WA 98118",
     website: "https://www.seattle.gov/parks/pools/rainier-beach-pool",
     googleMapsUrl: "https://goo.gl/maps/wpkhqygV5s52",
@@ -2459,6 +2489,7 @@ export const saunas: Sauna[] = [
   {
     slug: "medgar-evers-pool",
     name: "Medgar Evers Pool",
+    heaterType: "electric",
     address: "500 23rd Ave, Seattle, WA 98122",
     website: "https://www.seattle.gov/parks/pools/medgar-evers-pool",
     googleMapsUrl: "https://goo.gl/maps/XawzGx6FqND2",
@@ -2482,6 +2513,7 @@ export const saunas: Sauna[] = [
   {
     slug: "queen-anne-pool",
     name: "Queen Anne Pool",
+    heaterType: "electric",
     address: "1920 1st Ave W, Seattle, WA 98119",
     website: "https://www.seattle.gov/parks/pools/queen-anne-pool",
     googleMapsUrl: "https://goo.gl/maps/D3SbUfpwi6G2",
@@ -2505,6 +2537,7 @@ export const saunas: Sauna[] = [
   {
     slug: "southwest-pool",
     name: "Southwest Pool",
+    heaterType: "electric",
     address: "2801 SW Thistle St, Seattle, WA 98126",
     website: "https://www.seattle.gov/parks/pools/southwest-pool",
     googleMapsUrl: "https://goo.gl/maps/6qwS4wcf6N22",
@@ -2528,6 +2561,7 @@ export const saunas: Sauna[] = [
   {
     slug: "evans-pool",
     name: "Evans Pool (Green Lake)",
+    heaterType: "electric",
     address: "7201 East Green Lake Dr N, Seattle, WA 98115",
     website: "https://www.seattle.gov/parks/pools/evans-pool",
     googleMapsUrl: "https://goo.gl/maps/31vSzVJRTSt",
@@ -2551,6 +2585,7 @@ export const saunas: Sauna[] = [
   {
     slug: "yuan-spa-totem-lake",
     name: "Yuan Spa (Totem Lake)",
+    heaterType: "electric",
     address: "11900 NE Village Plaza #176, Kirkland, WA 98034",
     website: "https://yuanspa.com/",
     bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
@@ -2598,6 +2633,7 @@ export const saunas: Sauna[] = [
   {
     slug: "q-spa-lynnwood",
     name: "Q Sauna & Spa",
+    heaterType: "electric",
     address: "17420 Highway 99, Lynnwood, WA 98037",
     website: "https://qspalynnwood.com/",
     bookingUrl: "https://qspalynnwood.com/online-booking/",
@@ -2623,6 +2659,7 @@ export const saunas: Sauna[] = [
   {
     slug: "cedar-and-stone-duluth",
     name: "Cedar & Stone Nordic Sauna (Duluth)",
+    heaterType: "wood",
     address: "800 W Railroad St, Duluth, MN 55802",
     website: "https://cedarandstonesauna.com/",
     bookingUrl:
@@ -2663,6 +2700,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-du-nord",
     name: "Sauna du Nord",
+    heaterType: "wood",
     address: "Caribou Lake, Duluth, MN",
     website: "https://www.saunadunord.com/",
     bookingUrl: "https://www.saunadunord.com/booking",
@@ -2721,6 +2759,7 @@ export const saunas: Sauna[] = [
   {
     slug: "onsen-sf",
     name: "Onsen",
+    heaterType: "electric",
     address: "466 Eddy St, San Francisco, CA 94109",
     website: "https://www.onsensf.com/",
     bookingUrl:
@@ -2750,6 +2789,7 @@ export const saunas: Sauna[] = [
   {
     slug: "alchemy-springs-sf",
     name: "Alchemy Springs",
+    heaterType: "electric",
     address: "939 Post St, San Francisco, CA 94109",
     website: "https://www.alchemysprings.com/",
     bookingUrl: "https://www.alchemysprings.com/visit",
@@ -2785,6 +2825,7 @@ export const saunas: Sauna[] = [
   {
     slug: "piedmont-springs",
     name: "Piedmont Springs",
+    heaterType: "electric",
     address: "3939 Piedmont Ave, Oakland, CA 94611",
     website: "https://www.piedmontsprings.com/",
     bookingUrl: "https://www.piedmontsprings.com/online-booking",
@@ -2847,6 +2888,7 @@ export const saunas: Sauna[] = [
   {
     slug: "loyly-southeast",
     name: "Löyly Southeast",
+    heaterType: "electric",
     address: "2713 SE 21st Ave, Portland, OR 97202",
     website: "https://www.loyly.net/",
     bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
@@ -2893,6 +2935,7 @@ export const saunas: Sauna[] = [
   {
     slug: "loyly-northeast",
     name: "Löyly Northeast",
+    heaterType: "electric",
     address: "3525 NE Martin Luther King Jr Blvd, Portland, OR 97212",
     website: "https://www.loyly.net/",
     bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
@@ -2939,6 +2982,7 @@ export const saunas: Sauna[] = [
   {
     slug: "common-ground-wellness",
     name: "Common Ground Wellness Cooperative",
+    heaterType: "electric",
     address: "5010 NE 33rd Ave, Portland, OR 97211",
     website: "https://www.cgwc.org/",
     bookingUrl: "https://www.cgwc.org/scheduling",
@@ -2970,6 +3014,7 @@ export const saunas: Sauna[] = [
   {
     slug: "forest-haven-sauna",
     name: "Forest Haven Sauna",
+    heaterType: "wood",
     address: "9644 SW W Haven Dr, Portland, OR 97225",
     website: "https://www.forestsaunapdx.com/",
     bookingUrl:
@@ -3003,6 +3048,7 @@ export const saunas: Sauna[] = [
   {
     slug: "everett-house",
     name: "Everett House Community Healing Center",
+    heaterType: "electric",
     address: "2927 NE Everett St, Portland, OR 97232",
     website: "https://www.everetthousecommunityhealingcenter.com/",
     bookingUrl:
@@ -3037,6 +3083,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bear-banya",
     name: "Bear Banya",
+    heaterType: "wood",
     address: "2130 SE 96th Ave, Portland, OR 97216",
     website: "https://www.bearbanya.com/",
     bookingUrl:
@@ -3076,6 +3123,7 @@ export const saunas: Sauna[] = [
   {
     slug: "saunaglo",
     name: "SaunaGlo",
+    heaterType: "electric",
     address: "1915 SE Jefferson St, Milwaukie, OR 97222",
     website: "https://www.saunaglo.com/",
     bookingUrl: "https://www.saunaglo.com/book",
@@ -3113,6 +3161,7 @@ export const saunas: Sauna[] = [
   {
     slug: "guss-mobile-sauna",
     name: "Guss Mobile Sauna",
+    heaterType: "wood",
     address: "Sellwood Riverfront Park, Portland, OR 97202",
     website: "https://www.theguss.com/",
     bookingUrl:
@@ -3141,6 +3190,7 @@ export const saunas: Sauna[] = [
   {
     slug: "knot-springs",
     name: "Knot Springs",
+    heaterType: "electric",
     address: "33 NE 3rd Ave Suite 365, Portland, OR 97232",
     website: "https://knotsprings.com/",
     bookingUrl:
@@ -3185,6 +3235,7 @@ export const saunas: Sauna[] = [
   {
     slug: "koti-sauna",
     name: "Koti",
+    heaterType: "electric",
     address: "4128 SE Jefferson St, Milwaukie, OR 97222",
     website: "https://www.kotisauna.com/",
     bookingUrl: "https://www.kotisauna.com/booksauna",
@@ -3244,6 +3295,7 @@ export const saunas: Sauna[] = [
   {
     slug: "connect-wellness",
     name: "Connect Wellness",
+    heaterType: "wood",
     address: "4301 NE 59th Ave, Vancouver, WA 98661",
     website: "https://www.connectwellness.biz/",
     bookingUrl: "https://www.connectwellness.biz/calendar",
@@ -3285,6 +3337,7 @@ export const saunas: Sauna[] = [
   {
     slug: "backyard-bliss-pdx",
     name: "Backyard Bliss PDX",
+    heaterType: "electric",
     address: "6545 N Fenwick Ave, Portland, OR 97217",
     website: "https://backyardblisspdx.simplybook.me/",
     bookingUrl: "https://backyardblisspdx.simplybook.me/v2/#book",
@@ -3331,6 +3384,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fusion-bodyworks-pdx",
     name: "Fusion Bodyworks PDX",
+    heaterType: "wood",
     address: "7415 N Oatman Ave, Portland, OR 97217",
     website: "https://www.fusionpdx.com/",
     bookingUrl: "http://fusionbodyworkspdx2.clinicsense.com/book/",
@@ -3373,6 +3427,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fern-and-thistle",
     name: "Fern & Thistle Massage and Spa",
+    heaterType: "electric",
     address: "8160 N Jersey St, Portland, OR 97203",
     website: "https://www.fernandthistle.co/",
     bookingUrl:
@@ -3410,6 +3465,7 @@ export const saunas: Sauna[] = [
   {
     slug: "uptown-sauna-house",
     name: "Uptown Sauna House",
+    heaterType: "electric",
     address: "414 W 23rd St, Vancouver, WA 98660",
     website: "https://www.uptownsaunahouse.com/",
     bookingUrl: "https://www.uptownsaunahouse.com/book-online",
@@ -3457,6 +3513,7 @@ export const saunas: Sauna[] = [
   {
     slug: "ebb-and-ember",
     name: "Ebb & Ember Floating Saunas",
+    heaterType: "gas",
     address: "173 NE Bridgeton Rd, Portland, OR 97211",
     website: "https://www.ebbandember.com/",
     bookingUrl:
@@ -3511,6 +3568,7 @@ export const saunas: Sauna[] = [
   {
     slug: "archimedes-banya",
     name: "Archimedes Banya",
+    heaterType: "gas",
     address: "748 Innes Ave, San Francisco, CA 94124",
     website: "https://banyasf.com/",
     bookingUrl: "https://go.booker.com/location/ARCHIMEDESBANYASF/service-menu",
@@ -3543,6 +3601,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fjord-sausalito",
     name: "Fjord – Floating Sauna",
+    heaterType: "electric",
     markerIconOverride: "floating-sauna",
     address: "2320 Marinship Way, Sausalito, CA 94965",
     website: "https://www.thisisfjord.com/",
@@ -3589,6 +3648,7 @@ export const saunas: Sauna[] = [
   {
     slug: "almonte-spa",
     name: "Almonte Spa",
+    heaterType: "electric",
     address: "158 Almonte Blvd, Mill Valley, CA 94941",
     website: "https://www.almontespa.com/",
     bookingUrl: "https://www.almontespa.com/book",
@@ -3642,6 +3702,7 @@ export const saunas: Sauna[] = [
   {
     slug: "good-hot-richmond",
     name: "Good Hot",
+    heaterType: "gas",
     address: "1950 Stenmark Dr, Richmond, CA 94801",
     website: "https://www.good-hot-booking.com/",
     bookingUrl: "https://www.good-hot-booking.com/book",
@@ -3722,6 +3783,7 @@ export const saunas: Sauna[] = [
   {
     slug: "dogpatch-paddle-sauna",
     name: "Dogpatch Paddle Sauna",
+    heaterType: "wood",
     address: "701 Illinois Street #A, San Francisco, CA 94107",
     website: "https://www.dogpatchpaddle.com/sauna",
     bookingUrl:
@@ -3776,6 +3838,7 @@ export const saunas: Sauna[] = [
   {
     slug: "kabuki-springs-sf",
     name: "Kabuki Springs & Spa",
+    heaterType: "electric",
     address: "1750 Geary Blvd, San Francisco, CA 94115",
     website: "https://kabukisprings.com/",
     bookingUrl: "https://kabukisprings.com/baths/",
@@ -3829,6 +3892,7 @@ export const saunas: Sauna[] = [
   {
     slug: "the-springs-leavenworth",
     name: "The Springs",
+    heaterType: "electric",
     address: "200 Zelt Strasse, Leavenworth, WA 98826",
     website: "https://www.thesprings.us/",
     bookingUrl: "https://ecom.roller.app/thesprings/checkout/en-us/products",
@@ -3868,6 +3932,7 @@ export const saunas: Sauna[] = [
   {
     slug: "seatsu-sauna",
     name: "SeaTsu Sauna",
+    heaterType: "wood",
     address: "Thompson Rd, Sequim, WA 98382",
     website: "https://www.seatsusauna.com/",
     bookingUrl: "https://www.seatsusauna.com/book-online",
@@ -3916,6 +3981,7 @@ export const saunas: Sauna[] = [
   {
     slug: "snow-peak-campfield",
     name: "Snow Peak Campfield Ofuro Spa",
+    heaterType: "electric",
     address: "5411 Sandridge Rd, Long Beach, WA 98631",
     website: "https://snowpeakcampfield.com/ofuro/",
     bookingUrl: "https://www.vagaro.com/spcpyc3/classes",
@@ -3971,6 +4037,7 @@ export const saunas: Sauna[] = [
   {
     slug: "watercourse-way",
     name: "Watercourse Way Bath House Spa",
+    heaterType: "electric",
     address: "165 Channing Ave, Palo Alto, CA 94301",
     website: "https://watercourseway.com/",
     bookingUrl: "https://go.booker.com/location/WatercourseWay/service-menu",
@@ -4047,6 +4114,7 @@ export const saunas: Sauna[] = [
   {
     slug: "alyeska-nordic-spa",
     name: "Alyeska Nordic Spa",
+    heaterType: "electric",
     address: "1000 Arlberg Avenue, Girdwood, AK 99587",
     website: "https://www.anordicspa.com/",
     bookingUrl: "https://www.anordicspa.com/",
@@ -4073,6 +4141,7 @@ export const saunas: Sauna[] = [
   {
     slug: "gather-sauna-house",
     name: "Gather Sauna House",
+    heaterType: "wood",
     address: "Riverbend Park, Bend, OR 97702",
     website: "https://www.gathersaunahouse.com/",
     bookingUrl: "https://www.gathersaunahouse.com/locations",
@@ -4136,6 +4205,7 @@ export const saunas: Sauna[] = [
   {
     slug: "breitenbush-hot-springs",
     name: "Breitenbush Hot Springs",
+    heaterType: "electric",
     address: "53000 Breitenbush Rd SE, Detroit, OR 97342",
     website: "https://breitenbush.com/",
     bookingUrl: "https://breitenbush.com/visit/",
@@ -4169,6 +4239,7 @@ export const saunas: Sauna[] = [
   {
     slug: "beach-sauna-express",
     name: "Beach Sauna Express",
+    heaterType: "wood",
     address: "South Ponto Beach, 9969 Carlsbad Blvd, Encinitas, CA 92024",
     website: "https://www.beachsaunaexpress.com",
     bookingUrl:
@@ -4213,6 +4284,7 @@ export const saunas: Sauna[] = [
   {
     slug: "kolm-kontrast",
     name: "Kolm Kontrast",
+    heaterType: "electric",
     address: "525 W 8th Ave, Vancouver, BC V5Z 1C6, Canada",
     website: "https://kolmkontrast.com/",
     bookingUrl: "https://kolmkontrast.com/schedule",
@@ -4239,6 +4311,7 @@ export const saunas: Sauna[] = [
   {
     slug: "aetherhaus",
     name: "AetherHaus",
+    heaterType: "electric",
     address: "1768 Davie St, Vancouver, BC V6G 1W2, Canada",
     website: "https://www.aetherhaus.ca/",
     bookingUrl: "https://www.aetherhaus.ca/buy-pass",
@@ -4265,6 +4338,7 @@ export const saunas: Sauna[] = [
   {
     slug: "the-good-sauna-vancouver",
     name: "The Good Sauna (Vancouver)",
+    heaterType: "wood",
     address:
       "Container Brewing, 1216 Franklin St, Vancouver, BC V6A 1K1, Canada",
     website: "https://www.thegoodsauna.com/",
@@ -4302,6 +4376,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hastings-spa",
     name: "Hastings Spa",
+    heaterType: "gas",
     address: "766 E Hastings St, Vancouver, BC V6A 1R5, Canada",
     website: "https://hastingsspa.com/",
     bookingUrl:
@@ -4335,6 +4410,7 @@ export const saunas: Sauna[] = [
   {
     slug: "mist-thermal-sanctuary",
     name: "Mist Thermal Sanctuary",
+    heaterType: "wood",
     address: "Bowen Island, BC, Canada",
     website: "https://www.mistthermal.com/",
     bookingUrl: "https://mistthermalsanctuary.as.me/",
@@ -4390,6 +4466,7 @@ export const saunas: Sauna[] = [
   {
     slug: "jericho-beach-seaside-sauna",
     name: "Jericho Beach Seaside Sauna",
+    heaterType: "wood",
     address: "Jericho Sailing Centre, Vancouver, BC, Canada",
     website:
       "https://www.thefinnishsauna.ca/service-page/jericho-beach-seaside-sauna-social",
@@ -4441,6 +4518,7 @@ export const saunas: Sauna[] = [
   {
     slug: "havn-harbour-sauna",
     name: "HAVN Harbour Sauna",
+    heaterType: "electric",
     address: "920 Wharf St, Victoria, BC V8W 1T3, Canada",
     website: "https://www.havnsaunas.com/",
     bookingUrl: "https://www.havnsaunas.com/book",
@@ -4497,6 +4575,7 @@ export const saunas: Sauna[] = [
   {
     slug: "ritual-nordic-spa",
     name: "RITUAL Nordic Spa",
+    heaterType: "electric",
     address: "989 Johnson St #101, Victoria, BC V8V 0E3, Canada",
     website: "https://ritualnordicspa.com/",
     bookingUrl: "https://ritualnordicspa.zenoti.com/webstorenew",
@@ -4551,6 +4630,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sea-edge-sauna",
     name: "Sea Edge Sauna",
+    heaterType: "wood",
     address: "209 Island Hwy W, Parksville, BC V9P 1K8, Canada",
     website: "https://www.thefinnishsauna.ca/sea-edge-sauna",
     googleMapsUrl: "https://maps.app.goo.gl/6YhNcvZy3Nmuerh26",
@@ -4600,6 +4680,7 @@ export const saunas: Sauna[] = [
   {
     slug: "the-lost-faucet",
     name: "The Lost Faucet Sauna House",
+    heaterType: "electric",
     address: "3455 Cumberland Rd, Courtenay, BC V9N 9N6, Canada",
     website: "https://thelostfaucet.com/",
     bookingUrl:
@@ -4635,6 +4716,7 @@ export const saunas: Sauna[] = [
   {
     slug: "nyubu-nordic-spa",
     name: "NYÜBU - West Coast Nordic Spa",
+    heaterType: "wood",
     address: "2795 Meadowview Rd, Shawnigan Lake, BC V0R 2W0, Canada",
     website: "https://nyubu.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/nyubu/?full-items=yes",
@@ -4679,6 +4761,7 @@ export const saunas: Sauna[] = [
   {
     slug: "island-sauna-black-creek",
     name: "Island Sauna (Black Creek)",
+    heaterType: "wood",
     address: "Black Creek, BC, Canada",
     website: "https://www.islandsauna.ca/",
     bookingUrl:
@@ -4730,6 +4813,7 @@ export const saunas: Sauna[] = [
   {
     slug: "island-sauna-nanaimo",
     name: "Island Sauna (Nanaimo)",
+    heaterType: "wood",
     address: "Inn On Long Lake, Nanaimo, BC, Canada",
     website: "https://www.islandsauna.ca/",
     bookingUrl:
@@ -4781,6 +4865,7 @@ export const saunas: Sauna[] = [
   {
     slug: "tuff-city-saunas-pacific-sands",
     name: "Tuff City Saunas (Pacific Sands)",
+    heaterType: "wood",
     address: "1421 Pacific Rim Hwy, Tofino, BC V0R 2Z0, Canada",
     website: "https://tuffcitysaunas.com/",
     bookingUrl:
@@ -4842,6 +4927,7 @@ export const saunas: Sauna[] = [
   {
     slug: "remote-floating-sauna-tofino",
     name: "Remote Floating Sauna",
+    heaterType: "wood",
     address: "634 Campbell St, Tofino, BC V0R 2Z0, Canada",
     website: "https://tofinoresortandmarina.com/remote-floating-sauna-dock/",
     bookingUrl:
@@ -4900,6 +4986,7 @@ export const saunas: Sauna[] = [
   {
     slug: "scandinave-spa-whistler",
     name: "Scandinave Spa Whistler",
+    heaterType: "wood",
     address: "8010 Mons Rd, Whistler, BC V8E 1K7, Canada",
     website: "https://www.scandinave.com/whistler/",
     bookingUrl:
@@ -4950,6 +5037,7 @@ export const saunas: Sauna[] = [
   {
     slug: "meadow-park-sports-centre",
     name: "Meadow Park Sports Centre",
+    heaterType: "electric",
     address: "8625 BC-99, Whistler, BC V8E 1K1, Canada",
     website:
       "https://www.whistler.ca/parks-recreation-culture/meadow-park-sports-centre/",
@@ -4982,6 +5070,7 @@ export const saunas: Sauna[] = [
   {
     slug: "cheekye-ranch-sauna",
     name: "Cheekye Ranch Sauna",
+    heaterType: "wood",
     address: "Cheekye Ranch, Squamish, BC, Canada",
     website: "https://www.thefinnishsauna.ca/squamish",
     bookingUrl:
@@ -5028,6 +5117,7 @@ export const saunas: Sauna[] = [
   {
     slug: "orca-saunas-willingdon-beach",
     name: "Orca Saunas (Willingdon Beach)",
+    heaterType: "wood",
     address: "4845 Marine Ave, Powell River, BC V8A 2L2, Canada",
     website: "https://orcasaunas.com/",
     bookingUrl:
@@ -5176,6 +5266,7 @@ export const saunas: Sauna[] = [
   {
     slug: "portal-bozeman",
     name: "PORTAL° Bozeman",
+    heaterType: "wood",
     address: "707 E Peach St, Bozeman, MT 59715",
     website: "https://www.portalthermaculture.com/bozeman",
     bookingUrl: "https://book.portalthermaculture.com/book-session",
@@ -5202,6 +5293,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bozeman-hot-springs",
     name: "Bozeman Hot Springs",
+    heaterType: "electric",
     address: "81123 Gallatin Rd, Bozeman, MT 59718",
     website: "https://bozemanhotsprings.co/",
     googleMapsUrl: "https://maps.app.goo.gl/3tVq5Ry4Yvh7VJQZ8",
@@ -5231,6 +5323,7 @@ export const saunas: Sauna[] = [
   {
     slug: "portal-minneapolis",
     name: "PORTAL° Minneapolis",
+    heaterType: "wood",
     address: "3120 Excelsior Blvd, Minneapolis, MN 55416",
     website: "https://www.portalthermaculture.com/minneapolis",
     bookingUrl: "https://book.portalthermaculture.com/book-session",
@@ -5260,6 +5353,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-public-slc",
     name: "Sauna Public",
+    heaterType: "electric",
     address: "1952 E. 2700 S., Salt Lake City, UT 84106",
     website: "https://www.saunapublic.com/",
     bookingUrl: "https://booking.mangomint.com/saunapublic1",
@@ -5300,6 +5394,7 @@ export const saunas: Sauna[] = [
   {
     slug: "plunj-salt-lake",
     name: "PLUNJ Salt Lake",
+    heaterType: "electric",
     address: "55 W Utopia Ave #103, South Salt Lake, UT 84115",
     website: "https://saltlake.plunj.co/",
     bookingUrl: "https://saltlake.plunj.co/book-now/",
@@ -5332,6 +5427,7 @@ export const saunas: Sauna[] = [
   {
     slug: "utah-lake-sauna",
     name: "Utah Lake Sauna",
+    heaterType: "wood",
     address: "Utah Lake State Park, Provo, UT",
     website: "https://www.utahlakesauna.com/",
     bookingUrl: "https://www.utahlakesauna.com/appointments",
@@ -5380,6 +5476,7 @@ export const saunas: Sauna[] = [
   {
     slug: "huntsville-sauna",
     name: "Huntsville Sauna",
+    heaterType: "electric",
     address: "150 S 7400 E, Huntsville, UT 84317",
     website: "https://huntsvillesauna.com/",
     bookingUrl: "https://huntsvillesauna.com/booking-now",
@@ -5414,6 +5511,7 @@ export const saunas: Sauna[] = [
   {
     slug: "soho-saunas",
     name: "Soho Saunas",
+    heaterType: "electric",
     address: "West Soldier Hollow Ln, Midway, UT 84049",
     website: "https://sohosaunas.com/",
     bookingUrl: "https://www.zettlor.com/c/sohosaunas",
@@ -5467,6 +5565,7 @@ export const saunas: Sauna[] = [
   {
     slug: "portal-denver",
     name: "PORTAL° Denver",
+    heaterType: "wood",
     address: "2949 Federal Blvd, Denver, CO 80211",
     website: "https://www.portalthermaculture.com/denver",
     bookingUrl:
@@ -5495,6 +5594,7 @@ export const saunas: Sauna[] = [
   {
     slug: "portal-boulder",
     name: "PORTAL° Boulder",
+    heaterType: "wood",
     address: "4949 Broadway #113, Boulder, CO 80304",
     website: "https://www.portalthermaculture.com/boulder",
     bookingUrl: "https://book.portalthermaculture.com/book-session",
@@ -5521,6 +5621,7 @@ export const saunas: Sauna[] = [
   {
     slug: "garden-sauna-denver",
     name: "Garden Sauna",
+    heaterType: "wood",
     address: "1407 N Ogden St, Denver, CO 80218",
     website: "https://www.gardensaunadenver.com/",
     bookingUrl: "https://www.gardensaunadenver.com/book-now",
@@ -5554,6 +5655,7 @@ export const saunas: Sauna[] = [
   {
     slug: "lake-steam-baths",
     name: "Lake Steam Baths",
+    heaterType: "electric",
     address: "3540 W Colfax Ave, Denver, CO 80204",
     website: "https://www.lakesteam.com/",
     bookingPlatform: "envision",
@@ -5578,6 +5680,7 @@ export const saunas: Sauna[] = [
   {
     slug: "r3-spa",
     name: "R3 Spa",
+    heaterType: "gas",
     address: "2805 S Broadway, Englewood, CO 80113",
     website: "https://www.r3experience.com/",
     bookingUrl: "https://www.r3experience.com/booking-calendar/sauna-cold-plunge-session",
@@ -5618,6 +5721,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hooga-house",
     name: "Hooga House",
+    heaterType: "electric",
     address: "16305 S Golden Rd Unit C, Golden, CO 80401",
     website: "https://www.hoogahouse.co/",
     bookingUrl: "https://www.hoogahouse.co/booking-calendar/contrast-therapy-booking",
@@ -5684,6 +5788,7 @@ export const saunas: Sauna[] = [
   {
     slug: "red-rock-sauna",
     name: "Red Rock Sauna",
+    heaterType: "gas",
     address: "4460 W 29th Ave, Denver, CO 80212",
     website: "https://redrocksauna.com/",
     bookingUrl: "https://redrocksauna.com/products/private-sauna-session",
@@ -5716,6 +5821,7 @@ export const saunas: Sauna[] = [
   {
     slug: "denver-sports-recovery",
     name: "Denver Sports Recovery",
+    heaterType: "electric",
     address: "2242 W 29th Ave, Denver, CO 80211",
     website: "https://www.denversportsrecovery.com/",
     bookingPlatform: "mindbody",
@@ -5747,6 +5853,7 @@ export const saunas: Sauna[] = [
   {
     slug: "mountlake-terrace-recreation-pavilion",
     name: "Mountlake Terrace Recreation Pavilion",
+    heaterType: "electric",
     address: "5303 228th St SW, Mountlake Terrace, WA 98043",
     website: "https://www.cityofmlt.com/385/Recreation-Pavilion",
     googleMapsUrl: "https://maps.app.goo.gl/umozFFM9FcwvfMQQ8",
@@ -5771,6 +5878,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-club-lakeside",
     name: "Sauna Club (Lakeside)",
+    heaterType: "wood",
     address: "1251 Lake Shore Blvd, Evanston, IL 60202",
     website: "https://mysaunaclub.com/",
     bookingUrl: "https://mysaunaclub.com/book/lakeside/",
@@ -5797,6 +5905,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-club-sketchbook",
     name: "Sauna Club (Sketchbook)",
+    heaterType: "wood",
     address: "4901 Main St, Skokie, IL 60077",
     website: "https://mysaunaclub.com/",
     bookingUrl: "https://mysaunaclub.com/book/sketchbook/",
@@ -5823,6 +5932,7 @@ export const saunas: Sauna[] = [
   {
     slug: "south-woods-nwa",
     name: "South Woods",
+    heaterType: "wood",
     address: "17097 Lake Sequoyah Dr, Fayetteville, AR 72701",
     website: "https://southwoodsnwa.com/",
     bookingUrl:
@@ -5881,6 +5991,7 @@ export const saunas: Sauna[] = [
   {
     slug: "framework-flagship-nashville",
     name: "Framework (Flagship)",
+    heaterType: "electric",
     address: "1411 4th Ave South, Nashville, TN 37210",
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/schedule",
@@ -5936,6 +6047,7 @@ export const saunas: Sauna[] = [
   {
     slug: "framework-backyard-nashville",
     name: "Framework (Backyard)",
+    heaterType: "electric",
     address: "928 McFerrin Ave, Nashville, TN 37206",
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/schedule",
@@ -5987,6 +6099,7 @@ export const saunas: Sauna[] = [
   {
     slug: "river-birch-nordic-sauna",
     name: "River Birch Nordic Sauna",
+    heaterType: "wood",
     address: "2543 Broadstone Rd, Banner Elk, NC 28604",
     website: "https://www.riverbirchsauna.com/",
     bookingUrl:
@@ -6050,6 +6163,7 @@ export const saunas: Sauna[] = [
   {
     slug: "glidden-point-oyster-farms",
     name: "Glidden Point Oyster Farms",
+    heaterType: "wood",
     address: "637 River Road, Edgecomb, ME 04556",
     website: "https://www.gliddenpoint.com/pages/saunas-at-glidden-point",
     bookingUrl: "https://www.ticketsignup.io/TicketEvent/GliddenPointSauna",
@@ -6077,6 +6191,7 @@ export const saunas: Sauna[] = [
   {
     slug: "good-medicine-whidbey",
     name: "Good Medicine Whidbey",
+    heaterType: "wood",
     address: "Whidbey Island, WA 98249",
     website: "https://www.goodmedicinewhidbey.com/",
     bookingUrl:
@@ -6157,6 +6272,7 @@ export const saunas: Sauna[] = [
   {
     slug: "driftwood-sauna-co",
     name: "Driftwood Sauna Co",
+    heaterType: "wood",
     address: "Whidbey Island, WA",
     website: "https://www.driftwoodsaunaco.com/",
     bookingUrl: "https://www.driftwoodsaunaco.com/book",
@@ -6225,6 +6341,7 @@ export const saunas: Sauna[] = [
   {
     slug: "moki-sauna-south-boston",
     name: "Moki Sauna - South Boston",
+    heaterType: "wood",
     address: "385 Dorchester Ave, Boston, MA 02127",
     website: "https://www.mokisauna.com/",
     bookingUrl: "https://www.mokisauna.com/social-sessions",
@@ -6258,6 +6375,7 @@ export const saunas: Sauna[] = [
   {
     slug: "moki-sauna-allston",
     name: "Moki Sauna - Allston",
+    heaterType: "wood",
     address: "267 Western Ave, Allston, MA 02134",
     website: "https://www.mokisauna.com/",
     bookingUrl: "https://www.mokisauna.com/social-sessions",
@@ -6292,6 +6410,7 @@ export const saunas: Sauna[] = [
   {
     slug: "lore-bathing-club",
     name: "Lore Bathing Club",
+    heaterType: "electric",
     address: "676 Broadway, New York, NY 10012",
     website: "https://www.lorebathingclub.com/",
     bookingUrl: "https://www.lorebathingclub.com/membership",
@@ -6359,6 +6478,7 @@ export const saunas: Sauna[] = [
   {
     slug: "the-altar",
     name: "The Altar",
+    heaterType: "electric",
     address: "122 Fifth Avenue, New York, NY 10011",
     website: "https://www.the-altar.com/",
     bookingUrl: "https://www.the-altar.com/menu",
@@ -6382,6 +6502,7 @@ export const saunas: Sauna[] = [
   {
     slug: "culture-of-bathe-ing",
     name: "Culture of Bathe-ing",
+    heaterType: "wood",
     address: "Domino Park, Williamsburg, Brooklyn, NY",
     website: "https://cultureofbathe-ing.com/",
     bookingUrl: "https://cultureofbathe-ing.com/tickets",
@@ -6408,6 +6529,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sojo-spa-club",
     name: "SoJo Spa Club",
+    heaterType: "electric",
     address: "660 River Rd, Edgewater, NJ 07020",
     website: "https://sojospaclub.com/",
     bookingUrl: "https://shop.sojospaclub.com/reservation/admission",
@@ -6441,6 +6563,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hideout-social-club",
     name: "Hideout Social Club",
+    heaterType: "electric",
     address: "1 Blachley Rd, Stamford, CT 06902",
     website: "https://hideoutsocial.club/",
     bookingUrl: "https://hideoutsocial.club/book",
@@ -6500,6 +6623,7 @@ export const saunas: Sauna[] = [
   {
     slug: "dryyp-sauna",
     name: "DRYYP",
+    heaterType: "wood",
     address: "745 Chapel St, New Haven, CT",
     website: "https://www.dryypsauna.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/dryypsauna/?full-items=yes",
@@ -6544,6 +6668,7 @@ export const saunas: Sauna[] = [
   {
     slug: "huht-sauna-village-bousquet",
     name: "HUHT Sauna Village at Bousquet",
+    heaterType: "wood",
     address: "Bousquet Mountain, 101 Dan Fox Dr, Pittsfield, MA",
     website: "https://www.gethuht.com/gather/sauna-village-bousquet",
     bookingUrl: "https://www.gethuht.com/gather/sauna-village-bousquet",
@@ -6581,6 +6706,7 @@ export const saunas: Sauna[] = [
   {
     slug: "huht-sauna-ps21",
     name: "HUHT Sauna at PS21",
+    heaterType: "wood",
     address: "PS21, 2980 NY-66, Chatham, NY",
     website: "https://www.gethuht.com/gather/ps21",
     bookingUrl: "https://www.gethuht.com/gather/ps21",
@@ -6616,6 +6742,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fire-and-ice-sauna-experience",
     name: "Fire & Ice Sauna Experience",
+    heaterType: "wood",
     address: "1600 N Lake Shore Dr, Chicago, IL 60613",
     website: "https://fire-ice-sauna-experience.square.site/",
     bookingUrl: "https://fire-ice-sauna-experience.square.site/",
@@ -6650,6 +6777,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fire-and-ice-sauna",
     name: "Fire & Ice Sauna",
+    heaterType: "electric",
     address: "726 E Boughton Rd, Bolingbrook, IL 60440",
     website: "https://fireiceco.com/",
     bookingUrl: "https://fireiceco.com/collections/grand-opening",
@@ -6675,6 +6803,7 @@ export const saunas: Sauna[] = [
   {
     slug: "campfire-sauna-and-social",
     name: "Campfire Sauna and Social",
+    heaterType: "wood",
     address: "Gillson Beach, Wilmette, IL 60091",
     website: "https://www.campfiresauna.com/",
     bookingUrl: "https://app.arketa.co/campfiresaunaandsocial",
@@ -6707,6 +6836,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sol-drift-sauna",
     name: "Sol Drift Sauna",
+    heaterType: "wood",
     address: "Westfield, IN 46074",
     website: "https://www.soldriftsauna.com/",
     bookingUrl: "https://www.soldriftsauna.com/book",
@@ -6787,6 +6917,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fiorst-riverside",
     name: "Fiorst - Riverside",
+    heaterType: "wood",
     address: "32 River Road, Conshohocken, PA 19428",
     website: "https://www.fiorst.com/",
     bookingUrl: "https://fiorst.as.me/schedule/4ee5a478",
@@ -6836,6 +6967,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fiorst-schuylkill-center",
     name: "Fiorst - Schuylkill Center",
+    heaterType: "wood",
     address: "8480 Hagy's Mill Road, Philadelphia, PA 19128",
     website: "https://www.fiorst.com/",
     bookingUrl: "https://fiorst.as.me/schedule/4ee5a478",
@@ -6894,6 +7026,7 @@ export const saunas: Sauna[] = [
   {
     slug: "cascada",
     name: "Cascada",
+    heaterType: "electric",
     address: "1150 NE Alberta St, Portland, OR 97211",
     website: "https://cascada.me/",
     bookingUrl:
@@ -6928,6 +7061,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-asheville",
     name: "Sauna House Asheville",
+    heaterType: "electric",
     address: "230 Short Coxe Ave, Asheville, NC 28801",
     website: "https://www.saunahouse.com/pages/asheville",
     bookingUrl: "https://book.saunahouse.com/",
@@ -6968,6 +7102,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-charlotte",
     name: "Sauna House Charlotte",
+    heaterType: "electric",
     address: "1500 West Morehead Street Unit H, Charlotte, NC 28208",
     website: "https://www.saunahouse.com/pages/charlotte",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7008,6 +7143,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-durham",
     name: "Sauna House Durham",
+    heaterType: "electric",
     address: "326 West Geer Street, Durham, NC 27701",
     website: "https://www.saunahouse.com/pages/durham",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7048,6 +7184,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-raleigh",
     name: "Sauna House Raleigh",
+    heaterType: "electric",
     address: "324 Dupont Circle, Raleigh, NC 27603",
     website: "https://www.saunahouse.com/pages/raleigh",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7074,6 +7211,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-greenville",
     name: "Sauna House Greenville",
+    heaterType: "electric",
     address: "711 W Washington St, Greenville, SC 29601",
     website: "https://www.saunahouse.com/pages/greenville",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7114,6 +7252,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-knoxville",
     name: "Sauna House Knoxville",
+    heaterType: "electric",
     address: "126 Jennings Ave, Knoxville, TN 37917",
     website: "https://www.saunahouse.com/pages/knoxville",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7154,6 +7293,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-bonita-springs",
     name: "Sauna House Bonita Springs",
+    heaterType: "electric",
     address: "10610 Founders Way, Bonita Springs, FL 34135",
     website: "https://www.saunahouse.com/pages/bonita-springs",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7194,6 +7334,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-austin",
     name: "Sauna House Austin North Loop",
+    heaterType: "wood",
     address: "1507 West North Loop Boulevard, Austin, TX 78756",
     website: "https://www.saunahouse.com/pages/austin",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7234,6 +7375,7 @@ export const saunas: Sauna[] = [
   {
     slug: "pnw-sauna-cda",
     name: "PNW Sauna",
+    heaterType: "wood",
     address: "Coeur d'Alene, ID 83814",
     website: "https://pnwsaunacda.com/",
     bookingUrl: "https://pnwsaunacda.com/book/",

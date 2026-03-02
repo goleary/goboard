@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Waves, Leaf, Snowflake, Mail } from "lucide-react";
+import { Check, X, Waves, Leaf, Snowflake, FlameKindling, Zap, Mail } from "lucide-react";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { type SlotInfo } from "./useAvailabilityOn";
 import { TimeSlotBadge } from "./TimeSlotBadge";
@@ -119,6 +119,16 @@ function CompactSaunaList({
                 <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
                   {sauna.sessionLengthMinutes != null && sauna.sessionLengthMinutes > 0 && (
                     <span>{sauna.sessionLengthMinutes} min</span>
+                  )}
+                  {sauna.heaterType === "wood" && (
+                    <span title="Wood stove" className="flex items-center">
+                      <FlameKindling className="h-3 w-3 text-orange-500" />
+                    </span>
+                  )}
+                  {sauna.heaterType === "electric" && (
+                    <span title="Electric stove" className="flex items-center">
+                      <Zap className="h-3 w-3 text-orange-500" />
+                    </span>
                   )}
                   {sauna.coldPlunge && (
                     <span title="Cold Plunge" className="flex items-center">
