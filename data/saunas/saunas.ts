@@ -32,7 +32,8 @@ export type LocationSlug =
   | "greenville"
   | "knoxville"
   | "bonita-springs"
-  | "austin";
+  | "austin"
+  | "san-diego";
 
 /**
  * Location metadata for display and routing
@@ -325,6 +326,15 @@ export const locations: Location[] = [
       "Austin's sauna scene features Nordic-inspired bathhouses with traditional saunas, cold plunges, and integrative wellness in the heart of Texas.",
     center: { lat: 30.3248, lng: -97.738 },
     zoom: 12,
+  },
+  {
+    slug: "san-diego",
+    name: "San Diego",
+    state: "CA",
+    description:
+      "San Diego's sauna scene brings wood-fired mobile saunas to the beach, pairing traditional heat with cold plunges in the Pacific Ocean.",
+    center: { lat: 33.085, lng: -117.312 },
+    zoom: 11,
   },
 ];
 
@@ -821,6 +831,26 @@ export interface SojoBookingProviderConfig {
 }
 
 /**
+ * Sweatpals event platform booking provider configuration.
+ * Uses the public events search API to find upcoming event instances.
+ */
+export interface SweatpalsBookingProviderConfig {
+  type: "sweatpals";
+  /** Sweatpals host/creator user ID (UUID) */
+  creatorId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Events to show availability for */
+  events: {
+    /** Base event ID (UUID) — identifies the recurring series */
+    baseEventId: string;
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -847,7 +877,8 @@ export type BookingProviderConfig =
   | RollerBookingProviderConfig
   | BoulevardBookingProviderConfig
   | ArketaBookingProviderConfig
-  | SojoBookingProviderConfig;
+  | SojoBookingProviderConfig
+  | SweatpalsBookingProviderConfig;
 
 // --- Water Temperature Provider Types ---
 
@@ -953,7 +984,8 @@ export interface Sauna {
     | "fresha"
     | "envision"
     | "arketa"
-    | "sojo";
+    | "sojo"
+    | "sweatpals";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -976,7 +1008,9 @@ export interface Sauna {
   /** Whether cold plunge is into a natural body of water (bay, lake, etc.) */
   naturalPlunge: boolean;
   /** Whether the sauna is a floating structure (on a lake, bay, etc.) */
-  floating?: boolean;
+  isFloating?: boolean;
+  /** Whether the sauna experience is primarily outdoors */
+  isOutside?: boolean;
   /** Whether the sauna is on tidal water (e.g. Puget Sound) */
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
@@ -1011,6 +1045,8 @@ export interface Sauna {
   updatedAt: string;
   /** Booking provider config for live availability checking */
   bookingProvider?: BookingProviderConfig;
+  /** Optional images of the sauna facility */
+  images?: { url: string; alt: string }[];
 }
 
 export const saunas: Sauna[] = [
@@ -1049,6 +1085,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
@@ -1061,6 +1098,12 @@ export const saunas: Sauna[] = [
     lng: -122.31912671966559,
     googleMapsUrl: "https://maps.app.goo.gl/V8vZT5EHxyWjvdTt8",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/815-refresh/hero.jpg",
+        alt: "815 Refresh sauna facility",
+      },
+    ],
   },
   {
     slug: "banya-5",
@@ -1206,6 +1249,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
@@ -1244,6 +1288,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447265",
     waterTempProvider: {
@@ -1285,6 +1330,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "washington",
@@ -1320,6 +1366,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Daily",
@@ -1346,6 +1393,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447659",
     waterTempProvider: {
@@ -1400,6 +1448,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
@@ -1415,6 +1464,12 @@ export const saunas: Sauna[] = [
     lat: 47.579690752543705,
     lng: -122.40965128425405,
     updatedAt: "2026-02-27",
+    images: [
+      {
+        url: "/saunas/sauna-moon-alki/sauna-window.png",
+        alt: "Hot Rocks Sauna Club sauna with window view",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "fab325db",
@@ -1445,6 +1500,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
@@ -1460,6 +1516,12 @@ export const saunas: Sauna[] = [
     lat: 47.58723118931083,
     lng: -122.37805356401263,
     updatedAt: "2026-02-27",
+    images: [
+      {
+        url: "/saunas/sauna-moon-seacrest-park/sauna-window.png",
+        alt: "Hot Rocks Sauna Club sauna with window view",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "fab325db",
@@ -1490,6 +1552,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "sammamish",
@@ -1504,6 +1567,16 @@ export const saunas: Sauna[] = [
     lng: -122.1118042997229,
     googleMapsUrl: "https://maps.app.goo.gl/CDbBkrwehr3fHGjG9",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/vihta/lake-sammamish.jpg",
+        alt: "Vihta sauna on Lake Sammamish",
+      },
+      {
+        url: "/saunas/vihta/sauna-interior.jpg",
+        alt: "Vihta sauna interior",
+      },
+    ],
     bookingProvider: {
       type: "wix",
       siteUrl: "www.vihtasauna.co",
@@ -1534,7 +1607,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "washington",
@@ -1550,6 +1624,12 @@ export const saunas: Sauna[] = [
     lng: -122.2077221912926,
     googleMapsUrl: "https://maps.app.goo.gl/qLPor8mT4ycxEqCe9",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/von-sauna/interior.jpg",
+        alt: "Von Sauna floating sauna interior with wooden benches seen through glass door",
+      },
+    ],
     bookingProvider: {
       type: "periode",
       merchantId: "PqrVGDw50fAmCwkYGrxY",
@@ -1579,6 +1659,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: true,
     genderPolicy: "Co-ed",
@@ -1617,6 +1698,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
@@ -1635,6 +1717,12 @@ export const saunas: Sauna[] = [
     lng: -122.39572104295499,
     googleMapsUrl: "https://maps.app.goo.gl/M6J5vgcMeswgkGht5",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/good-day-sauna/exterior.jpg",
+        alt: "Good Day Sauna mobile sauna on the beach at sunset",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "5e9464ed",
@@ -1664,6 +1752,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9445882",
     waterTempProvider: {
@@ -1681,6 +1770,12 @@ export const saunas: Sauna[] = [
     lng: -122.54906706776069,
     googleMapsUrl: "https://maps.app.goo.gl/VyE9xPAczrJhch9h8",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/fire-and-floe/exterior.png",
+        alt: "Fire and Floe mobile sauna trailer",
+      },
+    ],
     bookingProvider: {
       type: "periode",
       merchantId: "7Rnv6gI4q8eaTuU5uSQA",
@@ -1773,6 +1868,12 @@ export const saunas: Sauna[] = [
     lng: -122.201659441966,
     googleMapsUrl: "https://maps.app.goo.gl/WNCP4HCTXaxbPHJW7",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/soak-and-sage/hero.webp",
+        alt: "Soak and Sage spa wellness area",
+      },
+    ],
   },
   {
     slug: "seattle-sauna",
@@ -1788,7 +1889,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: false,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: true,
     towelsIncluded: true,
     genderPolicy: "Co-ed",
@@ -1798,6 +1900,16 @@ export const saunas: Sauna[] = [
     lng: -122.33052201956258,
     googleMapsUrl: "https://maps.app.goo.gl/zWoF6awqyvpSLaa76",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/seattle-sauna/interior.jpg",
+        alt: "Seattle Sauna cedar-lined interior viewed through window at night",
+      },
+      {
+        url: "/saunas/seattle-sauna/exterior.jpg",
+        alt: "Seattle Sauna floating structure on Lake Union",
+      },
+    ],
   },
   {
     slug: "sauna-n-soak",
@@ -1814,6 +1926,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447427",
     waterTempProvider: {
@@ -1830,6 +1943,12 @@ export const saunas: Sauna[] = [
     lat: 47.813456307232165,
     lng: -122.38195767249658,
     updatedAt: "2026-01-04",
+    images: [
+      {
+        url: "/saunas/sauna-n-soak/exterior.jpg",
+        alt: "Sauna N Soak barrel sauna on the beach at sunset",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "2fd467d2",
@@ -1915,6 +2034,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: true,
     towelsIncluded: true,
     genderPolicy: "Co-ed",
@@ -1924,6 +2044,16 @@ export const saunas: Sauna[] = [
     lng: -122.32544961013753,
     googleMapsUrl: "https://maps.app.goo.gl/vc1HhqLA9G5XXaEz8",
     updatedAt: "2025-01-04",
+    images: [
+      {
+        url: "/saunas/wildhaus/interior.jpg",
+        alt: "Wildhaus floating sauna interior with tiered wooden benches",
+      },
+      {
+        url: "/saunas/wildhaus/exterior.jpg",
+        alt: "Wildhaus floating sauna on Lake Union at sunset with Seattle skyline",
+      },
+    ],
   },
   {
     slug: "svette-sauna",
@@ -1950,6 +2080,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
@@ -2021,6 +2152,16 @@ export const saunas: Sauna[] = [
     lat: 47.98004258034211,
     lng: -122.2089488431352,
     updatedAt: "2026-02-06",
+    images: [
+      {
+        url: "/saunas/everett-banya/interior.jpg",
+        alt: "Everett Banya hall with hot tub and plunge pools",
+      },
+      {
+        url: "/saunas/everett-banya/exterior.jpg",
+        alt: "Everett Banya building exterior with illuminated signage",
+      },
+    ],
   },
   {
     slug: "hot-spot-lookout-arts-quarry",
@@ -2043,6 +2184,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // On quarry
     naturalPlunge: true, // Freshwater quarry cold plunge
+    isOutside: true,
     showers: true,
     towelsIncluded: false, // Towels available to rent $4
     temperatureRangeF: { min: 175, max: 194 },
@@ -2055,6 +2197,16 @@ export const saunas: Sauna[] = [
     lat: 48.64144031843873,
     lng: -122.35482835387809,
     updatedAt: "2026-02-18",
+    images: [
+      {
+        url: "/saunas/hot-spot-lookout-arts-quarry/interior.jpg",
+        alt: "Hot Spot barrel sauna interior with heater and wooden benches",
+      },
+      {
+        url: "/saunas/hot-spot-lookout-arts-quarry/exterior.jpg",
+        alt: "Hot Spot barrel sauna at Lookout Arts Quarry with SAUNA OPEN sign",
+      },
+    ],
   },
   {
     slug: "hot-spot-bloedel-donovan",
@@ -2077,6 +2229,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // On Lake Whatcom
     naturalPlunge: true, // Lake Whatcom
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Check website for session times (soft opening Feb 2026)",
@@ -2087,6 +2240,16 @@ export const saunas: Sauna[] = [
     lat: 48.76063678683713,
     lng: -122.41836214427805,
     updatedAt: "2026-02-18",
+    images: [
+      {
+        url: "/saunas/hot-spot-bloedel-donovan/interior.jpg",
+        alt: "Hot Spot barrel sauna interior with heater and wooden benches",
+      },
+      {
+        url: "/saunas/hot-spot-bloedel-donovan/exterior.jpg",
+        alt: "Hot Spot barrel sauna with SAUNA OPEN sign",
+      },
+    ],
   },
   {
     slug: "sacred-rain-healing-center",
@@ -2101,6 +2264,7 @@ export const saunas: Sauna[] = [
     soakingTub: true,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     hours: "Sun-Thu 10am-8pm, Fri-Sat 10am-10pm",
@@ -2138,6 +2302,16 @@ export const saunas: Sauna[] = [
     lat: 47.61395512236991,
     lng: -122.31851450204844,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/hothouse-spa/interior.png",
+        alt: "Hothouse Spa cedar sauna interior",
+      },
+      {
+        url: "/saunas/hothouse-spa/spa-area.png",
+        alt: "Hothouse Spa hot tub and soaking area",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "bae4137c",
@@ -2455,7 +2629,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: true, // Outdoor cold showers
     towelsIncluded: true,
     hours: "Thu-Mon 9am-9pm, Closed Tue-Wed",
@@ -2466,6 +2641,12 @@ export const saunas: Sauna[] = [
     lat: 46.7769647,
     lng: -92.103863,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/cedar-and-stone-duluth/interior.webp",
+        alt: "Cedar and Stone sauna interior with aromatherapy shelf and warm lighting",
+      },
+    ],
   },
   {
     slug: "sauna-du-nord",
@@ -2481,6 +2662,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true, // Lake access at Caribou Lake
+    isOutside: true,
     showers: false,
     towelsIncluded: false, // Bring your own small towel
     hours: "Wed, Thu, Sat, plus by request",
@@ -2491,6 +2673,12 @@ export const saunas: Sauna[] = [
     lat: 46.8995902,
     lng: -92.3128808,
     updatedAt: "2026-01-20",
+    images: [
+      {
+        url: "/saunas/sauna-du-nord/interior.jpg",
+        alt: "Sauna du Nord cedar changing room looking out to Caribou Lake",
+      },
+    ],
   },
   // {
   //   slug: "soak-on-the-sound",
@@ -2561,6 +2749,7 @@ export const saunas: Sauna[] = [
     soakingTub: false, // Coming in 2026 full opening
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor showers
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -2570,6 +2759,16 @@ export const saunas: Sauna[] = [
     lat: 37.7869327,
     lng: -122.4173046,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/alchemy-springs-sf/interior.jpg",
+        alt: "Alchemy Springs circular sauna interior with curved cedar benches",
+      },
+      {
+        url: "/saunas/alchemy-springs-sf/exterior.jpg",
+        alt: "Alchemy Springs sauna building and cold plunge courtyard",
+      },
+    ],
   },
   {
     slug: "piedmont-springs",
@@ -2622,6 +2821,16 @@ export const saunas: Sauna[] = [
     lat: 37.825413,
     lng: -122.254051,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/piedmont-springs/interior.jpg",
+        alt: "Piedmont Springs Finnish sauna interior",
+      },
+      {
+        url: "/saunas/piedmont-springs/courtyard.jpg",
+        alt: "Piedmont Springs outdoor hot tub courtyard",
+      },
+    ],
   },
   {
     slug: "loyly-southeast",
@@ -2662,6 +2871,12 @@ export const saunas: Sauna[] = [
     lat: 45.5030764,
     lng: -122.6448491,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/loyly-southeast/interior.jpg",
+        alt: "Löyly Southeast courtyard with lounge chairs and outdoor showers",
+      },
+    ],
   },
   {
     slug: "loyly-northeast",
@@ -2702,6 +2917,12 @@ export const saunas: Sauna[] = [
     lat: 45.548673,
     lng: -122.6617778,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/loyly-northeast/interior.jpg",
+        alt: "Löyly courtyard with lounge chairs and outdoor showers",
+      },
+    ],
   },
   {
     slug: "common-ground-wellness",
@@ -2727,6 +2948,12 @@ export const saunas: Sauna[] = [
     lat: 45.5594156,
     lng: -122.6304762,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/common-ground-wellness/hero.jpg",
+        alt: "Common Ground Wellness bathhouse",
+      },
+    ],
   },
   {
     slug: "forest-haven-sauna",
@@ -2827,6 +3054,12 @@ export const saunas: Sauna[] = [
     lat: 45.5074432,
     lng: -122.5640963,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/bear-banya/hero.jpg",
+        alt: "Bear Banya venik ritual",
+      },
+    ],
   },
   {
     slug: "saunaglo",
@@ -2858,6 +3091,12 @@ export const saunas: Sauna[] = [
     lat: 45.4438,
     lng: -122.6317,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/saunaglo/hero.jpg",
+        alt: "SaunaGlo tranquil setting",
+      },
+    ],
   },
   {
     slug: "guss-mobile-sauna",
@@ -2875,6 +3114,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // On Willamette River
     naturalPlunge: true, // River plunge
+    isOutside: true,
     showers: false,
     towelsIncluded: false, // Bring two towels
     hours: "Check website for session times",
@@ -2919,6 +3159,16 @@ export const saunas: Sauna[] = [
     lat: 45.5234981,
     lng: -122.6629436,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/knot-springs/interior.jpg",
+        alt: "Knot Springs sauna interior with warm wood paneling",
+      },
+      {
+        url: "/saunas/knot-springs/pool-area.jpg",
+        alt: "Knot Springs soaking pool and lounge area",
+      },
+    ],
   },
   {
     slug: "koti-sauna",
@@ -2935,6 +3185,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor showers
     towelsIncluded: false,
     temperatureRangeF: { min: 185, max: 195 },
@@ -2946,6 +3197,16 @@ export const saunas: Sauna[] = [
     lat: 45.4442786,
     lng: -122.6201981,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/koti-sauna/interior.jpeg",
+        alt: "Koti Sauna cedar interior with tiered benches and heater",
+      },
+      {
+        url: "/saunas/koti-sauna/exterior.jpeg",
+        alt: "Koti Sauna outdoor walkway with cedar siding and string lights",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "d8dc9e08",
@@ -2983,6 +3244,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Warm soaking tub
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 165, max: 190 },
@@ -3023,6 +3285,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Hot tub
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor shower
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
@@ -3081,6 +3344,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Two hot soaking tubs with salt infusions
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false, // $5 towel and robe rental
     temperatureRangeF: { min: 170, max: 190 },
@@ -3120,6 +3384,16 @@ export const saunas: Sauna[] = [
     lat: 45.5887579,
     lng: -122.7506969,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/fern-and-thistle/interior.jpg",
+        alt: "Fern and Thistle cedar sauna room with heater",
+      },
+      {
+        url: "/saunas/fern-and-thistle/exterior.jpg",
+        alt: "Fern and Thistle backyard sauna at night with string lights",
+      },
+    ],
   },
   {
     slug: "uptown-sauna-house",
@@ -3136,6 +3410,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor hot/cold shower with soaps provided
     towelsIncluded: false,
     hours:
@@ -3183,7 +3458,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating on Columbia River
     naturalPlunge: true, // River plunge
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: true, // Freshwater showers (no soap for environmental reasons)
     towelsIncluded: false, // Bring two towels
     hours: "Social Fri-Sun 7am-7pm; Private available all week",
@@ -3194,6 +3470,12 @@ export const saunas: Sauna[] = [
     lat: 45.6018646,
     lng: -122.6631804,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/ebb-and-ember/hero.JPEG",
+        alt: "Ebb and Ember floating sauna on Columbia River",
+      },
+    ],
     bookingProvider: {
       type: "periode",
       merchantId: "wE4l5rKVuae2oCBE93gz",
@@ -3262,7 +3544,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating on Richardson Bay
     naturalPlunge: true, // Bay plunge
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414863",
@@ -3279,6 +3562,12 @@ export const saunas: Sauna[] = [
     lat: 37.866355519413275,
     lng: -122.49567078054073,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/fjord-sausalito/exterior.jpg",
+        alt: "FJORD floating sauna aerial view in Sausalito harbor with redwood deck",
+      },
+    ],
     bookingProvider: {
       type: "zettlor",
       handle: "fjord",
@@ -3353,6 +3642,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Point San Pablo waterfront
     naturalPlunge: true, // Bay plunge at beach
+    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414863",
@@ -3447,6 +3737,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Crane Cove Park on the Bay
     naturalPlunge: true, // Bay plunge
+    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414750",
@@ -3463,6 +3754,12 @@ export const saunas: Sauna[] = [
     lat: 37.7629995,
     lng: -122.3873433,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/dogpatch-paddle-sauna/hero.JPG",
+        alt: "Dogpatch Paddle sauna and cold plunge",
+      },
+    ],
   },
   {
     slug: "kabuki-springs-sf",
@@ -3538,6 +3835,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Hot and warm pools
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Individual shower rooms
     towelsIncluded: true, // Robes and towels included
     hours: "Reservations recommended, walk-ins welcome",
@@ -3548,6 +3846,12 @@ export const saunas: Sauna[] = [
     lat: 47.5989797,
     lng: -120.6434129,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/the-springs-leavenworth/interior.jpg",
+        alt: "The Springs cedar sauna interior with wooden benches and heater",
+      },
+    ],
   },
   {
     slug: "seatsu-sauna",
@@ -3564,6 +3868,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Hot bath available
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor showers
     towelsIncluded: false,
     hours: "By appointment only; Community sessions Thu/Sun 6pm",
@@ -3633,6 +3938,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Hot soaking pool
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false, // Bring your own towel
     hours: "Day guest passes subject to availability, book within 3 days",
@@ -3643,6 +3949,12 @@ export const saunas: Sauna[] = [
     lat: 46.3420938,
     lng: -124.0421083,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/snow-peak-campfield/hero.png",
+        alt: "Snow Peak Campfield ofuro spa",
+      },
+    ],
   },
   {
     slug: "watercourse-way",
@@ -3713,6 +4025,12 @@ export const saunas: Sauna[] = [
     lat: 37.4412042,
     lng: -122.1585519,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/watercourse-way/exterior.jpg",
+        alt: "Watercourse Way entrance fountain and brick building facade",
+      },
+    ],
   },
   {
     slug: "alyeska-nordic-spa",
@@ -3755,6 +4073,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // On the Deschutes River
     naturalPlunge: true, // Deschutes River
+    isOutside: true,
     showers: true, // Rain and bucket showers
     towelsIncluded: false,
     hours: "Seasonal Oct-May (Riverside); Hanai Garden year-round",
@@ -3765,6 +4084,12 @@ export const saunas: Sauna[] = [
     lat: 44.0548,
     lng: -121.2932,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/gather-sauna-house/interior.jpg",
+        alt: "Gather Sauna House interior with wood-burning stove and cedar benches",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "5ce047b0",
@@ -3819,6 +4144,56 @@ export const saunas: Sauna[] = [
     lat: 44.7817,
     lng: -121.9778,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/breitenbush-hot-springs/hero.JPG",
+        alt: "Breitenbush Hot Springs pool",
+      },
+    ],
+  },
+  // ============================================================================
+  // SAN DIEGO, CA
+  // ============================================================================
+  {
+    slug: "beach-sauna-express",
+    name: "Beach Sauna Express",
+    address: "South Ponto Beach, 9969 Carlsbad Blvd, Encinitas, CA 92024",
+    website: "https://www.beachsaunaexpress.com",
+    bookingUrl:
+      "https://sweatpals.com/event/beach-sauna-sunday-detox-awaken-your-energy-naturally-a2",
+    googleMapsUrl: "https://maps.app.goo.gl/Xus1SLWsgmWsf8qDA",
+    sessionPrice: 70,
+    sessionLengthMinutes: 360,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    hours: "Sundays 3pm-9pm (check Sweatpals for schedule)",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired mobile sauna on South Ponto Beach. Includes unlimited sauna access, Venik Platza rituals with eucalyptus branches, cold plunge in the Pacific Ocean, and tea service. Recurring weekly Sunday sessions booked through Sweatpals.",
+    lat: 33.085,
+    lng: -117.3117,
+    updatedAt: "2026-03-01",
+    bookingPlatform: "sweatpals",
+    bookingProvider: {
+      type: "sweatpals",
+      creatorId: "749852f8-7b60-48e6-a05f-70a049fc1a96",
+      timezone: "America/Los_Angeles",
+      events: [
+        {
+          baseEventId: "74f4bdb6-f860-42bc-a1f9-319a4192ca28",
+          name: "Beach Sauna Sunday",
+          price: 70,
+          durationMinutes: 360,
+        },
+      ],
+    },
   },
   // ============================================================================
   // VANCOUVER, BC, CANADA
@@ -3890,6 +4265,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     hours: "Check website for session times",
@@ -3900,6 +4276,16 @@ export const saunas: Sauna[] = [
     lat: 49.2725,
     lng: -123.0847,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/the-good-sauna-vancouver/cold-plunge.jpg",
+        alt: "The Good Sauna galvanized steel cold plunge tubs with ice",
+      },
+      {
+        url: "/saunas/the-good-sauna-vancouver/exterior.jpg",
+        alt: "The Good Sauna firewood storage and mugs with cedar shingle wall",
+      },
+    ],
   },
   {
     slug: "hastings-spa",
@@ -3949,6 +4335,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Transition tub
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor hot/cold shower
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -3960,6 +4347,12 @@ export const saunas: Sauna[] = [
     lat: 49.3833,
     lng: -123.3333,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/mist-thermal-sanctuary/interior.jpg",
+        alt: "Mist Thermal Sanctuary sauna interior with wood-burning stove and natural light",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "e382c61c",
@@ -4005,6 +4398,7 @@ export const saunas: Sauna[] = [
       fallbackStationIds: ["46146", "46131"], // Halibut Bank, Sentry Shoal
     },
     waterTempUnit: "C",
+    isOutside: true,
     showers: true, // Freshwater rinse showers
     towelsIncluded: false, // Bring two towels
     hours: "Seasonal winter pop-up, check schedule for session times",
@@ -4067,7 +4461,8 @@ export const saunas: Sauna[] = [
     soakingTub: true, // 2 hot mineral tubs
     waterfront: true, // Floating in Victoria's Inner Harbour
     naturalPlunge: false,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: true,
     towelsIncluded: true, // Plush robe and towels included
     servesFood: true, // Light food and beverage service in lounge
@@ -4080,6 +4475,12 @@ export const saunas: Sauna[] = [
     lat: 48.4236,
     lng: -123.3683,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/havn-harbour-sauna/hero.webp",
+        alt: "HAVN harbour sauna facility",
+      },
+    ],
   },
   {
     slug: "ritual-nordic-spa",
@@ -4128,6 +4529,12 @@ export const saunas: Sauna[] = [
     lat: 48.4284,
     lng: -123.3656,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/ritual-nordic-spa/hero.jpg",
+        alt: "Ritual Nordic Spa",
+      },
+    ],
   },
   {
     slug: "sea-edge-sauna",
@@ -4152,6 +4559,7 @@ export const saunas: Sauna[] = [
       fallbackStationIds: ["46146", "46303"], // Halibut Bank, Southern Georgia Strait
     },
     waterTempUnit: "C",
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4237,6 +4645,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor shower
     towelsIncluded: false, // Bring your own
     temperatureRangeF: { min: 170, max: 200 },
@@ -4248,6 +4657,12 @@ export const saunas: Sauna[] = [
     lat: 48.6447,
     lng: -123.6328,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/nyubu-nordic-spa/hero.jpg",
+        alt: "Nyubu Nordic Spa from the trail",
+      },
+    ],
   },
   {
     slug: "island-sauna-black-creek",
@@ -4287,6 +4702,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Creekside location
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Hot shower
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4337,6 +4753,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Lakeside
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4391,6 +4808,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Beachfront at Cox Bay
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Cold shower for cold-water-therapy
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4402,6 +4820,12 @@ export const saunas: Sauna[] = [
     lat: 49.1066,
     lng: -125.8729,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/tuff-city-saunas-pacific-sands/hero.jpg",
+        alt: "Tuff City Saunas at Pacific Sands",
+      },
+    ],
   },
   {
     slug: "remote-floating-sauna-tofino",
@@ -4438,7 +4862,8 @@ export const saunas: Sauna[] = [
       fallbackStationIds: ["46131", "46146"], // Sentry Shoal, Halibut Bank
     },
     waterTempUnit: "C",
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: false,
     towelsIncluded: true,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4450,6 +4875,12 @@ export const saunas: Sauna[] = [
     lat: 49.1498,
     lng: -125.8956,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/remote-floating-sauna-tofino/hero.jpg",
+        alt: "Remote Floating Sauna in Tofino",
+      },
+    ],
   },
   // ============================================================================
   // WHISTLER, BC
@@ -4485,6 +4916,7 @@ export const saunas: Sauna[] = [
     soakingTub: true, // Multiple hot pools
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: true, // Robe rental, towels, locker included
     temperatureRangeF: { min: 160, max: 200 },
@@ -4496,6 +4928,12 @@ export const saunas: Sauna[] = [
     lat: 50.1082,
     lng: -122.9359,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/scandinave-spa-whistler/hero.jpg",
+        alt: "Scandinave Spa Whistler in winter",
+      },
+    ],
   },
   {
     slug: "meadow-park-sports-centre",
@@ -4546,6 +4984,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Beside glacier-fed river
     naturalPlunge: true, // Glacier-fed river just 10m away
+    isOutside: true,
     showers: false, // Off-grid, river bathing only
     towelsIncluded: false, // Bring your own towel
     temperatureRangeF: { min: 170, max: 200 },
@@ -4597,6 +5036,7 @@ export const saunas: Sauna[] = [
       fallbackStationIds: ["46146", "46303"], // Halibut Bank, Southern Georgia Strait
     },
     waterTempUnit: "C",
+    isOutside: true,
     showers: true, // Outdoor cold shower
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 176 }, // Up to 80°C
@@ -4608,6 +5048,12 @@ export const saunas: Sauna[] = [
     lat: 49.8479,
     lng: -124.5314,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/orca-saunas-willingdon-beach/hero.jpg",
+        alt: "Orca Saunas at Willingdon Beach",
+      },
+    ],
     bookingProvider: {
       type: "periode",
       merchantId: "aoy42QDbXlX69KNH6ook",
@@ -4864,6 +5310,12 @@ export const saunas: Sauna[] = [
     lat: 40.7118,
     lng: -111.8885,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/plunj-salt-lake/hero.jpg",
+        alt: "PLUNJ Salt Lake studio",
+      },
+    ],
   },
   {
     slug: "utah-lake-sauna",
@@ -4880,6 +5332,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Lakeside at Utah Lake State Park
     naturalPlunge: true, // Lake access
+    isOutside: true,
     showers: true, // Outdoor shower
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
@@ -4891,6 +5344,12 @@ export const saunas: Sauna[] = [
     lat: 40.2338,
     lng: -111.7352,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/utah-lake-sauna/hero.jpeg",
+        alt: "Utah Lake Sauna with mountain view",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "1a980a7f",
@@ -4955,6 +5414,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -5007,6 +5467,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Rinse stations
     towelsIncluded: false, // Available to rent
     temperatureRangeF: { min: 170, max: 200 },
@@ -5071,6 +5532,12 @@ export const saunas: Sauna[] = [
     lat: 39.7419,
     lng: -104.9706,
     updatedAt: "2026-01-06",
+    images: [
+      {
+        url: "/saunas/garden-sauna-denver/hero.webp",
+        alt: "Garden Sauna Denver",
+      },
+    ],
   },
   {
     slug: "lake-steam-baths",
@@ -5151,6 +5618,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 150, max: 195 },
@@ -5226,6 +5694,12 @@ export const saunas: Sauna[] = [
     lat: 39.75821833272818,
     lng: -105.04508446441803,
     updatedAt: "2026-02-26",
+    images: [
+      {
+        url: "/saunas/red-rock-sauna/hero.jpg",
+        alt: "Red Rock Sauna Denver",
+      },
+    ],
   },
   {
     slug: "denver-sports-recovery",
@@ -5296,6 +5770,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Wed-Fri 7am-7:30am, Sun 9am-9:30am (quiet time); other times vary",
@@ -5321,6 +5796,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Tue & Thu 4pm-9pm",
@@ -5375,6 +5851,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: true,
     hours: "Check booking calendar for session times",
@@ -5415,6 +5892,12 @@ export const saunas: Sauna[] = [
     lat: 36.1447,
     lng: -86.7786,
     updatedAt: "2026-02-06",
+    images: [
+      {
+        url: "/saunas/framework-flagship-nashville/hero.jpg",
+        alt: "Framework sauna and cold plunge studio",
+      },
+    ],
     bookingProvider: {
       type: "mariana-tek",
       tenant: "joinframework",
@@ -5453,6 +5936,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: true, // Outdoor showers
     towelsIncluded: false,
     temperatureRangeF: { min: 190, max: 190 }, // Social sauna at 190°F
@@ -5464,6 +5948,12 @@ export const saunas: Sauna[] = [
     lat: 36.1887,
     lng: -86.7506,
     updatedAt: "2026-02-06",
+    images: [
+      {
+        url: "/saunas/framework-backyard-nashville/hero.jpg",
+        alt: "Framework sauna and cold plunge studio",
+      },
+    ],
     bookingProvider: {
       type: "mariana-tek",
       tenant: "joinframework",
@@ -5522,6 +6012,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false, // Cold water bucket shower only
     towelsIncluded: false,
     capacity: 8,
@@ -5533,6 +6024,16 @@ export const saunas: Sauna[] = [
     lat: 36.207028602161,
     lng: -81.77167177687609,
     updatedAt: "2026-02-28",
+    images: [
+      {
+        url: "/saunas/river-birch-nordic-sauna/interior.jpg",
+        alt: "River Birch Nordic Sauna cedar interior with mountain view window",
+      },
+      {
+        url: "/saunas/river-birch-nordic-sauna/exterior.jpg",
+        alt: "River Birch Nordic Sauna exterior with Blue Ridge Mountain backdrop",
+      },
+    ],
   },
   {
     slug: "glidden-point-oyster-farms",
@@ -5548,7 +6049,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
-    floating: true,
+    isOutside: true,
+    isFloating: true,
     showers: false,
     towelsIncluded: false,
     hours: "Thu-Sun sunrise to sunset, Oct 2-May 8",
@@ -5576,12 +6078,13 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447855",
     waterTempProvider: {
       type: "noaa",
-      stationId: "9447130",
-      fallbackStationIds: ["9446484"],
+      stationId: "9444900",
+      fallbackStationIds: ["9447130", "9446484"],
     },
     showers: false,
     towelsIncluded: false,
@@ -5593,6 +6096,12 @@ export const saunas: Sauna[] = [
     lat: 47.9928,
     lng: -122.541,
     updatedAt: "2026-02-08",
+    images: [
+      {
+        url: "/saunas/good-medicine-whidbey/hero.jpg",
+        alt: "Good Medicine mobile sauna on Whidbey Island shoreline",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "138cd2f6",
@@ -5647,12 +6156,13 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     tidal: true,
     noaaTideStation: "9447905",
     waterTempProvider: {
       type: "noaa",
-      stationId: "9447130",
-      fallbackStationIds: ["9446484"],
+      stationId: "9444900",
+      fallbackStationIds: ["9447130", "9446484"],
     },
     showers: false,
     towelsIncluded: false, // Bring two towels
@@ -5666,6 +6176,12 @@ export const saunas: Sauna[] = [
     lat: 48.192226197179,
     lng: -122.70851049351572,
     updatedAt: "2026-02-18",
+    images: [
+      {
+        url: "/saunas/driftwood-sauna-co/hero.JPG",
+        alt: "Driftwood Sauna Co interior",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "25eb04ae",
@@ -5715,6 +6231,12 @@ export const saunas: Sauna[] = [
     lat: 42.3385,
     lng: -71.0564,
     updatedAt: "2026-02-09",
+    images: [
+      {
+        url: "/saunas/moki-sauna-south-boston/hero.jpg",
+        alt: "Moki Sauna experience",
+      },
+    ],
     // Periode publishNightly=false — no pre-generated slot data in Firestore
   },
   {
@@ -5742,6 +6264,12 @@ export const saunas: Sauna[] = [
     lat: 42.3625,
     lng: -71.1285,
     updatedAt: "2026-02-09",
+    images: [
+      {
+        url: "/saunas/moki-sauna-allston/hero.jpg",
+        alt: "Moki Sauna experience",
+      },
+    ],
     // Periode publishNightly=false — no pre-generated slot data in Firestore
   },
   // New York City
@@ -5778,6 +6306,16 @@ export const saunas: Sauna[] = [
     lat: 40.72745,
     lng: -73.99488,
     updatedAt: "2026-02-11",
+    images: [
+      {
+        url: "/saunas/lore-bathing-club/interior.jpg",
+        alt: "Lore Bathing Club sauna with curved wood ceiling and LED lighting",
+      },
+      {
+        url: "/saunas/lore-bathing-club/cold-pool.jpg",
+        alt: "Lore Bathing Club cold plunge pool room",
+      },
+    ],
   },
   // {
   //   slug: "schwet",
@@ -5838,6 +6376,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Williamsburg waterfront
     naturalPlunge: false,
+    isOutside: true,
     showers: true,
     towelsIncluded: false,
     hours: "Feb 12 – Mar 1, 2026, daily 7am-10pm",
@@ -5897,6 +6436,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     capacity: 16,
@@ -5907,6 +6447,12 @@ export const saunas: Sauna[] = [
     lat: 41.0676,
     lng: -73.5365,
     updatedAt: "2026-02-11",
+    images: [
+      {
+        url: "/saunas/hideout-social-club/hero.jpg",
+        alt: "Hideout Sauna Village outdoor space",
+      },
+    ],
     bookingProvider: {
       type: "mariana-tek",
       tenant: "hideout",
@@ -5958,6 +6504,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: true,
     temperatureRangeF: { min: 160, max: 190 },
@@ -5970,6 +6517,12 @@ export const saunas: Sauna[] = [
     lat: 41.3054,
     lng: -72.9238,
     updatedAt: "2026-02-11",
+    images: [
+      {
+        url: "/saunas/dryyp-sauna/hero.jpg",
+        alt: "DRYYP Sauna in New Haven",
+      },
+    ],
   },
   // Berkshires, MA / NY
   {
@@ -5996,6 +6549,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours:
@@ -6030,6 +6584,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // PS21 Pond
     naturalPlunge: true, // Cold plunge in natural pond
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     hours: "Daily 10am-7pm (Jan 31 – Mar 1, 2026)",
@@ -6063,6 +6618,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 185 },
@@ -6120,6 +6676,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -6146,6 +6703,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     capacity: 10,
@@ -6156,6 +6714,12 @@ export const saunas: Sauna[] = [
     lat: 39.8669548,
     lng: -86.1565051,
     updatedAt: "2026-02-27",
+    images: [
+      {
+        url: "/saunas/sol-drift-sauna/hero.jpg",
+        alt: "Sol Drift Sauna interior",
+      },
+    ],
     bookingProvider: {
       type: "acuity",
       owner: "0c565062",
@@ -6219,6 +6783,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -6267,6 +6832,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -6664,6 +7230,7 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
+    isOutside: true,
     showers: false,
     towelsIncluded: false,
     capacity: 8,
@@ -6674,6 +7241,7 @@ export const saunas: Sauna[] = [
     lat: 47.69059478343702,
     lng: -116.78791453211564,
     updatedAt: "2026-02-28",
+    images: [],
     bookingProvider: {
       type: "acuity",
       owner: "9511b063",
@@ -6772,7 +7340,7 @@ export function buildSaunaSchemaDescription(sauna: Sauna): string {
 /** Build a concise amenity summary string for SEO descriptions. */
 export function describeSaunaAmenities(sauna: Sauna): string {
   const parts: string[] = [];
-  if (sauna.floating) parts.push("Floating sauna");
+  if (sauna.isFloating) parts.push("Floating sauna");
   else if (sauna.waterfront) parts.push("Waterfront location");
   if (sauna.naturalPlunge) parts.push("natural cold plunge");
   else if (sauna.coldPlunge) parts.push("cold plunge");
@@ -6785,7 +7353,7 @@ export function describeSaunaAmenities(sauna: Sauna): string {
 /** Build a dynamic SEO description for a location based on its saunas. */
 export function describeLocationAmenities(locationSaunas: Sauna[]): string {
   const total = locationSaunas.length;
-  const floating = locationSaunas.filter((s) => s.floating).length;
+  const floating = locationSaunas.filter((s) => s.isFloating).length;
   const waterfront = locationSaunas.filter((s) => s.waterfront).length;
   const coldPlunge = locationSaunas.filter((s) => s.coldPlunge).length;
   const naturalPlunge = locationSaunas.filter((s) => s.naturalPlunge).length;

@@ -140,24 +140,30 @@ body {
 
 /* Thin scrollbar that only appears on hover (like Google Maps) */
 .thin-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-}
-.thin-scrollbar:hover {
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-width: none; /* Hide native scrollbar so webkit rules take effect */
 }
 .thin-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 .thin-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 .thin-scrollbar::-webkit-scrollbar-thumb {
   background: transparent;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 .thin-scrollbar:hover::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
+}
+/* Firefox fallback */
+@supports not selector(::-webkit-scrollbar) {
+  .thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .thin-scrollbar:hover {
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
 }
 
 /* Clear default leaflet divIcon background for cluster icons */

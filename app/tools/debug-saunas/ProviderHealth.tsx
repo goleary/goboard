@@ -164,9 +164,7 @@ export default function ProviderHealth({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [today]);
 
-  useEffect(() => {
-    runChecks();
-  }, [runChecks]);
+  // Only run checks on button click, not automatically
 
   const done = results.size > 0 && ![...results.values()].some((r) => r.status === "pending");
   const okCount = [...results.values()].filter((r) => r.status === "ok").length;
@@ -182,7 +180,7 @@ export default function ProviderHealth({
           disabled={running}
           className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
         >
-          {running ? "Checking..." : "Re-check"}
+          {running ? "Checking..." : results.size > 0 ? "Re-check" : "Check"}
         </button>
         {done && (
           <span className="text-xs text-gray-500">
