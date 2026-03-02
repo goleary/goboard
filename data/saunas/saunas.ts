@@ -907,12 +907,26 @@ export interface NoaaWaterTempProviderConfig {
 }
 
 /**
+ * CIOOS Pacific ERDDAP water temperature provider configuration.
+ * Uses the ECCC MSC Buoys dataset from the Canadian Integrated Ocean Observing System.
+ * Provides hourly sea surface temperature from Environment Canada weather buoys.
+ */
+export interface CioosErddapWaterTempProviderConfig {
+  type: "cioos-erddap";
+  /** Primary ECCC MSC buoy WMO station ID (e.g. "46131" for Sentry Shoal) */
+  stationId: string;
+  /** Fallback station IDs to try if the primary station has no data */
+  fallbackStationIds?: string[];
+}
+
+/**
  * Discriminated union of water temperature data providers.
  * Add new provider interfaces here and union them in to support additional data sources.
  */
 export type WaterTempProviderConfig =
   | KingCountyBuoyWaterTempProviderConfig
-  | NoaaWaterTempProviderConfig;
+  | NoaaWaterTempProviderConfig
+  | CioosErddapWaterTempProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1003,6 +1017,8 @@ export interface Sauna {
   noaaTideStation?: string;
   /** Water temperature data provider for live plunge temperature display */
   waterTempProvider?: WaterTempProviderConfig;
+  /** Display unit for water temperature (defaults to "F") */
+  waterTempUnit?: "F" | "C";
   /** Whether showers are available */
   showers: boolean;
   /** Whether towels are included with admission */
@@ -4376,6 +4392,12 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanside at Jericho Beach
     naturalPlunge: true, // Ocean access
+    waterTempProvider: {
+      type: "cioos-erddap",
+      stationId: "46304", // Entrance to English Bay
+      fallbackStationIds: ["46146", "46131"], // Halibut Bank, Sentry Shoal
+    },
+    waterTempUnit: "C",
     isOutside: true,
     showers: true, // Freshwater rinse showers
     towelsIncluded: false, // Bring two towels
@@ -4531,6 +4553,12 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanfront at Sea Edge Beachside Hotel
     naturalPlunge: true, // Ocean access
+    waterTempProvider: {
+      type: "cioos-erddap",
+      stationId: "46131", // Sentry Shoal
+      fallbackStationIds: ["46146", "46303"], // Halibut Bank, Southern Georgia Strait
+    },
+    waterTempUnit: "C",
     isOutside: true,
     showers: true,
     towelsIncluded: false,
@@ -4828,6 +4856,12 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Floating in Clayoquot Sound
     naturalPlunge: true, // Pacific Ocean cold plunges
+    waterTempProvider: {
+      type: "cioos-erddap",
+      stationId: "46206", // La Perouse Bank
+      fallbackStationIds: ["46131", "46146"], // Sentry Shoal, Halibut Bank
+    },
+    waterTempUnit: "C",
     isOutside: true,
     isFloating: true,
     showers: false,
@@ -4996,6 +5030,12 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanside on the beach
     naturalPlunge: true, // Salish Sea cold plunge
+    waterTempProvider: {
+      type: "cioos-erddap",
+      stationId: "46131", // Sentry Shoal
+      fallbackStationIds: ["46146", "46303"], // Halibut Bank, Southern Georgia Strait
+    },
+    waterTempUnit: "C",
     isOutside: true,
     showers: true, // Outdoor cold shower
     towelsIncluded: false,

@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import { getSaunaBySlug } from "@/data/saunas/saunas";
 import type { WaterTempResponse } from "./providers/types";
+import { fetchCioosErddapWaterTemp } from "./providers/cioos-erddap";
 import { fetchKingCountyBuoyWaterTemp } from "./providers/king-county-buoy";
 import { fetchNoaaWaterTemp } from "./providers/noaa";
 
@@ -38,6 +39,9 @@ export async function GET(request: NextRequest) {
     let result: WaterTempResponse;
 
     switch (provider.type) {
+      case "cioos-erddap":
+        result = await fetchCioosErddapWaterTemp(provider);
+        break;
       case "king-county-buoy":
         result = await fetchKingCountyBuoyWaterTemp(provider);
         break;

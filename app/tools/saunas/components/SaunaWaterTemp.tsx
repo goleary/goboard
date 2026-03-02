@@ -6,6 +6,7 @@ import { type Sauna } from "@/data/saunas/saunas";
 import type { WaterTempResponse } from "@/app/api/saunas/water-temp/route";
 import { Badge } from "@/components/ui/badge";
 import { Waves } from "lucide-react";
+import { fahrenheitToCelsius } from "@/lib/utils";
 
 function getWaterTempColor(tempF: number): string {
   if (tempF < 45) return "text-blue-500";
@@ -120,6 +121,16 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
     );
   }
 
+  const unit = sauna.waterTempUnit ?? "F";
+  const displayTemp =
+    unit === "C"
+      ? Math.round(fahrenheitToCelsius(data.waterTempF))
+      : Math.round(data.waterTempF);
+  const displayTempPrecise =
+    unit === "C"
+      ? fahrenheitToCelsius(data.waterTempF).toFixed(1)
+      : data.waterTempF.toFixed(1);
+
   return (
     <>
       <div
@@ -138,7 +149,7 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
           <span
             className={`font-medium ${getWaterTempColor(data.waterTempF)}`}
           >
-            {Math.round(data.waterTempF)}°F
+            {displayTemp}°{unit}
           </span>
         </Badge>
       </div>
@@ -161,7 +172,7 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
               rel="noopener noreferrer"
               className="text-background hover:underline text-sm whitespace-nowrap"
             >
-              {data.waterTempF.toFixed(1)}°F · {data.source} · {formatRelativeTime(data.measuredAt)}
+              {displayTempPrecise}°{unit} · {data.source} · {formatRelativeTime(data.measuredAt)}
             </a>
           </div>,
           document.body

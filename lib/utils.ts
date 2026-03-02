@@ -9,6 +9,10 @@ export function celsiusToFahrenheit(celsius: number) {
   return celsius * 1.8 + 32;
 }
 
+export function fahrenheitToCelsius(fahrenheit: number) {
+  return (fahrenheit - 32) / 1.8;
+}
+
 export function metersPerSecondToMph(mps: number) {
   return mps * 2.237;
 }
