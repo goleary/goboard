@@ -4585,6 +4585,12 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanside on the beach
     naturalPlunge: true, // Salish Sea cold plunge
+    waterTempProvider: {
+      type: "cioos-erddap",
+      stationId: "46131", // Sentry Shoal
+      fallbackStationIds: ["46146", "46303"], // Halibut Bank, Southern Georgia Strait
+    },
+    waterTempUnit: "C",
     showers: true, // Outdoor cold shower
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 176 }, // Up to 80°C
