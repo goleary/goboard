@@ -639,6 +639,10 @@ export interface VagaroBookingProviderConfig {
     name: string;
     price: number;
     durationMinutes: number;
+    /** Whether this is a private session */
+    private?: boolean;
+    /** Number of seats for private sessions */
+    seats?: number;
   }[];
 }
 
