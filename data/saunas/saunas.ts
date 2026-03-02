@@ -5540,8 +5540,8 @@ export const saunas: Sauna[] = [
     noaaTideStation: "9447855",
     waterTempProvider: {
       type: "noaa",
-      stationId: "9447130",
-      fallbackStationIds: ["9446484"],
+      stationId: "9444900",
+      fallbackStationIds: ["9447130", "9446484"],
     },
     showers: false,
     towelsIncluded: false,
@@ -5611,8 +5611,8 @@ export const saunas: Sauna[] = [
     noaaTideStation: "9447905",
     waterTempProvider: {
       type: "noaa",
-      stationId: "9447130",
-      fallbackStationIds: ["9446484"],
+      stationId: "9444900",
+      fallbackStationIds: ["9447130", "9446484"],
     },
     showers: false,
     towelsIncluded: false, // Bring two towels
