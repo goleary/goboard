@@ -165,6 +165,8 @@ export async function fetchVagaroAvailability(
         price: svc.price,
         durationMinutes: svc.durationMinutes,
         dates: dateMap,
+        ...(svc.private && { private: svc.private }),
+        ...(svc.seats != null && { seats: svc.seats }),
       };
     })
   );
@@ -320,5 +322,7 @@ export async function fetchVagaroClassAvailability(
     price: svc.price,
     durationMinutes: svc.durationMinutes,
     dates,
+    ...(svc.private && { private: svc.private }),
+    ...(svc.seats != null && { seats: svc.seats }),
   }));
 }

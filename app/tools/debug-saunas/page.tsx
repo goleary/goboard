@@ -1,5 +1,6 @@
 import { saunas } from "@/data/saunas/saunas";
 import type { Metadata } from "next";
+import Image from "next/image";
 import ProviderHealth, { type PlatformGroup } from "./ProviderHealth";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export default function DebugSaunasPage() {
   const withPlatform = saunas.filter((s) => s.bookingPlatform);
   const withProvider = saunas.filter((s) => s.bookingProvider);
   const missingPlatform = withBookingUrl.filter((s) => !s.bookingPlatform);
+  const withImages = saunas.filter((s) => s.images && s.images.length > 0);
 
   // Group saunas by platform
   const platformMap = new Map<string, PlatformGroup>();
@@ -98,6 +100,55 @@ export default function DebugSaunasPage() {
                 {s.name}
               </span>
             ))}
+        </div>
+      </section>
+
+      {/* Sauna Images */}
+      <section>
+        <h2 className="text-lg font-semibold mb-1">
+          Images
+        </h2>
+        <p className="text-sm text-gray-500 mb-4">
+          {withImages.length} of {saunas.length} saunas have images
+        </p>
+
+        <div className="space-y-6">
+          {/* Saunas with images */}
+          {withImages.map((s) => (
+            <div key={s.slug}>
+              <h3 className="text-sm font-medium mb-2">{s.name} ({s.images!.length} image{s.images!.length !== 1 ? "s" : ""})</h3>
+              <div className="flex gap-2 overflow-x-auto">
+                {s.images!.map((img, i) => (
+                  <div key={i} className="relative w-48 aspect-[3/2] shrink-0 rounded overflow-hidden border">
+                    <Image
+                      src={img.url}
+                      alt={img.alt}
+                      fill
+                      className="object-cover"
+                      sizes="192px"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* Saunas without images */}
+          <div>
+            <h3 className="text-sm font-medium mb-2">No Images ({saunas.length - withImages.length})</h3>
+            <div className="text-sm text-gray-500 flex flex-wrap gap-2">
+              {saunas
+                .filter((s) => !s.images || s.images.length === 0)
+                .map((s) => (
+                  <span
+                    key={s.slug}
+                    className="bg-gray-100 px-2 py-1 rounded text-xs"
+                  >
+                    {s.name}
+                  </span>
+                ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>

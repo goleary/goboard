@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   Table,
@@ -10,10 +11,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Waves, Leaf, Snowflake, Mail } from "lucide-react";
+import { Check, X, Waves, Leaf, Snowflake, FlameKindling, Zap, Mail } from "lucide-react";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
 import { type SlotInfo } from "./useAvailabilityOn";
 import { TimeSlotBadge } from "./TimeSlotBadge";
+
+const MAX_SLOTS_PER_GROUP = 8;
 
 interface SaunaTableProps {
   saunas: Sauna[];
@@ -33,6 +36,8 @@ function BooleanCell({ value }: { value: boolean }) {
 }
 
 function SlotBadges({ slots }: { slots: SlotInfo[] }) {
+  const [expandedTypes, setExpandedTypes] = useState<Set<string>>(new Set());
+
   if (slots.length === 0) return null;
 
   // Group by appointment type
@@ -45,23 +50,37 @@ function SlotBadges({ slots }: { slots: SlotInfo[] }) {
 
   return (
     <div className="mt-1.5 space-y-1">
-      {Array.from(byType.entries()).map(([typeName, typeSlots]) => (
-        <div key={typeName}>
-          {byType.size > 1 && (
-            <p className="text-[10px] text-muted-foreground mb-0.5">{typeName}</p>
-          )}
-          <div className="flex flex-wrap gap-1">
-            {typeSlots.map((slot) => (
-              <TimeSlotBadge
-                key={slot.time}
-                time={slot.time}
-                slotsAvailable={slot.slotsAvailable}
-                className="text-[10px] px-1.5 py-0 h-5 font-normal gap-1"
-              />
-            ))}
+      {Array.from(byType.entries()).map(([typeName, typeSlots]) => {
+        const isExpanded = expandedTypes.has(typeName);
+        const visibleSlots = isExpanded ? typeSlots : typeSlots.slice(0, MAX_SLOTS_PER_GROUP);
+        const hiddenCount = typeSlots.length - MAX_SLOTS_PER_GROUP;
+        return (
+          <div key={typeName}>
+            {byType.size > 1 && (
+              <p className="text-[10px] text-muted-foreground mb-0.5">{typeName}</p>
+            )}
+            <div className="flex flex-wrap gap-1">
+              {visibleSlots.map((slot) => (
+                <TimeSlotBadge
+                  key={slot.time}
+                  time={slot.time}
+                  slotsAvailable={slot.slotsAvailable}
+                  className="text-[10px] px-1.5 py-0 h-5 font-normal gap-1"
+                />
+              ))}
+              {!isExpanded && hiddenCount > 0 && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setExpandedTypes((prev) => new Set(prev).add(typeName)); }}
+                  className="text-[10px] text-muted-foreground hover:text-foreground transition-colors self-center"
+                >
+                  + {hiddenCount} more
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -101,6 +120,16 @@ function CompactSaunaList({
                   {sauna.sessionLengthMinutes != null && sauna.sessionLengthMinutes > 0 && (
                     <span>{sauna.sessionLengthMinutes} min</span>
                   )}
+                  {sauna.heaterType === "wood" && (
+                    <span title="Wood stove" className="flex items-center">
+                      <FlameKindling className="h-3 w-3 text-orange-500" />
+                    </span>
+                  )}
+                  {sauna.heaterType === "electric" && (
+                    <span title="Electric stove" className="flex items-center">
+                      <Zap className="h-3 w-3 text-orange-500" />
+                    </span>
+                  )}
                   {sauna.coldPlunge && (
                     <span title="Cold Plunge" className="flex items-center">
                       <Snowflake className="h-3 w-3 text-sky-500" />
@@ -118,6 +147,14 @@ function CompactSaunaList({
                   )}
                   {sauna.soakingTub && (
                     <span title="Soaking Tub">♨️</span>
+                  )}
+                  {sauna.isFloating && (
+                    <span title="Floating Sauna" className="flex items-center text-blue-400">
+                      <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path fill="currentColor" fillRule="evenodd" d="M12 4 L21 11 H19 V18 H5 V11 H3 Z M10 14 H14 V18 H10 Z" />
+                        <path d="M0 21c.65.5 1.3 1 2.7 1 2.7 0 2.7-2 5.4-2 2.8 0 2.6 2 5.4 2 2.7 0 2.7-2 5.4-2 2.7 0 2.7 2 5.1 2" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
                   )}
                 </div>
               </div>

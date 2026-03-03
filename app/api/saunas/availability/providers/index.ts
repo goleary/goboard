@@ -25,6 +25,8 @@ import { fetchMangomintAvailability } from "./mangomint";
 import { fetchRollerAvailability } from "./roller";
 import { fetchBoulevardAvailability } from "./boulevard";
 import { fetchSojoAvailability } from "./sojo";
+import { fetchArketaAvailability } from "./arketa";
+import { fetchSweatpalsAvailability } from "./sweatpals";
 
 export async function fetchForProvider(
   provider: BookingProviderConfig,
@@ -75,5 +77,9 @@ export async function fetchForProvider(
       return fetchBoulevardAvailability(provider, startDate);
     case "sojo":
       return fetchSojoAvailability(provider, startDate);
+    case "arketa":
+      return fetchArketaAvailability(provider, startDate);
+    case "sweatpals":
+      return fetchSweatpalsAvailability(provider, startDate);
   }
 }
