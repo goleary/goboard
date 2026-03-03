@@ -2,6 +2,7 @@
 
 import { TimeSlotBadge } from "@/app/tools/saunas/components/TimeSlotBadge";
 import { useCallback, useEffect, useState } from "react";
+import { getAvailability } from "@/app/tools/saunas/actions";
 
 interface SlotData {
   time: string;
@@ -90,27 +91,8 @@ export default function ProviderHealth({
     const checkOne = async (sauna: PlatformSauna) => {
       const start = performance.now();
       try {
-        const res = await fetch(
-          `/api/saunas/availability?slug=${encodeURIComponent(sauna.slug)}&startDate=${today}`
-        );
+        const data = await getAvailability(sauna.slug, today);
         const elapsed = Math.round(performance.now() - start);
-
-        if (!res.ok) {
-          const body = await res.text();
-          setResults((prev) => {
-            const next = new Map(prev);
-            next.set(sauna.slug, {
-              slug: sauna.slug,
-              status: "error",
-              responseMs: elapsed,
-              error: `HTTP ${res.status}: ${body.slice(0, 120)}`,
-            });
-            return next;
-          });
-          return;
-        }
-
-        const data = await res.json();
         const types = data.appointmentTypes ?? [];
         let slotCount = 0;
         for (const t of types) {

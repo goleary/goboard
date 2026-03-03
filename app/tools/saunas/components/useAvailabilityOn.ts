@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import type { AvailabilityResponse } from "@/app/api/saunas/availability/route";
+import type { AvailabilityResponse } from "@/app/api/saunas/availability/types";
+import { getAvailability } from "@/app/tools/saunas/actions";
 
 export interface SlotInfo {
   time: string;
@@ -77,7 +78,7 @@ export function useAvailabilityOn(
   const [loading, setLoading] = useState(false);
   const [prevDate, setPrevDate] = useState(date);
   const cacheRef = useRef<Map<string, AvailabilityResponse | null>>(new Map());
-  const abortRef = useRef<AbortController | null>(null);
+  const versionRef = useRef(0);
 
   // Clear cache synchronously when date changes so we re-fetch,
   // but keep old results visible until new data arrives
@@ -97,10 +98,8 @@ export function useAvailabilityOn(
       return;
     }
 
-    // Cancel any in-flight requests
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
+    // Increment version to invalidate any in-flight requests
+    const version = ++versionRef.current;
 
     setLoading(true);
 
@@ -127,22 +126,21 @@ export function useAvailabilityOn(
 
     // Fetch in batches with concurrency limit
     for (let i = 0; i < toFetch.length; i += MAX_CONCURRENT) {
-      if (controller.signal.aborted) return;
+      if (versionRef.current !== version) return;
 
       const batch = toFetch.slice(i, i + MAX_CONCURRENT);
       const batchResults = await Promise.allSettled(
         batch.map(async (slug) => {
-          const res = await fetch(
-            `/api/saunas/availability?slug=${encodeURIComponent(slug)}&startDate=${date}`,
-            { signal: controller.signal }
-          );
-          if (!res.ok) return { slug, data: null as AvailabilityResponse | null };
-          const data: AvailabilityResponse = await res.json();
-          return { slug, data };
+          try {
+            const data = await getAvailability(slug, date);
+            return { slug, data: data as AvailabilityResponse | null };
+          } catch {
+            return { slug, data: null as AvailabilityResponse | null };
+          }
         })
       );
 
-      if (controller.signal.aborted) return;
+      if (versionRef.current !== version) return;
 
       for (const r of batchResults) {
         if (r.status === "fulfilled") {
@@ -153,7 +151,7 @@ export function useAvailabilityOn(
       }
     }
 
-    if (!controller.signal.aborted) {
+    if (versionRef.current === version) {
       setRawData(result);
 
       setLoading(false);
@@ -163,7 +161,7 @@ export function useAvailabilityOn(
   useEffect(() => {
     fetchAvailability();
     return () => {
-      abortRef.current?.abort();
+      versionRef.current++;
     };
   }, [fetchAvailability]);
 
