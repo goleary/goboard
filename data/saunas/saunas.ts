@@ -7474,7 +7474,7 @@ export const saunas: Sauna[] = [
     sessionPrice: 350,
     sessionLengthMinutes: null,
     steamRoom: false,
-    coldPlunge: false,
+    coldPlunge: true,
     soakingTub: false,
     waterfront: false,
     naturalPlunge: false,
@@ -7486,7 +7486,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Private rental",
     clothingPolicy: "Up to your group",
     notes:
-      "Mobile wood-fired Finnish sauna delivered to your location in Greater Grand Rapids and the Lakeshore. The Wildflower is a vintage horse trailer converted into a bespoke sauna with IKI stove and 350+ lbs of stones. Free delivery within 20 miles of Rockford. Additional nights $150. Cold plunge tub add-on available ($50). Sauna tent rental also available from $100/night.",
+      "Mobile wood-fired Finnish sauna delivered to your location in Greater Grand Rapids and the Lakeshore. The Wildflower is a vintage horse trailer converted into a bespoke sauna with IKI stove and 350+ lbs of stones. Free delivery within 20 miles of Rockford. Additional nights $150. Cold plunge tub add-on $50. Sauna tent rental also available from $100/night.",
     lat: 42.971545514147174,
     lng: -85.67805960227136,
     updatedAt: "2026-03-03",
