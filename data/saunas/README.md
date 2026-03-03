@@ -9,9 +9,13 @@ Not all sauna-related businesses qualify for inclusion. We do **not** list:
 - **Gyms with saunas** — the sauna must be the primary offering, not an amenity tacked onto a gym membership.
 - **Infrared-only facilities** — the venue must have at least one traditional (Finnish/dry) or steam sauna. Places that only offer infrared saunas are excluded.
 
+We **do** list:
+
+- **Mobile sauna rentals** — businesses that deliver a wood-fired sauna trailer or tent to your location. Use the delivery base location for coordinates and set `sessionLengthMinutes: null` since rentals are typically overnight. Mark as `private: true` with `seats` set to the sauna capacity. Include delivery radius, add-on options, and additional night pricing in the `notes` field.
+
 ## Availability scope
 
-We only care about timeslots for **facility use** — sauna sessions, steam room, hot tub, cold plunge, thermal springs, etc. We do **not** track availability for personal services like massage, facials, bodywork, or other spa treatments. When configuring a new booking provider, only include service/session types that represent facility access.
+We only care about timeslots for **facility use** — sauna sessions, steam room, hot tub, cold plunge, thermal springs, etc. This includes mobile sauna rental bookings. We do **not** track availability for personal services like massage, facials, bodywork, or other spa treatments. When configuring a new booking provider, only include service/session types that represent facility access.
 
 ## Adding Acuity (Squarespace Scheduling) Availability
 

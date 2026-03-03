@@ -33,7 +33,8 @@ export type LocationSlug =
   | "knoxville"
   | "bonita-springs"
   | "austin"
-  | "san-diego";
+  | "san-diego"
+  | "grand-rapids";
 
 /**
  * Location metadata for display and routing
@@ -335,6 +336,15 @@ export const locations: Location[] = [
       "San Diego's sauna scene brings wood-fired mobile saunas to the beach, pairing traditional heat with cold plunges in the Pacific Ocean.",
     center: { lat: 33.085, lng: -117.312 },
     zoom: 11,
+  },
+  {
+    slug: "grand-rapids",
+    name: "Grand Rapids",
+    state: "MI",
+    description:
+      "Grand Rapids' sauna scene features mobile wood-fired Finnish saunas delivered to your door, bringing Nordic wellness to West Michigan.",
+    center: { lat: 42.9634, lng: -85.6681 },
+    zoom: 10,
   },
 ];
 
@@ -7434,6 +7444,53 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  {
+    slug: "howl-at-the-moon-sauna",
+    name: "Howl at the Moon Sauna Co.",
+    heaterType: "wood",
+    address: "Rockford, MI",
+    website: "https://www.howlatthemoonsaunaco.com/",
+    bookingUrl:
+      "https://book.peek.com/s/0688dad0-7454-4ba3-be37-2c40a39e8ce4/L3z6a",
+    bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "0688dad0-7454-4ba3-be37-2c40a39e8ce4",
+      programId: "L3z6a",
+      timezone: "America/Detroit",
+      activities: [
+        {
+          activityId: "034c0b1b-f837-473f-bdb4-8a4e3887cd85",
+          name: "Overnight Mobile Sauna Rental",
+          price: 350,
+          durationMinutes: 1440,
+          private: true,
+          seats: 6,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/rtoB9H34B5Cep76g8",
+    sessionPrice: 350,
+    sessionLengthMinutes: null,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    capacity: 6,
+    genderPolicy: "Private rental",
+    clothingPolicy: "Up to your group",
+    notes:
+      "Mobile wood-fired Finnish sauna delivered to your location in Greater Grand Rapids and the Lakeshore. The Wildflower is a vintage horse trailer converted into a bespoke sauna with IKI stove and 350+ lbs of stones. Free delivery within 20 miles of Rockford. Additional nights $150. Cold plunge tub add-on available ($50). Sauna tent rental also available from $100/night.",
+    lat: 42.971545514147174,
+    lng: -85.67805960227136,
+    updatedAt: "2026-03-03",
+    images: [],
   },
 ];
 
