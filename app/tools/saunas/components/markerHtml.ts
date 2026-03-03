@@ -69,6 +69,18 @@ const SHIP_ICON_NODE: IconNode = [
   ],
 ];
 
+const CARAVAN_ICON_NODE: IconNode = [
+  ["path", { d: "M18 19V9a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v8a2 2 0 0 0 2 2h2" }],
+  ["path", { d: "M2 9h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2" }],
+  [
+    "path",
+    {
+      d: "M22 17v1a1 1 0 0 1-1 1H10v-9a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v9",
+    },
+  ],
+  ["circle", { cx: "8", cy: "19", r: "2" }],
+];
+
 const renderFloatingSaunaGlyph = (strokeWidth: number) => `
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path
@@ -121,7 +133,8 @@ export type MarkerIconOverride =
   | "waves"
   | "snowflake"
   | "ship"
-  | "floating-sauna";
+  | "floating-sauna"
+  | "caravan";
 
 const PIN_PATH =
   "M20 1C10.6112 1 3 8.6112 3 18C3 26 6 33 20 42C34 33 37 26 37 18C37 8.6112 29.3888 1 20 1Z";
@@ -133,6 +146,7 @@ export function getMarkerPinHtml({
   naturalPlunge,
   soakingTub,
   floating,
+  delivery,
   markerIconOverride,
 }: {
   isSelected: boolean;
@@ -141,6 +155,7 @@ export function getMarkerPinHtml({
   naturalPlunge: boolean;
   soakingTub: boolean;
   floating: boolean;
+  delivery: boolean;
   markerIconOverride?: MarkerIconOverride;
 }): string {
   const pinWidth = 36;
@@ -167,18 +182,22 @@ export function getMarkerPinHtml({
           ? renderLucideGlyph(SNOWFLAKE_ICON_NODE, glyphStrokeWidth)
           : markerIconOverride === "floating-sauna"
             ? renderFloatingSaunaGlyph(glyphStrokeWidth)
-            : renderLucideGlyph(HOUSE_ICON_NODE, glyphStrokeWidth)
+            : markerIconOverride === "caravan"
+              ? renderLucideGlyph(CARAVAN_ICON_NODE, glyphStrokeWidth)
+              : renderLucideGlyph(HOUSE_ICON_NODE, glyphStrokeWidth)
     : floating
       ? renderFloatingSaunaGlyph(glyphStrokeWidth)
-      : naturalPlunge
-        ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
-        : soakingTub
-          ? renderSoakingTubGlyph()
-          : isColdPlungeWithoutNaturalPlunge
-            ? renderLucideGlyph(SNOWFLAKE_ICON_NODE, glyphStrokeWidth)
-            : waterfront
-              ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
-              : renderLucideGlyph(HOUSE_ICON_NODE, glyphStrokeWidth);
+      : delivery
+        ? renderLucideGlyph(CARAVAN_ICON_NODE, glyphStrokeWidth)
+        : naturalPlunge
+          ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
+          : soakingTub
+            ? renderSoakingTubGlyph()
+            : isColdPlungeWithoutNaturalPlunge
+              ? renderLucideGlyph(SNOWFLAKE_ICON_NODE, glyphStrokeWidth)
+              : waterfront
+                ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
+                : renderLucideGlyph(HOUSE_ICON_NODE, glyphStrokeWidth);
 
   return `
     <div style="

@@ -958,7 +958,8 @@ export interface Sauna {
     | "waves"
     | "snowflake"
     | "ship"
-    | "floating-sauna";
+    | "floating-sauna"
+    | "caravan";
   /** URL-friendly unique identifier */
   slug: string;
   /** Display name of the sauna */
@@ -1025,6 +1026,8 @@ export interface Sauna {
   isFloating?: boolean;
   /** Whether the sauna experience is primarily outdoors */
   isOutside?: boolean;
+  /** Whether this is a mobile sauna that delivers to your location */
+  isDelivery?: boolean;
   /** Whether the sauna is on tidal water (e.g. Puget Sound) */
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
@@ -7479,6 +7482,7 @@ export const saunas: Sauna[] = [
     waterfront: false,
     naturalPlunge: false,
     isOutside: true,
+    isDelivery: true,
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
