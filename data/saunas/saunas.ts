@@ -727,6 +727,10 @@ export interface SquareBookingProviderConfig {
   locationToken: string;
   /** IANA timezone for availability display */
   timezone: string;
+  /** Optional list of service names to include (exact match). If omitted, all services are fetched. */
+  serviceNames?: string[];
+  /** If true, only fetch one variation per service (the first with staff). Reduces API calls for services with many group-size variations. */
+  oneVariationPerService?: boolean;
 }
 
 /**
@@ -4691,6 +4695,13 @@ export const saunas: Sauna[] = [
       widgetId: "nraxk8eafyr8nl",
       locationToken: "A3DZSYC1ZD77J",
       timezone: "America/Vancouver",
+      // Only public drop-in sessions. Excludes: Deluxe Sauna Circuit, Private Aufguss Sessions
+      // (weekday & weekend), "The Nook" Private Sessions, and The Banya Experience.
+      serviceNames: [
+        "Social Sauna with Aufguss - *1hr45 mins Mon and Wed* OR *2 hrs Fri and Sun*",
+        "Women's Night Social Sauna with Aufguss (Public Hours - Thursdays) 1 hour and 45 minutes - 1-4 people per entry",
+      ],
+      oneVariationPerService: true,
     },
     googleMapsUrl: "https://maps.app.goo.gl/mxJDKJa5kPv6VFEZ7",
     sessionPrice: 38,
