@@ -1712,8 +1712,8 @@ export const saunas: Sauna[] = [
     address: "Lincoln Park, West Seattle",
     website: "http://www.gooddaysauna.com/",
     bookingUrl:
-      "https://app.acuityscheduling.com/schedule/5e9464ed/appointment/82608594/calendar/12638621",
-    bookingPlatform: "acuity",
+      "https://minside.periode.no/eventlist/0XLLpx756bpJJ7wGTZxO/ofbkA7XAhGPGAfVu71yR",
+    bookingPlatform: "periode",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -1739,7 +1739,7 @@ export const saunas: Sauna[] = [
     lat: 47.52677659870919,
     lng: -122.39572104295499,
     googleMapsUrl: "https://maps.app.goo.gl/M6J5vgcMeswgkGht5",
-    updatedAt: "2025-01-04",
+    updatedAt: "2026-03-03",
     images: [
       {
         url: "/saunas/good-day-sauna/exterior.jpg",
@@ -1747,16 +1747,33 @@ export const saunas: Sauna[] = [
       },
     ],
     bookingProvider: {
-      type: "acuity",
-      owner: "5e9464ed",
+      type: "periode",
+      merchantId: "0XLLpx756bpJJ7wGTZxO",
       timezone: "America/Los_Angeles",
-      appointmentTypes: [
+      manifests: [
         {
-          acuityAppointmentId: 82608594,
-          acuityCalendarId: 12638621,
-          name: "Sauna Session",
+          manifestId: "SmPNBIdKH4U19GAWJaqf",
+          name: "Lincoln Park Sauna",
           price: 35,
           durationMinutes: 60,
+        },
+        {
+          manifestId: "WkmaN90mRPpKnaPCkRZj",
+          name: "Intl Women's Day at Good Day Sauna",
+          price: 35,
+          durationMinutes: 60,
+        },
+        {
+          manifestId: "JAHCYYRuZOEdD5XvFGXd",
+          name: "Free Babysitting at Good Day Sauna",
+          price: 35,
+          durationMinutes: 60,
+        },
+        {
+          manifestId: "hvXDOwHeFBlXVF01YlxH",
+          name: "Guided Meditation and Cold Plunge",
+          price: 60,
+          durationMinutes: 75,
         },
       ],
     },
