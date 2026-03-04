@@ -34,6 +34,7 @@ export type LocationSlug =
   | "bonita-springs"
   | "austin"
   | "san-diego"
+  | "sacramento"
   | "grand-rapids"
   | "toronto";
 
@@ -336,6 +337,15 @@ export const locations: Location[] = [
     description:
       "San Diego's sauna scene brings wood-fired mobile saunas to the beach, pairing traditional heat with cold plunges in the Pacific Ocean.",
     center: { lat: 33.085, lng: -117.312 },
+    zoom: 11,
+  },
+  {
+    slug: "sacramento",
+    name: "Sacramento",
+    state: "CA",
+    description:
+      "Sacramento's sauna scene features modern wellness lounges with dry saunas, herbal steam rooms, and cold plunges.",
+    center: { lat: 38.6286, lng: -121.3939 },
     zoom: 11,
   },
   {
@@ -912,6 +922,22 @@ export interface SpaTimeBookingProviderConfig {
 }
 
 /**
+ * Rafa Sauna custom booking provider configuration.
+ * Uses their public tRPC API at app.rafasauna.com.
+ */
+export interface RafaBookingProviderConfig {
+  type: "rafa";
+  /** Base URL of the booking app (e.g., "https://app.rafasauna.com") */
+  baseUrl: string;
+  timezone: string;
+  sessions: {
+    name: string;
+    price: number;
+    durationMinutes: number;
+  }[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -940,7 +966,8 @@ export type BookingProviderConfig =
   | ArketaBookingProviderConfig
   | SojoBookingProviderConfig
   | SweatpalsBookingProviderConfig
-  | SpaTimeBookingProviderConfig;
+  | SpaTimeBookingProviderConfig
+  | RafaBookingProviderConfig;
 
 // --- Water Temperature Provider Types ---
 
@@ -7728,6 +7755,42 @@ export const saunas: Sauna[] = [
       dayPassTypes: [
         { dayPassTypeId: 6426824, name: "Contrast Therapy Experience", price: 39, durationMinutes: 90 },
         { dayPassTypeId: 5649296, name: "Haus Party", price: 49, durationMinutes: 120 },
+      ],
+    },
+  },
+  {
+    slug: "rafa-sauna-lounge",
+    name: "Rafa Sauna Lounge",
+    address: "6029 San Juan Ave, Citrus Heights, CA 95610",
+    website: "https://rafasauna.com/",
+    bookingUrl: "https://app.rafasauna.com/booking",
+    googleMapsUrl: "https://maps.app.goo.gl/6xAqnV4ZR8oLGAMK7",
+    sessionPrice: 65,
+    sessionLengthMinutes: 120,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Modern wellness lounge with cedar dry sauna, eucalyptus herbal steam room, cold plunge, and recovery lounge. Venik therapy available as add-on. Walk-in 2-hour sessions $65.",
+    lat: 38.67554747208888,
+    lng: -121.2933783288353,
+    updatedAt: "2026-03-04",
+    bookingProvider: {
+      type: "rafa",
+      baseUrl: "https://app.rafasauna.com",
+      timezone: "America/Los_Angeles",
+      sessions: [
+        {
+          name: "2 Hours - Standard",
+          price: 65,
+          durationMinutes: 120,
+        },
       ],
     },
   },

@@ -26,6 +26,7 @@ import {
   type SojoBookingProviderConfig,
   type SweatpalsBookingProviderConfig,
   type SpaTimeBookingProviderConfig,
+  type RafaBookingProviderConfig,
 } from "@/data/saunas/saunas";
 
 export interface AvailabilitySlot {
@@ -2928,6 +2929,9 @@ export async function GET(request: NextRequest) {
       case "spatime":
         appointmentTypes = await fetchSpaTimeAvailability(provider, startDate);
         break;
+      case "rafa":
+        appointmentTypes = await fetchRafaAvailability(provider, startDate);
+        break;
     }
 
     return Response.json({ appointmentTypes } satisfies AvailabilityResponse);
@@ -3192,4 +3196,104 @@ async function fetchSpaTimeAvailability(
       durationMinutes: dpt.durationMinutes,
       dates: typeMap.get(dpt.dayPassTypeId) ?? {},
     }));
+}
+
+// ---------------------------------------------------------------------------
+// Rafa Sauna (custom tRPC booking system)
+// ---------------------------------------------------------------------------
+
+interface RafaTimeSlot {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  capacity: number;
+  occupancy: number;
+  available: boolean;
+}
+
+interface RafaBlockedDate {
+  id: string;
+  date: string;
+}
+
+interface RafaTrpcResponse<T> {
+  result: { data: { json: T } };
+}
+
+async function fetchRafaAvailability(
+  provider: RafaBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  // Fetch blocked dates
+  const blockedRes = await fetch(
+    `${provider.baseUrl}/api/trpc/blockedDates.getBlockedDates?batch=1&input=${encodeURIComponent(
+      JSON.stringify({ "0": { json: null, meta: { values: ["undefined"] } } })
+    )}`,
+    { next: { revalidate: 300 } }
+  );
+
+  const blockedDates = new Set<string>();
+  if (blockedRes.ok) {
+    const blockedData: RafaTrpcResponse<RafaBlockedDate[]>[] =
+      await blockedRes.json();
+    for (const d of blockedData[0]?.result?.data?.json ?? []) {
+      blockedDates.add(d.date.split("T")[0]);
+    }
+  }
+
+  // Fetch time slots for each day in the 7-day window
+  const dates: Record<string, AvailabilitySlot[]> = {};
+  const from = new Date(startDate);
+
+  const fetches = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(from);
+    d.setDate(d.getDate() + i);
+    const dateStr = d.toISOString().split("T")[0];
+
+    if (blockedDates.has(dateStr)) continue;
+
+    // The API expects the date with T08:00:00.000Z (local midnight-ish)
+    const input = JSON.stringify({
+      "0": { json: { date: `${dateStr}T08:00:00.000Z` } },
+    });
+
+    fetches.push(
+      fetch(
+        `${provider.baseUrl}/api/trpc/booking.getAvailableTimeSlots?batch=1&input=${encodeURIComponent(input)}`,
+        { next: { revalidate: 300 } }
+      ).then(async (res) => {
+        if (!res.ok) return;
+        const data: RafaTrpcResponse<RafaTimeSlot[]>[] = await res.json();
+        const slots = data[0]?.result?.data?.json ?? [];
+        const daySlots: AvailabilitySlot[] = [];
+
+        for (const slot of slots) {
+          if (!slot.available) continue;
+          // Times from the API are in local time despite the Z suffix
+          const time = slot.startTime.replace(":00.000Z", "").replace(/:00Z$/, "");
+          daySlots.push({
+            time,
+            slotsAvailable: slot.capacity,
+          });
+        }
+
+        if (daySlots.length > 0) {
+          daySlots.sort((a, b) => a.time.localeCompare(b.time));
+          dates[dateStr] = daySlots;
+        }
+      })
+    );
+  }
+
+  await Promise.all(fetches);
+
+  return provider.sessions.map((session, i) => ({
+    appointmentTypeId: `rafa-${i}`,
+    name: session.name,
+    price: session.price,
+    durationMinutes: session.durationMinutes,
+    dates,
+  }));
 }
