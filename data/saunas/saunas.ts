@@ -4595,6 +4595,47 @@ export const saunas: Sauna[] = [
       ],
     },
   },
+  {
+    slug: "circle-wellness-granville-island",
+    name: "Circle Wellness Granville Island",
+    address: "1502 Duranleau St, Vancouver, BC V6H 3S4, Canada",
+    website: "https://circlewellnessspas.com/",
+    bookingUrl: "https://circlewellnessspas.com/book/",
+    bookingPlatform: "checkfront",
+    googleMapsUrl: "https://maps.app.goo.gl/yMp4avTFiwH1iVwm9",
+    sessionPrice: 229,
+    currency: "CAD",
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    genderPolicy: "Private (1-2 guests)",
+    clothingPolicy: "Clothing optional",
+    notes:
+      "Private self-guided thermal spa with WellPod sauna (~50°C), cedar soaking tub, cold plunge, and heated river stones. Sessions accommodate up to 2 people at the same price. 90-min and 120-min sessions available. Pricing varies by time of day ($219–$285 CAD). New sessions released monthly on the 1st at 9 AM.",
+    lat: 49.269517870226565,
+    lng: -123.1317903173254,
+    updatedAt: "2026-03-04",
+    bookingProvider: {
+      type: "checkfront",
+      baseUrl: "https://circle-wellness.checkfront.com",
+      timezone: "America/Vancouver",
+      items: [
+        {
+          itemId: 74,
+          name: "Circuit Session (90 min)",
+          price: 229,
+          durationMinutes: 90,
+          private: true,
+          seats: 2,
+        },
+      ],
+    },
+  },
   // ============================================================================
   // VANCOUVER ISLAND, BC
   // ============================================================================
