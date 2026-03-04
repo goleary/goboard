@@ -7968,6 +7968,24 @@ export const saunas: Sauna[] = [
     lat: 38.67554747208888,
     lng: -121.2933783288353,
     updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/rafa-sauna-lounge/hero.jpg",
+        alt: "Rafa Sauna Lounge interior wellness space",
+      },
+      {
+        url: "/saunas/rafa-sauna-lounge/steam-room.jpg",
+        alt: "Rafa Sauna Lounge herbal steam room",
+      },
+      {
+        url: "/saunas/rafa-sauna-lounge/sauna.jpg",
+        alt: "Rafa Sauna Lounge cedar dry sauna",
+      },
+      {
+        url: "/saunas/rafa-sauna-lounge/lounge.jpg",
+        alt: "Rafa Sauna Lounge recovery lounge area",
+      },
+    ],
     bookingProvider: {
       type: "rafa",
       baseUrl: "https://app.rafasauna.com",
