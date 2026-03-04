@@ -130,17 +130,17 @@ function CompactSaunaList({
                       <Zap className="h-3 w-3 text-orange-500" />
                     </span>
                   )}
-                  {sauna.coldPlunge && (
+                  {sauna.coldPlunge && !sauna.isFloating && (
                     <span title="Cold Plunge" className="flex items-center">
                       <Snowflake className="h-3 w-3 text-sky-500" />
                     </span>
                   )}
-                  {sauna.waterfront && (
+                  {sauna.waterfront && !sauna.isFloating && (
                     <span title="Waterfront" className="flex items-center">
                       <Waves className="h-3 w-3 text-blue-500" />
                     </span>
                   )}
-                  {sauna.naturalPlunge && (
+                  {sauna.naturalPlunge && !sauna.isFloating && (
                     <span title="Natural Plunge" className="flex items-center">
                       <Leaf className="h-3 w-3 text-green-600" />
                     </span>

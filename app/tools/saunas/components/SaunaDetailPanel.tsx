@@ -189,7 +189,7 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
             </p>
             <div className="flex flex-wrap gap-1.5">
               <AmenityBadge icon={sauna.heaterType === "wood" ? FlameKindling : sauna.heaterType === "electric" ? Zap : Flame} label="Sauna" available={true} iconClassName="text-orange-500" title={sauna.heaterType === "wood" ? "Wood stove" : sauna.heaterType === "electric" ? "Electric stove" : sauna.heaterType === "gas" ? "Gas stove" : undefined} />
-              <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge && !sauna.waterTempProvider} iconClassName="text-sky-500" />
+              <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge && !sauna.waterTempProvider && !sauna.isFloating} iconClassName="text-sky-500" />
               <AmenityBadge emoji="♨️" label="Soaking Tub" available={sauna.soakingTub} />
               <SaunaWaterTemp sauna={sauna} />
               {(sauna.isFloating ?? false) && (
@@ -201,8 +201,8 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
                   Floating
                 </Badge>
               )}
-              <AmenityBadge icon={Waves} label="Waterfront" available={sauna.waterfront && !sauna.naturalPlunge} iconClassName="text-blue-500" />
-              <AmenityBadge icon={Leaf} label="Natural Plunge" available={sauna.naturalPlunge && !sauna.waterTempProvider} iconClassName="text-green-600" />
+              <AmenityBadge icon={Waves} label="Waterfront" available={sauna.waterfront && !sauna.naturalPlunge && !sauna.isFloating} iconClassName="text-blue-500" />
+              <AmenityBadge icon={Leaf} label="Natural Plunge" available={sauna.naturalPlunge && !sauna.waterTempProvider && !sauna.isFloating} iconClassName="text-green-600" />
               <AmenityBadge icon={Thermometer} label="Steam Room" available={sauna.steamRoom} />
               <AmenityBadge icon={ShowerHead} label="Showers" available={sauna.showers} />
               <AmenityBadge icon={Shirt} label="Towels" available={sauna.towelsIncluded} />
