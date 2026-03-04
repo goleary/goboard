@@ -2,23 +2,9 @@
 
 ## Adding Sauna Listings
 
-When adding a new sauna listing to `data/saunas/saunas.ts`, every listing MUST include a complete `bookingProvider` configuration for live availability. A listing without `bookingProvider` is incomplete.
+Follow the guidelines in [`data/saunas/GUIDELINES.md`](data/saunas/GUIDELINES.md) for listing criteria, required data, image policy, and quality checks.
 
-### Required checklist for every new listing
-
-1. **Verify actual pricing** — navigate to the booking page and extract the real session or rental price. Do not guess or use prices from review sites. For mobile sauna rentals, use the base rental price (e.g. first night).
-2. **Get precise coordinates and Google Maps link** — search Google Maps for the business, extract lat/lng from the URL, and copy the **share short link** (`maps.app.goo.gl/...`) for `googleMapsUrl`. Never fabricate or construct Google Maps URLs — always use the actual short link from the Share button.
-3. **Identify the booking platform** — check the booking page for:
-   - `acuityscheduling.com` or `squarespacescheduling.com` → Acuity
-   - Wix sites (check network tab for `_api/service-availability`) → Wix
-   - `app.glofox.com` → Glofox
-   - `minside.periode.no` → Periode
-   - `joinblvd.com` or `blvd` in page source → Boulevard
-   - Other platforms: check if they have a public API that can be integrated
-4. **Configure `bookingProvider`** — follow the platform-specific instructions in `data/saunas/README.md` to extract all required IDs (owner, service, location, etc.) and add the full config.
-5. **Only track facility access** — sauna sessions, bathhouse visits, cold plunge access, and mobile sauna rentals. Never massage, facials, memberships, or other personal services.
-6. **Download images locally** — never reference external image URLs. Download images to `public/saunas/<slug>/` and reference them as `/saunas/<slug>/<filename>` in the `images` array.
-7. **Add Location entries** if needed — if the city/region doesn't exist in the `LocationSlug` type and `locations` array, add it.
+For platform-specific booking provider setup (Acuity, Wix, Glofox, Periode, Boulevard, etc.), see [`data/saunas/README.md`](data/saunas/README.md).
 
 ### How to detect booking platforms using the browser
 
@@ -27,7 +13,3 @@ Use the Chrome browser tool to navigate to the sauna's booking page. Inspect the
 - **Wix**: Filter network requests for `time-slots/event`. The request body contains service IDs and timezone.
 - **Boulevard**: Look for `blvd` in the HTML source, `urn:blvd:Location:` URNs, or `joinblvd.com` URLs. Navigate through guest checkout to find `urn:blvd:Service:` IDs.
 - **Periode**: Booking URLs contain `minside.periode.no`. Extract merchant and manifest IDs from the URL path.
-
-### Reference
-
-Full platform-specific setup instructions with field references: `data/saunas/README.md`
