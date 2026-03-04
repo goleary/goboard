@@ -33,7 +33,8 @@ export type LocationSlug =
   | "knoxville"
   | "bonita-springs"
   | "austin"
-  | "san-diego";
+  | "san-diego"
+  | "grand-rapids";
 
 /**
  * Location metadata for display and routing
@@ -335,6 +336,15 @@ export const locations: Location[] = [
       "San Diego's sauna scene brings wood-fired mobile saunas to the beach, pairing traditional heat with cold plunges in the Pacific Ocean.",
     center: { lat: 33.085, lng: -117.312 },
     zoom: 11,
+  },
+  {
+    slug: "grand-rapids",
+    name: "Grand Rapids",
+    state: "MI",
+    description:
+      "Grand Rapids' sauna scene features mobile wood-fired Finnish saunas delivered to your door, bringing Nordic wellness to West Michigan.",
+    center: { lat: 42.9634, lng: -85.6681 },
+    zoom: 10,
   },
 ];
 
@@ -727,6 +737,10 @@ export interface SquareBookingProviderConfig {
   locationToken: string;
   /** IANA timezone for availability display */
   timezone: string;
+  /** Optional list of service names to include (exact match). If omitted, all services are fetched. */
+  serviceNames?: string[];
+  /** If true, only fetch one variation per service (the first with staff). Reduces API calls for services with many group-size variations. */
+  oneVariationPerService?: boolean;
 }
 
 /**
@@ -948,7 +962,8 @@ export interface Sauna {
     | "waves"
     | "snowflake"
     | "ship"
-    | "floating-sauna";
+    | "floating-sauna"
+    | "caravan";
   /** URL-friendly unique identifier */
   slug: string;
   /** Display name of the sauna */
@@ -1015,6 +1030,8 @@ export interface Sauna {
   isFloating?: boolean;
   /** Whether the sauna experience is primarily outdoors */
   isOutside?: boolean;
+  /** Whether this is a mobile sauna that delivers to your location */
+  isDelivery?: boolean;
   /** Whether the sauna is on tidal water (e.g. Puget Sound) */
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
@@ -1647,7 +1664,11 @@ export const saunas: Sauna[] = [
     updatedAt: "2025-01-04",
     images: [
       {
-        url: "/saunas/von-sauna/interior.jpg",
+        url: "/saunas/von-sauna/exterior.webp",
+        alt: "Von Sauna floating sauna on Lake Washington",
+      },
+      {
+        url: "/saunas/von-sauna/interior.webp",
         alt: "Von Sauna floating sauna interior with wooden benches seen through glass door",
       },
     ],
@@ -1712,8 +1733,8 @@ export const saunas: Sauna[] = [
     address: "Lincoln Park, West Seattle",
     website: "http://www.gooddaysauna.com/",
     bookingUrl:
-      "https://app.acuityscheduling.com/schedule/5e9464ed/appointment/82608594/calendar/12638621",
-    bookingPlatform: "acuity",
+      "https://minside.periode.no/eventlist/0XLLpx756bpJJ7wGTZxO/ofbkA7XAhGPGAfVu71yR",
+    bookingPlatform: "periode",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
     steamRoom: false,
@@ -1739,7 +1760,7 @@ export const saunas: Sauna[] = [
     lat: 47.52677659870919,
     lng: -122.39572104295499,
     googleMapsUrl: "https://maps.app.goo.gl/M6J5vgcMeswgkGht5",
-    updatedAt: "2025-01-04",
+    updatedAt: "2026-03-03",
     images: [
       {
         url: "/saunas/good-day-sauna/exterior.jpg",
@@ -1747,16 +1768,33 @@ export const saunas: Sauna[] = [
       },
     ],
     bookingProvider: {
-      type: "acuity",
-      owner: "5e9464ed",
+      type: "periode",
+      merchantId: "0XLLpx756bpJJ7wGTZxO",
       timezone: "America/Los_Angeles",
-      appointmentTypes: [
+      manifests: [
         {
-          acuityAppointmentId: 82608594,
-          acuityCalendarId: 12638621,
-          name: "Sauna Session",
+          manifestId: "SmPNBIdKH4U19GAWJaqf",
+          name: "Lincoln Park Sauna",
           price: 35,
           durationMinutes: 60,
+        },
+        {
+          manifestId: "WkmaN90mRPpKnaPCkRZj",
+          name: "Intl Women's Day at Good Day Sauna",
+          price: 35,
+          durationMinutes: 60,
+        },
+        {
+          manifestId: "JAHCYYRuZOEdD5XvFGXd",
+          name: "Free Babysitting at Good Day Sauna",
+          price: 35,
+          durationMinutes: 60,
+        },
+        {
+          manifestId: "hvXDOwHeFBlXVF01YlxH",
+          name: "Guided Meditation and Cold Plunge",
+          price: 60,
+          durationMinutes: 75,
         },
       ],
     },
@@ -4691,6 +4729,13 @@ export const saunas: Sauna[] = [
       widgetId: "nraxk8eafyr8nl",
       locationToken: "A3DZSYC1ZD77J",
       timezone: "America/Vancouver",
+      // Only public drop-in sessions. Excludes: Deluxe Sauna Circuit, Private Aufguss Sessions
+      // (weekday & weekend), "The Nook" Private Sessions, and The Banya Experience.
+      serviceNames: [
+        "Social Sauna with Aufguss - *1hr45 mins Mon and Wed* OR *2 hrs Fri and Sun*",
+        "Women's Night Social Sauna with Aufguss (Public Hours - Thursdays) 1 hour and 45 minutes - 1-4 people per entry",
+      ],
+      oneVariationPerService: true,
     },
     googleMapsUrl: "https://maps.app.goo.gl/mxJDKJa5kPv6VFEZ7",
     sessionPrice: 38,
@@ -6850,6 +6895,7 @@ export const saunas: Sauna[] = [
     waterfront: false,
     naturalPlunge: false,
     isOutside: true,
+    isDelivery: true,
     showers: false,
     towelsIncluded: false,
     capacity: 10,
@@ -7389,6 +7435,7 @@ export const saunas: Sauna[] = [
     waterfront: false,
     naturalPlunge: false,
     isOutside: true,
+    isDelivery: true,
     showers: false,
     towelsIncluded: false,
     capacity: 8,
@@ -7434,6 +7481,54 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  {
+    slug: "howl-at-the-moon-sauna",
+    name: "Howl at the Moon Sauna Co.",
+    heaterType: "wood",
+    address: "Rockford, MI",
+    website: "https://www.howlatthemoonsaunaco.com/",
+    bookingUrl:
+      "https://book.peek.com/s/0688dad0-7454-4ba3-be37-2c40a39e8ce4/L3z6a",
+    bookingPlatform: "peek",
+    bookingProvider: {
+      type: "peek",
+      key: "0688dad0-7454-4ba3-be37-2c40a39e8ce4",
+      programId: "L3z6a",
+      timezone: "America/Detroit",
+      activities: [
+        {
+          activityId: "034c0b1b-f837-473f-bdb4-8a4e3887cd85",
+          name: "Overnight Mobile Sauna Rental",
+          price: 350,
+          durationMinutes: 1440,
+          private: true,
+          seats: 6,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/rtoB9H34B5Cep76g8",
+    sessionPrice: 350,
+    sessionLengthMinutes: null,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true,
+    isDelivery: true,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    capacity: 6,
+    genderPolicy: "Private rental",
+    clothingPolicy: "Up to your group",
+    notes:
+      "Mobile wood-fired Finnish sauna delivered to your location in Greater Grand Rapids and the Lakeshore. The Wildflower is a vintage horse trailer converted into a bespoke sauna with IKI stove and 350+ lbs of stones. Free delivery within 20 miles of Rockford. Additional nights $150. Cold plunge tub add-on $50. Sauna tent rental also available from $100/night.",
+    lat: 42.971545514147174,
+    lng: -85.67805960227136,
+    updatedAt: "2026-03-03",
+    images: [],
   },
 ];
 

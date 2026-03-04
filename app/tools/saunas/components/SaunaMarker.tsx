@@ -17,6 +17,7 @@ const getMarkerIcon = (
   naturalPlunge: boolean,
   soakingTub: boolean,
   floating: boolean,
+  delivery: boolean,
   markerIconOverride?: Sauna["markerIconOverride"],
 ) => {
   const pinWidth = 36;
@@ -35,6 +36,7 @@ const getMarkerIcon = (
       naturalPlunge,
       soakingTub,
       floating,
+      delivery,
       markerIconOverride,
     }),
   });
@@ -54,6 +56,7 @@ export function SaunaMarker({
         sauna.naturalPlunge,
         sauna.soakingTub,
         sauna.isFloating ?? false,
+        sauna.isDelivery ?? false,
         sauna.markerIconOverride,
       ),
     [
@@ -63,6 +66,7 @@ export function SaunaMarker({
       sauna.naturalPlunge,
       sauna.soakingTub,
       sauna.isFloating,
+      sauna.isDelivery,
       sauna.markerIconOverride,
     ],
   );

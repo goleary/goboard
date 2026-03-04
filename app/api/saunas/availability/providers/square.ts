@@ -91,14 +91,23 @@ export async function fetchSquareAvailability(
   const to = new Date(from);
   to.setDate(to.getDate() + 7);
 
+  // Filter to requested services if configured
+  const filteredServices = provider.serviceNames
+    ? widget.services.filter((svc) => provider.serviceNames!.includes(svc.name))
+    : widget.services;
+
   // Serialize requests to avoid Square's rate limiting (429s)
-  const variations = widget.services
+  const variations = filteredServices
     .filter((svc) => svc.variations.length > 0)
-    .flatMap((svc) =>
-      svc.variations
-        .filter((v) => v.service_time > 0)
-        .map((variation) => ({ svc, variation }))
-    );
+    .flatMap((svc) => {
+      const eligible = svc.variations.filter((v) => v.service_time > 0);
+      if (provider.oneVariationPerService) {
+        // Only take the first variation with staff to represent the service
+        const first = eligible[0];
+        return first ? [{ svc, variation: first }] : [];
+      }
+      return eligible.map((variation) => ({ svc, variation }));
+    });
 
   const results: (AppointmentTypeAvailability | null)[] = [];
   for (const { svc, variation } of variations) {

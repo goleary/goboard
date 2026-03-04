@@ -182,7 +182,6 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
     getAvailability(sauna.slug, startDate)
       .then((json) => {
         setData(json);
-        setTideDataByDate({});
         setLoading(false);
         setRefreshing(false);
       })
@@ -279,6 +278,12 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   const byDate = data ? groupByDate(data.appointmentTypes, minGuests) : {};
   const allSortedDates = Object.keys(byDate).sort();
   const isSingleType = data ? data.appointmentTypes.length <= 1 : false;
+  const singleTypePriceLabel = isSingleType && data?.appointmentTypes[0]
+    ? [
+        data.appointmentTypes[0].price != null && `$${data.appointmentTypes[0].price}`,
+        `${data.appointmentTypes[0].durationMinutes}min`,
+      ].filter(Boolean).join(" / ")
+    : null;
 
   // Filter displayed dates: specific date when set, otherwise limit to DEFAULT_MAX_DAYS (unless expanded)
   const displayDates = availabilityDate
@@ -379,18 +384,28 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <p className="text-xs text-muted-foreground uppercase tracking-wide">
-          Availability
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Availability
+          </p>
+          {availabilityDate && singleTypePriceLabel && (
+            <span className="text-xs text-muted-foreground">{singleTypePriceLabel}</span>
+          )}
+        </div>
         {datePicker}
       </div>
       <div className="space-y-4">
         {displayDates.map((dateStr) => (
           <div key={dateStr}>
             {!availabilityDate && (
-              <p className="text-sm font-medium mb-2">
-                {formatDateLabel(dateStr)}
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-medium">
+                  {formatDateLabel(dateStr)}
+                </p>
+                {singleTypePriceLabel && (
+                  <span className="text-xs text-muted-foreground shrink-0">{singleTypePriceLabel}</span>
+                )}
+              </div>
             )}
             <div className="space-y-2">
               {byDate[dateStr].map(({ appointmentType, slots }) => (
