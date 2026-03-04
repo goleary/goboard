@@ -385,28 +385,27 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                 <div className="w-full flex justify-center pt-2 pb-2">
                   <div className="w-10 h-1 bg-muted-foreground/40 rounded-full" />
                 </div>
+                {selectedSauna ? (
+                  <button
+                    type="button"
+                    onClick={handleCloseDetail}
+                    className="flex items-center gap-1 px-4 py-1 text-sm text-muted-foreground hover:text-foreground border-b"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Back to list
+                  </button>
+                ) : (
+                  filtersSection(true)
+                )}
               </Sheet.Header>
               <Sheet.Content
                 disableScroll={(state) => state.currentSnap !== EXPANDED_SNAP}
               >
                 <div className="flex flex-col flex-1 min-h-0">
                   {selectedSauna ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={handleCloseDetail}
-                        className="flex items-center gap-1 px-4 py-1 text-sm text-muted-foreground hover:text-foreground border-b shrink-0"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                        Back to list
-                      </button>
-                      <div className="flex-1 min-h-0">
-                        <SaunaDetailPanel sauna={selectedSauna} availabilityDate={filters.availabilityDate} onAvailabilityDateChange={handleAvailabilityDateChange} guests={filters.guests} onGuestsChange={handleGuestsChange} disableScroll />
-                      </div>
-                    </>
+                    <SaunaDetailPanel sauna={selectedSauna} availabilityDate={filters.availabilityDate} onAvailabilityDateChange={handleAvailabilityDateChange} guests={filters.guests} onGuestsChange={handleGuestsChange} disableScroll />
                   ) : (
                     <>
-                      {filtersSection(true)}
                       <div className="flex-1 flex flex-col min-h-0">
                         <div className="flex-1">
                           <SaunaTable
