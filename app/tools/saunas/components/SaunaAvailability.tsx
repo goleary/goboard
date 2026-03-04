@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { type Sauna } from "@/data/saunas/saunas";
+import { type Sauna, currencySymbol } from "@/data/saunas/saunas";
 import type {
   AvailabilityResponse,
   AppointmentTypeAvailability,
@@ -285,7 +285,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   const isSingleType = data ? data.appointmentTypes.length <= 1 : false;
   const singleTypePriceLabel = isSingleType && data?.appointmentTypes[0]
     ? [
-        data.appointmentTypes[0].price != null && `${sauna.currency === "CAD" ? "CA$" : "$"}${data.appointmentTypes[0].price}`,
+        data.appointmentTypes[0].price != null && `${currencySymbol(sauna)}${data.appointmentTypes[0].price}`,
         `${data.appointmentTypes[0].durationMinutes}min`,
       ].filter(Boolean).join(" / ")
     : null;
@@ -429,7 +429,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
                         )}
                       </p>
                       <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
-                        {appointmentType.price != null && `${sauna.currency === "CAD" ? "CA$" : "$"}${appointmentType.price} / `}{appointmentType.durationMinutes}min
+                        {appointmentType.price != null && `${currencySymbol(sauna)}${appointmentType.price} / `}{appointmentType.durationMinutes}min
                       </span>
                     </div>
                   )}

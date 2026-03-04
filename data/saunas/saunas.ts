@@ -7739,13 +7739,20 @@ export const seattleSaunas = saunas;
 // Helper functions
 
 /**
+ * Return the display currency symbol for a sauna.
+ * Defaults to "$" (USD) if no currency is specified.
+ */
+export function currencySymbol(sauna: Pick<Sauna, "currency">): string {
+  return sauna.currency === "CAD" ? "CA$" : "$";
+}
+
+/**
  * Format a price with the appropriate currency symbol.
  * Defaults to USD ($) if no currency is specified.
  */
 export function formatPrice(sauna: Sauna): string {
   if (!sauna.sessionPrice || sauna.sessionPrice <= 0) return "";
-  const symbol = sauna.currency === "CAD" ? "CA$" : "$";
-  return `${symbol}${sauna.sessionPrice}`;
+  return `${currencySymbol(sauna)}${sauna.sessionPrice}`;
 }
 
 export function getSaunaBySlug(slug: string): Sauna | undefined {
