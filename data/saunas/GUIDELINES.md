@@ -69,8 +69,11 @@ Set `waterTempProvider` when a nearby sensor exists:
 - `tidal: true` — set when the sauna is on tidal water (e.g. Puget Sound, ocean bays)
 - `noaaTideStation` — NOAA CO-OPS station ID for tide predictions
 
-### Other optional fields
+### Other fields (strongly suggested)
 
+These fields are optional only in the sense that a listing can be submitted without them if the information can't be found — but you should always try to find and include them.
+
+- `instagram` — Instagram handle (without `@`)
 - `heaterType` — "electric", "wood", or "gas"
 - `temperatureRangeF` — dry sauna temperature range `{ min, max }`
 - `capacity` — max guest count
