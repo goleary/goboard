@@ -379,6 +379,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                 borderTopRightRadius: "1rem",
                 borderTop: "1px solid hsl(var(--border))",
                 boxShadow: "0 -4px 20px rgba(0,0,0,0.15)",
+                maxHeight: "80%",
               }}
             >
               <Sheet.Header>
