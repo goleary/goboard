@@ -32,6 +32,8 @@ interface SaunaDetailPanelProps {
   onAvailabilityDateChange?: (date: string | null) => void;
   guests?: number | null;
   onGuestsChange?: (guests: number) => void;
+  /** When true, the panel does not create its own scroll container — the parent handles scrolling (e.g. Sheet.Content). */
+  disableScroll?: boolean;
 }
 
 function AmenityBadge({
@@ -58,7 +60,7 @@ function AmenityBadge({
   );
 }
 
-export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateChange, guests, onGuestsChange }: SaunaDetailPanelProps) {
+export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateChange, guests, onGuestsChange, disableScroll }: SaunaDetailPanelProps) {
   const [hasAvailability, setHasAvailability] = useState(false);
   const [firstAvailableDate, setFirstAvailableDate] = useState<string | null>(null);
   const [lastAvailableDate, setLastAvailableDate] = useState<string | null>(null);
@@ -94,9 +96,9 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
   }, []);
 
   return (
-    <div className="flex flex-col min-h-0 h-full">
+    <div className={`flex flex-col min-h-0 ${disableScroll ? "" : "h-full"}`}>
       {/* Scrollable content */}
-      <div className="flex-1 overflow-auto thin-scrollbar min-h-0">
+      <div className={`flex-1 min-h-0 ${disableScroll ? "" : "overflow-auto thin-scrollbar"}`}>
         {/* Images */}
         {sauna.images && sauna.images.length > 0 && (
           <div className="relative">
@@ -173,7 +175,7 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
                   {formatPrice(sauna)}
                 </Badge>
               )}
-              {sauna.sessionLengthMinutes && (
+              {(sauna.sessionLengthMinutes ?? 0) > 0 && (
                 <Badge variant="outline" className="text-sm gap-1">
                   <Clock className="h-3 w-3" />
                   {sauna.sessionLengthMinutes} min
