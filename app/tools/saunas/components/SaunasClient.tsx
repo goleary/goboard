@@ -37,7 +37,7 @@ interface SaunasClientProps {
   zoom?: number;
 }
 
-const snapPoints = [0, 240, 0.85];
+const snapPoints = [0, 240, 1];
 const COLLAPSED_SNAP = 1;
 const EXPANDED_SNAP = 2;
 
