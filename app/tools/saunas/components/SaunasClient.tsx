@@ -168,6 +168,14 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
     [saunas, selectedSlug]
   );
 
+  // Reset sheet scroll position when switching between list and detail views
+  useEffect(() => {
+    const scroller = containerRef.current?.querySelector(
+      ".react-modal-sheet-content-scroller"
+    );
+    if (scroller) scroller.scrollTop = 0;
+  }, [selectedSlug]);
+
   // Track whether to pan/zoom to the selected sauna (only for list selections)
   const [panToSelection, setPanToSelection] = useState(false);
 
