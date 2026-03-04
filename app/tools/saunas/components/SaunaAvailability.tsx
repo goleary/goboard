@@ -187,7 +187,6 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
       })
       .then((json: AvailabilityResponse) => {
         setData(json);
-        setTideDataByDate({});
         setLoading(false);
         setRefreshing(false);
       })
