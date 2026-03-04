@@ -879,6 +879,39 @@ export interface SweatpalsBookingProviderConfig {
 }
 
 /**
+ * SpaTime day pass type configuration.
+ */
+export interface SpaTimeDayPassType {
+  /** SpaTime day pass type ID (numeric) */
+  dayPassTypeId: number;
+  /** Display name (e.g. "Contrast Therapy Experience") */
+  name: string;
+  /** Price in the sauna's currency */
+  price: number;
+  /** Duration in minutes */
+  durationMinutes: number;
+}
+
+/**
+ * SpaTime booking provider configuration.
+ * Uses the public SpaTime API (no credentials required) to fetch
+ * metered arrival slots with capacity data.
+ */
+export interface SpaTimeBookingProviderConfig {
+  type: "spatime";
+  /** SpaTime region (e.g. "na" for North America) */
+  region: string;
+  /** SpaTime merchant code (e.g. "nrgh171") */
+  merchantCode: string;
+  /** SpaTime location ID (numeric string, e.g. "5213135") */
+  locationId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Day pass types to show availability for */
+  dayPassTypes: SpaTimeDayPassType[];
+}
+
+/**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
  * by extending this type.
@@ -906,7 +939,8 @@ export type BookingProviderConfig =
   | BoulevardBookingProviderConfig
   | ArketaBookingProviderConfig
   | SojoBookingProviderConfig
-  | SweatpalsBookingProviderConfig;
+  | SweatpalsBookingProviderConfig
+  | SpaTimeBookingProviderConfig;
 
 // --- Water Temperature Provider Types ---
 
@@ -1014,7 +1048,8 @@ export interface Sauna {
     | "envision"
     | "arketa"
     | "sojo"
-    | "sweatpals";
+    | "sweatpals"
+    | "spatime";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -7589,6 +7624,7 @@ export const saunas: Sauna[] = [
     address: "171 East Liberty St, Unit 113, Toronto, ON M6K 3P6",
     website: "https://nrghaus.com/",
     bookingUrl: "https://na.spatime.com/nrgh171/5213135/schedule",
+    bookingPlatform: "spatime",
     googleMapsUrl: "https://maps.app.goo.gl/Sp2FVaVTewMTEooZA",
     sessionPrice: 39,
     currency: "CAD",
@@ -7607,6 +7643,17 @@ export const saunas: Sauna[] = [
     lat: 43.637745212530234,
     lng: -79.41899885985187,
     updatedAt: "2026-03-04",
+    bookingProvider: {
+      type: "spatime",
+      region: "na",
+      merchantCode: "nrgh171",
+      locationId: "5213135",
+      timezone: "America/New_York",
+      dayPassTypes: [
+        { dayPassTypeId: 6426824, name: "Contrast Therapy Experience", price: 39, durationMinutes: 90 },
+        { dayPassTypeId: 5649296, name: "Haus Party", price: 49, durationMinutes: 120 },
+      ],
+    },
   },
 ];
 
