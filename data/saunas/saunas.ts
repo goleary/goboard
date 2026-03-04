@@ -7643,6 +7643,16 @@ export const saunas: Sauna[] = [
     lat: 43.637745212530234,
     lng: -79.41899885985187,
     updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/nrg-haus/hero.webp",
+        alt: "NRG Haus interior sauna and wellness space",
+      },
+      {
+        url: "/saunas/nrg-haus/interior.webp",
+        alt: "NRG Haus contrast therapy area",
+      },
+    ],
     bookingProvider: {
       type: "spatime",
       region: "na",
