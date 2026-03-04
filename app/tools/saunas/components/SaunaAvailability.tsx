@@ -5,7 +5,8 @@ import { type Sauna } from "@/data/saunas/saunas";
 import type {
   AvailabilityResponse,
   AppointmentTypeAvailability,
-} from "@/app/api/saunas/availability/route";
+} from "@/app/api/saunas/availability/types";
+import { getAvailability } from "@/app/tools/saunas/actions";
 import type { TideDataPoint, TidesResponse } from "@/app/api/saunas/tides/route";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -178,20 +179,14 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
     setError(null);
 
     const startDate = availabilityDate || localDateStr(new Date());
-    fetch(
-      `/api/saunas/availability?slug=${encodeURIComponent(sauna.slug)}&startDate=${startDate}`
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load availability");
-        return res.json();
-      })
-      .then((json: AvailabilityResponse) => {
+    getAvailability(sauna.slug, startDate)
+      .then((json) => {
         setData(json);
         setLoading(false);
         setRefreshing(false);
       })
       .catch((err) => {
-        setError(err.message);
+        setError(err instanceof Error ? err.message : "Failed to load availability");
         setLoading(false);
         setRefreshing(false);
       });
