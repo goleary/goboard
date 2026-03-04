@@ -1651,7 +1651,11 @@ export const saunas: Sauna[] = [
     updatedAt: "2025-01-04",
     images: [
       {
-        url: "/saunas/von-sauna/interior.jpg",
+        url: "/saunas/von-sauna/exterior.webp",
+        alt: "Von Sauna floating sauna on Lake Washington",
+      },
+      {
+        url: "/saunas/von-sauna/interior.webp",
         alt: "Von Sauna floating sauna interior with wooden benches seen through glass door",
       },
     ],
