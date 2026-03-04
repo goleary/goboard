@@ -133,6 +133,8 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   const containerRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<SheetRef>(null);
   const [currentSnapIndex, setCurrentSnapIndex] = useState(COLLAPSED_SNAP);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // Handle map bounds change
   const handleBoundsChange = useCallback((bounds: LatLngBounds) => {
@@ -358,7 +360,8 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
           />
         </div>
 
-        {/* Bottom sheet */}
+        {/* Bottom sheet — client-only to avoid hydration mismatch */}
+        {mounted && (
           <Sheet
             ref={sheetRef}
             isOpen={true}
@@ -442,6 +445,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
               </Sheet.Content>
             </Sheet.Container>
           </Sheet>
+        )}
       </div>
     </>
   );
