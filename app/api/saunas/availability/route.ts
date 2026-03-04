@@ -1592,17 +1592,34 @@ async function fetchCheckfrontAvailability(
   to.setDate(to.getDate() + 6);
   const endDate = to.toISOString().split("T")[0];
 
+  // Some Checkfront instances require a session cookie to access items.
+  // GET the reserve page first to obtain one.
+  let sessionCookie = "";
+  try {
+    const initRes = await fetch(`${provider.baseUrl}/reserve/`, {
+      next: { revalidate: 300 },
+    });
+    const setCookie = initRes.headers.get("set-cookie") ?? "";
+    const match = setCookie.match(/RES=([^;]+)/);
+    if (match) sessionCookie = `RES=${match[1]}`;
+  } catch {
+    // Non-fatal — some instances don't need a session cookie
+  }
+
   const results = await Promise.all(
     provider.items.map(async (item) => {
       const url = `${provider.baseUrl}/reserve/api/?call=rate`;
 
+      const headers: Record<string, string> = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "XMLHttpRequest",
+        Referer: `${provider.baseUrl}/reserve/`,
+      };
+      if (sessionCookie) headers["Cookie"] = sessionCookie;
+
       const res = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "X-Requested-With": "XMLHttpRequest",
-          Referer: `${provider.baseUrl}/reserve/`,
-        },
+        headers,
         body: new URLSearchParams({
           item_id: String(item.itemId),
           start_date: startDate,
