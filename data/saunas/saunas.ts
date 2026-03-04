@@ -34,7 +34,8 @@ export type LocationSlug =
   | "bonita-springs"
   | "austin"
   | "san-diego"
-  | "grand-rapids";
+  | "grand-rapids"
+  | "toronto";
 
 /**
  * Location metadata for display and routing
@@ -345,6 +346,15 @@ export const locations: Location[] = [
       "Grand Rapids' sauna scene features mobile wood-fired Finnish saunas delivered to your door, bringing Nordic wellness to West Michigan.",
     center: { lat: 42.9634, lng: -85.6681 },
     zoom: 10,
+  },
+  {
+    slug: "toronto",
+    name: "Toronto",
+    state: "ON",
+    description:
+      "Toronto's emerging sauna scene brings contrast therapy and social wellness to Canada's largest city.",
+    center: { lat: 43.6532, lng: -79.3832 },
+    zoom: 11,
   },
 ];
 
@@ -5604,6 +5614,46 @@ export const saunas: Sauna[] = [
       ],
     },
   },
+  {
+    slug: "clay-wellness",
+    name: "Clay Wellness",
+    heaterType: "electric",
+    address: "242 W 100 S, Provo, UT 84601",
+    website: "https://www.claywellness.co/",
+    bookingUrl: "https://www.claywellness.co/reserve-session",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/rkqUMzMZe9Vc6EgK8",
+    sessionPrice: 30,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true, // 7 cold plunge pools
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Immersive wellness facility with 2 Finnish dry saunas, 7 cold plunge pools, yoga, and pilates. Drop-in sauna & plunge $30 (60 min), 6-punch pass $162 ($27/session). First session free for new members.",
+    lat: 40.232806696540734,
+    lng: -111.6630142231234,
+    updatedAt: "2026-03-04",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "clay",
+      locationId: "48717",
+      timezone: "America/Denver",
+      classTypes: [
+        {
+          classTypeId: "5963",
+          name: "Sauna & Cold Plunge",
+          price: 30,
+          durationMinutes: 60,
+        },
+      ],
+    },
+  },
   // ============================================================================
   // COLORADO
   // ============================================================================
@@ -7529,6 +7579,34 @@ export const saunas: Sauna[] = [
     lng: -85.67805960227136,
     updatedAt: "2026-03-03",
     images: [],
+  },
+  // ============================================================================
+  // TORONTO, ON, CANADA
+  // ============================================================================
+  {
+    slug: "nrg-haus",
+    name: "NRG Haus",
+    address: "171 East Liberty St, Unit 113, Toronto, ON M6K 3P6",
+    website: "https://nrghaus.com/",
+    bookingUrl: "https://na.spatime.com/nrgh171/5213135/schedule",
+    googleMapsUrl: "https://maps.app.goo.gl/Sp2FVaVTewMTEooZA",
+    sessionPrice: 39,
+    currency: "CAD",
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true, // Temperature-controlled cold plunge tubs
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Social wellness club in Liberty Village with contrast therapy and functional mocktail lounge. $39 CAD for 90-min contrast therapy session (sauna + cold plunge + lounge). Haus Party sessions Thu-Sat 8pm+ with live DJs ($49 CAD, 120 min).",
+    lat: 43.637745212530234,
+    lng: -79.41899885985187,
+    updatedAt: "2026-03-04",
   },
 ];
 
