@@ -37,9 +37,9 @@ interface SaunasClientProps {
   zoom?: number;
 }
 
-const snapPoints = [0, 240, 0.85, 1];
+const snapPoints = [0, 240, 0.85];
 const COLLAPSED_SNAP = 1;
-const EXPANDED_SNAP = 3;
+const EXPANDED_SNAP = 2;
 
 export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasClientProps) {
   const router = useRouter();
