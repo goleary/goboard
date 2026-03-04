@@ -25,6 +25,7 @@ import {
   type ArketaBookingProviderConfig,
   type SojoBookingProviderConfig,
   type SweatpalsBookingProviderConfig,
+  type SpaTimeBookingProviderConfig,
 } from "@/data/saunas/saunas";
 
 export interface AvailabilitySlot {
@@ -2907,6 +2908,9 @@ export async function GET(request: NextRequest) {
           startDate
         );
         break;
+      case "spatime":
+        appointmentTypes = await fetchSpaTimeAvailability(provider, startDate);
+        break;
     }
 
     return Response.json({ appointmentTypes } satisfies AvailabilityResponse);
@@ -3027,5 +3031,148 @@ async function fetchSweatpalsAvailability(
       price: evt.price,
       durationMinutes: evt.durationMinutes,
       dates: byBase.get(evt.baseEventId) ?? {},
+    }));
+}
+
+// ---------------------------------------------------------------------------
+// SpaTime
+// ---------------------------------------------------------------------------
+
+interface SpaTimeTokenResponse {
+  locationToken: string;
+  expiredEpoch: number;
+}
+
+interface SpaTimeMeteredArrival {
+  meteredArrivalScheduleId: number;
+  arrivalDate: string;
+  startTime: number; // minutes since midnight
+  capacity: number;
+  sold: number;
+}
+
+interface SpaTimeEntryPeriod {
+  id: number;
+  name: string;
+  startTime: number;
+  endTime: number;
+  isActive: boolean;
+  onlineEnabled: boolean;
+  dayPassTypeInfos: { id: number; isActive: boolean }[];
+  meteredArrivalEnabled: boolean;
+  meteredArrivalScheduleInfos: SpaTimeMeteredArrival[];
+}
+
+async function fetchSpaTimeAvailability(
+  provider: SpaTimeBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const apiBase = `https://${provider.region}api.spatime.com`;
+
+  // Step 1: Get a location token (public, no credentials)
+  const tokenRes = await fetch(`${apiBase}/api/Locations/createToken`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      merchantCode: provider.merchantCode,
+      locationId: provider.locationId,
+    }),
+    next: { revalidate: 300 },
+  });
+
+  if (!tokenRes.ok) {
+    throw new Error(`SpaTime token API returned ${tokenRes.status}`);
+  }
+
+  const tokenData: SpaTimeTokenResponse = await tokenRes.json();
+  const locationToken = decodeURIComponent(tokenData.locationToken);
+
+  // Step 2: Fetch entry periods for the 7-day window
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+  const endDate = to.toISOString().split("T")[0];
+
+  const periodsRes = await fetch(
+    `${apiBase}/api/DayPass/${provider.locationId}/EntryPeriods/${startDate}/${endDate}`,
+    {
+      headers: {
+        locationToken,
+        accountName: provider.merchantCode,
+      },
+      next: { revalidate: 300 },
+    }
+  );
+
+  if (!periodsRes.ok) {
+    throw new Error(`SpaTime EntryPeriods API returned ${periodsRes.status}`);
+  }
+
+  const entryPeriods: SpaTimeEntryPeriod[] = await periodsRes.json();
+
+  // Step 3: Map entry periods to configured day pass types
+  const configuredIds = new Set(
+    provider.dayPassTypes.map((dpt) => dpt.dayPassTypeId)
+  );
+
+  // Build a map from dayPassTypeId → date → slots
+  const typeMap = new Map<number, Record<string, AvailabilitySlot[]>>();
+
+  for (const period of entryPeriods) {
+    if (!period.isActive || !period.onlineEnabled) continue;
+
+    // Find which configured day pass type this entry period belongs to
+    const matchingTypeId = period.dayPassTypeInfos.find(
+      (info) => info.isActive && configuredIds.has(info.id)
+    )?.id;
+    if (!matchingTypeId) continue;
+
+    if (!typeMap.has(matchingTypeId)) {
+      typeMap.set(matchingTypeId, {});
+    }
+    const dates = typeMap.get(matchingTypeId)!;
+
+    for (const arrival of period.meteredArrivalScheduleInfos) {
+      const dateKey = arrival.arrivalDate.split("T")[0];
+      if (!dates[dateKey]) {
+        dates[dateKey] = [];
+      }
+
+      // Convert minutes since midnight to HH:MM
+      const hours = Math.floor(arrival.startTime / 60);
+      const mins = arrival.startTime % 60;
+      const timeStr = `${dateKey}T${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+
+      const slotsAvailable = Math.max(0, arrival.capacity - arrival.sold);
+
+      dates[dateKey].push({ time: timeStr, slotsAvailable });
+    }
+
+  }
+
+  // Deduplicate and sort slots by time within each date
+  for (const [, dates] of typeMap) {
+    for (const dateKey of Object.keys(dates)) {
+      const seen = new Map<string, AvailabilitySlot>();
+      for (const slot of dates[dateKey]) {
+        const existing = seen.get(slot.time);
+        if (!existing || (slot.slotsAvailable ?? 0) < (existing.slotsAvailable ?? 0)) {
+          seen.set(slot.time, slot);
+        }
+      }
+      dates[dateKey] = Array.from(seen.values()).sort((a, b) =>
+        a.time.localeCompare(b.time)
+      );
+    }
+  }
+
+  return provider.dayPassTypes
+    .filter((dpt) => typeMap.has(dpt.dayPassTypeId))
+    .map((dpt) => ({
+      appointmentTypeId: String(dpt.dayPassTypeId),
+      name: dpt.name,
+      price: dpt.price,
+      durationMinutes: dpt.durationMinutes,
+      dates: typeMap.get(dpt.dayPassTypeId) ?? {},
     }));
 }
