@@ -6,7 +6,7 @@ When adding a new sauna listing to `data/saunas/saunas.ts`, every listing MUST i
 
 ### Required checklist for every new listing
 
-1. **Verify actual pricing** — navigate to the booking page and extract the real drop-in session price. Do not guess or use prices from review sites.
+1. **Verify actual pricing** — navigate to the booking page and extract the real session or rental price. Do not guess or use prices from review sites. For mobile sauna rentals, use the base rental price (e.g. first night).
 2. **Get precise coordinates and Google Maps link** — search Google Maps for the business, extract lat/lng from the URL, and copy the **share short link** (`maps.app.goo.gl/...`) for `googleMapsUrl`. Never fabricate or construct Google Maps URLs — always use the actual short link from the Share button.
 3. **Identify the booking platform** — check the booking page for:
    - `acuityscheduling.com` or `squarespacescheduling.com` → Acuity
@@ -16,7 +16,7 @@ When adding a new sauna listing to `data/saunas/saunas.ts`, every listing MUST i
    - `joinblvd.com` or `blvd` in page source → Boulevard
    - Other platforms: check if they have a public API that can be integrated
 4. **Configure `bookingProvider`** — follow the platform-specific instructions in `data/saunas/README.md` to extract all required IDs (owner, service, location, etc.) and add the full config.
-5. **Only track facility access** — sauna sessions, bathhouse visits, cold plunge access. Never massage, facials, memberships, or other personal services.
+5. **Only track facility access** — sauna sessions, bathhouse visits, cold plunge access, and mobile sauna rentals. Never massage, facials, memberships, or other personal services.
 6. **Add Location entries** if needed — if the city/region doesn't exist in the `LocationSlug` type and `locations` array, add it.
 
 ### How to detect booking platforms using the browser

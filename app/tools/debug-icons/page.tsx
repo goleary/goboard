@@ -19,6 +19,7 @@ const variants: {
       naturalPlunge: false,
       soakingTub: false,
       floating: false,
+      delivery: false,
     },
   },
   {
@@ -31,6 +32,7 @@ const variants: {
       naturalPlunge: true,
       soakingTub: false,
       floating: false,
+      delivery: false,
     },
   },
   {
@@ -43,6 +45,7 @@ const variants: {
       naturalPlunge: false,
       soakingTub: false,
       floating: false,
+      delivery: false,
     },
   },
   {
@@ -55,6 +58,7 @@ const variants: {
       naturalPlunge: true,
       soakingTub: false,
       floating: false,
+      delivery: false,
       markerIconOverride: "ship" as MarkerIconOverride,
     },
   },
@@ -68,6 +72,20 @@ const variants: {
       naturalPlunge: true,
       soakingTub: false,
       floating: true,
+      delivery: false,
+    },
+  },
+  {
+    label: "Caravan (delivery)",
+    description: "Mobile saunas delivered to your location",
+    props: {
+      isSelected: false,
+      waterfront: false,
+      coldPlunge: true,
+      naturalPlunge: false,
+      soakingTub: false,
+      floating: false,
+      delivery: true,
     },
   },
   {
@@ -80,6 +98,7 @@ const variants: {
       naturalPlunge: false,
       soakingTub: true,
       floating: false,
+      delivery: false,
     },
   },
 ];
@@ -246,6 +265,7 @@ export default function DebugIconsPage() {
                 naturalPlunge: true,
                 soakingTub: false,
                 floating: true,
+                delivery: false,
               }),
               raw: true,
             },
