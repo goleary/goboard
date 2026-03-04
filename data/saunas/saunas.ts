@@ -35,6 +35,7 @@ export type LocationSlug =
   | "austin"
   | "san-diego"
   | "grand-rapids"
+  | "rhode-island"
   | "toronto";
 
 /**
@@ -345,6 +346,15 @@ export const locations: Location[] = [
     description:
       "Grand Rapids' sauna scene features mobile wood-fired Finnish saunas delivered to your door, bringing Nordic wellness to West Michigan.",
     center: { lat: 42.9634, lng: -85.6681 },
+    zoom: 10,
+  },
+  {
+    slug: "rhode-island",
+    name: "Rhode Island",
+    state: "RI",
+    description:
+      "Rhode Island's sauna scene features wood-fired beach saunas with ocean cold plunges along Narragansett Bay.",
+    center: { lat: 41.7, lng: -71.28 },
     zoom: 10,
   },
   {
@@ -1055,6 +1065,8 @@ export interface Sauna {
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
    */
   googleMapsUrl?: string;
+  /** Instagram handle (without @) */
+  instagram?: string;
   /** Price for a single session */
   sessionPrice: number;
   /** Currency code (defaults to "USD" if not specified) */
@@ -7728,6 +7740,181 @@ export const saunas: Sauna[] = [
       dayPassTypes: [
         { dayPassTypeId: 6426824, name: "Contrast Therapy Experience", price: 39, durationMinutes: 90 },
         { dayPassTypeId: 5649296, name: "Haus Party", price: 49, durationMinutes: 120 },
+      ],
+    },
+  },
+  {
+    slug: "altaer-sauna-warren",
+    name: "ALTÆR Sauna (Warren)",
+    heaterType: "wood",
+    website: "https://altaer.space",
+    bookingUrl: "https://altaer.space/book-altaer",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/CZgqBSuFJMERAnHS9",
+    instagram: "altaersauna",
+    sessionPrice: 40,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    isOutside: true,
+    showers: false,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired beach sauna at Warren Town Beach on Narragansett Bay. SaunaSocial community sessions ($40) and private sauna rentals ($180). Ocean cold plunge access.",
+    lat: 41.72284222847791,
+    lng: -71.28493493370821,
+    updatedAt: "2026-03-04",
+    bookingProvider: {
+      type: "acuity",
+      owner: "1c5d335b",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 87999393,
+          acuityCalendarId: 13233722,
+          name: "SaunaSocial @ Warren Town Beach",
+          price: 40,
+          durationMinutes: 60,
+        },
+        {
+          acuityAppointmentId: 86793517,
+          acuityCalendarId: 13233722,
+          name: "Private Sauna @ Warren Town Beach",
+          price: 180,
+          durationMinutes: 60,
+          private: true,
+          seats: 10,
+        },
+      ],
+    },
+    images: [
+      {
+        url: "/saunas/altaer-sauna-warren/hero.jpg",
+        alt: "ALTÆR Sauna wood-fired mobile sauna on Warren Town Beach",
+      },
+    ],
+  },
+  {
+    slug: "altaer-sauna-little-compton",
+    name: "ALTÆR Sauna (Little Compton)",
+    heaterType: "wood",
+    website: "https://altaer.space",
+    bookingUrl: "https://altaer.space/book-altaer",
+    bookingPlatform: "acuity",
+    instagram: "altaersauna",
+    sessionPrice: 40,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    isOutside: true,
+    showers: false,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired beach sauna at South Shore Beach in Little Compton. SaunaSocial community sessions ($40) and private sauna rentals ($180). Ocean cold plunge access.",
+    lat: 41.494064296631635,
+    lng: -71.13663041269254,
+    updatedAt: "2026-03-04",
+    bookingProvider: {
+      type: "acuity",
+      owner: "1c5d335b",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 83993730,
+          acuityCalendarId: 8195278,
+          name: "SaunaSocial @ South Shore Beach",
+          price: 40,
+          durationMinutes: 60,
+        },
+        {
+          acuityAppointmentId: 47366157,
+          acuityCalendarId: 8195278,
+          name: "Private Sauna @ South Shore Beach",
+          price: 180,
+          durationMinutes: 60,
+          private: true,
+          seats: 10,
+        },
+      ],
+    },
+  },
+  {
+    slug: "moonrise-sauna",
+    name: "Moonrise Sauna",
+    heaterType: "wood",
+    address: "80 Walnut St, Seekonk, MA 02771",
+    website: "https://www.moonrisesauna.com/",
+    bookingUrl: "https://moonrisesauna.as.me/",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/DSh8YgLns7FFc1j39",
+    instagram: "moonrisesauna",
+    sessionPrice: 40,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 170, max: 200 },
+    capacity: 6,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Wood-fired cedar sauna on 400+ acres of conserved farmland at Osamequin Farm, 20 minutes outside Providence. Public sessions ($40), private bookings up to 6 ($150), and community sliding-scale nights ($15-25). Open Labor Day to Memorial Day.",
+    lat: 41.846405755366014,
+    lng: -71.30763794773613,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/moonrise-sauna/hero.jpg",
+        alt: "Moonrise Sauna wood-fired cedar sauna on Osamequin Farm",
+      },
+      {
+        url: "/saunas/moonrise-sauna/exterior.jpg",
+        alt: "Moonrise Sauna exterior view overlooking farm pasture",
+      },
+    ],
+    bookingProvider: {
+      type: "acuity",
+      owner: "81c14b0e",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 84497154,
+          acuityCalendarId: 12801397,
+          name: "Public Session",
+          price: 40,
+          durationMinutes: 60,
+        },
+        {
+          acuityAppointmentId: 84497186,
+          acuityCalendarId: 12801397,
+          name: "Private Sauna",
+          price: 150,
+          durationMinutes: 60,
+          private: true,
+          seats: 6,
+        },
+        {
+          acuityAppointmentId: 84626042,
+          acuityCalendarId: 12801397,
+          name: "Community Session (Sliding Scale)",
+          price: 15,
+          durationMinutes: 60,
+        },
       ],
     },
   },

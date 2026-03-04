@@ -17,7 +17,8 @@ When adding a new sauna listing to `data/saunas/saunas.ts`, every listing MUST i
    - Other platforms: check if they have a public API that can be integrated
 4. **Configure `bookingProvider`** — follow the platform-specific instructions in `data/saunas/README.md` to extract all required IDs (owner, service, location, etc.) and add the full config.
 5. **Only track facility access** — sauna sessions, bathhouse visits, cold plunge access, and mobile sauna rentals. Never massage, facials, memberships, or other personal services.
-6. **Add Location entries** if needed — if the city/region doesn't exist in the `LocationSlug` type and `locations` array, add it.
+6. **Download images locally** — never reference external image URLs. Download images to `public/saunas/<slug>/` and reference them as `/saunas/<slug>/<filename>` in the `images` array.
+7. **Add Location entries** if needed — if the city/region doesn't exist in the `LocationSlug` type and `locations` array, add it.
 
 ### How to detect booking platforms using the browser
 
