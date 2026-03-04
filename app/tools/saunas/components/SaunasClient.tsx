@@ -386,14 +386,16 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
                   <div className="w-10 h-1 bg-muted-foreground/40 rounded-full" />
                 </div>
                 {selectedSauna ? (
-                  <button
-                    type="button"
-                    onClick={handleCloseDetail}
-                    className="flex items-center gap-1 px-4 py-1 text-sm text-muted-foreground hover:text-foreground border-b"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                    Back to list
-                  </button>
+                  <div className="border-b">
+                    <button
+                      type="button"
+                      onClick={handleCloseDetail}
+                      className="flex items-center gap-1 px-4 py-1 text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      Back to list
+                    </button>
+                  </div>
                 ) : (
                   filtersSection(true)
                 )}
