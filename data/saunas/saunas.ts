@@ -4537,6 +4537,7 @@ export const saunas: Sauna[] = [
     website: "https://www.mistthermal.com/",
     bookingUrl: "https://mistthermalsanctuary.as.me/",
     bookingPlatform: "acuity",
+    instagram: "mistthermal",
     sessionPrice: 199,
     currency: "CAD",
     sessionLengthMinutes: 90,
@@ -4558,6 +4559,10 @@ export const saunas: Sauna[] = [
     lng: -123.3333,
     updatedAt: "2026-01-05",
     images: [
+      {
+        url: "/saunas/mist-thermal-sanctuary/cold-plunge.jpg",
+        alt: "Mist Thermal Sanctuary cold plunge surrounded by forest on Bowen Island",
+      },
       {
         url: "/saunas/mist-thermal-sanctuary/interior.jpg",
         alt: "Mist Thermal Sanctuary sauna interior with wood-burning stove and natural light",
@@ -4620,6 +4625,12 @@ export const saunas: Sauna[] = [
     lat: 49.27556069996275,
     lng: -123.20116604338386,
     updatedAt: "2026-02-18",
+    images: [
+      {
+        url: "/saunas/jericho-beach-seaside-sauna/seaside-sauna.jpg",
+        alt: "Jericho Beach Seaside Sauna wood-fired barrel sauna on the oceanfront",
+      },
+    ],
     bookingProvider: {
       type: "wix",
       siteUrl: "www.thefinnishsauna.ca",
@@ -4698,6 +4709,233 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  {
+    slug: "gatherwell-mt-pleasant",
+    name: "Gatherwell Mount Pleasant",
+    heaterType: "wood",
+    address: "316 W 5th Ave, Vancouver, BC V5Y 1J5, Canada",
+    website: "https://www.gatherwell.ca/",
+    bookingUrl: "https://www.gatherwell.ca/book-a-session-mount-pleasant",
+    bookingPlatform: "wix",
+    googleMapsUrl: "https://maps.app.goo.gl/vQCnMHUVFcs5ehCW6",
+    instagram: "gatherwell.ca",
+    sessionPrice: 24,
+    currency: "CAD",
+    sessionLengthMinutes: 50,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true,
+    showers: false,
+    towelsIncluded: true, // Small towels provided
+    capacity: 12,
+    hours: "Daily, check schedule for session times",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Community sauna experience at The Beaumont Studios courtyard in Mt Pleasant. Offers 50 min ($24) and 90 min ($33) community sessions. Tea, robes, and small towels provided. Entrance through the courtyard gate off 5th Ave. 4.9 stars with 446 reviews. Also has a beachfront location at Ambleside.",
+    lat: 49.2664387,
+    lng: -123.1113042,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/gatherwell-mt-pleasant/sauna-interior.jpg",
+        alt: "Gatherwell barrel sauna interior with cedar benches, towels, and heater stones",
+      },
+      {
+        url: "/saunas/gatherwell-mt-pleasant/lounge.jpg",
+        alt: "Gatherwell guests relaxing in robes in the outdoor lounge area",
+      },
+    ],
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.gatherwell.ca",
+      timezone: "America/Vancouver",
+      services: [
+        {
+          serviceId: "f3069df3-3128-4cc7-ae12-de03a9c93457",
+          name: "50 min Community Session",
+          price: 24,
+          durationMinutes: 50,
+        },
+        {
+          serviceId: "c37e3727-78b1-477a-9de5-74a59d501f12",
+          name: "90 min Community Session",
+          price: 33,
+          durationMinutes: 90,
+        },
+      ],
+    },
+  },
+  {
+    slug: "gatherwell-ambleside",
+    name: "Gatherwell Ambleside",
+    heaterType: "wood",
+    address: "1150 Marine Dr, West Vancouver, BC V7T 1G2, Canada",
+    website: "https://www.gatherwell.ca/",
+    bookingUrl: "https://www.gatherwell.ca/book-a-session-ambleside",
+    bookingPlatform: "wix",
+    googleMapsUrl: "https://maps.app.goo.gl/nbGnET7VEifSRh3W7",
+    instagram: "gatherwell.ca",
+    sessionPrice: 29,
+    currency: "CAD",
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: false, // No cold plunge tubs, ocean plunging only
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true, // Ocean access ~20m from sauna
+    isOutside: true,
+    showers: true, // Outdoor cold shower at adjacent park washrooms
+    towelsIncluded: false, // Bring two towels
+    capacity: 10,
+    hours: "Pilot program Dec 19 – Mar 15, check schedule for session times",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Beachfront mobile sauna pilot at Ambleside Beach, approved by the District of West Vancouver (Dec 19 – Mar 15). Ocean cold plunge via sandy beach entry ~20m from sauna. No on-site amenities; adjacent park washrooms for changing with outdoor cold shower. Shared sessions host up to 10 guests. 4.9 stars.",
+    lat: 49.3247807,
+    lng: -123.1508109,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/gatherwell-ambleside/sauna-ocean-view.jpg",
+        alt: "Gatherwell Ambleside sauna interior looking out to the ocean",
+      },
+      {
+        url: "/saunas/gatherwell-ambleside/ambleside-beach.jpg",
+        alt: "Ambleside Beach with Lions Gate Bridge in the background",
+      },
+    ],
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.gatherwell.ca",
+      timezone: "America/Vancouver",
+      services: [
+        {
+          serviceId: "60048fdb-0e46-4c50-981b-b7028bf0dc12",
+          name: "Social Sauna Session",
+          price: 29,
+          durationMinutes: 75,
+        },
+        {
+          serviceId: "1e39cc0f-4e7a-475c-ae6c-ddef2ea81e2f",
+          name: "50 min Social Sauna Session",
+          price: 29,
+          durationMinutes: 50,
+        },
+      ],
+    },
+  },
+  {
+    slug: "tality-mt-pleasant",
+    name: "Tality Wellness Mount Pleasant",
+    heaterType: "electric",
+    address: "501 - 107 East 3rd Ave, Vancouver, BC V5T 1C7, Canada",
+    website: "https://www.talitywellness.ca/",
+    bookingUrl: "https://www.talitywellness.ca/book-session",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/hwfXUTpchFED1H86",
+    instagram: "talitymtpleasant",
+    sessionPrice: 47,
+    currency: "CAD",
+    sessionLengthMinutes: 110,
+    steamRoom: false,
+    coldPlunge: true, // 2-5°C ice baths
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true, // Fresh robes and towel service included
+    capacity: 25,
+    hours: "8am-10pm Sun-Thu, 8am-11pm Fri-Sat",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Sauna club on the 5th floor with sweeping city views. Features 25-person electric sauna, cold plunge (2-5°C), ambient plunge (9-11°C), rooftop patio, and indoor-outdoor lounges. Complimentary kombucha on tap, hot tea, robes, and towels. Community sessions (110 min, $47) and events. 4.8 stars with 210 reviews. Formerly Orijin Restore.",
+    lat: 49.2684938,
+    lng: -123.1025126,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/tality-mt-pleasant/sauna-interior.jpg",
+        alt: "Tality Wellness guests socializing inside the cedar sauna",
+      },
+    ],
+  },
+  {
+    slug: "tality-shipyards",
+    name: "Tality Wellness Shipyards",
+    heaterType: "electric",
+    address: "125 Victory Ship Way unit 240, North Vancouver, BC V7L 0B2, Canada",
+    website: "https://www.talitywellness.ca/",
+    bookingUrl: "https://www.talitywellness.ca/book-session",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/H6YAf1rPC6ekrCon9",
+    instagram: "talityshipyards",
+    sessionPrice: 47,
+    currency: "CAD",
+    sessionLengthMinutes: 110,
+    steamRoom: false,
+    coldPlunge: true, // 2-5°C ice baths
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true, // Private showers
+    towelsIncluded: true, // Fresh robes and towel service included
+    capacity: 20,
+    hours: "9am-10pm Mon/Tue/Thu/Fri, 8am-10pm Sat-Sun, 2pm-10pm Wed",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Flagship sauna club at The Shipyards in North Vancouver. Features 20-person electric sauna, cold plunge (2-5°C), ambient plunge (9-11°C), outdoor patio, and private showers. Complimentary kombucha on tap, hot tea, robes, and towels. Community sessions (110 min, $47) and express sessions (50 min). 4.8 stars.",
+    lat: 49.3100944,
+    lng: -123.0789688,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/tality-shipyards/sauna-interior.jpg",
+        alt: "Tality Wellness guests socializing inside the cedar sauna",
+      },
+    ],
+  },
+  {
+    slug: "tality-secret",
+    name: "Tality Wellness Secret",
+    heaterType: "wood",
+    address: "1481 Dominion St, North Vancouver, BC V7J 1B3, Canada",
+    website: "https://www.talitywellness.ca/",
+    bookingUrl: "https://www.talitywellness.ca/book-session",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/fWs2pp1Ts32SyS1w8",
+    instagram: "talitysecret",
+    sessionPrice: 47,
+    currency: "CAD",
+    sessionLengthMinutes: 110,
+    steamRoom: false,
+    coldPlunge: true, // 2-5°C ice baths
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: false,
+    towelsIncluded: true, // Fresh robes and towel service included
+    hours: "6-10pm Mon-Wed, 4-10pm Thu-Fri",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Intimate wood-burning sauna tucked away in North Vancouver. Features wood-fired sauna, cold plunge (2-5°C), ambient plunge (9-11°C), and lounge area. Complimentary kombucha on tap, hot tea, robes, and towels. Community sessions (110 min, $47). 4.8 stars.",
+    lat: 49.3031428,
+    lng: -123.0327231,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/tality-secret/sauna-interior.jpg",
+        alt: "Tality Wellness guests socializing inside the cedar sauna",
+      },
+    ],
   },
   // ============================================================================
   // VANCOUVER ISLAND, BC
