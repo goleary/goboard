@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import classNames from "classnames";
-import Script from "next/script";
+import { Analytics } from "./Analytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,32 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {process.env.NODE_ENV === "production" && (
-          <>
-            <Script
-              async
-              src="https://www.googletagmanager.com/gtag/js?id=G-E9X1JWQ75Z"
-            />
-            <Script id="google-analytics">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-E9X1JWQ75Z');
-              `}
-            </Script>
-            <Script
-              async
-              src="https://umami-production-9fe7.up.railway.app/script.js"
-              data-website-id="3bb05bc8-9b50-4ed9-9a15-313979906ae2"
-            />
-            <Script
-              defer
-              data-site-id="goleary.com"
-              src="https://assets.onedollarstats.com/tracker.js"
-            />
-          </>
-        )}
+        <Analytics />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
