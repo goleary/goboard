@@ -27,7 +27,7 @@ This document is the authoritative guide for adding sauna listings to the GoBoar
 | `sessionPrice` | Verified from the actual booking page — never from review sites or guessed. For mobile sauna rentals, use the base rental price (e.g. first night). |
 | `lat`, `lng` | Precise coordinates extracted from Google Maps |
 | `googleMapsUrl` | Share short link (`maps.app.goo.gl/...`) copied from the Maps Share button — never fabricated or constructed |
-| Amenity flags | `steamRoom`, `coldPlunge`, `soakingTub`, `showers`, `towelsIncluded`, `waterfront`, `naturalPlunge` — all required booleans |
+| `tags` | Array of `SaunaTag` values. Include all applicable tags from: `"wood-fired"`, `"electric-heat"`, `"gas-heat"`, `"steam-room"`, `"cold-plunge"`, `"soaking-tub"`, `"waterfront"`, `"natural-plunge"`, `"floating"`, `"delivery"`, `"outside"`, `"tidal"`, `"showers"`, `"towels-included"`, `"serves-food"` |
 | `sessionLengthMinutes` | Required (null for mobile rentals) |
 | `bookingProvider` | Required when feasible — see [Booking Provider](#3-booking-provider) below |
 | `images` | Required — at least one image from the sauna's primary website. See [Image Policy](#6-image-policy). |
@@ -66,7 +66,7 @@ Set `waterTempProvider` when a nearby sensor exists:
 
 ### Tide monitoring
 
-- `tidal: true` — set when the sauna is on tidal water (e.g. Puget Sound, ocean bays)
+- Include `"tidal"` in `tags` when the sauna is on tidal water (e.g. Puget Sound, ocean bays)
 - `noaaTideStation` — NOAA CO-OPS station ID for tide predictions
 
 ### Other fields (strongly suggested)
@@ -74,11 +74,9 @@ Set `waterTempProvider` when a nearby sensor exists:
 These fields are optional only in the sense that a listing can be submitted without them if the information can't be found — but you should always try to find and include them.
 
 - `instagram` — Instagram handle (without `@`)
-- `heaterType` — "electric", "wood", or "gas"
+- Heater type tag — include `"wood-fired"`, `"electric-heat"`, or `"gas-heat"` in `tags`
 - `temperatureRangeF` — dry sauna temperature range `{ min, max }`
 - `capacity` — max guest count
-- `isFloating` — floating sauna structures
-- `isOutside` — primarily outdoor experience
 - `markerIconOverride` — custom map icon ("house", "waves", "snowflake", "ship", "floating-sauna", "caravan")
 
 ## 6. Image Policy
@@ -95,7 +93,7 @@ These fields are optional only in the sense that a listing can be submitted with
 Mobile sauna rentals have special rules:
 
 - Use the delivery base location for coordinates
-- Set `sessionLengthMinutes: null`, `isDelivery: true`, `private: true`
+- Set `sessionLengthMinutes: null`, include `"delivery"` in `tags`, `private: true`
 - Use base rental price (e.g. first night) for `sessionPrice`
 - Set `seats` to the sauna capacity
 - Include delivery radius, add-on options, and additional night pricing in `notes`

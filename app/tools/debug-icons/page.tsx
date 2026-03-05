@@ -14,12 +14,7 @@ const variants: {
     description: "Default for saunas without distinguishing features",
     props: {
       isSelected: false,
-      waterfront: false,
-      coldPlunge: false,
-      naturalPlunge: false,
-      soakingTub: false,
-      floating: false,
-      delivery: false,
+      tags: [],
     },
   },
   {
@@ -27,12 +22,7 @@ const variants: {
     description: "Natural body of water cold plunge",
     props: {
       isSelected: false,
-      waterfront: true,
-      coldPlunge: true,
-      naturalPlunge: true,
-      soakingTub: false,
-      floating: false,
-      delivery: false,
+      tags: ["waterfront", "cold-plunge", "natural-plunge"],
     },
   },
   {
@@ -40,12 +30,7 @@ const variants: {
     description: "Cold plunge pool (not natural)",
     props: {
       isSelected: false,
-      waterfront: false,
-      coldPlunge: true,
-      naturalPlunge: false,
-      soakingTub: false,
-      floating: false,
-      delivery: false,
+      tags: ["cold-plunge"],
     },
   },
   {
@@ -53,12 +38,7 @@ const variants: {
     description: "Marker override for boat-based saunas",
     props: {
       isSelected: false,
-      waterfront: true,
-      coldPlunge: true,
-      naturalPlunge: true,
-      soakingTub: false,
-      floating: false,
-      delivery: false,
+      tags: ["waterfront", "cold-plunge", "natural-plunge"],
       markerIconOverride: "ship" as MarkerIconOverride,
     },
   },
@@ -67,12 +47,7 @@ const variants: {
     description: "Floating saunas on water",
     props: {
       isSelected: false,
-      waterfront: true,
-      coldPlunge: true,
-      naturalPlunge: true,
-      soakingTub: false,
-      floating: true,
-      delivery: false,
+      tags: ["waterfront", "cold-plunge", "natural-plunge", "floating"],
     },
   },
   {
@@ -80,12 +55,7 @@ const variants: {
     description: "Mobile saunas delivered to your location",
     props: {
       isSelected: false,
-      waterfront: false,
-      coldPlunge: true,
-      naturalPlunge: false,
-      soakingTub: false,
-      floating: false,
-      delivery: true,
+      tags: ["cold-plunge", "delivery"],
     },
   },
   {
@@ -93,12 +63,7 @@ const variants: {
     description: "Hot tub / thermal pool / soaking tub",
     props: {
       isSelected: false,
-      waterfront: false,
-      coldPlunge: false,
-      naturalPlunge: false,
-      soakingTub: true,
-      floating: false,
-      delivery: false,
+      tags: ["soaking-tub"],
     },
   },
 ];
@@ -260,12 +225,7 @@ export default function DebugIconsPage() {
               label: "Current",
               glyph: getMarkerPinHtml({
                 isSelected: false,
-                waterfront: true,
-                coldPlunge: true,
-                naturalPlunge: true,
-                soakingTub: false,
-                floating: true,
-                delivery: false,
+                tags: ["waterfront", "cold-plunge", "natural-plunge", "floating"],
               }),
               raw: true,
             },
