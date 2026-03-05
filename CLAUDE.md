@@ -6,6 +6,8 @@ Follow the guidelines in [`data/saunas/GUIDELINES.md`](data/saunas/GUIDELINES.md
 
 For platform-specific booking provider setup (Acuity, Wix, Glofox, Periode, Boulevard, etc.), see [`data/saunas/README.md`](data/saunas/README.md).
 
+After adding listings, commit the changes, push to a branch, and open a PR.
+
 ### How to detect booking platforms using the browser
 
 Use the Chrome browser tool to navigate to the sauna's booking page. Inspect the page source and network requests:
