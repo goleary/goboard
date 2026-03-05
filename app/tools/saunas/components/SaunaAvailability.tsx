@@ -18,7 +18,7 @@ import { TimeSlotBadge } from "./TimeSlotBadge";
 
 
 const DEFAULT_MAX_DAYS = 3;
-const MAX_SLOTS_PER_GROUP = 10;
+const MAX_SLOTS_PER_GROUP = 8;
 
 interface SaunaAvailabilityProps {
   sauna: Sauna;
