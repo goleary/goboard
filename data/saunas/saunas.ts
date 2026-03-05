@@ -8099,8 +8099,8 @@ export const saunas: Sauna[] = [
     genderPolicy: "Private booking",
     notes:
       "Private outdoor saunas on the Lake Champlain waterfront. Base booking for 2 guests, 1 hour. Additional guests $30 each (up to 6). Cold plunge pool and year-round lake access. Robe and towel rentals available.",
-    lat: 44.4615777,
-    lng: -73.2198416,
+    lat: 44.46390288629247,
+    lng: -73.2197922865059,
     updatedAt: "2026-03-04",
     images: [
       {
