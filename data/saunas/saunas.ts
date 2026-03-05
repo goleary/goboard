@@ -4830,6 +4830,12 @@ export const saunas: Sauna[] = [
     naturalPlunge: true, // Ocean access ~20m from sauna
     tidal: true,
     dfoTideStation: "5cebf1e43d0f4a073c4bc45a", // Ambleside
+    waterTempProvider: {
+      type: "cioos-erddap",
+      stationId: "46304", // Entrance to English Bay
+      fallbackStationIds: ["46146", "46131"], // Halibut Bank, Sentry Shoal
+    },
+    waterTempUnit: "C",
     isOutside: true,
     showers: true, // Outdoor cold shower at adjacent park washrooms
     towelsIncluded: false, // Bring two towels
