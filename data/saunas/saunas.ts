@@ -8141,6 +8141,7 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://savu.as.me/schedule.php?appointmentType=22301448",
     bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/79jX9RuSyqhpMttx5",
     instagram: "savu.sauna",
     sessionPrice: 70,
     sessionLengthMinutes: 60,
@@ -8156,8 +8157,8 @@ export const saunas: Sauna[] = [
     genderPolicy: "Private booking",
     notes:
       "Private outdoor sauna in the Green Mountains with panoramic views of Mt. Mansfield and Smugglers' Notch. Cold plunge, shower, changing room, and outdoor lounging deck. Guests must bring own robes, towels, and sandals. AWD and snow tires recommended in winter.",
-    lat: 44.6013999,
-    lng: -72.7813687,
+    lat: 44.601704576153274,
+    lng: -72.78101740399597,
     updatedAt: "2026-03-04",
     images: [
       {
