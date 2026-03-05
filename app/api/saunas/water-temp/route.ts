@@ -5,6 +5,7 @@ import type { WaterTempResponse } from "./providers/types";
 import { fetchCioosErddapWaterTemp } from "./providers/cioos-erddap";
 import { fetchKingCountyBuoyWaterTemp } from "./providers/king-county-buoy";
 import { fetchNoaaWaterTemp } from "./providers/noaa";
+import { fetchUsgsWaterTemp } from "./providers/usgs";
 
 export type { WaterTempResponse };
 
@@ -47,6 +48,9 @@ export async function GET(request: NextRequest) {
         break;
       case "noaa":
         result = await fetchNoaaWaterTemp(provider);
+        break;
+      case "usgs":
+        result = await fetchUsgsWaterTemp(provider);
         break;
       default:
         return Response.json(
