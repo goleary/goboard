@@ -5514,6 +5514,46 @@ export const saunas: Sauna[] = [
     lng: -93.3159,
     updatedAt: "2026-02-06",
   },
+  {
+    slug: "fire-and-ice-sauna-mn",
+    name: "Fire & Ice Sauna MN",
+    heaterType: "wood",
+    address: "White Bear Lake County Park, White Bear Lake, MN 55110",
+    website: "https://www.fireandicesauna.com/",
+    bookingUrl: "https://www.fireandicesauna.com/book-online",
+    bookingPlatform: "wix",
+    bookingProvider: {
+      type: "wix",
+      siteUrl: "www.fireandicesauna.com",
+      timezone: "America/Chicago",
+      services: [
+        {
+          serviceId: "9378a7bd-134b-48de-bcde-d7deb4c3097e",
+          name: "Sauna Session",
+          price: 40,
+          durationMinutes: 60,
+        },
+      ],
+    },
+    sessionPrice: 40,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 10,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Mobile wood-fired cedar sauna at White Bear Lake County Park (Ramsey Beach). Cold plunge in White Bear Lake. Semi-private sessions available. Full sauna rental (10-12 person) also offered. Serving within 20 miles of St. Paul.",
+    lat: 45.0951372,
+    lng: -92.9963867,
+    googleMapsUrl: "https://maps.app.goo.gl/C3Cjr7btb2Uu2jfR8",
+    updatedAt: "2026-03-04",
+  },
   // ============================================================================
   // UTAH
   // ============================================================================
