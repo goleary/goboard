@@ -868,7 +868,13 @@ async function fetchZenotiAvailability(
 
 const BOOKER_SUBSCRIPTION_KEY = "b8c686e771ac4e4a8173d8177e4e1c8c";
 
+let cachedBookerToken: { token: string; expiresAt: number } | null = null;
+
 async function fetchBookerToken(): Promise<string> {
+  if (cachedBookerToken && Date.now() < cachedBookerToken.expiresAt) {
+    return cachedBookerToken.token;
+  }
+
   const res = await fetch(
     "https://api.booker.com/cf2/v5/auth/connect/token",
     {
@@ -878,20 +884,22 @@ async function fetchBookerToken(): Promise<string> {
         "Ocp-Apim-Subscription-Key": BOOKER_SUBSCRIPTION_KEY,
       },
       body: "",
-      next: { revalidate: 3600 },
     }
   );
   if (!res.ok) {
     throw new Error(`Booker token endpoint returned ${res.status}`);
   }
   const data = await res.json();
+  cachedBookerToken = {
+    token: data.access_token,
+    expiresAt: Date.now() + 55 * 60 * 1000, // 55 min (token lasts 1hr)
+  };
   return data.access_token;
 }
 
 interface BookerAvailabilitySlot {
   startDateTime: string;
   endDateTime: string;
-  employees: string[];
 }
 
 interface BookerServiceAvailability {
@@ -933,7 +941,6 @@ async function fetchBookerAvailability(
       const url = new URL(
         "https://api.booker.com/cf2/v5/availability/availability"
       );
-      url.searchParams.set("IncludeEmployees", "true");
       url.searchParams.append("locationIds[]", String(provider.locationId));
       url.searchParams.set("serviceId", String(svc.serviceId));
       url.searchParams.set(
