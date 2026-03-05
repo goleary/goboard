@@ -6672,6 +6672,10 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (Lake Michigan)
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Wed-Fri 7am-7:30am, Sun 9am-9:30am (quiet time); other times vary",
@@ -6958,6 +6962,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     isOutside: true,
     isFloating: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8418150", // Portland, ME
+      fallbackStationIds: ["8413320"], // Bar Harbor, ME
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Thu-Sun sunrise to sunset, Oct 2-May 8",
@@ -7544,6 +7553,10 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (Lake Michigan)
+    },
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 185 },
@@ -7604,6 +7617,10 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (Lake Michigan)
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -7714,6 +7731,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "usgs",
+      siteId: "01473500", // Schuylkill River at Norristown, PA
+      fallbackSiteIds: ["01474500"], // Schuylkill River at Philadelphia, PA
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -8334,6 +8356,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8452944", // Conimicut Light, Narragansett Bay
+      fallbackStationIds: ["8452660", "8454000"], // Newport, Providence
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -8389,6 +8416,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8452660", // Newport, RI
+      fallbackStationIds: ["8447930", "8449130"], // Woods Hole, Nantucket
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
