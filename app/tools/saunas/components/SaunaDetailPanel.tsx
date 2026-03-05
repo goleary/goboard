@@ -24,6 +24,7 @@ import {
   UtensilsCrossed,
   ChevronLeft,
   ChevronRight,
+  Mail,
 } from "lucide-react";
 
 interface SaunaDetailPanelProps {
@@ -264,6 +265,14 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
               <p className="text-sm">{sauna.notes}</p>
             </div>
           )}
+          {/* Report link */}
+          <a
+            href={`mailto:oleary.gabe@gmail.com?subject=${encodeURIComponent(`Sauna Map - Issue with ${sauna.name}`)}&body=${encodeURIComponent(`Hi,\n\nI'd like to report something missing or incorrect about ${sauna.name}.\n\n[Please describe the issue here]\n`)}`}
+            className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors p-2 -mx-2 rounded"
+          >
+            <Mail className="h-3 w-3" />
+            <span>Report something missing or incorrect</span>
+          </a>
         </div>
       </div>
 
