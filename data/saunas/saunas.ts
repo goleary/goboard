@@ -7952,6 +7952,7 @@ export const saunas: Sauna[] = [
     website: "https://rafasauna.com/",
     bookingUrl: "https://app.rafasauna.com/booking",
     googleMapsUrl: "https://maps.app.goo.gl/6xAqnV4ZR8oLGAMK7",
+    instagram: "rafasaunalounge",
     sessionPrice: 65,
     sessionLengthMinutes: 120,
     steamRoom: true,
