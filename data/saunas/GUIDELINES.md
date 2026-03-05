@@ -25,7 +25,7 @@ This document is the authoritative guide for adding sauna listings to the GoBoar
 | `name`, `slug`, `website` | Required |
 | `address` | Required when a physical location exists |
 | `sessionPrice` | Verified from the actual booking page — never from review sites or guessed. For mobile sauna rentals, use the base rental price (e.g. first night). |
-| `lat`, `lng` | Precise coordinates extracted from Google Maps |
+| `lat`, `lng` | Precise coordinates from Google Maps — open the location, right-click the pin, and click the coordinates row in the context menu to copy them to clipboard |
 | `googleMapsUrl` | Share short link (`maps.app.goo.gl/...`) copied from the Maps Share button — never fabricated or constructed |
 | Amenity flags | `steamRoom`, `coldPlunge`, `soakingTub`, `showers`, `towelsIncluded`, `waterfront`, `naturalPlunge` — all required booleans |
 | `sessionLengthMinutes` | Required (null for mobile rentals) |
