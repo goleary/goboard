@@ -2410,11 +2410,14 @@ async function fetchRollerAvailability(
   for (const dayProducts of dailyAvailability) {
     for (const product of dayProducts) {
       if (product.type !== "sessionpass") continue;
+      const info = productMap.get(product.id);
+      const displayName = info?.name ?? product.name;
+      if (displayName.toLowerCase().includes("do not use")) continue;
+      if (product.name.toLowerCase().includes("do not use")) continue;
       const key = product.id;
       if (!productSessions.has(key)) {
-        const info = productMap.get(product.id);
         productSessions.set(key, {
-          name: info?.name ?? product.name,
+          name: displayName,
           price: info?.price ?? 0,
           durationMinutes: 60,
           dates: {},
