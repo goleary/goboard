@@ -1122,7 +1122,8 @@ export interface Sauna {
     | "arketa"
     | "sojo"
     | "sweatpals"
-    | "spatime";
+    | "spatime"
+    | "wellnessliving"; // Unsupported: API requires HMAC signing with a server-side secret (no public API)
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -4568,6 +4569,46 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-05",
   },
   {
+    slug: "orijin-restore",
+    name: "Orijin Restore",
+    address: "#150-3665 Kingsway, Vancouver, BC V5R 5W2, Canada",
+    website: "https://orijinrestore.com/",
+    bookingUrl:
+      "https://www.wellnessliving.com/catalog/orijin_yoga?a_shop_category%5B0%5D=1101903&is_filter=1",
+    instagram: "orijinyoga",
+    sessionPrice: 45,
+    currency: "CAD",
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true, // Covered patio
+    showers: true,
+    towelsIncluded: true, // Towels, bathrobe, slippers included
+    capacity: 8,
+    temperatureRangeF: { min: 176, max: 194 }, // Up to 90°C
+    hours: "Tue/Thu 6-7:30pm, Sat 10:30am-12pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Sauna and cold plunge on a covered patio with views of Vancouver and North Shore mountains, at the Orijin Yoga studio near Metrotown. Custom-built cedar sauna with Whistler Homecraft stones, cold plunge with dedicated chiller. 90 min ($45) and 45 min ($25) sessions available. Includes towels, bathrobe, slippers, water, and tea. Also offers cold plunge only sessions (30 min, $20).",
+    lat: 49.2327,
+    lng: -123.0242,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/orijin-restore/sauna.jpg",
+        alt: "Orijin Restore cedar sauna with Whistler Homecraft stones and wooden ladle",
+      },
+      {
+        url: "/saunas/orijin-restore/cold-plunge.jpg",
+        alt: "Guest in the Orijin Restore cedar cold plunge barrel on the patio",
+      },
+    ],
+  },
+  {
     slug: "mist-thermal-sanctuary",
     name: "Mist Thermal Sanctuary",
     heaterType: "wood",
@@ -4982,6 +5023,60 @@ export const saunas: Sauna[] = [
       {
         url: "/saunas/tality-secret/sauna-interior.jpg",
         alt: "Tality Wellness guests socializing inside the cedar sauna",
+      },
+    ],
+  },
+  {
+    slug: "reviva-lounge",
+    name: "Reviva Lounge",
+    address: "4888 Vanguard Rd #106, Richmond, BC V6X 2R4, Canada",
+    website: "https://www.revivalounge.ca/",
+    bookingUrl: "https://www.revivalounge.ca/buy",
+    bookingPlatform: "mariana-tek",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "revivalounge",
+      locationId: "48717",
+      timezone: "America/Vancouver",
+      classTypes: [
+        {
+          classTypeId: "5955",
+          name: "75 Minute Standard",
+          price: 20,
+          durationMinutes: 75,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/Yk7BdwXpcYgCdQ336",
+    instagram: "revivalounge",
+    sessionPrice: 20,
+    currency: "CAD",
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true, // 4 tubs ranging 2-12°C
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true, // Small + large towel provided
+    capacity: 15,
+    temperatureRangeF: { min: 160, max: 195 }, // 70-90°C
+    hours: "Daily 6am-10pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "New cold plunge and sauna facility in Richmond, near YVR airport. Features a spacious 15-person cedar sauna and 4 temperature-controlled cold plunge tubs (2-12°C) with ambient and ultra-cold options. Drop-in $20 (promotional). Monthly unlimited membership available ($130 promotional). Also offers co-working space. Free parking. Founded by two brothers.",
+    lat: 49.17863,
+    lng: -123.100885,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/reviva-lounge/sauna.jpg",
+        alt: "Reviva Lounge cedar sauna interior with stone heater and ambient lighting",
+      },
+      {
+        url: "/saunas/reviva-lounge/tubs.png",
+        alt: "Reviva Lounge cold plunge tubs with blue ambient lighting",
       },
     ],
   },

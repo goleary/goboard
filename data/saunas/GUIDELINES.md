@@ -25,7 +25,7 @@ This document is the authoritative guide for adding sauna listings to the GoBoar
 | `name`, `slug`, `website` | Required |
 | `address` | Required when a physical location exists |
 | `sessionPrice` | Verified from the actual booking page — never from review sites or guessed. For mobile sauna rentals, use the base rental price (e.g. first night). |
-| `lat`, `lng` | Precise coordinates extracted from Google Maps |
+| `lat`, `lng` | Precise coordinates from Google Maps — open the location, right-click the pin, and click the coordinates row in the context menu to copy them to clipboard |
 | `googleMapsUrl` | Share short link (`maps.app.goo.gl/...`) copied from the Maps Share button — never fabricated or constructed |
 | Amenity flags | `steamRoom`, `coldPlunge`, `soakingTub`, `showers`, `towelsIncluded`, `waterfront`, `naturalPlunge` — all required booleans |
 | `sessionLengthMinutes` | Required (null for mobile rentals) |
@@ -36,8 +36,12 @@ This document is the authoritative guide for adding sauna listings to the GoBoar
 
 ## 3. Booking Provider
 
-Every new listing should include a complete `bookingProvider` configuration for live availability, provided the platform is supported or no more complex to integrate than existing providers. Supported platforms include Acuity, Wix, Glofox, Periode, Boulevard, Vagaro, Zenoti, and others.
+Every new listing **must** include a complete `bookingProvider` configuration for live availability. This is not optional — a listing without a working `bookingProvider` is incomplete and should not be merged.
 
+Supported platforms: Acuity, Wix, Glofox, Periode, Boulevard, Mariana Tek, Vagaro, Zenoti, and others.
+
+- **Detect the booking platform first** — before filling in other listing fields, visit the sauna's booking page and identify what platform they use (see [README.md](./README.md) and the detection tips in `CLAUDE.md`)
+- **Query the platform's API** to get the required IDs (class type IDs, appointment IDs, service IDs, etc.) — do not leave these for later
 - Follow platform-specific setup guides in [`README.md`](./README.md)
 - Only include services representing facility access (not personal services like massage)
 - If the sauna uses an unsupported platform, check if it has a public API comparable in complexity to existing integrations — if so, integrate it; if not, note it in the listing and move on
@@ -111,7 +115,7 @@ Before submitting a new listing:
 - [ ] Price verified against actual booking page
 - [ ] Coordinates verified on Google Maps
 - [ ] Google Maps share link is a real `maps.app.goo.gl/...` short link
-- [ ] Booking provider config complete and tested (availability loads), or platform documented as unsupported
+- [ ] Booking platform identified and `bookingProvider` config complete with all required IDs from the platform API (availability loads), or platform documented as unsupported
 - [ ] At least one image downloaded from sauna's primary website
 - [ ] Location entry exists (or new one added)
 - [ ] Optional configs checked: water temp sensor, tide station (for waterfront saunas)
