@@ -1122,7 +1122,8 @@ export interface Sauna {
     | "arketa"
     | "sojo"
     | "sweatpals"
-    | "spatime";
+    | "spatime"
+    | "wellnessliving"; // Unsupported: API requires HMAC signing with a server-side secret (no public API)
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
