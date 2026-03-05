@@ -51,6 +51,8 @@ export interface Location {
   description: string;
   center: { lat: number; lng: number };
   zoom: number;
+  /** Path to OG image in /public (e.g. "/saunas/foo/bar.jpg") */
+  image?: string;
 }
 
 export const locations: Location[] = [
@@ -95,9 +97,10 @@ export const locations: Location[] = [
     name: "Vancouver",
     state: "BC",
     description:
-      "Vancouver's Nordic sauna scene features European-inspired contrast therapy, Himalayan salt saunas, and historic bathhouses dating back to 1926.",
+      "Discover Vancouver's Nordic sauna scene — from waterfront wood-fired saunas with cold plunges in the sea to European-inspired contrast therapy and community sauna experiences.",
     center: { lat: 49.2827, lng: -123.1207 },
     zoom: 12,
+    image: "/saunas/gatherwell-ambleside/sauna-ocean-view.jpg",
   },
   {
     slug: "vancouver-island",
@@ -8805,9 +8808,11 @@ export function describeLocationAmenities(locationSaunas: Sauna[]): string {
   if (floating > 0) highlights.push(`${floating} floating`);
   if (waterfront > floating)
     highlights.push(`${waterfront - floating} waterfront`);
-  if (naturalPlunge > 0)
-    highlights.push(`${naturalPlunge} with natural cold plunge`);
-  else if (coldPlunge > 0) highlights.push(`${coldPlunge} with cold plunge`);
+  const totalColdPlunge = new Set([
+    ...locationSaunas.filter((s) => s.coldPlunge).map((s) => s.slug),
+    ...locationSaunas.filter((s) => s.naturalPlunge).map((s) => s.slug),
+  ]).size;
+  if (totalColdPlunge > 0) highlights.push(`${totalColdPlunge} with cold plunge`);
   if (soakingTub > 0) highlights.push(`${soakingTub} with soaking tubs`);
   if (steamRoom > 0) highlights.push(`${steamRoom} with steam rooms`);
 

@@ -60,6 +60,9 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       description,
       url: `https://goleary.com/tools/saunas/${location.slug}`,
       type: "website",
+      ...(location.image && {
+        images: [{ url: `https://goleary.com${location.image}` }],
+      }),
     },
     alternates: {
       canonical: `https://goleary.com/tools/saunas/${location.slug}`,
