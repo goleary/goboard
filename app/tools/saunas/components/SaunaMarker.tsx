@@ -12,12 +12,7 @@ interface SaunaMarkerProps {
 
 const getMarkerIcon = (
   isSelected: boolean,
-  waterfront: boolean,
-  coldPlunge: boolean,
-  naturalPlunge: boolean,
-  soakingTub: boolean,
-  floating: boolean,
-  delivery: boolean,
+  tags: Sauna["tags"],
   markerIconOverride?: Sauna["markerIconOverride"],
 ) => {
   const pinWidth = 36;
@@ -31,12 +26,7 @@ const getMarkerIcon = (
     className: "sauna-marker",
     html: getMarkerPinHtml({
       isSelected,
-      waterfront,
-      coldPlunge,
-      naturalPlunge,
-      soakingTub,
-      floating,
-      delivery,
+      tags,
       markerIconOverride,
     }),
   });
@@ -51,24 +41,10 @@ export function SaunaMarker({
     () =>
       getMarkerIcon(
         isSelected,
-        sauna.waterfront,
-        sauna.coldPlunge,
-        sauna.naturalPlunge,
-        sauna.soakingTub,
-        sauna.isFloating ?? false,
-        sauna.isDelivery ?? false,
+        sauna.tags,
         sauna.markerIconOverride,
       ),
-    [
-      isSelected,
-      sauna.waterfront,
-      sauna.coldPlunge,
-      sauna.naturalPlunge,
-      sauna.soakingTub,
-      sauna.isFloating,
-      sauna.isDelivery,
-      sauna.markerIconOverride,
-    ],
+    [isSelected, sauna.tags, sauna.markerIconOverride],
   );
 
   return (

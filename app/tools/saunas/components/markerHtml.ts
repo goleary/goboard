@@ -141,29 +141,20 @@ const PIN_PATH =
 
 export function getMarkerPinHtml({
   isSelected,
-  waterfront,
-  coldPlunge,
-  naturalPlunge,
-  soakingTub,
-  floating,
-  delivery,
+  tags,
   markerIconOverride,
 }: {
   isSelected: boolean;
-  waterfront: boolean;
-  coldPlunge: boolean;
-  naturalPlunge: boolean;
-  soakingTub: boolean;
-  floating: boolean;
-  delivery: boolean;
+  tags: import("@/data/tags").SaunaTag[];
   markerIconOverride?: MarkerIconOverride;
 }): string {
   const pinWidth = 36;
   const pinHeight = 46;
-  const isColdPlungeWithoutNaturalPlunge = coldPlunge && !naturalPlunge;
-  const pinColor = naturalPlunge
+  const has = (t: import("@/data/tags").SaunaTag) => tags.includes(t);
+  const isColdPlungeWithoutNaturalPlunge = has("cold-plunge") && !has("natural-plunge");
+  const pinColor = has("natural-plunge")
     ? "#1A73E8"
-    : soakingTub
+    : has("soaking-tub")
       ? "#E65A3A"
       : isColdPlungeWithoutNaturalPlunge
         ? "#5FA8FF"
@@ -185,17 +176,17 @@ export function getMarkerPinHtml({
             : markerIconOverride === "caravan"
               ? renderLucideGlyph(CARAVAN_ICON_NODE, glyphStrokeWidth)
               : renderLucideGlyph(HOUSE_ICON_NODE, glyphStrokeWidth)
-    : floating
+    : has("floating")
       ? renderFloatingSaunaGlyph(glyphStrokeWidth)
-      : delivery
+      : has("delivery")
         ? renderLucideGlyph(CARAVAN_ICON_NODE, glyphStrokeWidth)
-        : naturalPlunge
+        : has("natural-plunge")
           ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
-          : soakingTub
+          : has("soaking-tub")
             ? renderSoakingTubGlyph()
             : isColdPlungeWithoutNaturalPlunge
               ? renderLucideGlyph(SNOWFLAKE_ICON_NODE, glyphStrokeWidth)
-              : waterfront
+              : has("waterfront")
                 ? renderLucideGlyph(WAVES_ICON_NODE, glyphStrokeWidth)
                 : renderLucideGlyph(HOUSE_ICON_NODE, glyphStrokeWidth);
 

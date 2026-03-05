@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { type Sauna } from "@/data/saunas/saunas";
+import { hasTag } from "@/data/tags";
 import type {
   TidesResponse,
   TidePrediction,
@@ -301,7 +302,7 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, open: controlled
       });
   }, [tideStation, tideProvider, fetchStartDate, fetchEndDate]);
 
-  if (!sauna.tidal || !tideStation) return null;
+  if (!hasTag(sauna, "tidal") || !tideStation) return null;
   if (!fetchStartDate) return null;
 
   const multiDay = fetchEndDate !== fetchStartDate;

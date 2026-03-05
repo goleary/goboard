@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Waves, Leaf, Snowflake, FlameKindling, Zap, Mail } from "lucide-react";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
+import { hasTag, shouldShowBadge } from "@/data/tags";
 import { type SlotInfo } from "./useAvailabilityOn";
 import { TimeSlotBadge } from "./TimeSlotBadge";
 
@@ -120,35 +121,35 @@ function CompactSaunaList({
                   {sauna.sessionLengthMinutes != null && sauna.sessionLengthMinutes > 0 && (
                     <span>{sauna.sessionLengthMinutes} min</span>
                   )}
-                  {sauna.heaterType === "wood" && (
+                  {hasTag(sauna, "wood-fired") && (
                     <span title="Wood stove" className="flex items-center">
                       <FlameKindling className="h-3 w-3 text-orange-500" />
                     </span>
                   )}
-                  {sauna.heaterType === "electric" && (
+                  {hasTag(sauna, "electric-heat") && (
                     <span title="Electric stove" className="flex items-center">
                       <Zap className="h-3 w-3 text-orange-500" />
                     </span>
                   )}
-                  {sauna.coldPlunge && !sauna.isFloating && (
+                  {shouldShowBadge("cold-plunge", sauna.tags, false) && hasTag(sauna, "cold-plunge") && (
                     <span title="Cold Plunge" className="flex items-center">
                       <Snowflake className="h-3 w-3 text-sky-500" />
                     </span>
                   )}
-                  {sauna.waterfront && !sauna.isFloating && (
+                  {shouldShowBadge("waterfront", sauna.tags, false) && hasTag(sauna, "waterfront") && (
                     <span title="Waterfront" className="flex items-center">
                       <Waves className="h-3 w-3 text-blue-500" />
                     </span>
                   )}
-                  {sauna.naturalPlunge && !sauna.isFloating && (
+                  {shouldShowBadge("natural-plunge", sauna.tags, false) && hasTag(sauna, "natural-plunge") && (
                     <span title="Natural Plunge" className="flex items-center">
                       <Leaf className="h-3 w-3 text-green-600" />
                     </span>
                   )}
-                  {sauna.soakingTub && (
+                  {hasTag(sauna, "soaking-tub") && (
                     <span title="Soaking Tub">♨️</span>
                   )}
-                  {sauna.isFloating && (
+                  {hasTag(sauna, "floating") && (
                     <span title="Floating Sauna" className="flex items-center text-blue-400">
                       <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path fill="currentColor" fillRule="evenodd" d="M12 4 L21 11 H19 V18 H5 V11 H3 Z M10 14 H14 V18 H10 Z" />
@@ -234,25 +235,25 @@ export function SaunaTable({ saunas, compact = false, onSaunaClick, selectedSlug
                 {sauna.sessionLengthMinutes ? `${sauna.sessionLengthMinutes} min` : "—"}
               </TableCell>
               <TableCell className="text-center">
-                <BooleanCell value={sauna.coldPlunge} />
+                <BooleanCell value={hasTag(sauna, "cold-plunge")} />
               </TableCell>
               <TableCell className="text-center">
-                <BooleanCell value={sauna.soakingTub} />
+                <BooleanCell value={hasTag(sauna, "soaking-tub")} />
               </TableCell>
               <TableCell className="text-center">
-                <BooleanCell value={sauna.waterfront} />
+                <BooleanCell value={hasTag(sauna, "waterfront")} />
               </TableCell>
               <TableCell className="text-center">
-                <BooleanCell value={sauna.naturalPlunge} />
+                <BooleanCell value={hasTag(sauna, "natural-plunge")} />
               </TableCell>
               <TableCell className="text-center">
-                <BooleanCell value={sauna.steamRoom} />
+                <BooleanCell value={hasTag(sauna, "steam-room")} />
               </TableCell>
               <TableCell className="text-center">
-                <BooleanCell value={sauna.showers} />
+                <BooleanCell value={hasTag(sauna, "showers")} />
               </TableCell>
               <TableCell className="text-center">
-                <BooleanCell value={sauna.towelsIncluded} />
+                <BooleanCell value={hasTag(sauna, "towels-included")} />
               </TableCell>
             </TableRow>
           ))}

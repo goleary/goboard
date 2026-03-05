@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { type Sauna, currencySymbol } from "@/data/saunas/saunas";
+import { hasTag } from "@/data/tags";
 import type {
   AvailabilityResponse,
   AppointmentTypeAvailability,
@@ -221,7 +222,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   const tideProvider = sauna.dfoTideStation && !sauna.noaaTideStation ? "dfo" : "noaa";
 
   useEffect(() => {
-    if (!data || !sauna.tidal || !tideStation) return;
+    if (!data || !hasTag(sauna, "tidal") || !tideStation) return;
 
     const byDate = groupByDate(data.appointmentTypes);
     const dates = Object.keys(byDate);
@@ -246,7 +247,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
       }
       setTideDataByDate(map);
     });
-  }, [data, sauna.tidal, tideStation, tideProvider]);
+  }, [data, sauna.tags, tideStation, tideProvider]);
 
   if (!sauna.bookingProvider) return null;
 

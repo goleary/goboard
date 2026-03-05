@@ -1,3 +1,5 @@
+import { type SaunaTag, hasTag } from "@/data/tags";
+
 /**
  * Supported location slugs for saunas
  */
@@ -1070,7 +1072,7 @@ export type WaterTempProviderConfig =
  * - Must have a traditional dry sauna (wood-fired, electric, etc.). Infrared-only saunas do NOT qualify.
  * - Must be gender-inclusive. Women's-only or men's-only saunas are NOT included.
  *   Saunas with occasional gender-specific nights (e.g., Archimedes Banya) are OK if they also offer co-ed sessions.
- * - Cold plunge must be 50°F or lower to qualify as `coldPlunge: true`.
+ * - Cold plunge must be 50°F or lower to qualify for the `"cold-plunge"` tag.
  */
 export interface Sauna {
   /** Optional map marker icon override */
@@ -1085,6 +1087,8 @@ export interface Sauna {
   slug: string;
   /** Display name of the sauna */
   name: string;
+  /** Amenity and characteristic tags */
+  tags: SaunaTag[];
   /** Street address */
   address?: string;
   /** Main website URL */
@@ -1136,24 +1140,6 @@ export interface Sauna {
   currency?: "USD" | "CAD";
   /** Typical session length in minutes (e.g., 90, 120) */
   sessionLengthMinutes?: number | null;
-  /** Whether the facility has a steam room */
-  steamRoom: boolean;
-  /** Whether the facility has a cold plunge pool (50°F or lower) */
-  coldPlunge: boolean;
-  /** Whether the facility has a hot tub, thermal pool, or soaking tub */
-  soakingTub: boolean;
-  /** Whether the facility is located on water (lake, bay, canal, etc.) */
-  waterfront: boolean;
-  /** Whether cold plunge is into a natural body of water (bay, lake, etc.) */
-  naturalPlunge: boolean;
-  /** Whether the sauna is a floating structure (on a lake, bay, etc.) */
-  isFloating?: boolean;
-  /** Whether the sauna experience is primarily outdoors */
-  isOutside?: boolean;
-  /** Whether this is a mobile sauna that delivers to your location */
-  isDelivery?: boolean;
-  /** Whether the sauna is on tidal water (e.g. Puget Sound) */
-  tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
   noaaTideStation?: string;
   /** DFO (Canadian) tide station ID for fetching tide predictions */
@@ -1162,14 +1148,6 @@ export interface Sauna {
   waterTempProvider?: WaterTempProviderConfig;
   /** Display unit for water temperature (defaults to "F") */
   waterTempUnit?: "F" | "C";
-  /** Whether showers are available */
-  showers: boolean;
-  /** Whether towels are included with admission */
-  towelsIncluded: boolean;
-  /** Whether the facility serves food (restaurant, cafe, or kitchen on-site) */
-  servesFood?: boolean;
-  /** Type of heater used in the sauna */
-  heaterType?: "electric" | "wood" | "gas";
   /** Dry sauna temperature range in Fahrenheit */
   temperatureRangeF?: { min: number; max: number };
   /** Maximum guest capacity */
@@ -1198,7 +1176,7 @@ export const saunas: Sauna[] = [
   {
     slug: "815-refresh",
     name: "815 Refresh",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "outside", "showers"],
     address: "815 NE 72nd St, Seattle, WA 98115",
     website: "https://www.815refresh.com/",
     bookingUrl: "https://www.vagaro.com/815refresh/book-now",
@@ -1230,14 +1208,6 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
     capacity: 4,
     genderPolicy: "Private booking",
@@ -1258,7 +1228,7 @@ export const saunas: Sauna[] = [
   {
     slug: "banya-5",
     name: "Banya 5",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "cold-plunge", "soaking-tub", "showers", "towels-included"],
     address: "217 9th Ave N, Seattle, WA 98109",
     website: "https://www.banya5.com/",
     bookingUrl:
@@ -1267,13 +1237,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/ABKyKsmbLZbBeeCR7",
     sessionPrice: 70,
     sessionLengthMinutes: 120,
-    steamRoom: true,
-    coldPlunge: true,
-    soakingTub: true,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     temperatureRangeF: { min: 150, max: 200 },
     hours: "Tue-Sun 10am-10pm, Closed Mon",
     genderPolicy: "Co-ed and gender-specific sessions available",
@@ -1382,7 +1345,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bywater-alki",
     name: "Bywater Alki",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "tidal", "showers"],
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
@@ -1396,21 +1359,12 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
       fallbackStationIds: ["9446484"],
     },
-    showers: true,
-    towelsIncluded: false,
     hours: "Daily",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -1423,7 +1377,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bywater-golden-gardens",
     name: "Bywater Golden Gardens",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "tidal", "showers"],
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
@@ -1436,21 +1390,12 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9447265",
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
       fallbackStationIds: ["9446484"],
     },
-    showers: true,
-    towelsIncluded: false,
     hours: "Daily",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -1464,7 +1409,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bywater-leschi",
     name: "Bywater Leschi",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "showers"],
     address: "201 Lakeside Ave S, Seattle, WA 98122",
     website: "https://bywatersauna.com/",
     bookingUrl:
@@ -1479,18 +1424,10 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/fEJKv6J2wSnAxaFT7",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "washington",
     },
-    showers: true,
-    towelsIncluded: false,
     hours: "Daily",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -1503,7 +1440,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bywater-old-stove",
     name: "Bywater x Old Stove Brewing",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     website: "https://bywatersauna.com/",
     bookingUrl:
       "https://app.glofox.com/portal/#/branch/666cd839c3e964051d0e4307/classes-list-view",
@@ -1516,14 +1453,6 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     hours: "Daily",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -1536,7 +1465,7 @@ export const saunas: Sauna[] = [
   {
     slug: "evergreen-sauna",
     name: "Evergreen Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "tidal"],
     address: "Mukilteo, WA",
     website: "https://evergreensauna.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule.php?owner=33228599",
@@ -1544,21 +1473,12 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/ywjXu2CnYXdt6fNL6",
     sessionPrice: 35,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9447659",
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
       fallbackStationIds: ["9446484"],
     },
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -1593,26 +1513,18 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-moon-alki",
     name: "Sauna Moon Alki Beach",
-    heaterType: "wood",
+    tags: ["wood-fired", "waterfront", "natural-plunge", "outside"],
     address: "2701 Alki Ave SW, Seattle, WA 98116",
     website: "https://www.hotrockssaunaclub.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule/fab325db",
     bookingPlatform: "acuity",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
       fallbackStationIds: ["9446484"],
     },
-    showers: false,
-    towelsIncluded: false,
     capacity: 14,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -1646,26 +1558,18 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-moon-seacrest-park",
     name: "Sauna Moon Seacrest Park",
-    heaterType: "wood",
+    tags: ["wood-fired", "waterfront", "natural-plunge", "outside"],
     address: "1660 Harbor Ave SW, Seattle, WA 98126",
     website: "https://www.hotrockssaunaclub.com/",
     bookingUrl: "https://app.acuityscheduling.com/schedule/fab325db",
     bookingPlatform: "acuity",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
       fallbackStationIds: ["9446484"],
     },
-    showers: false,
-    towelsIncluded: false,
     capacity: 14,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -1699,25 +1603,17 @@ export const saunas: Sauna[] = [
   {
     slug: "vihta",
     name: "Vihta",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "showers"],
     address: "3560 W Lake Sammamish Pkwy SE, Bellevue, WA 98008",
     website: "https://www.vihtasauna.co/",
     bookingUrl: "https://www.vihtasauna.co/bookings",
     bookingPlatform: "wix",
     sessionPrice: 40,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "sammamish",
     },
-    showers: true,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -1753,7 +1649,7 @@ export const saunas: Sauna[] = [
   {
     slug: "von-sauna",
     name: "Von Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "floating", "outside"],
     markerIconOverride: "floating-sauna",
     address: "1200 Carillon Point, Kirkland, WA 98033",
     website: "https://www.vonsauna.co/",
@@ -1762,19 +1658,10 @@ export const saunas: Sauna[] = [
     bookingPlatform: "periode",
     sessionPrice: 40,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    isFloating: true,
     waterTempProvider: {
       type: "king-county-buoy",
       lakeName: "washington",
     },
-    showers: false,
-    towelsIncluded: false,
     hours: "7AM - 7PM, 7 Days/Week",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -1813,20 +1700,12 @@ export const saunas: Sauna[] = [
   {
     slug: "tuli-lodge",
     name: "Tuli Lodge",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "outside", "showers", "towels-included"],
     website: "https://www.tuli-lodge.com/",
     bookingUrl: "https://www.tuli-lodge.com/book",
     bookingPlatform: "mariana-tek",
     sessionPrice: 27,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes: "Outdoor waterfront sauna.",
@@ -1851,7 +1730,7 @@ export const saunas: Sauna[] = [
   {
     slug: "good-day-sauna",
     name: "Good Day Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "tidal"],
     address: "Lincoln Park, West Seattle",
     website: "http://www.gooddaysauna.com/",
     bookingUrl:
@@ -1859,21 +1738,12 @@ export const saunas: Sauna[] = [
     bookingPlatform: "periode",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
       fallbackStationIds: ["9446484"],
     },
-    showers: false,
-    towelsIncluded: false,
     capacity: 15,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -1924,28 +1794,19 @@ export const saunas: Sauna[] = [
   {
     slug: "fire-and-floe",
     name: "Fire+Floe",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "tidal"],
     website: "https://fireandfloe.com/",
     bookingUrl:
       "https://minside.periode.no/bookinggroups/7Rnv6gI4q8eaTuU5uSQA/xJeWObTOZgRyDoyknG7C",
     bookingPlatform: "periode",
     sessionPrice: 30,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9445882",
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
       fallbackStationIds: ["9446484"],
     },
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -1977,20 +1838,13 @@ export const saunas: Sauna[] = [
   {
     slug: "fyre-sauna",
     name: "Fyre Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "showers", "towels-included"],
     address: "14123 Redmond - Woodinville Rd NE, Redmond, WA 98052",
     website: "https://www.fyresauna.com/",
     bookingUrl: "https://www.fyresauna.com/book-online",
     bookingPlatform: "wix",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     temperatureRangeF: { min: 170, max: 210 },
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2017,7 +1871,7 @@ export const saunas: Sauna[] = [
   {
     slug: "soak-and-sage",
     name: "Soak & Sage",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "cold-plunge", "soaking-tub", "waterfront", "showers", "towels-included"],
     address: "1135 Lake Washington Blvd N Suite 60, Renton, WA 98057",
     website: "http://www.soakandsagespa.com/",
     bookingUrl:
@@ -2039,13 +1893,6 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 75,
     sessionLengthMinutes: 120,
-    steamRoom: true,
-    coldPlunge: true,
-    soakingTub: true,
-    waterfront: true,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     genderPolicy: "Co-ed (18+)",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -2064,22 +1911,13 @@ export const saunas: Sauna[] = [
   {
     slug: "seattle-sauna",
     name: "Seattle Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "floating", "outside", "showers", "towels-included"],
     markerIconOverride: "floating-sauna",
     website: "https://seattlesauna.com/",
     bookingUrl: "https://bookeo.com/seattlesauna",
     bookingPlatform: "bookeo",
     sessionPrice: 64,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: false,
-    isOutside: true,
-    isFloating: true,
-    showers: true,
-    towelsIncluded: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes: "Traditional sauna experience.",
@@ -2101,7 +1939,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-n-soak",
     name: "Sauna n Soak",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "tidal"],
     address: "Brackett's Landing North, Edmonds, WA",
     website: "https://www.saunansoak.com/services",
     bookingUrl: "https://www.saunansoak.com/appointments",
@@ -2109,21 +1947,12 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/BJZ2vLncQueWCy5V9",
     sessionPrice: 30,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9447427",
     waterTempProvider: {
       type: "noaa",
       stationId: "9447130",
       fallbackStationIds: ["9446484"],
     },
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -2176,7 +2005,7 @@ export const saunas: Sauna[] = [
   {
     slug: "wildhaus",
     name: "Wildhaus",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "showers", "towels-included"],
     markerIconOverride: "ship",
     website: "https://thewildhaus.com/",
     bookingUrl: "https://wild-haus.checkfront.com/reserve/",
@@ -2218,14 +2047,6 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 150,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes: "Outdoor sauna experience.",
@@ -2247,7 +2068,7 @@ export const saunas: Sauna[] = [
   {
     slug: "svette-sauna",
     name: "Svette Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "waterfront", "natural-plunge", "outside", "tidal"],
     address: "5605 Owen Beach Rd, Tacoma, WA 98407",
     website: "https://svettetacoma.com/",
     bookingUrl:
@@ -2265,21 +2086,12 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 28, // Matinee pricing (peak is $35)
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true, // Puget Sound 46-58°F
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9447130",
     waterTempProvider: {
       type: "noaa",
       stationId: "9446484",
       fallbackStationIds: ["9447130"],
     },
-    showers: false, // No public showers at Owen Beach
-    towelsIncluded: false,
     temperatureRangeF: { min: 180, max: 180 }, // Average 180°F
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2293,19 +2105,12 @@ export const saunas: Sauna[] = [
   {
     slug: "tacoma-banya",
     name: "Tacoma Banya",
-    heaterType: "electric",
+    tags: ["electric-heat"],
     address: "4704 S Oakes St #6400, Tacoma, WA 98409",
     website: "https://www.tacomabanya.com/",
     googleMapsUrl: "https://maps.app.goo.gl/TacomaBanya123",
     sessionPrice: 0, // Pricing not listed on website - call for rates
     sessionLengthMinutes: null,
-    steamRoom: true, // Steam room and wet sauna
-    coldPlunge: false, // Tepid pool (not cold plunge)
-    soakingTub: true, // Hot tub mentioned
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Temperature-controlled showers
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Daily 6pm-midnight",
     genderPolicy: "Co-ed",
@@ -2319,7 +2124,7 @@ export const saunas: Sauna[] = [
   {
     slug: "everett-banya",
     name: "Banya",
-    heaterType: "wood",
+    tags: ["wood-fired", "showers"],
     address: "2814 Colby Ave, Everett, WA 98201",
     website: "https://banyabyfgm.com/",
     bookingUrl: "https://banyabyfgm.com/book-now/",
@@ -2327,14 +2132,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/BaTyLaz1F2j9baw28",
     sessionPrice: 40, // Day reservation $40, Day walk-in $50, Evening reservation $50, Evening walk-in $60
     sessionLengthMinutes: 180, // 3-hour sessions
-    steamRoom: true, // Steam room with essential oils
-    coldPlunge: true, // Cold plunge 35-40°F (coldest in PNW)
-    soakingTub: true, // Jacuzzi/hot tub
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true, // Towels and flip flops included
-    servesFood: true, // On-site kitchen with traditional Eastern European food
     temperatureRangeF: { min: 160, max: 200 },
     hours: "Mon-Thu 12pm-10pm, Fri-Sat 12pm-12am, Sun Private Events",
     genderPolicy: "Co-ed",
@@ -2358,7 +2155,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hot-spot-lookout-arts-quarry",
     name: "Hot Spot Sauna Club (Lookout Arts Quarry)",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside", "showers"],
     address: "246 Old Hwy 99 N, Bellingham, WA 98229",
     website: "https://www.hotspotbellingham.com/",
     bookingUrl: "https://www.hotspotbellingham.com/bookings",
@@ -2372,14 +2169,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/5EpaLT2r57PqxSN37",
     sessionPrice: 35,
     sessionLengthMinutes: 50,
-    steamRoom: false,
-    coldPlunge: true, // 80ft freshwater quarry
-    soakingTub: false,
-    waterfront: true, // On quarry
-    naturalPlunge: true, // Freshwater quarry cold plunge
-    isOutside: true,
-    showers: true,
-    towelsIncluded: false, // Towels available to rent $4
     temperatureRangeF: { min: 175, max: 194 },
     capacity: 8,
     hours: "Fri-Sat 5-10pm, Sun 12-5pm",
@@ -2404,7 +2193,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hot-spot-bloedel-donovan",
     name: "Hot Spot Sauna Club (Bloedel Donovan)",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "Bloedel Donovan Park, Bellingham, WA",
     website: "https://www.hotspotbellingham.com/",
     bookingUrl: "https://www.hotspotbellingham.com/bookings",
@@ -2418,14 +2207,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/5EpaLT2r57PqxSN37",
     sessionPrice: 35,
     sessionLengthMinutes: 50,
-    steamRoom: false,
-    coldPlunge: true, // Lake Whatcom
-    soakingTub: false,
-    waterfront: true, // On Lake Whatcom
-    naturalPlunge: true, // Lake Whatcom
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     hours: "Check website for session times (soft opening Feb 2026)",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2452,20 +2233,12 @@ export const saunas: Sauna[] = [
   {
     slug: "sacred-rain-healing-center",
     name: "Sacred Rain Healing Center",
-    heaterType: "electric",
+    tags: ["electric-heat", "soaking-tub", "outside", "showers"],
     address: "1100 NW 50th St, Seattle, WA 98107",
     website: "https://www.sacredrainhealing.com/",
     googleMapsUrl: "https://maps.app.goo.gl/4TvEQXXCKVcUyXa57",
     sessionPrice: 50,
     sessionLengthMinutes: 180,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: true,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: false,
     hours: "Sun-Thu 10am-8pm, Fri-Sat 10am-10pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Clothing optional",
@@ -2478,7 +2251,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hothouse-spa",
     name: "Hothouse Spa & Sauna",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "showers", "towels-included"],
     address: "1019 E Pike St, Seattle, WA 98122",
     website: "https://www.hothousespa.com/",
     bookingUrl: "https://www.hothousespa.com/schedule",
@@ -2486,13 +2259,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/nWMgFkAafFz76Lc49",
     sessionPrice: 190, // Starting price for 90min weekday rental (up to 4 people)
     sessionLengthMinutes: 90,
-    steamRoom: true,
-    coldPlunge: false,
-    soakingTub: true, // Tiled hot tub
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     capacity: 4,
     hours: "Open 7 days a week for private use",
     genderPolicy: "Gender inclusive",
@@ -2577,7 +2343,7 @@ export const saunas: Sauna[] = [
   {
     slug: "yuan-spa-bellevue",
     name: "Yuan Spa (Bellevue)",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "1032 106th Ave NE, Suite 125, Bellevue, WA 98004",
     website: "https://yuanspa.com/",
     bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
@@ -2605,13 +2371,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://goo.gl/maps/UphkRHkShgbc5kMa8",
     sessionPrice: 59, // Weekday price, $69 on weekends
     sessionLengthMinutes: 60,
-    steamRoom: true, // Eucalyptus steam room with salt bar
-    coldPlunge: false, // Cool pool is 70-85°F, not cold enough
-    soakingTub: true, // Hot pool (100-105°F)
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 185, max: 195 }, // Cedar Chromatherapy Sauna
     hours: "Hydrotherapy: Daily 10am-9pm (Spa: 9:30am-10pm)",
     genderPolicy: "Co-ed (18+)",
@@ -2625,18 +2384,11 @@ export const saunas: Sauna[] = [
   {
     slug: "rainier-beach-pool",
     name: "Rainier Beach Pool",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "8825 Rainier Ave S, Seattle, WA 98118",
     website: "https://www.seattle.gov/parks/pools/rainier-beach-pool",
     googleMapsUrl: "https://goo.gl/maps/wpkhqygV5s52",
     sessionPrice: 8, // Adult drop-in 2026 pricing
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: true, // Hot tub/spa
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false, // $0.50 rental available
     hours: "Varies by season - check website for lap swim + sauna times",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2649,18 +2401,11 @@ export const saunas: Sauna[] = [
   {
     slug: "medgar-evers-pool",
     name: "Medgar Evers Pool",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "500 23rd Ave, Seattle, WA 98122",
     website: "https://www.seattle.gov/parks/pools/medgar-evers-pool",
     googleMapsUrl: "https://goo.gl/maps/XawzGx6FqND2",
     sessionPrice: 8, // Adult drop-in 2026 pricing
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false, // $0.50 rental available
     hours: "Varies by season - check website",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2673,18 +2418,11 @@ export const saunas: Sauna[] = [
   {
     slug: "queen-anne-pool",
     name: "Queen Anne Pool",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "1920 1st Ave W, Seattle, WA 98119",
     website: "https://www.seattle.gov/parks/pools/queen-anne-pool",
     googleMapsUrl: "https://goo.gl/maps/D3SbUfpwi6G2",
     sessionPrice: 8, // Adult drop-in 2026 pricing
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false, // $0.50 rental available
     hours: "Varies by season - check website",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2697,18 +2435,11 @@ export const saunas: Sauna[] = [
   {
     slug: "southwest-pool",
     name: "Southwest Pool",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "2801 SW Thistle St, Seattle, WA 98126",
     website: "https://www.seattle.gov/parks/pools/southwest-pool",
     googleMapsUrl: "https://goo.gl/maps/6qwS4wcf6N22",
     sessionPrice: 8, // Adult drop-in 2026 pricing
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: true, // Spa mentioned in amenities
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false, // $0.50 rental available
     hours: "Varies by season - check website",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2721,18 +2452,11 @@ export const saunas: Sauna[] = [
   {
     slug: "evans-pool",
     name: "Evans Pool (Green Lake)",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "7201 East Green Lake Dr N, Seattle, WA 98115",
     website: "https://www.seattle.gov/parks/pools/evans-pool",
     googleMapsUrl: "https://goo.gl/maps/31vSzVJRTSt",
     sessionPrice: 8, // Adult drop-in 2026 pricing
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false, // $0.50 rental available
     hours: "Varies by season - check website",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2745,7 +2469,7 @@ export const saunas: Sauna[] = [
   {
     slug: "yuan-spa-totem-lake",
     name: "Yuan Spa (Totem Lake)",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "11900 NE Village Plaza #176, Kirkland, WA 98034",
     website: "https://yuanspa.com/",
     bookingUrl: "https://go.booker.com/brand/yuanspabrand/locations",
@@ -2773,13 +2497,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://goo.gl/maps/HtTVeP2ihv92JdH36",
     sessionPrice: 59, // Weekday price, $69 on weekends
     sessionLengthMinutes: 60,
-    steamRoom: true, // Eucalyptus steam room with salt bar
-    coldPlunge: false, // Cool pool is 70-85°F, not cold enough; Ice Cave is cryotherapy not a plunge
-    soakingTub: true, // Hot pool (100-105°F)
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 155, max: 165 }, // Heated Himalayan Salt Room
     hours: "Hydrotherapy: Daily 10am-9pm (Spa: 9:30am-10pm)",
     genderPolicy: "Co-ed (18+)",
@@ -2793,20 +2510,12 @@ export const saunas: Sauna[] = [
   {
     slug: "q-spa-lynnwood",
     name: "Q Sauna & Spa",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "cold-plunge", "showers"],
     address: "17420 Highway 99, Lynnwood, WA 98037",
     website: "https://qspalynnwood.com/",
     bookingUrl: "https://qspalynnwood.com/online-booking/",
     googleMapsUrl: "https://maps.app.goo.gl/LQXGoWeVX991iM3L8",
     sessionPrice: 48, // Day pass, $30 with service
-    steamRoom: true,
-    coldPlunge: true,
-    soakingTub: true, // Hot tubs
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true, // Korean restaurant on-site
     hours: "Mon-Thu 9am-10pm, Fri-Sun 9am-11pm",
     genderPolicy: "Separate men's and women's facilities",
     clothingPolicy: "Swimsuit required",
@@ -2819,7 +2528,7 @@ export const saunas: Sauna[] = [
   {
     slug: "cedar-and-stone-duluth",
     name: "Cedar & Stone Nordic Sauna (Duluth)",
-    heaterType: "wood",
+    tags: ["wood-fired", "waterfront", "natural-plunge", "floating", "outside", "towels-included"],
     address: "800 W Railroad St, Duluth, MN 55802",
     website: "https://cedarandstonesauna.com/",
     bookingUrl:
@@ -2833,15 +2542,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/kxzGvHoJ6bTw1Rsg6",
     sessionPrice: 49, // Social session price
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true, // Harborside natural cold plunge into Lake Superior harbor
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    isFloating: true,
-    showers: true, // Outdoor cold showers
-    towelsIncluded: true,
     hours: "Thu-Mon 9am-9pm, Closed Tue-Wed",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2860,21 +2560,13 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-du-nord",
     name: "Sauna du Nord",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "outside"],
     address: "Caribou Lake, Duluth, MN",
     website: "https://www.saunadunord.com/",
     bookingUrl: "https://www.saunadunord.com/booking",
     googleMapsUrl: "https://maps.app.goo.gl/a7hn962v4w9hdMTP6",
     sessionPrice: 35,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true, // Lake access at Caribou Lake
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false, // Bring your own small towel
     hours: "Wed, Thu, Sat, plus by request",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -2919,7 +2611,7 @@ export const saunas: Sauna[] = [
   {
     slug: "onsen-sf",
     name: "Onsen",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "showers"],
     address: "466 Eddy St, San Francisco, CA 94109",
     website: "https://www.onsensf.com/",
     bookingUrl:
@@ -2928,14 +2620,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/UEw2pajjXMjEZQ659",
     sessionPrice: 50,
     sessionLengthMinutes: 120,
-    steamRoom: true,
-    coldPlunge: false, // Overhead cold plunge shower, not a pool
-    soakingTub: true, // 104°F heated communal pool (15 person)
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true, // Includes robe, towel, sandals
-    servesFood: true, // Restaurant on-site
     hours:
       "Mon 4-10pm (Men), Tue 4-10pm (Women), Thu 2-10pm (Co-ed), Fri-Sun 10am-10pm (Co-ed), Wed Closed",
     genderPolicy: "Gender-specific and co-ed sessions",
@@ -2949,21 +2633,13 @@ export const saunas: Sauna[] = [
   {
     slug: "alchemy-springs-sf",
     name: "Alchemy Springs",
-    heaterType: "electric",
+    tags: ["electric-heat", "outside"],
     address: "939 Post St, San Francisco, CA 94109",
     website: "https://www.alchemysprings.com/",
     bookingUrl: "https://www.alchemysprings.com/visit",
     googleMapsUrl: "https://maps.app.goo.gl/qTQFTYt4WLd8jMXq6",
     sessionPrice: 45, // Estimated based on similar venues; offers packs and memberships
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Cold plunge pools
-    soakingTub: false, // Coming in 2026 full opening
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Outdoor showers
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -2985,7 +2661,7 @@ export const saunas: Sauna[] = [
   {
     slug: "piedmont-springs",
     name: "Piedmont Springs",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "3939 Piedmont Ave, Oakland, CA 94611",
     website: "https://www.piedmontsprings.com/",
     bookingUrl: "https://www.piedmontsprings.com/online-booking",
@@ -3019,13 +2695,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/oRvFr6f97Kbaxgds8",
     sessionPrice: 20, // $20 per 30 min, $22 per 45 min
     sessionLengthMinutes: 30,
-    steamRoom: true, // Separate steam room available
-    coldPlunge: false,
-    soakingTub: true, // Outdoor hot tubs available separately
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     hours: "Daily 11am-10pm",
     genderPolicy: "Private",
     clothingPolicy: "Private rooms",
@@ -3048,7 +2717,7 @@ export const saunas: Sauna[] = [
   {
     slug: "loyly-southeast",
     name: "Löyly Southeast",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "2713 SE 21st Ave, Portland, OR 97202",
     website: "https://www.loyly.net/",
     bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
@@ -3070,13 +2739,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/oRJtXBpuSshfED5S7",
     sessionPrice: 30, // Mon-Thu price; $40 Fri-Sun
     sessionLengthMinutes: 120,
-    steamRoom: false, // SE location has steam room per web search
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true, // Includes towel and robe
     hours: "Daily 9am-9pm",
     genderPolicy: "Co-ed (check for gender-specific days)",
     clothingPolicy: "Swimsuit required",
@@ -3095,7 +2757,7 @@ export const saunas: Sauna[] = [
   {
     slug: "loyly-northeast",
     name: "Löyly Northeast",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "3525 NE Martin Luther King Jr Blvd, Portland, OR 97212",
     website: "https://www.loyly.net/",
     bookingUrl: "https://loylysauna.zenoti.com/webstoreNew/services",
@@ -3117,13 +2779,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/woXtQYh8kmyJuwud7",
     sessionPrice: 30, // Mon-Thu price; $40 Fri-Sun
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true, // Includes towel and robe
     hours: "Daily 9am-9pm",
     genderPolicy: "Co-ed (check for gender-specific days)",
     clothingPolicy: "Swimsuit required",
@@ -3142,20 +2797,13 @@ export const saunas: Sauna[] = [
   {
     slug: "common-ground-wellness",
     name: "Common Ground Wellness Cooperative",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "5010 NE 33rd Ave, Portland, OR 97211",
     website: "https://www.cgwc.org/",
     bookingUrl: "https://www.cgwc.org/scheduling",
     googleMapsUrl: "https://maps.app.goo.gl/LCiBe5hwypAzRs6R8",
     sessionPrice: 18, // 30 min; 60 min $28, 90 min $38, 120 min $48
     sessionLengthMinutes: 30,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: true, // Salt water hot pool
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false, // Towel rental $2.50
     hours: "Daily 10am-10pm (Wed opens 3pm). Silent hours 10-11am & 9-10pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Clothing optional",
@@ -3174,7 +2822,7 @@ export const saunas: Sauna[] = [
   {
     slug: "forest-haven-sauna",
     name: "Forest Haven Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "towels-included"],
     address: "9644 SW W Haven Dr, Portland, OR 97225",
     website: "https://www.forestsaunapdx.com/",
     bookingUrl:
@@ -3189,13 +2837,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/wV4N4MEm7jbvuxdu8",
     sessionPrice: 50, // Price varies by group size; estimate for private session
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: false, // Cold outdoor shower available
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Warm shower + cold outdoor shower
-    towelsIncluded: true,
     hours: "Daily 10am-8pm, by appointment",
     genderPolicy: "Private groups",
     clothingPolicy: "Private experience",
@@ -3208,7 +2849,7 @@ export const saunas: Sauna[] = [
   {
     slug: "everett-house",
     name: "Everett House Community Healing Center",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room"],
     address: "2927 NE Everett St, Portland, OR 97232",
     website: "https://www.everetthousecommunityhealingcenter.com/",
     bookingUrl:
@@ -3223,13 +2864,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/WwuiZuSaPTu5y3Zv9",
     sessionPrice: 28, // 60 min; 30 min $18, 90 min $39
     sessionLengthMinutes: 60,
-    steamRoom: true,
-    coldPlunge: true, // Two clawfoot cold plunge tubs
-    soakingTub: true, // Large salt hot tub
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Outdoor shower
-    towelsIncluded: false, // $2.50 towel rental
     hours:
       "Mon 1-11pm, Tue 9am-11pm (LGBTQ 9am-1pm), Wed-Thu 9am-11pm, Fri 11am-11pm, Sat 9am-11pm, Sun 9am-11pm (Women's 9am-3pm)",
     genderPolicy: "Co-ed (LGBTQ hours Tue 9am-1pm, Women's Sun 9am-3pm)",
@@ -3243,7 +2877,7 @@ export const saunas: Sauna[] = [
   {
     slug: "bear-banya",
     name: "Bear Banya",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge"],
     address: "2130 SE 96th Ave, Portland, OR 97216",
     website: "https://www.bearbanya.com/",
     bookingUrl:
@@ -3258,13 +2892,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/zB2mFo97osPvVUZr8",
     sessionPrice: 60, // 1 hr All Inclusive; 2 hr $120, 3 hr $180
     sessionLengthMinutes: 60,
-    steamRoom: true, // Turkish Hamam steam room
-    coldPlunge: true,
-    soakingTub: true, // Wood-burning hot tub (Kupel)
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Summer shower
-    towelsIncluded: true, // Towels, slippers, robes included
     hours: "By appointment",
     genderPolicy: "Co-ed",
     clothingPolicy: "Private experience",
@@ -3283,7 +2910,7 @@ export const saunas: Sauna[] = [
   {
     slug: "saunaglo",
     name: "SaunaGlo",
-    heaterType: "electric",
+    tags: ["electric-heat"],
     address: "1915 SE Jefferson St, Milwaukie, OR 97222",
     website: "https://www.saunaglo.com/",
     bookingUrl: "https://www.saunaglo.com/book",
@@ -3296,13 +2923,6 @@ export const saunas: Sauna[] = [
     },
     googleMapsUrl: "https://maps.app.goo.gl/Nbv2Uhdf8zfLPyaA8",
     sessionPrice: 29, // Day pass; $19 weekdays before 2pm
-    steamRoom: false,
-    coldPlunge: true, // Cedar barrel cold plunge tank
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Rainwater shower and water pail dump bucket
-    towelsIncluded: false,
     hours: "Mon-Thu 7am-8pm, Fri 7am-9pm, Sat 9am-9pm, Sun 9am-8pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -3321,7 +2941,7 @@ export const saunas: Sauna[] = [
   {
     slug: "guss-mobile-sauna",
     name: "Guss Mobile Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "Sellwood Riverfront Park, Portland, OR 97202",
     website: "https://www.theguss.com/",
     bookingUrl:
@@ -3330,14 +2950,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/qsYa7tDFeHjtngis6",
     sessionPrice: 30, // Drop-in; 5-session punch pass $120
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true, // Willamette River cold plunge
-    soakingTub: false,
-    waterfront: true, // On Willamette River
-    naturalPlunge: true, // River plunge
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false, // Bring two towels
     hours: "Check website for session times",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -3350,7 +2962,7 @@ export const saunas: Sauna[] = [
   {
     slug: "knot-springs",
     name: "Knot Springs",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers", "towels-included"],
     address: "33 NE 3rd Ave Suite 365, Portland, OR 97232",
     website: "https://knotsprings.com/",
     bookingUrl:
@@ -3365,13 +2977,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/nHaJyxDfqGuLcD7M7",
     sessionPrice: 69, // Tue-Thu before 3pm; $89 all other times
     sessionLengthMinutes: 120,
-    steamRoom: true, // Eucalyptus-infused steam room
-    coldPlunge: true, // 47°F cold plunge
-    soakingTub: true, // Hot tub and tepid bath
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     temperatureRangeF: { min: 170, max: 190 },
     hours: "Public 8am-8pm daily; Members 6am-10pm M-F, 8am-10pm S-S",
     genderPolicy: "Co-ed (18+)",
@@ -3395,7 +3000,7 @@ export const saunas: Sauna[] = [
   {
     slug: "koti-sauna",
     name: "Koti",
-    heaterType: "electric",
+    tags: ["electric-heat", "outside"],
     address: "4128 SE Jefferson St, Milwaukie, OR 97222",
     website: "https://www.kotisauna.com/",
     bookingUrl: "https://www.kotisauna.com/booksauna",
@@ -3403,14 +3008,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/QHpZ294cn2vYyqhD6",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true, // Two outdoor cold plunges at 40-50°F
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Outdoor showers
-    towelsIncluded: false,
     temperatureRangeF: { min: 185, max: 195 },
     hours: "Mon/Thu-Sun 8am-8:30pm, Tue-Wed Closed",
     genderPolicy: "Co-ed",
@@ -3455,7 +3052,7 @@ export const saunas: Sauna[] = [
   {
     slug: "connect-wellness",
     name: "Connect Wellness",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "4301 NE 59th Ave, Vancouver, WA 98661",
     website: "https://www.connectwellness.biz/",
     bookingUrl: "https://www.connectwellness.biz/calendar",
@@ -3463,14 +3060,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/RSHr2Ewh21DP4SK87",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true, // Ice baths at 35-55°F
-    soakingTub: true, // Warm soaking tub
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 165, max: 190 },
     hours: "Fri-Mon 7am-9:30pm, Tue/Thu 6am-8:30pm, Wed 5pm-9:30pm",
     genderPolicy: "Co-ed (13+)",
@@ -3497,7 +3086,7 @@ export const saunas: Sauna[] = [
   {
     slug: "backyard-bliss-pdx",
     name: "Backyard Bliss PDX",
-    heaterType: "electric",
+    tags: ["electric-heat", "outside"],
     address: "6545 N Fenwick Ave, Portland, OR 97217",
     website: "https://backyardblisspdx.simplybook.me/",
     bookingUrl: "https://backyardblisspdx.simplybook.me/v2/#book",
@@ -3505,14 +3094,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/vyXa58VwfctfRHBLA",
     sessionPrice: 45, // Sauna & Shower 1hr Mon/Thu; Full experience 90min $100
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: false, // "Cool plunge" is tap water, guests bring ice
-    soakingTub: true, // Hot tub
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Outdoor shower
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
     capacity: 5,
     hours: "Daily 8am-10pm",
@@ -3544,7 +3125,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fusion-bodyworks-pdx",
     name: "Fusion Bodyworks PDX",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "7415 N Oatman Ave, Portland, OR 97217",
     website: "https://www.fusionpdx.com/",
     bookingUrl: "http://fusionbodyworkspdx2.clinicsense.com/book/",
@@ -3565,14 +3146,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/YoBZYagBtnN3wkm57",
     sessionPrice: 30, // Community sauna 90 min; Private $200/90min, $250/120min
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: false, // Has cold plunge but temperature not specified
-    soakingTub: true, // Two hot soaking tubs with salt infusions
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false, // $5 towel and robe rental
     temperatureRangeF: { min: 170, max: 190 },
     capacity: 8, // Private rental up to 8, +2 more at $40/guest
     hours: "Daily 9am-8pm, by appointment",
@@ -3587,7 +3160,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fern-and-thistle",
     name: "Fern & Thistle Massage and Spa",
-    heaterType: "electric",
+    tags: ["electric-heat"],
     address: "8160 N Jersey St, Portland, OR 97203",
     website: "https://www.fernandthistle.co/",
     bookingUrl:
@@ -3595,13 +3168,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/iJ5NEB5KewdazvAA6",
     sessionPrice: 25, // 1 hour spa session
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: false, // Has clawfoot cold plunge tub but temperature not specified
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Spa: Fri, Sat, some Sundays; by appointment",
     genderPolicy: "Co-ed (13+)",
@@ -3625,7 +3191,7 @@ export const saunas: Sauna[] = [
   {
     slug: "uptown-sauna-house",
     name: "Uptown Sauna House",
-    heaterType: "electric",
+    tags: ["electric-heat", "outside"],
     address: "414 W 23rd St, Vancouver, WA 98660",
     website: "https://www.uptownsaunahouse.com/",
     bookingUrl: "https://www.uptownsaunahouse.com/book-online",
@@ -3633,14 +3199,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/Zmj6oReyvZkhW2fL6",
     sessionPrice: 35, // 90-min session; Sunrise Mini $25/30min
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Filtered cold plunges
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Outdoor hot/cold shower with soaps provided
-    towelsIncluded: false,
     hours:
       "Mon/Wed/Fri 6am-11:30am & 5pm-8:30pm, Sun 8am-4:30pm; Tue/Thu/Sat Closed",
     genderPolicy: "Co-ed",
@@ -3673,7 +3231,7 @@ export const saunas: Sauna[] = [
   {
     slug: "ebb-and-ember",
     name: "Ebb & Ember Floating Saunas",
-    heaterType: "gas",
+    tags: ["gas-heat", "floating", "outside"],
     address: "173 NE Bridgeton Rd, Portland, OR 97211",
     website: "https://www.ebbandember.com/",
     bookingUrl:
@@ -3682,15 +3240,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/SxKydKCWtX9iFnBSA",
     sessionPrice: 59, // Social session; Private $539 for up to 10 guests
     sessionLengthMinutes: 105, // 1hr 45min
-    steamRoom: false,
-    coldPlunge: true, // Columbia River plunge
-    soakingTub: false,
-    waterfront: true, // Floating on Columbia River
-    naturalPlunge: true, // River plunge
-    isOutside: true,
-    isFloating: true,
-    showers: true, // Freshwater showers (no soap for environmental reasons)
-    towelsIncluded: false, // Bring two towels
     hours: "Social Fri-Sun 7am-7pm; Private available all week",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -3728,7 +3277,7 @@ export const saunas: Sauna[] = [
   {
     slug: "archimedes-banya",
     name: "Archimedes Banya",
-    heaterType: "gas",
+    tags: ["gas-heat", "showers", "towels-included"],
     address: "748 Innes Ave, San Francisco, CA 94124",
     website: "https://banyasf.com/",
     bookingUrl: "https://go.booker.com/location/ARCHIMEDESBANYASF/service-menu",
@@ -3739,14 +3288,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/JAT6Wr8q8EDNeqJi9",
     sessionPrice: 55, // Happy Hour Pass; Basic Banya Pass $67
     sessionLengthMinutes: 180,
-    steamRoom: true, // Turkish hammam
-    coldPlunge: true, // Ice-cold plunge pool
-    soakingTub: true, // Private soaking tubs available
-    waterfront: true, // On shores of SF Bay with rooftop views
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
-    servesFood: true, // Zteamers' Cafe with Russian/European fare
     temperatureRangeF: { min: 180, max: 210 },
     hours:
       "Mon/Wed-Fri 12pm-11pm, Sat-Sun 10am-11pm, Tue closed (except gender nights)",
@@ -3761,7 +3302,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fjord-sausalito",
     name: "Fjord – Floating Sauna",
-    heaterType: "electric",
+    tags: ["electric-heat", "floating", "outside"],
     markerIconOverride: "floating-sauna",
     address: "2320 Marinship Way, Sausalito, CA 94965",
     website: "https://www.thisisfjord.com/",
@@ -3770,20 +3311,11 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/BXAmzUXPz2gi8J3HA",
     sessionPrice: 45, // Shared session; Private $270
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Plunge into San Francisco Bay
-    soakingTub: false,
-    waterfront: true, // Floating on Richardson Bay
-    naturalPlunge: true, // Bay plunge
-    isOutside: true,
-    isFloating: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414863",
       fallbackStationIds: ["9414750", "9414290"],
     },
-    showers: false, // No showers, must bring towels
-    towelsIncluded: false, // Must bring 2 towels
     temperatureRangeF: { min: 180, max: 190 },
     hours: "Daily 8am-8:30pm, Tue 2pm-8:30pm",
     genderPolicy: "Co-ed",
@@ -3808,7 +3340,7 @@ export const saunas: Sauna[] = [
   {
     slug: "almonte-spa",
     name: "Almonte Spa",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "158 Almonte Blvd, Mill Valley, CA 94941",
     website: "https://www.almontespa.com/",
     bookingUrl: "https://www.almontespa.com/book",
@@ -3842,13 +3374,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/4c1sTy9dAZeBDLq16",
     sessionPrice: 35, // Finnish sauna 30 min; also $45/45min, $55/60min
     sessionLengthMinutes: 30,
-    steamRoom: false,
-    coldPlunge: false, // Cold showers only, no cold plunge pool
-    soakingTub: true, // Outdoor hot tubs under the redwoods
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 190, max: 200 },
     hours: "Daily 10am-9pm",
     genderPolicy: "Private booking",
@@ -3862,7 +3387,7 @@ export const saunas: Sauna[] = [
   {
     slug: "good-hot-richmond",
     name: "Good Hot",
-    heaterType: "gas",
+    tags: ["gas-heat", "outside"],
     address: "1950 Stenmark Dr, Richmond, CA 94801",
     website: "https://www.good-hot-booking.com/",
     bookingUrl: "https://www.good-hot-booking.com/book",
@@ -3870,19 +3395,11 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/ESCG9k97EtiJmrnp8",
     sessionPrice: 110, // Saunas 1-3; Saunas 4-5 are $130
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Beach access to SF Bay
-    soakingTub: false,
-    waterfront: true, // Point San Pablo waterfront
-    naturalPlunge: true, // Bay plunge at beach
-    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414863",
       fallbackStationIds: ["9414750", "9414290"],
     },
-    showers: true, // Communal cold rinse showers
-    towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 180 },
     hours: "Thu-Mon 9:30am-8:30pm, reservation only",
     genderPolicy: "Private rental",
@@ -3943,7 +3460,7 @@ export const saunas: Sauna[] = [
   {
     slug: "dogpatch-paddle-sauna",
     name: "Dogpatch Paddle Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "701 Illinois Street #A, San Francisco, CA 94107",
     website: "https://www.dogpatchpaddle.com/sauna",
     bookingUrl:
@@ -3966,19 +3483,11 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8",
     sessionPrice: 25, // Public session; Private $100
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true, // Plunge in SF Bay
-    soakingTub: false,
-    waterfront: true, // Crane Cove Park on the Bay
-    naturalPlunge: true, // Bay plunge
-    isOutside: true,
     waterTempProvider: {
       type: "noaa",
       stationId: "9414750",
       fallbackStationIds: ["9414863", "9414290"],
     },
-    showers: true, // Cold rinse shower available
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 190 },
     hours: "Daily 9am-5pm (closed Mon Sept-May)",
     genderPolicy: "Co-ed",
@@ -3998,20 +3507,13 @@ export const saunas: Sauna[] = [
   {
     slug: "kabuki-springs-sf",
     name: "Kabuki Springs & Spa",
-    heaterType: "electric",
+    tags: ["electric-heat", "towels-included"],
     address: "1750 Geary Blvd, San Francisco, CA 94115",
     website: "https://kabukisprings.com/",
     bookingUrl: "https://kabukisprings.com/baths/",
     googleMapsUrl: "https://maps.app.goo.gl/2UJpZWKc1CitbvVS6",
     sessionPrice: 49, // Communal bath admission
     sessionLengthMinutes: 120,
-    steamRoom: true, // 120°F steam room
-    coldPlunge: true, // 55°F cold plunge
-    soakingTub: true, // 104°F hot pool
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Traditional seated and Western showers
-    towelsIncluded: true,
     temperatureRangeF: { min: 130, max: 140 },
     hours:
       "Mon 2pm-8pm, Tue-Sun 10am-9:30pm. Women: Sun/Wed/Fri. Men: Thu/Sat. All Gender: Mon/Tue",
@@ -4052,7 +3554,7 @@ export const saunas: Sauna[] = [
   {
     slug: "the-springs-leavenworth",
     name: "The Springs",
-    heaterType: "electric",
+    tags: ["electric-heat", "outside"],
     address: "200 Zelt Strasse, Leavenworth, WA 98826",
     website: "https://www.thesprings.us/",
     bookingUrl: "https://ecom.roller.app/thesprings/checkout/en-us/products",
@@ -4066,14 +3568,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/qaB6GfHQLbDP8GPYA",
     sessionPrice: 35, // $35 Sun-Thu, $45 Fri-Sat
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true, // Communal cold plunge pool
-    soakingTub: true, // Hot and warm pools
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Individual shower rooms
-    towelsIncluded: true, // Robes and towels included
     hours: "Reservations recommended, walk-ins welcome",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4092,7 +3586,7 @@ export const saunas: Sauna[] = [
   {
     slug: "seatsu-sauna",
     name: "SeaTsu Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "Thompson Rd, Sequim, WA 98382",
     website: "https://www.seatsusauna.com/",
     bookingUrl: "https://www.seatsusauna.com/book-online",
@@ -4100,14 +3594,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/RJ787PtCqXUcJTQa7",
     sessionPrice: 35, // Community session; Private $135 for up to 4 people
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Cold plunge pool
-    soakingTub: true, // Hot bath available
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Outdoor showers
-    towelsIncluded: false,
     hours: "By appointment only; Community sessions Thu/Sun 6pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4141,7 +3627,7 @@ export const saunas: Sauna[] = [
   {
     slug: "snow-peak-campfield",
     name: "Snow Peak Campfield Ofuro Spa",
-    heaterType: "electric",
+    tags: ["electric-heat", "outside", "showers"],
     address: "5411 Sandridge Rd, Long Beach, WA 98631",
     website: "https://snowpeakcampfield.com/ofuro/",
     bookingUrl: "https://www.vagaro.com/spcpyc3/classes",
@@ -4171,14 +3657,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/XDiU6yWXPVXeaHf76",
     sessionPrice: 35, // Day guest pass; included for overnight guests
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true, // Cold plunge pool
-    soakingTub: true, // Hot soaking pool
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: false, // Bring your own towel
     hours: "Day guest passes subject to availability, book within 3 days",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4197,7 +3675,7 @@ export const saunas: Sauna[] = [
   {
     slug: "watercourse-way",
     name: "Watercourse Way Bath House Spa",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "165 Channing Ave, Palo Alto, CA 94301",
     website: "https://watercourseway.com/",
     bookingUrl: "https://go.booker.com/location/WatercourseWay/service-menu",
@@ -4249,13 +3727,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/gqMVsmoqDNEqPBHw5",
     sessionPrice: 55, // Premium hot tub room with sauna (Mon-Thu); $60 Fri-Sun
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true, // Cold plunge in Eight Stars room
-    soakingTub: true, // Private hot tub rooms
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     hours: "Daily 8am-11:30pm",
     genderPolicy: "Private rooms",
     clothingPolicy: "Private experience (swimsuit optional)",
@@ -4274,21 +3745,13 @@ export const saunas: Sauna[] = [
   {
     slug: "alyeska-nordic-spa",
     name: "Alyeska Nordic Spa",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers", "towels-included"],
     address: "1000 Arlberg Avenue, Girdwood, AK 99587",
     website: "https://www.anordicspa.com/",
     bookingUrl: "https://www.anordicspa.com/",
     googleMapsUrl: "https://maps.app.goo.gl/8VLZ8Y7VJvNPRzHR7",
     sessionPrice: 85, // Hydrotherapy access; verify on website
     sessionLengthMinutes: 180,
-    steamRoom: true, // Aromatherapy-infused steam rooms
-    coldPlunge: true, // Cold plunge pools and waterfall
-    soakingTub: true, // Warm and hot hydrotherapy pools
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
-    servesFood: true, // Two Trees Bistro on-site
     hours: "Daily 10am-9pm",
     genderPolicy: "Co-ed (18+)",
     clothingPolicy: "Swimsuit required",
@@ -4301,7 +3764,7 @@ export const saunas: Sauna[] = [
   {
     slug: "gather-sauna-house",
     name: "Gather Sauna House",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "Riverbend Park, Bend, OR 97702",
     website: "https://www.gathersaunahouse.com/",
     bookingUrl: "https://www.gathersaunahouse.com/locations",
@@ -4309,14 +3772,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/dxnDXFy9y6dF9c1N8",
     sessionPrice: 40,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Natural river cold plunge in Deschutes River
-    soakingTub: false,
-    waterfront: true, // On the Deschutes River
-    naturalPlunge: true, // Deschutes River
-    isOutside: true,
-    showers: true, // Rain and bucket showers
-    towelsIncluded: false,
     hours: "Seasonal Oct-May (Riverside); Hanai Garden year-round",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4365,19 +3820,12 @@ export const saunas: Sauna[] = [
   {
     slug: "breitenbush-hot-springs",
     name: "Breitenbush Hot Springs",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "53000 Breitenbush Rd SE, Detroit, OR 97342",
     website: "https://breitenbush.com/",
     bookingUrl: "https://breitenbush.com/visit/",
     googleMapsUrl: "https://maps.app.goo.gl/4kxYMQjmAWvUvKdK9",
     sessionPrice: 45, // Day use pass; verify on website
-    steamRoom: true, // Geothermally-heated steam sauna
-    coldPlunge: true, // Cold river available
-    soakingTub: true, // Natural hot spring pools
-    waterfront: true, // On Breitenbush River
-    naturalPlunge: true, // Breitenbush River
-    showers: true,
-    towelsIncluded: false,
     hours: "Day use and overnight retreats available; reservations required",
     genderPolicy: "Co-ed",
     clothingPolicy: "Clothing optional",
@@ -4399,7 +3847,7 @@ export const saunas: Sauna[] = [
   {
     slug: "beach-sauna-express",
     name: "Beach Sauna Express",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge"],
     address: "South Ponto Beach, 9969 Carlsbad Blvd, Encinitas, CA 92024",
     website: "https://www.beachsaunaexpress.com",
     bookingUrl:
@@ -4407,13 +3855,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/Xus1SLWsgmWsf8qDA",
     sessionPrice: 70,
     sessionLengthMinutes: 360,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Sundays 3pm-9pm (check Sweatpals for schedule)",
     genderPolicy: "Co-ed",
@@ -4444,7 +3885,7 @@ export const saunas: Sauna[] = [
   {
     slug: "kolm-kontrast",
     name: "Kolm Kontrast",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "525 W 8th Ave, Vancouver, BC V5Z 1C6, Canada",
     website: "https://kolmkontrast.com/",
     bookingUrl: "https://kolmkontrast.com/schedule",
@@ -4452,13 +3893,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 45,
     currency: "CAD",
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true, // Ice baths
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true, // 2 towels provided
     hours: "Daily, check schedule for session times",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4471,7 +3905,7 @@ export const saunas: Sauna[] = [
   {
     slug: "aetherhaus",
     name: "AetherHaus",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "1768 Davie St, Vancouver, BC V6G 1W2, Canada",
     website: "https://www.aetherhaus.ca/",
     bookingUrl: "https://www.aetherhaus.ca/buy-pass",
@@ -4479,13 +3913,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 45,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Group cold plunge pools at 2 temperature ranges
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true, // 2 towels per guest
     hours: "Daily, check schedule for session times",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4498,7 +3925,7 @@ export const saunas: Sauna[] = [
   {
     slug: "the-good-sauna-vancouver",
     name: "The Good Sauna (Vancouver)",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside", "showers"],
     address:
       "Container Brewing, 1216 Franklin St, Vancouver, BC V6A 1K1, Canada",
     website: "https://www.thegoodsauna.com/",
@@ -4506,14 +3933,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 35,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: false,
     hours: "Check website for session times",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4536,7 +3955,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hastings-spa",
     name: "Hastings Spa",
-    heaterType: "gas",
+    tags: ["gas-heat", "showers", "towels-included"],
     address: "766 E Hastings St, Vancouver, BC V6A 1R5, Canada",
     website: "https://hastingsspa.com/",
     bookingUrl:
@@ -4551,13 +3970,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 37,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: true, // Steam plus saunas available
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     hours: "Thu-Mon 11am-11pm, Wed 12pm-11pm, Tue Closed",
     genderPolicy: "Co-ed",
     clothingPolicy: "Private rooms",
@@ -4570,7 +3982,7 @@ export const saunas: Sauna[] = [
   {
     slug: "mist-thermal-sanctuary",
     name: "Mist Thermal Sanctuary",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "Bowen Island, BC, Canada",
     website: "https://www.mistthermal.com/",
     bookingUrl: "https://mistthermalsanctuary.as.me/",
@@ -4579,14 +3991,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 199,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: true, // Transition tub
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Outdoor hot/cold shower
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Check booking calendar for availability",
     genderPolicy: "Co-ed",
@@ -4631,7 +4035,7 @@ export const saunas: Sauna[] = [
   {
     slug: "jericho-beach-seaside-sauna",
     name: "Jericho Beach Seaside Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside", "tidal"],
     address: "Jericho Sailing Centre, Vancouver, BC, Canada",
     website:
       "https://www.thefinnishsauna.ca/service-page/jericho-beach-seaside-sauna-social",
@@ -4641,12 +4045,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 36,
     currency: "CAD",
     sessionLengthMinutes: 105,
-    steamRoom: false,
-    coldPlunge: true, // Ocean cold plunge at Jerry's Cove
-    soakingTub: false,
-    waterfront: true, // Oceanside at Jericho Beach
-    naturalPlunge: true, // Ocean access
-    tidal: true,
     dfoTideStation: "5cebf1e43d0f4a073c4bc404", // Kitsilano
     waterTempProvider: {
       type: "cioos-erddap",
@@ -4654,9 +4052,6 @@ export const saunas: Sauna[] = [
       fallbackStationIds: ["46146", "46131"], // Halibut Bank, Sentry Shoal
     },
     waterTempUnit: "C",
-    isOutside: true,
-    showers: true, // Freshwater rinse showers
-    towelsIncluded: false, // Bring two towels
     hours: "Seasonal winter pop-up, check schedule for session times",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4688,6 +4083,7 @@ export const saunas: Sauna[] = [
   {
     slug: "circle-wellness-granville-island",
     name: "Circle Wellness Granville Island",
+    tags: ["cold-plunge", "soaking-tub", "showers"],
     address: "1502 Duranleau St, Vancouver, BC V6H 3S4, Canada",
     website: "https://circlewellnessspas.com/",
     bookingUrl: "https://circlewellnessspas.com/book/",
@@ -4696,13 +4092,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 219,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: true,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     genderPolicy: "Private (1-2 guests)",
     clothingPolicy: "Clothing optional",
     notes:
@@ -4753,7 +4142,7 @@ export const saunas: Sauna[] = [
   {
     slug: "gatherwell-mt-pleasant",
     name: "Gatherwell Mount Pleasant",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "316 W 5th Ave, Vancouver, BC V5Y 1J5, Canada",
     website: "https://www.gatherwell.ca/",
     bookingUrl: "https://www.gatherwell.ca/book-a-session-mount-pleasant",
@@ -4763,14 +4152,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 24,
     currency: "CAD",
     sessionLengthMinutes: 50,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: true, // Small towels provided
     capacity: 12,
     hours: "Daily, check schedule for session times",
     genderPolicy: "Co-ed",
@@ -4813,7 +4194,7 @@ export const saunas: Sauna[] = [
   {
     slug: "gatherwell-ambleside",
     name: "Gatherwell Ambleside",
-    heaterType: "wood",
+    tags: ["wood-fired", "waterfront", "outside", "tidal"],
     address: "1150 Marine Dr, West Vancouver, BC V7T 1G2, Canada",
     website: "https://www.gatherwell.ca/",
     bookingUrl: "https://www.gatherwell.ca/book-a-session-ambleside",
@@ -4823,12 +4204,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 29,
     currency: "CAD",
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: false, // No cold plunge tubs, ocean plunging only
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true, // Ocean access ~20m from sauna
-    tidal: true,
     dfoTideStation: "5cebf1e43d0f4a073c4bc45a", // Ambleside
     waterTempProvider: {
       type: "cioos-erddap",
@@ -4836,9 +4211,6 @@ export const saunas: Sauna[] = [
       fallbackStationIds: ["46146", "46131"], // Halibut Bank, Sentry Shoal
     },
     waterTempUnit: "C",
-    isOutside: true,
-    showers: true, // Outdoor cold shower at adjacent park washrooms
-    towelsIncluded: false, // Bring two towels
     capacity: 10,
     hours: "Pilot program Dec 19 – Mar 15, check schedule for session times",
     genderPolicy: "Co-ed",
@@ -4881,7 +4253,7 @@ export const saunas: Sauna[] = [
   {
     slug: "tality-mt-pleasant",
     name: "Tality Wellness Mount Pleasant",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "501 - 107 East 3rd Ave, Vancouver, BC V5T 1C7, Canada",
     website: "https://www.talitywellness.ca/",
     bookingUrl: "https://www.talitywellness.ca/book-session",
@@ -4891,13 +4263,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 47,
     currency: "CAD",
     sessionLengthMinutes: 110,
-    steamRoom: false,
-    coldPlunge: true, // 2-5°C ice baths
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true, // Fresh robes and towel service included
     capacity: 25,
     hours: "8am-10pm Sun-Thu, 8am-11pm Fri-Sat",
     genderPolicy: "Co-ed",
@@ -4917,7 +4282,7 @@ export const saunas: Sauna[] = [
   {
     slug: "tality-shipyards",
     name: "Tality Wellness Shipyards",
-    heaterType: "electric",
+    tags: ["electric-heat"],
     address: "125 Victory Ship Way unit 240, North Vancouver, BC V7L 0B2, Canada",
     website: "https://www.talitywellness.ca/",
     bookingUrl: "https://www.talitywellness.ca/book-session",
@@ -4927,13 +4292,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 47,
     currency: "CAD",
     sessionLengthMinutes: 110,
-    steamRoom: false,
-    coldPlunge: true, // 2-5°C ice baths
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Private showers
-    towelsIncluded: true, // Fresh robes and towel service included
     capacity: 20,
     hours: "9am-10pm Mon/Tue/Thu/Fri, 8am-10pm Sat-Sun, 2pm-10pm Wed",
     genderPolicy: "Co-ed",
@@ -4953,7 +4311,7 @@ export const saunas: Sauna[] = [
   {
     slug: "tality-secret",
     name: "Tality Wellness Secret",
-    heaterType: "wood",
+    tags: ["wood-fired"],
     address: "1481 Dominion St, North Vancouver, BC V7J 1B3, Canada",
     website: "https://www.talitywellness.ca/",
     bookingUrl: "https://www.talitywellness.ca/book-session",
@@ -4963,13 +4321,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 47,
     currency: "CAD",
     sessionLengthMinutes: 110,
-    steamRoom: false,
-    coldPlunge: true, // 2-5°C ice baths
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: false,
-    towelsIncluded: true, // Fresh robes and towel service included
     hours: "6-10pm Mon-Wed, 4-10pm Thu-Fri",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -4988,7 +4339,7 @@ export const saunas: Sauna[] = [
   {
     slug: "salt-chuck-sauna",
     name: "The Salt Chuck Sauna & Spa",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "168th St & 21 Ave, Surrey, BC V3Z 0B5, Canada",
     website: "https://www.saltchucksaunas.com/",
     bookingUrl:
@@ -4999,14 +4350,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 39,
     currency: "CAD",
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     capacity: 10,
     hours: "Session-based: Wed/Fri 6:30pm, Sat/Sun 4pm",
     genderPolicy: "Co-ed",
@@ -5039,7 +4382,7 @@ export const saunas: Sauna[] = [
   {
     slug: "vineyard-sauna",
     name: "Vineyard Sauna & Cold Plunge",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "21476 76 Ave, Langley Twp, BC V2Y 2E8, Canada",
     website: "https://www.vineyardsauna.com/",
     bookingUrl: "https://www.vineyardsauna.com/public-sessions",
@@ -5049,14 +4392,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 40,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // 4 temperature-controlled plunge pools
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false, // Towel to sit on provided; bring your own to dry off
     capacity: 8,
     hours: "Session-based: Fri 5pm/7:30pm, Sat 11am/1:30pm/4pm/6:30pm, Sun-Thu 6:30pm",
     genderPolicy: "Co-ed",
@@ -5119,7 +4454,7 @@ export const saunas: Sauna[] = [
   {
     slug: "arctic-heat-retreat",
     name: "Arctic Heat Retreat",
-    heaterType: "electric",
+    tags: ["electric-heat", "towels-included"],
     address: "9124 Glover Rd #5, Langley Twp, BC V1M 2S3, Canada",
     website: "https://arcticheatretreat.ca/",
     bookingUrl: "https://arcticheatretreat.ca/collections/bookings",
@@ -5128,13 +4463,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 40,
     currency: "CAD",
     sessionLengthMinutes: 65,
-    steamRoom: false,
-    coldPlunge: true, // 3 individual non-chlorinated plunges (7-8°C winter, 12-13°C summer)
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // 1 communal shower
-    towelsIncluded: true,
     capacity: 3,
     hours: "Open daily, closes 10 PM",
     genderPolicy: "Co-ed",
@@ -5154,7 +4482,7 @@ export const saunas: Sauna[] = [
   {
     slug: "the-wellness-den",
     name: "The Wellness Den",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "6528 248 St, Langley Twp, BC V4W 1C1, Canada",
     website: "https://www.thewellnessden.ca/",
     bookingUrl: "https://www.thewellnessden.ca/book",
@@ -5164,14 +4492,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 89,
     currency: "CAD",
     sessionLengthMinutes: 180,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: true, // Robes and towels provided
     capacity: 15,
     hours: "Mon 10am, Tue 5:30pm, Fri 10am, Sun 11am/2pm",
     genderPolicy: "Co-ed",
@@ -5208,7 +4528,7 @@ export const saunas: Sauna[] = [
   {
     slug: "havn-harbour-sauna",
     name: "HAVN Harbour Sauna",
-    heaterType: "electric",
+    tags: ["electric-heat", "floating", "outside", "showers"],
     address: "920 Wharf St, Victoria, BC V8W 1T3, Canada",
     website: "https://www.havnsaunas.com/",
     bookingUrl: "https://www.havnsaunas.com/book",
@@ -5236,16 +4556,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 94,
     currency: "CAD",
     sessionLengthMinutes: 180,
-    steamRoom: false,
-    coldPlunge: true, // 2 cold plunge pools
-    soakingTub: true, // 2 hot mineral tubs
-    waterfront: true, // Floating in Victoria's Inner Harbour
-    naturalPlunge: false,
-    isOutside: true,
-    isFloating: true,
-    showers: true,
-    towelsIncluded: true, // Plush robe and towels included
-    servesFood: true, // Light food and beverage service in lounge
     temperatureRangeF: { min: 160, max: 200 },
     hours: "Fri-Mon 8am-Close, Tue-Thu 9am-Close",
     genderPolicy: "Co-ed",
@@ -5265,7 +4575,7 @@ export const saunas: Sauna[] = [
   {
     slug: "ritual-nordic-spa",
     name: "RITUAL Nordic Spa",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "towels-included"],
     address: "989 Johnson St #101, Victoria, BC V8V 0E3, Canada",
     website: "https://ritualnordicspa.com/",
     bookingUrl: "https://ritualnordicspa.zenoti.com/webstorenew",
@@ -5294,13 +4604,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 59,
     currency: "CAD",
     sessionLengthMinutes: 120,
-    steamRoom: true,
-    coldPlunge: true, // Indoor cold plunge pool at 9°C
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Nordic showers, rinse station, bucket shower
-    towelsIncluded: true,
     temperatureRangeF: { min: 160, max: 200 },
     hours: "Open 7 days, 7:30am weekdays (Tue 2-9pm)",
     genderPolicy: "Co-ed",
@@ -5320,7 +4623,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sea-edge-sauna",
     name: "Sea Edge Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside", "tidal", "showers"],
     address: "209 Island Hwy W, Parksville, BC V9P 1K8, Canada",
     website: "https://www.thefinnishsauna.ca/sea-edge-sauna",
     googleMapsUrl: "https://maps.app.goo.gl/6YhNcvZy3Nmuerh26",
@@ -5330,12 +4633,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 40,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Ocean cold plunge
-    soakingTub: false,
-    waterfront: true, // Oceanfront at Sea Edge Beachside Hotel
-    naturalPlunge: true, // Ocean access
-    tidal: true,
     dfoTideStation: "5dd30650e0fdc4b9b4be6e1a", // French Creek
     waterTempProvider: {
       type: "cioos-erddap",
@@ -5343,9 +4640,6 @@ export const saunas: Sauna[] = [
       fallbackStationIds: ["46146", "46303"], // Halibut Bank, Southern Georgia Strait
     },
     waterTempUnit: "C",
-    isOutside: true,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Check schedule for session times",
     genderPolicy: "Co-ed",
@@ -5372,7 +4666,7 @@ export const saunas: Sauna[] = [
   {
     slug: "the-lost-faucet",
     name: "The Lost Faucet Sauna House",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "3455 Cumberland Rd, Courtenay, BC V9N 9N6, Canada",
     website: "https://thelostfaucet.com/",
     bookingUrl:
@@ -5395,13 +4689,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 38,
     currency: "CAD",
     sessionLengthMinutes: 105,
-    steamRoom: false,
-    coldPlunge: true, // Cold plunge add-on available
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true, // 2 complimentary towels
     temperatureRangeF: { min: 185, max: 195 }, // 85-90°C
     hours: "Mon/Wed/Fri Social Sauna, Thu Women's Night",
     genderPolicy: "Co-ed",
@@ -5415,7 +4702,7 @@ export const saunas: Sauna[] = [
   {
     slug: "nyubu-nordic-spa",
     name: "NYÜBU - West Coast Nordic Spa",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "2795 Meadowview Rd, Shawnigan Lake, BC V0R 2W0, Canada",
     website: "https://nyubu.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/nyubu/?full-items=yes",
@@ -5433,14 +4720,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 30,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Cold plunge, dunk bucket, outdoor shower
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Outdoor shower
-    towelsIncluded: false, // Bring your own
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Check booking calendar for availability",
     genderPolicy: "Co-ed",
@@ -5460,7 +4739,7 @@ export const saunas: Sauna[] = [
   {
     slug: "island-sauna-black-creek",
     name: "Island Sauna (Black Creek)",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "Black Creek, BC, Canada",
     website: "https://www.islandsauna.ca/",
     bookingUrl:
@@ -5491,14 +4770,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 38, // CA$37.50 rounded up
     currency: "CAD",
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true, // 5 ice plunge tubs ranging from outdoor temp to -5°C
-    soakingTub: false,
-    waterfront: true, // Creekside location
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Hot shower
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Check schedule for session times",
     genderPolicy: "Co-ed",
@@ -5512,7 +4783,7 @@ export const saunas: Sauna[] = [
   {
     slug: "island-sauna-nanaimo",
     name: "Island Sauna (Nanaimo)",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "Inn On Long Lake, Nanaimo, BC, Canada",
     website: "https://www.islandsauna.ca/",
     bookingUrl:
@@ -5543,14 +4814,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 35, // CA$35 for social session
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Ice filled cold plunge tubs
-    soakingTub: false,
-    waterfront: true, // Lakeside
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Check schedule for session times",
     genderPolicy: "Co-ed",
@@ -5564,7 +4827,7 @@ export const saunas: Sauna[] = [
   {
     slug: "tuff-city-saunas-pacific-sands",
     name: "Tuff City Saunas (Pacific Sands)",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "1421 Pacific Rim Hwy, Tofino, BC V0R 2Z0, Canada",
     website: "https://tuffcitysaunas.com/",
     bookingUrl:
@@ -5599,14 +4862,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 199, // CA$199 for private 2hr session (up to 6 people)
     currency: "CAD",
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: false, // Cold shower only, not plunge
-    soakingTub: false,
-    waterfront: true, // Beachfront at Cox Bay
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Cold shower for cold-water-therapy
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "9am-9pm, booking required",
     genderPolicy: "Co-ed",
@@ -5626,7 +4881,7 @@ export const saunas: Sauna[] = [
   {
     slug: "remote-floating-sauna-tofino",
     name: "Remote Floating Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "floating", "outside", "towels-included"],
     address: "634 Campbell St, Tofino, BC V0R 2Z0, Canada",
     website: "https://tofinoresortandmarina.com/remote-floating-sauna-dock/",
     bookingUrl:
@@ -5648,21 +4903,12 @@ export const saunas: Sauna[] = [
     sessionPrice: 179, // CA$179/person community session (Sun/Wed)
     currency: "CAD",
     sessionLengthMinutes: 300, // 5 hours summer, 4 hours winter
-    steamRoom: false,
-    coldPlunge: false, // Ocean plunge counts as natural
-    soakingTub: false,
-    waterfront: true, // Floating in Clayoquot Sound
-    naturalPlunge: true, // Pacific Ocean cold plunges
     waterTempProvider: {
       type: "cioos-erddap",
       stationId: "46206", // La Perouse Bank
       fallbackStationIds: ["46131", "46146"], // Sentry Shoal, Halibut Bank
     },
     waterTempUnit: "C",
-    isOutside: true,
-    isFloating: true,
-    showers: false,
-    towelsIncluded: true,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Summer: 8am + 2pm, Winter: 8am + 12:30pm",
     genderPolicy: "Co-ed",
@@ -5685,7 +4931,7 @@ export const saunas: Sauna[] = [
   {
     slug: "scandinave-spa-whistler",
     name: "Scandinave Spa Whistler",
-    heaterType: "wood",
+    tags: ["wood-fired", "steam-room", "cold-plunge", "outside", "showers"],
     address: "8010 Mons Rd, Whistler, BC V8E 1K7, Canada",
     website: "https://www.scandinave.com/whistler/",
     bookingUrl:
@@ -5709,14 +4955,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 138,
     currency: "CAD",
     sessionLengthMinutes: 0, // No time limit once checked in
-    steamRoom: true,
-    coldPlunge: true,
-    soakingTub: true, // Multiple hot pools
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: true, // Robe rental, towels, locker included
     temperatureRangeF: { min: 160, max: 200 },
     hours: "Daily 9am-10pm",
     genderPolicy: "Co-ed",
@@ -5736,7 +4974,7 @@ export const saunas: Sauna[] = [
   {
     slug: "meadow-park-sports-centre",
     name: "Meadow Park Sports Centre",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "showers"],
     address: "8625 BC-99, Whistler, BC V8E 1K1, Canada",
     website:
       "https://www.whistler.ca/parks-recreation-culture/meadow-park-sports-centre/",
@@ -5746,13 +4984,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 11, // CA$10.50 drop-in rounded up, all-day CA$15.75
     currency: "CAD",
     sessionLengthMinutes: 0, // Drop-in is single entry, no time limit
-    steamRoom: true,
-    coldPlunge: false, // Only hot tub
-    soakingTub: true, // Hot tub
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 180 },
     hours: "Daily 6am-9pm",
     genderPolicy: "Co-ed",
@@ -5769,7 +5000,7 @@ export const saunas: Sauna[] = [
   {
     slug: "cheekye-ranch-sauna",
     name: "Cheekye Ranch Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "Cheekye Ranch, Squamish, BC, Canada",
     website: "https://www.thefinnishsauna.ca/squamish",
     bookingUrl:
@@ -5779,14 +5010,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 40,
     currency: "CAD",
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true, // River access
-    soakingTub: false,
-    waterfront: true, // Beside glacier-fed river
-    naturalPlunge: true, // Glacier-fed river just 10m away
-    isOutside: true,
-    showers: false, // Off-grid, river bathing only
-    towelsIncluded: false, // Bring your own towel
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Check calendar - typically 2 days/week for drop-ins",
     genderPolicy: "Co-ed",
@@ -5816,7 +5039,7 @@ export const saunas: Sauna[] = [
   {
     slug: "orca-saunas-willingdon-beach",
     name: "Orca Saunas (Willingdon Beach)",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside", "tidal"],
     address: "4845 Marine Ave, Powell River, BC V8A 2L2, Canada",
     website: "https://orcasaunas.com/",
     bookingUrl:
@@ -5826,12 +5049,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 25, // CA$25 single session drop-in
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: false, // Ocean plunge counts as natural
-    soakingTub: false,
-    waterfront: true, // Oceanside on the beach
-    naturalPlunge: true, // Salish Sea cold plunge
-    tidal: true,
     dfoTideStation: "5cebf1de3d0f4a073c4bb960", // Powell River
     waterTempProvider: {
       type: "cioos-erddap",
@@ -5839,9 +5056,6 @@ export const saunas: Sauna[] = [
       fallbackStationIds: ["46146", "46303"], // Halibut Bank, Southern Georgia Strait
     },
     waterTempUnit: "C",
-    isOutside: true,
-    showers: true, // Outdoor cold shower
-    towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 176 }, // Up to 80°C
     hours: "Seasonal - check booking calendar",
     genderPolicy: "Co-ed",
@@ -5967,20 +5181,13 @@ export const saunas: Sauna[] = [
   {
     slug: "portal-bozeman",
     name: "PORTAL° Bozeman",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "showers"],
     address: "707 E Peach St, Bozeman, MT 59715",
     website: "https://www.portalthermaculture.com/bozeman",
     bookingUrl: "https://book.portalthermaculture.com/book-session",
     googleMapsUrl: "https://maps.app.goo.gl/PortalBozeman123",
     sessionPrice: 45,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Coming Soon",
     genderPolicy: "Co-ed (18+)",
@@ -5994,20 +5201,12 @@ export const saunas: Sauna[] = [
   {
     slug: "bozeman-hot-springs",
     name: "Bozeman Hot Springs",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "81123 Gallatin Rd, Bozeman, MT 59718",
     website: "https://bozemanhotsprings.co/",
     googleMapsUrl: "https://maps.app.goo.gl/3tVq5Ry4Yvh7VJQZ8",
     sessionPrice: 21,
     sessionLengthMinutes: 0, // No time limit
-    steamRoom: true, // Wet sauna
-    coldPlunge: true, // 59°F cold pool
-    soakingTub: true, // 12 hot pools up to 106°F
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true, // On-site cafe
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Daily, closes at 11pm (check website for opening times)",
     genderPolicy: "Co-ed",
@@ -6024,20 +5223,13 @@ export const saunas: Sauna[] = [
   {
     slug: "portal-minneapolis",
     name: "PORTAL° Minneapolis",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "showers"],
     address: "3120 Excelsior Blvd, Minneapolis, MN 55416",
     website: "https://www.portalthermaculture.com/minneapolis",
     bookingUrl: "https://book.portalthermaculture.com/book-session",
     googleMapsUrl: "https://maps.app.goo.gl/PortalMinneapolis123",
     sessionPrice: 45,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Sun 8am-10pm, Mon-Wed 6am-10pm, Thu 12pm-10pm, Fri-Sat 8am-11pm",
     genderPolicy: "Co-ed (18+)",
@@ -6051,7 +5243,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fire-and-ice-sauna-mn",
     name: "Fire & Ice Sauna MN",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge"],
     address: "White Bear Lake County Park, White Bear Lake, MN 55110",
     website: "https://www.fireandicesauna.com/",
     bookingUrl: "https://www.fireandicesauna.com/book-online",
@@ -6071,13 +5263,6 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 40,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    showers: false,
-    towelsIncluded: false,
     capacity: 10,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -6094,7 +5279,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-public-slc",
     name: "Sauna Public",
-    heaterType: "electric",
+    tags: ["electric-heat", "towels-included"],
     address: "1952 E. 2700 S., Salt Lake City, UT 84106",
     website: "https://www.saunapublic.com/",
     bookingUrl: "https://booking.mangomint.com/saunapublic1",
@@ -6115,13 +5300,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/ggoiJKj2YDjFpxt37",
     sessionPrice: 35,
     sessionLengthMinutes: 0, // No time limit
-    steamRoom: false,
-    coldPlunge: true, // 45-50°F, largest in Utah
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Private and public showers
-    towelsIncluded: true,
     temperatureRangeF: { min: 190, max: 200 },
     hours: "M-F 6am-10pm, Sat-Sun 10am-10pm",
     genderPolicy: "Co-ed",
@@ -6135,20 +5313,13 @@ export const saunas: Sauna[] = [
   {
     slug: "plunj-salt-lake",
     name: "PLUNJ Salt Lake",
-    heaterType: "electric",
+    tags: ["electric-heat"],
     address: "55 W Utopia Ave #103, South Salt Lake, UT 84115",
     website: "https://saltlake.plunj.co/",
     bookingUrl: "https://saltlake.plunj.co/book-now/",
     googleMapsUrl: "https://maps.app.goo.gl/8Z4vQMJkY7FdZ7zZ9",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true, // 50°F
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Bucket showers
-    towelsIncluded: false,
     temperatureRangeF: { min: 194, max: 194 },
     hours: "Check website for schedule",
     genderPolicy: "Co-ed",
@@ -6168,7 +5339,7 @@ export const saunas: Sauna[] = [
   {
     slug: "utah-lake-sauna",
     name: "Utah Lake Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "Utah Lake State Park, Provo, UT",
     website: "https://www.utahlakesauna.com/",
     bookingUrl: "https://www.utahlakesauna.com/appointments",
@@ -6176,14 +5347,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/YnZ8XKZQ5Yvq1xZ7",
     sessionPrice: 36,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true, // Lake plunge
-    soakingTub: false,
-    waterfront: true, // Lakeside at Utah Lake State Park
-    naturalPlunge: true, // Lake access
-    isOutside: true,
-    showers: true, // Outdoor shower
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Daily 6am-11pm",
     genderPolicy: "Co-ed",
@@ -6217,20 +5380,13 @@ export const saunas: Sauna[] = [
   {
     slug: "huntsville-sauna",
     name: "Huntsville Sauna",
-    heaterType: "electric",
+    tags: ["electric-heat"],
     address: "150 S 7400 E, Huntsville, UT 84317",
     website: "https://huntsvillesauna.com/",
     bookingUrl: "https://huntsvillesauna.com/booking-now",
     bookingPlatform: "acuity",
     sessionPrice: 36,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: false,
-    towelsIncluded: false,
     capacity: 6,
     hours: "Mon-Sun 6am-10pm",
     genderPolicy: "Co-ed",
@@ -6252,7 +5408,7 @@ export const saunas: Sauna[] = [
   {
     slug: "soho-saunas",
     name: "Soho Saunas",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "outside"],
     address: "West Soldier Hollow Ln, Midway, UT 84049",
     website: "https://sohosaunas.com/",
     bookingUrl: "https://www.zettlor.com/c/sohosaunas",
@@ -6260,14 +5416,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/WJJqd5UxSn1twaYC6",
     sessionPrice: 38,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -6303,7 +5451,7 @@ export const saunas: Sauna[] = [
   {
     slug: "clay-wellness",
     name: "Clay Wellness",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "242 W 100 S, Provo, UT 84601",
     website: "https://www.claywellness.co/",
     bookingUrl: "https://www.claywellness.co/reserve-session",
@@ -6311,13 +5459,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/rkqUMzMZe9Vc6EgK8",
     sessionPrice: 30,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true, // 7 cold plunge pools
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -6346,7 +5487,7 @@ export const saunas: Sauna[] = [
   {
     slug: "portal-denver",
     name: "PORTAL° Denver",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "2949 Federal Blvd, Denver, CO 80211",
     website: "https://www.portalthermaculture.com/denver",
     bookingUrl:
@@ -6354,14 +5495,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/XWWQnCPtH9iSC8Un7",
     sessionPrice: 45,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // 3 individual cold plunge tubs
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Rinse stations
-    towelsIncluded: false, // Available to rent
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Sun 8am-10pm, M/W-F 7am-10pm, Tue 2pm-10pm, Sat 8am-10pm",
     genderPolicy: "Co-ed (18+)",
@@ -6375,20 +5508,13 @@ export const saunas: Sauna[] = [
   {
     slug: "portal-boulder",
     name: "PORTAL° Boulder",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "showers"],
     address: "4949 Broadway #113, Boulder, CO 80304",
     website: "https://www.portalthermaculture.com/boulder",
     bookingUrl: "https://book.portalthermaculture.com/book-session",
     googleMapsUrl: "https://maps.app.goo.gl/BoulderPortal123",
     sessionPrice: 45,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours: "Sun 10am-10pm, Mon-Fri 4pm-10pm, Sat 10am-10pm",
     genderPolicy: "Co-ed (18+)",
@@ -6402,20 +5528,13 @@ export const saunas: Sauna[] = [
   {
     slug: "garden-sauna-denver",
     name: "Garden Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "showers"],
     address: "1407 N Ogden St, Denver, CO 80218",
     website: "https://www.gardensaunadenver.com/",
     bookingUrl: "https://www.gardensaunadenver.com/book-now",
     googleMapsUrl: "https://maps.app.goo.gl/GardenSaunaDenver123",
     sessionPrice: 33,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     hours:
       "Sun 9am-9pm, Mon/Wed 4pm-9pm, Tue/Thu/Fri 7am-1pm & 3pm-9pm, Sat 9am-9pm",
@@ -6436,19 +5555,12 @@ export const saunas: Sauna[] = [
   {
     slug: "lake-steam-baths",
     name: "Lake Steam Baths",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "cold-plunge", "showers"],
     address: "3540 W Colfax Ave, Denver, CO 80204",
     website: "https://www.lakesteam.com/",
     bookingPlatform: "envision",
     googleMapsUrl: "https://maps.app.goo.gl/DijMA1Aq3KAGnSuj9",
     sessionPrice: 32,
-    steamRoom: true,
-    coldPlunge: true,
-    soakingTub: true, // Hot tub included
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     hours: "Mon 8:30am-9pm, Tue closed, Wed 8:30am-10pm, Thu 8:30am-9pm, Fri 8:30am-10pm, Sat 8:30am-10pm, Sun 6am-9pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Nude",
@@ -6461,7 +5573,7 @@ export const saunas: Sauna[] = [
   {
     slug: "r3-spa",
     name: "R3 Spa",
-    heaterType: "gas",
+    tags: ["gas-heat", "showers", "towels-included"],
     address: "2805 S Broadway, Englewood, CO 80113",
     website: "https://www.r3experience.com/",
     bookingUrl: "https://www.r3experience.com/booking-calendar/sauna-cold-plunge-session",
@@ -6469,13 +5581,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/2UpansqpxQZXUTK49",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true, // 3 cold plunge temperatures
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     temperatureRangeF: { min: 190, max: 190 },
     hours: "Mon/Tue/Thu/Fri/Sat 7am-10pm, Wed closed, Sun closed",
     genderPolicy: "Co-ed",
@@ -6502,7 +5607,7 @@ export const saunas: Sauna[] = [
   {
     slug: "hooga-house",
     name: "Hooga House",
-    heaterType: "electric",
+    tags: ["electric-heat", "outside"],
     address: "16305 S Golden Rd Unit C, Golden, CO 80401",
     website: "https://www.hoogahouse.co/",
     bookingUrl: "https://www.hoogahouse.co/booking-calendar/contrast-therapy-booking",
@@ -6510,14 +5615,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/b5vXG4hWa19LvhTs8",
     sessionPrice: 45,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Blue Cube cold plunges at 37-45°F
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 150, max: 195 },
     hours: "Mon-Fri 7am-10am & 1pm-9pm, Sat-Sun 7am-7pm",
     genderPolicy: "Co-ed",
@@ -6569,7 +5666,7 @@ export const saunas: Sauna[] = [
   {
     slug: "red-rock-sauna",
     name: "Red Rock Sauna",
-    heaterType: "gas",
+    tags: ["gas-heat", "steam-room", "cold-plunge", "towels-included"],
     address: "4460 W 29th Ave, Denver, CO 80212",
     website: "https://redrocksauna.com/",
     bookingUrl: "https://redrocksauna.com/products/private-sauna-session",
@@ -6577,13 +5674,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/XxRcCbQeQnSjtUF87",
     sessionPrice: 50,
     sessionLengthMinutes: 60,
-    steamRoom: true,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: false,
-    towelsIncluded: true,
     hours: "Mon/Fri 7am-10am & 4pm-9pm, Tue-Thu 4pm-9pm, Sat 9am-8pm, Sun 9am-8pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -6602,7 +5692,7 @@ export const saunas: Sauna[] = [
   {
     slug: "denver-sports-recovery",
     name: "Denver Sports Recovery",
-    heaterType: "electric",
+    tags: ["electric-heat", "showers"],
     address: "2242 W 29th Ave, Denver, CO 80211",
     website: "https://www.denversportsrecovery.com/",
     bookingPlatform: "mindbody",
@@ -6615,13 +5705,6 @@ export const saunas: Sauna[] = [
     },
     googleMapsUrl: "https://maps.app.goo.gl/y5qPsqaR1anajCsGA",
     sessionPrice: 35,
-    steamRoom: false,
-    coldPlunge: true, // 3 cold plunge pools at 35-52°F
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     hours: "Mon-Thu 9am-9pm, Fri 9am-6pm, Sat 10am-5pm, Sun 12pm-5pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -6634,18 +5717,11 @@ export const saunas: Sauna[] = [
   {
     slug: "mountlake-terrace-recreation-pavilion",
     name: "Mountlake Terrace Recreation Pavilion",
-    heaterType: "electric",
+    tags: ["electric-heat", "soaking-tub", "showers"],
     address: "5303 228th St SW, Mountlake Terrace, WA 98043",
     website: "https://www.cityofmlt.com/385/Recreation-Pavilion",
     googleMapsUrl: "https://maps.app.goo.gl/umozFFM9FcwvfMQQ8",
     sessionPrice: 9,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: true,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     hours:
       "Mon-Thu 5:45am-8:30pm, Fri 5:45am-6:30pm, Sat 8am-2pm, Sun 8:30am-12:30pm",
     genderPolicy: "Co-ed",
@@ -6659,21 +5735,13 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-club-lakeside",
     name: "Sauna Club (Lakeside)",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside"],
     address: "1251 Lake Shore Blvd, Evanston, IL 60202",
     website: "https://mysaunaclub.com/",
     bookingUrl: "https://mysaunaclub.com/book/lakeside/",
     googleMapsUrl: "https://maps.app.goo.gl/WDTngA2naYvPBDqs6",
     sessionPrice: 20,
     sessionLengthMinutes: 30,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     hours: "Wed-Fri 7am-7:30am, Sun 9am-9:30am (quiet time); other times vary",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -6686,21 +5754,13 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-club-sketchbook",
     name: "Sauna Club (Sketchbook)",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "4901 Main St, Skokie, IL 60077",
     website: "https://mysaunaclub.com/",
     bookingUrl: "https://mysaunaclub.com/book/sketchbook/",
     googleMapsUrl: "https://maps.app.goo.gl/MwiMoN5NNY7SEhL18",
     sessionPrice: 20,
     sessionLengthMinutes: 30,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     hours: "Tue & Thu 4pm-9pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -6713,7 +5773,7 @@ export const saunas: Sauna[] = [
   {
     slug: "south-woods-nwa",
     name: "South Woods",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside", "showers", "towels-included"],
     address: "17097 Lake Sequoyah Dr, Fayetteville, AR 72701",
     website: "https://southwoodsnwa.com/",
     bookingUrl:
@@ -6749,14 +5809,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/7wBuqNnCzB4LzBBd8",
     sessionPrice: 55,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: true,
     hours: "Check booking calendar for session times",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit or light gym clothing",
@@ -6772,7 +5824,7 @@ export const saunas: Sauna[] = [
   {
     slug: "framework-flagship-nashville",
     name: "Framework (Flagship)",
-    heaterType: "electric",
+    tags: ["electric-heat"],
     address: "1411 4th Ave South, Nashville, TN 37210",
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/schedule",
@@ -6780,13 +5832,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/myhsXzMqzdzBuXW88",
     sessionPrice: 35, // $35 weekday, $55 weekend
     sessionLengthMinutes: null,
-    steamRoom: false,
-    coldPlunge: true, // 9 commercial-grade cold tubs (38-60°F)
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true, // Indoor showers
-    towelsIncluded: false,
     temperatureRangeF: { min: 190, max: 190 }, // Traditional saunas at 190°F
     hours: "Mon/Wed-Fri 6am-8pm, Sat 8am-6pm, Sun 8am-7pm",
     genderPolicy: "Co-ed",
@@ -6828,7 +5873,7 @@ export const saunas: Sauna[] = [
   {
     slug: "framework-backyard-nashville",
     name: "Framework (Backyard)",
-    heaterType: "electric",
+    tags: ["electric-heat", "outside"],
     address: "928 McFerrin Ave, Nashville, TN 37206",
     website: "https://www.joinframework.com/",
     bookingUrl: "https://www.joinframework.com/schedule",
@@ -6836,14 +5881,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/YsgWzJ6zGCw2GUQ69",
     sessionPrice: 25, // $25 weekday, $35 weekend
     sessionLengthMinutes: null,
-    steamRoom: false,
-    coldPlunge: true, // Solo & dual tubs (40-60°F)
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true, // Outdoor showers
-    towelsIncluded: false,
     temperatureRangeF: { min: 190, max: 190 }, // Social sauna at 190°F
     hours: "Mon/Tue/Thu/Fri 7am-7pm, Sat-Sun 8am-6pm",
     genderPolicy: "Co-ed",
@@ -6880,7 +5917,7 @@ export const saunas: Sauna[] = [
   {
     slug: "river-birch-nordic-sauna",
     name: "River Birch Nordic Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "2543 Broadstone Rd, Banner Elk, NC 28604",
     website: "https://www.riverbirchsauna.com/",
     bookingUrl:
@@ -6913,14 +5950,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/i4YLSog9AmRBxXJL6",
     sessionPrice: 59,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false, // Cold water bucket shower only
-    towelsIncluded: false,
     capacity: 8,
     hours: "Mon/Wed/Thu/Sun 10am-8pm, Fri-Sat 10am-9:30pm",
     genderPolicy: "Co-ed (private booking)",
@@ -6944,22 +5973,13 @@ export const saunas: Sauna[] = [
   {
     slug: "glidden-point-oyster-farms",
     name: "Glidden Point Oyster Farms",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "floating", "outside"],
     address: "637 River Road, Edgecomb, ME 04556",
     website: "https://www.gliddenpoint.com/pages/saunas-at-glidden-point",
     bookingUrl: "https://www.ticketsignup.io/TicketEvent/GliddenPointSauna",
     googleMapsUrl: "https://maps.app.goo.gl/MVcTNwwzNP3s6H3EA",
     sessionPrice: 133.5,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    isFloating: true,
-    showers: false,
-    towelsIncluded: false,
     hours: "Thu-Sun sunrise to sunset, Oct 2-May 8",
     genderPolicy: "Co-ed, ages 18+",
     clothingPolicy: "Swimsuit required",
@@ -6972,7 +5992,7 @@ export const saunas: Sauna[] = [
   {
     slug: "good-medicine-whidbey",
     name: "Good Medicine Whidbey",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "tidal"],
     address: "Whidbey Island, WA 98249",
     website: "https://www.goodmedicinewhidbey.com/",
     bookingUrl:
@@ -6981,21 +6001,12 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/zaUiFtrFkpaqbKiv8",
     sessionPrice: 40,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9447855",
     waterTempProvider: {
       type: "noaa",
       stationId: "9444900",
       fallbackStationIds: ["9447130", "9446484"],
     },
-    showers: false,
-    towelsIncluded: false,
     hours: "Check website for schedule",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -7053,28 +6064,19 @@ export const saunas: Sauna[] = [
   {
     slug: "driftwood-sauna-co",
     name: "Driftwood Sauna Co",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside", "tidal"],
     address: "Whidbey Island, WA",
     website: "https://www.driftwoodsaunaco.com/",
     bookingUrl: "https://www.driftwoodsaunaco.com/book",
     bookingPlatform: "acuity",
     sessionPrice: 30,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    tidal: true,
     noaaTideStation: "9447905",
     waterTempProvider: {
       type: "noaa",
       stationId: "9444900",
       fallbackStationIds: ["9447130", "9446484"],
     },
-    showers: false,
-    towelsIncluded: false, // Bring two towels
     temperatureRangeF: { min: 140, max: 180 },
     capacity: 8,
     hours: "Check website for schedule",
@@ -7122,20 +6124,13 @@ export const saunas: Sauna[] = [
   {
     slug: "moki-sauna-south-boston",
     name: "Moki Sauna - South Boston",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "showers", "towels-included"],
     address: "385 Dorchester Ave, Boston, MA 02127",
     website: "https://www.mokisauna.com/",
     bookingUrl: "https://www.mokisauna.com/social-sessions",
     bookingPlatform: "periode",
     sessionPrice: 59,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     hours:
       "Mon 4pm-9pm, Tues Closed, Wed/Thurs 4pm-9pm, Fri/Sat 8am-10pm, Sun 8am-8pm",
     genderPolicy: "Co-ed",
@@ -7156,20 +6151,13 @@ export const saunas: Sauna[] = [
   {
     slug: "moki-sauna-allston",
     name: "Moki Sauna - Allston",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "showers", "towels-included"],
     address: "267 Western Ave, Allston, MA 02134",
     website: "https://www.mokisauna.com/",
     bookingUrl: "https://www.mokisauna.com/social-sessions",
     bookingPlatform: "periode",
     sessionPrice: 59,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     hours:
       "Mon 4pm-9pm, Tues Closed, Wed/Thurs 4pm-9pm, Fri/Sat 8am-10pm, Sun 8am-8pm",
     genderPolicy: "Co-ed",
@@ -7191,7 +6179,7 @@ export const saunas: Sauna[] = [
   {
     slug: "lore-bathing-club",
     name: "Lore Bathing Club",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "towels-included", "serves-food"],
     address: "676 Broadway, New York, NY 10012",
     website: "https://www.lorebathingclub.com/",
     bookingUrl: "https://www.lorebathingclub.com/membership",
@@ -7205,14 +6193,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/opRcSwt9dS69oSC26",
     sessionPrice: 55,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
-    servesFood: true,
     temperatureRangeF: { min: 170, max: 190 },
     hours: "Mon-Sun 7am-11pm",
     genderPolicy: "Co-ed",
@@ -7259,18 +6239,11 @@ export const saunas: Sauna[] = [
   {
     slug: "the-altar",
     name: "The Altar",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "towels-included"],
     address: "122 Fifth Avenue, New York, NY 10011",
     website: "https://www.the-altar.com/",
     googleMapsUrl: "https://maps.app.goo.gl/De9oakLvuvgQMetR8",
     sessionPrice: 65,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     capacity: 50,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -7311,7 +6284,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sojo-spa-club",
     name: "SoJo Spa Club",
-    heaterType: "electric",
+    tags: ["electric-heat", "soaking-tub", "waterfront", "showers", "towels-included", "serves-food"],
     address: "660 River Rd, Edgewater, NJ 07020",
     website: "https://sojospaclub.com/",
     bookingUrl: "https://shop.sojospaclub.com/reservation/admission",
@@ -7319,14 +6292,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/XU2bkRWjJVYUjbmeA",
     sessionPrice: 90,
     sessionLengthMinutes: null,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: true,
-    waterfront: true,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
-    servesFood: true,
     hours: "Mon-Sun 9am-9:30pm",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -7345,21 +6310,13 @@ export const saunas: Sauna[] = [
   {
     slug: "hideout-social-club",
     name: "Hideout Social Club",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "outside"],
     address: "1 Blachley Rd, Stamford, CT 06902",
     website: "https://hideoutsocial.club/",
     bookingUrl: "https://hideoutsocial.club/book",
     bookingPlatform: "mariana-tek",
     googleMapsUrl: "https://maps.app.goo.gl/uziZddHwQoj1tz788",
     sessionPrice: 30,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     capacity: 16,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -7405,7 +6362,7 @@ export const saunas: Sauna[] = [
   {
     slug: "dryyp-sauna",
     name: "DRYYP",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside", "towels-included"],
     address: "745 Chapel St, New Haven, CT",
     website: "https://www.dryypsauna.com/",
     bookingUrl: "https://fareharbor.com/embeds/book/dryypsauna/?full-items=yes",
@@ -7421,14 +6378,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/YLBk4xcULW9pF46B9",
     sessionPrice: 35,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: true,
     temperatureRangeF: { min: 160, max: 190 },
     capacity: 8,
     hours: "Wed 5:30p–8:30p, Fri 5:30p–9:30p, Sat 2p–8p, Sun 10a–4p",
@@ -7450,7 +6399,7 @@ export const saunas: Sauna[] = [
   {
     slug: "huht-sauna-village-bousquet",
     name: "HUHT Sauna Village at Bousquet",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "Bousquet Mountain, 101 Dan Fox Dr, Pittsfield, MA",
     website: "https://www.gethuht.com/gather/sauna-village-bousquet",
     bookingUrl: "https://www.gethuht.com/gather/sauna-village-bousquet",
@@ -7467,14 +6416,6 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 39,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     hours:
       "Wed-Thu 4-8pm, Fri 12-8pm, Sat 10am-8pm, Sun 10am-4pm (Dec 12, 2025 – Mar 21, 2026)",
     genderPolicy: "Co-ed",
@@ -7488,7 +6429,7 @@ export const saunas: Sauna[] = [
   {
     slug: "huht-sauna-ps21",
     name: "HUHT Sauna at PS21",
-    heaterType: "wood",
+    tags: ["wood-fired", "outside"],
     address: "PS21, 2980 NY-66, Chatham, NY",
     website: "https://www.gethuht.com/gather/ps21",
     bookingUrl: "https://www.gethuht.com/gather/ps21",
@@ -7503,14 +6444,6 @@ export const saunas: Sauna[] = [
     },
     sessionPrice: 25,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true, // Natural pond
-    soakingTub: false,
-    waterfront: true, // PS21 Pond
-    naturalPlunge: true, // Cold plunge in natural pond
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     hours: "Daily 10am-7pm (Jan 31 – Mar 1, 2026)",
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
@@ -7524,7 +6457,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fire-and-ice-sauna-experience",
     name: "Fire & Ice Sauna Experience",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside"],
     address: "1600 N Lake Shore Dr, Chicago, IL 60613",
     website: "https://fire-ice-sauna-experience.square.site/",
     bookingUrl: "https://fire-ice-sauna-experience.square.site/",
@@ -7538,14 +6471,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/GJdxDD68Qf49ofQD6",
     sessionPrice: 30,
     sessionLengthMinutes: 30,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 185 },
     capacity: 3,
     genderPolicy: "Co-ed (private booking)",
@@ -7559,20 +6484,13 @@ export const saunas: Sauna[] = [
   {
     slug: "fire-and-ice-sauna",
     name: "Fire & Ice Sauna",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "towels-included"],
     address: "726 E Boughton Rd, Bolingbrook, IL 60440",
     website: "https://fireiceco.com/",
     bookingUrl: "https://fireiceco.com/collections/grand-opening",
     googleMapsUrl:
       "https://www.google.com/maps/place/Fire+%26+Ice+Sauna/@41.7217,-88.0417,15z",
     sessionPrice: 45,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     temperatureRangeF: { min: 180, max: 190 },
     genderPolicy: "Gender-segregated (separate men's & women's facilities)",
     clothingPolicy: "Swimsuit required",
@@ -7585,7 +6503,7 @@ export const saunas: Sauna[] = [
   {
     slug: "campfire-sauna-and-social",
     name: "Campfire Sauna and Social",
-    heaterType: "wood",
+    tags: ["wood-fired", "waterfront", "natural-plunge", "outside"],
     address: "Gillson Beach, Wilmette, IL 60091",
     website: "https://www.campfiresauna.com/",
     bookingUrl: "https://app.arketa.co/campfiresaunaandsocial",
@@ -7598,14 +6516,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/rubvLaSM1iPJnyK56",
     sessionPrice: 40,
     sessionLengthMinutes: 50,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -7618,7 +6528,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sol-drift-sauna",
     name: "Sol Drift Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "delivery", "outside"],
     address: "Westfield, IN 46074",
     website: "https://www.soldriftsauna.com/",
     bookingUrl: "https://www.soldriftsauna.com/book",
@@ -7626,15 +6536,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/KisQzfgcaax75HTn9",
     sessionPrice: 400,
     sessionLengthMinutes: 240,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    isDelivery: true,
-    showers: false,
-    towelsIncluded: false,
     capacity: 10,
     genderPolicy: "Private booking",
     clothingPolicy: "Up to your group",
@@ -7700,7 +6601,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fiorst-riverside",
     name: "Fiorst - Riverside",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside"],
     address: "32 River Road, Conshohocken, PA 19428",
     website: "https://www.fiorst.com/",
     bookingUrl: "https://fiorst.as.me/schedule/4ee5a478",
@@ -7708,14 +6609,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/SbzFH1yzitaKncc88",
     sessionPrice: 75,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -7750,7 +6643,7 @@ export const saunas: Sauna[] = [
   {
     slug: "fiorst-schuylkill-center",
     name: "Fiorst - Schuylkill Center",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "8480 Hagy's Mill Road, Philadelphia, PA 19128",
     website: "https://www.fiorst.com/",
     bookingUrl: "https://fiorst.as.me/schedule/4ee5a478",
@@ -7758,14 +6651,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/SbzFH1yzitaKncc88",
     sessionPrice: 75,
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -7809,7 +6694,7 @@ export const saunas: Sauna[] = [
   {
     slug: "cascada",
     name: "Cascada",
-    heaterType: "electric",
+    tags: ["electric-heat", "steam-room", "cold-plunge", "soaking-tub", "showers", "towels-included"],
     address: "1150 NE Alberta St, Portland, OR 97211",
     website: "https://cascada.me/",
     bookingUrl:
@@ -7818,13 +6703,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/6BtD3qVzK5UqjBdH7",
     sessionPrice: 100,
     sessionLengthMinutes: 150,
-    steamRoom: true,
-    coldPlunge: true,
-    soakingTub: true,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -7844,7 +6722,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-asheville",
     name: "Sauna House Asheville",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "serves-food"],
     address: "230 Short Coxe Ave, Asheville, NC 28801",
     website: "https://www.saunahouse.com/pages/asheville",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7866,14 +6744,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/YJGqNz1p4bARv9oo7",
     sessionPrice: 45,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -7885,7 +6755,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-charlotte",
     name: "Sauna House Charlotte",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "serves-food"],
     address: "1500 West Morehead Street Unit H, Charlotte, NC 28208",
     website: "https://www.saunahouse.com/pages/charlotte",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7907,14 +6777,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/8gKnpvU6m3bf5Q4u6",
     sessionPrice: 50,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -7926,7 +6788,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-durham",
     name: "Sauna House Durham",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "serves-food"],
     address: "326 West Geer Street, Durham, NC 27701",
     website: "https://www.saunahouse.com/pages/durham",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7948,14 +6810,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/4DuCcMp8GWmbDkTq9",
     sessionPrice: 50,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -7967,7 +6821,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-raleigh",
     name: "Sauna House Raleigh",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "serves-food"],
     address: "324 Dupont Circle, Raleigh, NC 27603",
     website: "https://www.saunahouse.com/pages/raleigh",
     bookingUrl: "https://book.saunahouse.com/",
@@ -7975,14 +6829,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/P3e9Lf2mH23YfgYU8",
     sessionPrice: 50,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -7994,7 +6840,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-greenville",
     name: "Sauna House Greenville",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "serves-food"],
     address: "711 W Washington St, Greenville, SC 29601",
     website: "https://www.saunahouse.com/pages/greenville",
     bookingUrl: "https://book.saunahouse.com/",
@@ -8016,14 +6862,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/Uooc3uCfYvXke3QG9",
     sessionPrice: 45,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -8035,7 +6873,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-knoxville",
     name: "Sauna House Knoxville",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "serves-food"],
     address: "126 Jennings Ave, Knoxville, TN 37917",
     website: "https://www.saunahouse.com/pages/knoxville",
     bookingUrl: "https://book.saunahouse.com/",
@@ -8057,14 +6895,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/qLyZQj4KnDPGtov86",
     sessionPrice: 40,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -8076,7 +6906,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-bonita-springs",
     name: "Sauna House Bonita Springs",
-    heaterType: "electric",
+    tags: ["electric-heat", "cold-plunge", "showers", "serves-food"],
     address: "10610 Founders Way, Bonita Springs, FL 34135",
     website: "https://www.saunahouse.com/pages/bonita-springs",
     bookingUrl: "https://book.saunahouse.com/",
@@ -8098,14 +6928,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/WM3deQsSkuAgYNub6",
     sessionPrice: 50,
     sessionLengthMinutes: 120,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -8117,7 +6939,7 @@ export const saunas: Sauna[] = [
   {
     slug: "sauna-house-austin",
     name: "Sauna House Austin North Loop",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "showers", "serves-food"],
     address: "1507 West North Loop Boulevard, Austin, TX 78756",
     website: "https://www.saunahouse.com/pages/austin",
     bookingUrl: "https://book.saunahouse.com/",
@@ -8139,14 +6961,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/pyFoLEMwNzW2XJfL6",
     sessionPrice: 50,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
-    servesFood: true,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -8158,7 +6972,7 @@ export const saunas: Sauna[] = [
   {
     slug: "pnw-sauna-cda",
     name: "PNW Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "delivery", "outside"],
     address: "Coeur d'Alene, ID 83814",
     website: "https://pnwsaunacda.com/",
     bookingUrl: "https://pnwsaunacda.com/book/",
@@ -8166,15 +6980,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/RunGGJBbC451sreh8",
     sessionPrice: 70,
     sessionLengthMinutes: 75,
-    steamRoom: false,
-    coldPlunge: false,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    isDelivery: true,
-    showers: false,
-    towelsIncluded: false,
     capacity: 8,
     genderPolicy: "Private booking",
     clothingPolicy: "Up to your group",
@@ -8222,7 +7027,7 @@ export const saunas: Sauna[] = [
   {
     slug: "howl-at-the-moon-sauna",
     name: "Howl at the Moon Sauna Co.",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "delivery", "outside"],
     address: "Rockford, MI",
     website: "https://www.howlatthemoonsaunaco.com/",
     bookingUrl:
@@ -8247,15 +7052,6 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/rtoB9H34B5Cep76g8",
     sessionPrice: 350,
     sessionLengthMinutes: null,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    isDelivery: true,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     capacity: 6,
     genderPolicy: "Private rental",
@@ -8273,6 +7069,7 @@ export const saunas: Sauna[] = [
   {
     slug: "nrg-haus",
     name: "NRG Haus",
+    tags: ["showers"],
     address: "171 East Liberty St, Unit 113, Toronto, ON M6K 3P6",
     website: "https://nrghaus.com/",
     bookingUrl: "https://na.spatime.com/nrgh171/5213135/schedule",
@@ -8281,13 +7078,6 @@ export const saunas: Sauna[] = [
     sessionPrice: 39,
     currency: "CAD",
     sessionLengthMinutes: 90,
-    steamRoom: false,
-    coldPlunge: true, // Temperature-controlled cold plunge tubs
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -8320,7 +7110,7 @@ export const saunas: Sauna[] = [
   {
     slug: "altaer-sauna-warren",
     name: "ALTÆR Sauna (Warren)",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside"],
     website: "https://altaer.space",
     bookingUrl: "https://altaer.space/book-altaer",
     bookingPlatform: "acuity",
@@ -8328,14 +7118,6 @@ export const saunas: Sauna[] = [
     instagram: "altaersauna",
     sessionPrice: 40,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -8376,21 +7158,13 @@ export const saunas: Sauna[] = [
   {
     slug: "altaer-sauna-little-compton",
     name: "ALTÆR Sauna (Little Compton)",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "waterfront", "natural-plunge", "outside"],
     website: "https://altaer.space",
     bookingUrl: "https://altaer.space/book-altaer",
     bookingPlatform: "acuity",
     instagram: "altaersauna",
     sessionPrice: 40,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -8425,7 +7199,7 @@ export const saunas: Sauna[] = [
   {
     slug: "moonrise-sauna",
     name: "Moonrise Sauna",
-    heaterType: "wood",
+    tags: ["wood-fired", "cold-plunge", "outside"],
     address: "80 Walnut St, Seekonk, MA 02771",
     website: "https://www.moonrisesauna.com/",
     bookingUrl: "https://moonrisesauna.as.me/",
@@ -8434,14 +7208,6 @@ export const saunas: Sauna[] = [
     instagram: "moonrisesauna",
     sessionPrice: 40,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 170, max: 200 },
     capacity: 6,
     genderPolicy: "Co-ed",
@@ -8495,6 +7261,7 @@ export const saunas: Sauna[] = [
   {
     slug: "rafa-sauna-lounge",
     name: "Rafa Sauna Lounge",
+    tags: ["steam-room", "cold-plunge", "showers"],
     address: "6029 San Juan Ave, Citrus Heights, CA 95610",
     website: "https://rafasauna.com/",
     bookingUrl: "https://app.rafasauna.com/booking",
@@ -8502,13 +7269,6 @@ export const saunas: Sauna[] = [
     instagram: "rafasaunalounge",
     sessionPrice: 65,
     sessionLengthMinutes: 120,
-    steamRoom: true,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    showers: true,
-    towelsIncluded: false,
     genderPolicy: "Co-ed",
     clothingPolicy: "Swimsuit required",
     notes:
@@ -8550,6 +7310,7 @@ export const saunas: Sauna[] = [
   {
     slug: "savu-lakeside",
     name: "SAVU Lakeside",
+    tags: ["cold-plunge", "waterfront", "natural-plunge", "outside"],
     address: "50 Lakeside Ave, Burlington, VT 05401",
     website: "https://www.savu.cc/",
     bookingUrl:
@@ -8560,14 +7321,6 @@ export const saunas: Sauna[] = [
     waterTempProvider: { type: "usgs", siteId: "04294500" },
     sessionPrice: 70,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     temperatureRangeF: { min: 180, max: 220 },
     capacity: 6,
     genderPolicy: "Private booking",
@@ -8610,6 +7363,7 @@ export const saunas: Sauna[] = [
   {
     slug: "savu-smugglers-notch",
     name: "SAVU Smugglers Notch",
+    tags: ["cold-plunge", "outside", "showers"],
     address: "598 Smugglers View Rd, Jeffersonville, VT 05464",
     website: "https://www.savu.cc/",
     bookingUrl:
@@ -8619,14 +7373,6 @@ export const saunas: Sauna[] = [
     instagram: "savu.sauna",
     sessionPrice: 70,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: false,
-    naturalPlunge: false,
-    isOutside: true,
-    showers: true,
-    towelsIncluded: false,
     capacity: 6,
     genderPolicy: "Private booking",
     notes:
@@ -8668,6 +7414,7 @@ export const saunas: Sauna[] = [
   {
     slug: "savu-madbush-falls",
     name: "SAVU Madbush Falls",
+    tags: ["cold-plunge", "waterfront", "natural-plunge", "outside"],
     address: "7575 Main St, Waitsfield, VT 05673",
     website: "https://www.savu.cc/",
     bookingUrl:
@@ -8677,14 +7424,6 @@ export const saunas: Sauna[] = [
     instagram: "savu.sauna",
     sessionPrice: 25,
     sessionLengthMinutes: 60,
-    steamRoom: false,
-    coldPlunge: true,
-    soakingTub: false,
-    waterfront: true,
-    naturalPlunge: true,
-    isOutside: true,
-    showers: false,
-    towelsIncluded: false,
     capacity: 6,
     genderPolicy: "Co-ed",
     notes:
@@ -8800,33 +7539,31 @@ export function buildSaunaSchemaDescription(sauna: Sauna): string {
 /** Build a concise amenity summary string for SEO descriptions. */
 export function describeSaunaAmenities(sauna: Sauna): string {
   const parts: string[] = [];
-  if (sauna.isFloating) parts.push("Floating sauna");
-  else if (sauna.waterfront) parts.push("Waterfront location");
-  if (sauna.naturalPlunge) parts.push("natural cold plunge");
-  else if (sauna.coldPlunge) parts.push("cold plunge");
-  if (sauna.soakingTub) parts.push("soaking tub");
-  if (sauna.steamRoom) parts.push("steam room");
-  if (sauna.towelsIncluded) parts.push("towels included");
+  if (hasTag(sauna, "floating")) parts.push("Floating sauna");
+  else if (hasTag(sauna, "waterfront")) parts.push("Waterfront location");
+  if (hasTag(sauna, "natural-plunge")) parts.push("natural cold plunge");
+  else if (hasTag(sauna, "cold-plunge")) parts.push("cold plunge");
+  if (hasTag(sauna, "soaking-tub")) parts.push("soaking tub");
+  if (hasTag(sauna, "steam-room")) parts.push("steam room");
+  if (hasTag(sauna, "towels-included")) parts.push("towels included");
   return parts.join(", ");
 }
 
 /** Build a dynamic SEO description for a location based on its saunas. */
 export function describeLocationAmenities(locationSaunas: Sauna[]): string {
   const total = locationSaunas.length;
-  const floating = locationSaunas.filter((s) => s.isFloating).length;
-  const waterfront = locationSaunas.filter((s) => s.waterfront).length;
-  const coldPlunge = locationSaunas.filter((s) => s.coldPlunge).length;
-  const naturalPlunge = locationSaunas.filter((s) => s.naturalPlunge).length;
-  const soakingTub = locationSaunas.filter((s) => s.soakingTub).length;
-  const steamRoom = locationSaunas.filter((s) => s.steamRoom).length;
+  const floating = locationSaunas.filter((s) => hasTag(s, "floating")).length;
+  const waterfront = locationSaunas.filter((s) => hasTag(s, "waterfront")).length;
+  const soakingTub = locationSaunas.filter((s) => hasTag(s, "soaking-tub")).length;
+  const steamRoom = locationSaunas.filter((s) => hasTag(s, "steam-room")).length;
 
   const highlights: string[] = [];
   if (floating > 0) highlights.push(`${floating} floating`);
   if (waterfront > floating)
     highlights.push(`${waterfront - floating} waterfront`);
   const totalColdPlunge = new Set([
-    ...locationSaunas.filter((s) => s.coldPlunge).map((s) => s.slug),
-    ...locationSaunas.filter((s) => s.naturalPlunge).map((s) => s.slug),
+    ...locationSaunas.filter((s) => hasTag(s, "cold-plunge")).map((s) => s.slug),
+    ...locationSaunas.filter((s) => hasTag(s, "natural-plunge")).map((s) => s.slug),
   ]).size;
   if (totalColdPlunge > 0) highlights.push(`${totalColdPlunge} with cold plunge`);
   if (soakingTub > 0) highlights.push(`${soakingTub} with soaking tubs`);
@@ -8857,10 +7594,10 @@ export function getSimilarSaunas(
     // Similar price range
     if (Math.abs(sauna.sessionPrice - current.sessionPrice) <= 20) score += 10;
     // Similar amenities
-    if (sauna.coldPlunge === current.coldPlunge) score += 5;
-    if (sauna.steamRoom === current.steamRoom) score += 5;
-    if (sauna.waterfront === current.waterfront) score += 5;
-    if (sauna.naturalPlunge === current.naturalPlunge) score += 5;
+    if (hasTag(sauna, "cold-plunge") === hasTag(current, "cold-plunge")) score += 5;
+    if (hasTag(sauna, "steam-room") === hasTag(current, "steam-room")) score += 5;
+    if (hasTag(sauna, "waterfront") === hasTag(current, "waterfront")) score += 5;
+    if (hasTag(sauna, "natural-plunge") === hasTag(current, "natural-plunge")) score += 5;
     return { sauna, score };
   });
 

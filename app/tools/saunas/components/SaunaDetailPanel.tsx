@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { type Sauna, formatPrice } from "@/data/saunas/saunas";
+import { hasTag, shouldShowBadge } from "@/data/tags";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SaunaAvailability } from "./SaunaAvailability";
@@ -191,11 +192,11 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
               Amenities
             </p>
             <div className="flex flex-wrap gap-1.5">
-              <AmenityBadge icon={sauna.heaterType === "wood" ? FlameKindling : sauna.heaterType === "electric" ? Zap : Flame} label="Sauna" available={true} iconClassName="text-orange-500" title={sauna.heaterType === "wood" ? "Wood stove" : sauna.heaterType === "electric" ? "Electric stove" : sauna.heaterType === "gas" ? "Gas stove" : undefined} />
-              <AmenityBadge icon={Snowflake} label="Cold Plunge" available={sauna.coldPlunge && !sauna.waterTempProvider && !sauna.isFloating} iconClassName="text-sky-500" />
-              <AmenityBadge emoji="♨️" label="Soaking Tub" available={sauna.soakingTub} />
+              <AmenityBadge icon={hasTag(sauna, "wood-fired") ? FlameKindling : hasTag(sauna, "electric-heat") ? Zap : Flame} label="Sauna" available={true} iconClassName="text-orange-500" title={hasTag(sauna, "wood-fired") ? "Wood stove" : hasTag(sauna, "electric-heat") ? "Electric stove" : hasTag(sauna, "gas-heat") ? "Gas stove" : undefined} />
+              <AmenityBadge icon={Snowflake} label="Cold Plunge" available={hasTag(sauna, "cold-plunge") && shouldShowBadge("cold-plunge", sauna.tags, !!sauna.waterTempProvider)} iconClassName="text-sky-500" />
+              <AmenityBadge emoji="♨️" label="Soaking Tub" available={hasTag(sauna, "soaking-tub")} />
               <SaunaWaterTemp sauna={sauna} />
-              {(sauna.isFloating ?? false) && (
+              {hasTag(sauna, "floating") && (
                 <Badge variant="secondary" className="gap-1">
                   <svg className="h-3 w-3 text-blue-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path fill="currentColor" fillRule="evenodd" d="M12 4 L21 11 H19 V18 H5 V11 H3 Z M10 14 H14 V18 H10 Z" />
@@ -204,12 +205,12 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
                   Floating
                 </Badge>
               )}
-              <AmenityBadge icon={Waves} label="Waterfront" available={sauna.waterfront && !sauna.naturalPlunge && !sauna.isFloating} iconClassName="text-blue-500" />
-              <AmenityBadge icon={Leaf} label="Natural Plunge" available={sauna.naturalPlunge && !sauna.waterTempProvider && !sauna.isFloating} iconClassName="text-green-600" />
-              <AmenityBadge icon={Thermometer} label="Steam Room" available={sauna.steamRoom} />
-              <AmenityBadge icon={ShowerHead} label="Showers" available={sauna.showers} />
-              <AmenityBadge icon={Shirt} label="Towels" available={sauna.towelsIncluded} />
-              <AmenityBadge icon={UtensilsCrossed} label="Food" available={sauna.servesFood ?? false} iconClassName="text-amber-600" />
+              <AmenityBadge icon={Waves} label="Waterfront" available={hasTag(sauna, "waterfront") && shouldShowBadge("waterfront", sauna.tags, false)} iconClassName="text-blue-500" />
+              <AmenityBadge icon={Leaf} label="Natural Plunge" available={hasTag(sauna, "natural-plunge") && shouldShowBadge("natural-plunge", sauna.tags, !!sauna.waterTempProvider)} iconClassName="text-green-600" />
+              <AmenityBadge icon={Thermometer} label="Steam Room" available={hasTag(sauna, "steam-room")} />
+              <AmenityBadge icon={ShowerHead} label="Showers" available={hasTag(sauna, "showers")} />
+              <AmenityBadge icon={Shirt} label="Towels" available={hasTag(sauna, "towels-included")} />
+              <AmenityBadge icon={UtensilsCrossed} label="Food" available={hasTag(sauna, "serves-food")} iconClassName="text-amber-600" />
             </div>
           </div>
 

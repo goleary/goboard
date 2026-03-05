@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { type Sauna } from "@/data/saunas/saunas";
+import { hasTag } from "@/data/tags";
 import type { WaterTempResponse } from "@/app/api/saunas/water-temp/route";
 import { Badge } from "@/components/ui/badge";
 import { Waves } from "lucide-react";
@@ -109,7 +110,7 @@ export function SaunaWaterTemp({ sauna }: SaunaWaterTempProps) {
     setOpen((o) => !o);
   }, []);
 
-  if (!sauna.naturalPlunge) return null;
+  if (!hasTag(sauna, "natural-plunge")) return null;
 
   // No provider or still loading/errored — show plain Waterfront badge
   if (!sauna.waterTempProvider || !data) {

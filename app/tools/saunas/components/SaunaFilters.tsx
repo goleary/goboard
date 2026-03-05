@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Separator } from "@/components/ui/separator";
 import { type Sauna } from "@/data/saunas/saunas";
+import { type SaunaTag, SAUNA_TAG_META, hasTag } from "@/data/tags";
 
 function localDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -30,14 +31,15 @@ function formatDateButton(dateStr: string): string {
 }
 
 export interface FilterState {
-  woodFiredOnly: boolean;
-  coldPlungeOnly: boolean;
-  soakingTubOnly: boolean;
-  waterfrontOnly: boolean;
-  naturalPlungeOnly: boolean;
+  requiredTags: SaunaTag[];
   availabilityDate: string | null;
   guests: number | null;
 }
+
+/** Tags that appear as filter checkboxes, in display order. */
+const FILTERABLE_TAGS = (
+  Object.entries(SAUNA_TAG_META) as [SaunaTag, (typeof SAUNA_TAG_META)[SaunaTag]][]
+).filter(([, meta]) => meta.filterable);
 
 interface SaunaFiltersProps {
   filters: FilterState;
@@ -48,11 +50,7 @@ interface SaunaFiltersProps {
 
 export function getDefaultFilters(): FilterState {
   return {
-    woodFiredOnly: false,
-    coldPlungeOnly: false,
-    soakingTubOnly: false,
-    waterfrontOnly: false,
-    naturalPlungeOnly: false,
+    requiredTags: [],
     availabilityDate: null,
     guests: null,
   };
@@ -62,24 +60,11 @@ export function filterAndSortSaunas(
   saunas: Sauna[],
   filters: FilterState
 ): Sauna[] {
-  let filtered = [...saunas];
-
-  // Boolean filters
-  if (filters.woodFiredOnly) {
-    filtered = filtered.filter((s) => s.heaterType === "wood");
-  }
-  if (filters.coldPlungeOnly) {
-    filtered = filtered.filter((s) => s.coldPlunge);
-  }
-  if (filters.soakingTubOnly) {
-    filtered = filtered.filter((s) => s.soakingTub);
-  }
-  if (filters.waterfrontOnly) {
-    filtered = filtered.filter((s) => s.waterfront);
-  }
-  if (filters.naturalPlungeOnly) {
-    filtered = filtered.filter((s) => s.naturalPlunge);
-  }
+  let filtered = filters.requiredTags.length > 0
+    ? saunas.filter((s) =>
+        filters.requiredTags.every((tag) => hasTag(s, tag))
+      )
+    : [...saunas];
 
   // Sort by price ascending, saunas without price go to bottom
   filtered.sort((a, b) => {
@@ -101,9 +86,12 @@ export function SaunaFilters({
 }: SaunaFiltersProps) {
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  const updateFilter = useCallback(
-    <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
-      onFiltersChange({ ...filters, [key]: value });
+  const toggleTag = useCallback(
+    (tag: SaunaTag, checked: boolean) => {
+      const requiredTags = checked
+        ? [...filters.requiredTags, tag]
+        : filters.requiredTags.filter((t) => t !== tag);
+      onFiltersChange({ ...filters, requiredTags });
     },
     [filters, onFiltersChange]
   );
@@ -147,56 +135,18 @@ export function SaunaFilters({
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-4 items-center">
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="woodFired"
-            checked={filters.woodFiredOnly}
-            onCheckedChange={(v) => updateFilter("woodFiredOnly", v === true)}
-          />
-          <Label htmlFor="woodFired" className="text-sm cursor-pointer">
-            Wood Stove
-          </Label>
-        </div>
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="coldPlunge"
-            checked={filters.coldPlungeOnly}
-            onCheckedChange={(v) => updateFilter("coldPlungeOnly", v === true)}
-          />
-          <Label htmlFor="coldPlunge" className="text-sm cursor-pointer">
-            Cold Plunge
-          </Label>
-        </div>
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="soakingTub"
-            checked={filters.soakingTubOnly}
-            onCheckedChange={(v) => updateFilter("soakingTubOnly", v === true)}
-          />
-          <Label htmlFor="soakingTub" className="text-sm cursor-pointer">
-            Soaking Tub
-          </Label>
-        </div>
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="waterfront"
-            checked={filters.waterfrontOnly}
-            onCheckedChange={(v) => updateFilter("waterfrontOnly", v === true)}
-          />
-          <Label htmlFor="waterfront" className="text-sm cursor-pointer">
-            Waterfront
-          </Label>
-        </div>
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="naturalPlunge"
-            checked={filters.naturalPlungeOnly}
-            onCheckedChange={(v) => updateFilter("naturalPlungeOnly", v === true)}
-          />
-          <Label htmlFor="naturalPlunge" className="text-sm cursor-pointer">
-            Natural Plunge
-          </Label>
-        </div>
+        {FILTERABLE_TAGS.map(([tag, meta]) => (
+          <div key={tag} className="flex items-center gap-2">
+            <Checkbox
+              id={`filter-${tag}`}
+              checked={filters.requiredTags.includes(tag)}
+              onCheckedChange={(v) => toggleTag(tag, v === true)}
+            />
+            <Label htmlFor={`filter-${tag}`} className="text-sm cursor-pointer">
+              {meta.filterLabel ?? meta.label}
+            </Label>
+          </div>
+        ))}
       </div>
 
       {showAvailabilityFilter && (
