@@ -37,7 +37,9 @@ export type LocationSlug =
   | "sacramento"
   | "grand-rapids"
   | "rhode-island"
-  | "toronto";
+  | "toronto"
+  | "burlington"
+  | "vermont";
 
 /**
  * Location metadata for display and routing
@@ -375,6 +377,24 @@ export const locations: Location[] = [
       "Toronto's emerging sauna scene brings contrast therapy and social wellness to Canada's largest city.",
     center: { lat: 43.6532, lng: -79.3832 },
     zoom: 11,
+  },
+  {
+    slug: "burlington",
+    name: "Burlington",
+    state: "VT",
+    description:
+      "Burlington's sauna scene features private lakeside saunas on the shores of Lake Champlain, offering outdoor contrast therapy with cold plunges in the lake.",
+    center: { lat: 44.4759, lng: -73.2121 },
+    zoom: 12,
+  },
+  {
+    slug: "vermont",
+    name: "Vermont",
+    state: "VT",
+    description:
+      "Vermont's sauna culture features private outdoor pop-up saunas in stunning natural settings, from Lake Champlain's waterfront to Green Mountain views and waterfall plunges in the Mad River Valley.",
+    center: { lat: 44.4, lng: -72.9 },
+    zoom: 8,
   },
 ];
 
@@ -1019,13 +1039,26 @@ export interface CioosErddapWaterTempProviderConfig {
 }
 
 /**
+ * USGS water temperature provider configuration.
+ * Uses the USGS Instantaneous Values (IV) Web Service for inland water bodies.
+ */
+export interface UsgsWaterTempProviderConfig {
+  type: "usgs";
+  /** USGS site number (e.g. "04294500" for Lake Champlain at Burlington) */
+  siteId: string;
+  /** Fallback site IDs to try if the primary site has no data */
+  fallbackSiteIds?: string[];
+}
+
+/**
  * Discriminated union of water temperature data providers.
  * Add new provider interfaces here and union them in to support additional data sources.
  */
 export type WaterTempProviderConfig =
   | KingCountyBuoyWaterTempProviderConfig
   | NoaaWaterTempProviderConfig
-  | CioosErddapWaterTempProviderConfig;
+  | CioosErddapWaterTempProviderConfig
+  | UsgsWaterTempProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -8491,6 +8524,189 @@ export const saunas: Sauna[] = [
           name: "2 Hours - Standard",
           price: 65,
           durationMinutes: 120,
+        },
+      ],
+    },
+  },
+  {
+    slug: "savu-lakeside",
+    name: "SAVU Lakeside",
+    address: "50 Lakeside Ave, Burlington, VT 05401",
+    website: "https://www.savu.cc/",
+    bookingUrl:
+      "https://savu.as.me/schedule.php?appointmentType=31593144",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/5cKjhfabgKXN4Gf18",
+    instagram: "savu.sauna",
+    waterTempProvider: { type: "usgs", siteId: "04294500" },
+    sessionPrice: 70,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    isOutside: true,
+    showers: false,
+    towelsIncluded: false,
+    temperatureRangeF: { min: 180, max: 220 },
+    capacity: 6,
+    genderPolicy: "Private booking",
+    notes:
+      "Private outdoor saunas on the Lake Champlain waterfront. Base booking for 2 guests, 1 hour. Additional guests $30 each (up to 6). Cold plunge pool and year-round lake access. Robe and towel rentals available.",
+    lat: 44.46390288629247,
+    lng: -73.2197922865059,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/savu-lakeside/hero.jpg",
+        alt: "SAVU Lakeside outdoor sauna on Lake Champlain waterfront",
+      },
+      {
+        url: "/saunas/savu-lakeside/sauna.jpg",
+        alt: "SAVU Lakeside sauna interior",
+      },
+      {
+        url: "/saunas/savu-lakeside/lakeside.jpg",
+        alt: "SAVU Lakeside waterfront relaxation area",
+      },
+    ],
+    bookingProvider: {
+      type: "acuity",
+      owner: "4e21e764",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 31593144,
+          acuityCalendarId: 6678539,
+          name: "Private Sauna Session",
+          price: 70,
+          durationMinutes: 60,
+          private: true,
+          seats: 2,
+        },
+      ],
+    },
+  },
+  {
+    slug: "savu-smugglers-notch",
+    name: "SAVU Smugglers Notch",
+    address: "598 Smugglers View Rd, Jeffersonville, VT 05464",
+    website: "https://www.savu.cc/",
+    bookingUrl:
+      "https://savu.as.me/schedule.php?appointmentType=22301448",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/79jX9RuSyqhpMttx5",
+    instagram: "savu.sauna",
+    sessionPrice: 70,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true,
+    showers: true,
+    towelsIncluded: false,
+    capacity: 6,
+    genderPolicy: "Private booking",
+    notes:
+      "Private outdoor sauna in the Green Mountains with panoramic views of Mt. Mansfield and Smugglers' Notch. Cold plunge, shower, changing room, and outdoor lounging deck. Guests must bring own robes, towels, and sandals. AWD and snow tires recommended in winter.",
+    lat: 44.601704576153274,
+    lng: -72.78101740399597,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/savu-smugglers-notch/hero.jpg",
+        alt: "SAVU Smugglers Notch sauna with mountain views",
+      },
+      {
+        url: "/saunas/savu-smugglers-notch/sauna.jpg",
+        alt: "SAVU Smugglers Notch outdoor sauna",
+      },
+      {
+        url: "/saunas/savu-smugglers-notch/views.jpg",
+        alt: "SAVU Smugglers Notch Green Mountain panoramic views",
+      },
+    ],
+    bookingProvider: {
+      type: "acuity",
+      owner: "4e21e764",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 22301448,
+          acuityCalendarId: 5055250,
+          name: "Private Sauna Session",
+          price: 70,
+          durationMinutes: 60,
+          private: true,
+          seats: 2,
+        },
+      ],
+    },
+  },
+  {
+    slug: "savu-madbush-falls",
+    name: "SAVU Madbush Falls",
+    address: "7575 Main St, Waitsfield, VT 05673",
+    website: "https://www.savu.cc/",
+    bookingUrl:
+      "https://savu.as.me/schedule.php?appointmentType=57051254",
+    bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/R6WNmkYs567E9W5X7",
+    instagram: "savu.sauna",
+    sessionPrice: 25,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    isOutside: true,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 6,
+    genderPolicy: "Co-ed",
+    notes:
+      "Two outdoor saunas overlooking Madbush Falls waterfall. Private sessions $70/hr for 2 guests. Community hour Mon & Thu 5:30-6:30pm, $25/person. Natural waterfall swimming hole nearby (not managed by SAVU). On-site restaurant, bar, and hotel at Madbush Falls.",
+    lat: 44.15244259072507,
+    lng: -72.83543074818768,
+    updatedAt: "2026-03-04",
+    images: [
+      {
+        url: "/saunas/savu-madbush-falls/hero.jpg",
+        alt: "SAVU Madbush Falls sauna overlooking waterfall",
+      },
+      {
+        url: "/saunas/savu-madbush-falls/sauna.jpg",
+        alt: "SAVU Madbush Falls outdoor sauna",
+      },
+      {
+        url: "/saunas/savu-madbush-falls/waterfall.jpg",
+        alt: "Madbush Falls waterfall and natural swimming hole",
+      },
+    ],
+    bookingProvider: {
+      type: "acuity",
+      owner: "4e21e764",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 57051254,
+          acuityCalendarId: 9497047,
+          name: "Private Sauna Session",
+          price: 70,
+          durationMinutes: 60,
+          private: true,
+          seats: 2,
+        },
+        {
+          acuityAppointmentId: 57118180,
+          acuityCalendarId: 9497047,
+          name: "Community Hour",
+          price: 25,
+          durationMinutes: 60,
         },
       ],
     },
