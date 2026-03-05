@@ -1156,6 +1156,8 @@ export interface Sauna {
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
   noaaTideStation?: string;
+  /** DFO (Canadian) tide station ID for fetching tide predictions */
+  dfoTideStation?: string;
   /** Water temperature data provider for live plunge temperature display */
   waterTempProvider?: WaterTempProviderConfig;
   /** Display unit for water temperature (defaults to "F") */
@@ -4644,6 +4646,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanside at Jericho Beach
     naturalPlunge: true, // Ocean access
+    tidal: true,
+    dfoTideStation: "5cebf1e43d0f4a073c4bc404", // Kitsilano
     waterTempProvider: {
       type: "cioos-erddap",
       stationId: "46304", // Entrance to English Bay
@@ -4824,6 +4828,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true,
     naturalPlunge: true, // Ocean access ~20m from sauna
+    tidal: true,
+    dfoTideStation: "5cebf1e43d0f4a073c4bc45a", // Ambleside
     isOutside: true,
     showers: true, // Outdoor cold shower at adjacent park washrooms
     towelsIncluded: false, // Bring two towels

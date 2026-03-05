@@ -217,8 +217,11 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
     onLastAvailableDate?.(visible.length > 0 ? visible[visible.length - 1] : null);
   }, [data, loading, availabilityDate, expanded, minGuests, onHasAvailability, onFirstAvailableDate, onLastAvailableDate]);
 
+  const tideStation = sauna.noaaTideStation || sauna.dfoTideStation;
+  const tideProvider = sauna.dfoTideStation && !sauna.noaaTideStation ? "dfo" : "noaa";
+
   useEffect(() => {
-    if (!data || !sauna.tidal || !sauna.noaaTideStation) return;
+    if (!data || !sauna.tidal || !tideStation) return;
 
     const byDate = groupByDate(data.appointmentTypes);
     const dates = Object.keys(byDate);
@@ -227,7 +230,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
     Promise.all(
       dates.map((dateStr) =>
         fetch(
-          `/api/saunas/tides?station=${encodeURIComponent(sauna.noaaTideStation!)}&date=${dateStr}`
+          `/api/saunas/tides?station=${encodeURIComponent(tideStation)}&date=${dateStr}&provider=${tideProvider}`
         )
           .then((res) => (res.ok ? res.json() : null))
           .then((json: TidesResponse | null) => ({
@@ -243,7 +246,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
       }
       setTideDataByDate(map);
     });
-  }, [data, sauna.tidal, sauna.noaaTideStation]);
+  }, [data, sauna.tidal, tideStation, tideProvider]);
 
   if (!sauna.bookingProvider) return null;
 

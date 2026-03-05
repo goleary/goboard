@@ -89,12 +89,14 @@ function TideChart({
   highlightTime,
   highlightColor,
   multiDay,
+  unit,
 }: {
   hourly: TideDataPoint[];
   predictions: TidePrediction[];
   highlightTime?: string | null;
   highlightColor?: string | null;
   multiDay: boolean;
+  unit: "ft" | "m";
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -153,9 +155,10 @@ function TideChart({
           <YAxis
             tickLine={false}
             axisLine={false}
-            tickFormatter={(v) => `${v}ft`}
+            tickFormatter={(v) => `${v}${unit}`}
             fontSize={10}
-            width={40}
+            width={46}
+            domain={["auto", "auto"]}
           />
           <Tooltip
             labelFormatter={(_, payload) => {
@@ -168,7 +171,7 @@ function TideChart({
               }
               return formatTideTime(t);
             }}
-            formatter={(value: number) => [`${value.toFixed(1)} ft`, "Height"]}
+            formatter={(value: number) => [`${value.toFixed(1)} ${unit}`, "Height"]}
           />
           <Area
             type="natural"
@@ -187,7 +190,7 @@ function TideChart({
               stroke="white"
               strokeWidth={1}
               label={{
-                value: `${p.type === "H" ? "H" : "L"} ${parseFloat(p.rawHeight).toFixed(1)}ft`,
+                value: `${p.type === "H" ? "H" : "L"} ${parseFloat(p.rawHeight).toFixed(1)}${unit}`,
                 position: p.type === "H" ? "top" : "bottom",
                 fontSize: 9,
                 fill: "hsl(var(--muted-foreground))",
@@ -219,6 +222,7 @@ function TideChart({
 export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, open: controlledOpen, onOpenChange, highlightTime, highlightColor, scrollNonce }: SaunaTidesProps) {
   const [predictions, setPredictions] = useState<TidePrediction[] | null>(null);
   const [hourly, setHourly] = useState<TideDataPoint[] | null>(null);
+  const [unit, setUnit] = useState<"ft" | "m">("ft");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [internalOpen, setInternalOpen] = useState(false);
@@ -262,8 +266,11 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
   const fetchStartDate = date || (waitForDate ? null : today);
   const fetchEndDate = endDateProp || fetchStartDate;
 
+  const tideStation = sauna.noaaTideStation || sauna.dfoTideStation;
+  const tideProvider = sauna.dfoTideStation && !sauna.noaaTideStation ? "dfo" : "noaa";
+
   useEffect(() => {
-    if (!sauna.noaaTideStation || !fetchStartDate) return;
+    if (!tideStation || !fetchStartDate) return;
 
     setPredictions(null);
     setHourly(null);
@@ -271,8 +278,9 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
     setError(null);
 
     const params = new URLSearchParams({
-      station: sauna.noaaTideStation,
+      station: tideStation,
       date: fetchStartDate,
+      provider: tideProvider,
     });
     if (fetchEndDate && fetchEndDate !== fetchStartDate) {
       params.set("endDate", fetchEndDate);
@@ -286,15 +294,16 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
       .then((json: TidesResponse) => {
         setPredictions(json.predictions);
         setHourly(json.hourly);
+        setUnit(json.unit);
         setLoading(false);
       })
       .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [sauna.noaaTideStation, fetchStartDate, fetchEndDate]);
+  }, [tideStation, tideProvider, fetchStartDate, fetchEndDate]);
 
-  if (!sauna.tidal || !sauna.noaaTideStation) return null;
+  if (!sauna.tidal || !tideStation) return null;
   if (!fetchStartDate) return null;
 
   const multiDay = fetchEndDate !== fetchStartDate;
@@ -315,7 +324,10 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
     return null;
   }
 
-  const noaaUrl = `https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=${sauna.noaaTideStation}`;
+  const forecastUrl = tideProvider === "dfo"
+    ? `https://www.tides.gc.ca/en/stations/${tideStation}`
+    : `https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=${tideStation}`;
+  const forecastLabel = tideProvider === "dfo" ? "Tides.gc.ca" : "NOAA";
 
   return (
     <div ref={sectionRef}>
@@ -330,15 +342,15 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
       {open && (
         <div className="mt-2 space-y-2">
           {hourly && hourly.length > 0 && (
-            <TideChart hourly={hourly} predictions={predictions} highlightTime={highlightTime} highlightColor={highlightColor} multiDay={multiDay} />
+            <TideChart hourly={hourly} predictions={predictions} highlightTime={highlightTime} highlightColor={highlightColor} multiDay={multiDay} unit={unit} />
           )}
           <a
-            href={noaaUrl}
+            href={forecastUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs text-muted-foreground hover:text-foreground inline-block"
           >
-            View full forecast on NOAA
+            View full forecast on {forecastLabel}
           </a>
         </div>
       )}
