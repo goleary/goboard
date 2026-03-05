@@ -8199,6 +8199,7 @@ export const saunas: Sauna[] = [
     bookingUrl:
       "https://savu.as.me/schedule.php?appointmentType=57051254",
     bookingPlatform: "acuity",
+    googleMapsUrl: "https://maps.app.goo.gl/R6WNmkYs567E9W5X7",
     instagram: "savu.sauna",
     sessionPrice: 25,
     sessionLengthMinutes: 60,
@@ -8214,8 +8215,8 @@ export const saunas: Sauna[] = [
     genderPolicy: "Co-ed",
     notes:
       "Two outdoor saunas overlooking Madbush Falls waterfall. Private sessions $70/hr for 2 guests. Community hour Mon & Thu 5:30-6:30pm, $25/person. Natural waterfall swimming hole nearby (not managed by SAVU). On-site restaurant, bar, and hotel at Madbush Falls.",
-    lat: 44.152532,
-    lng: -72.8353721,
+    lat: 44.15244259072507,
+    lng: -72.83543074818768,
     updatedAt: "2026-03-04",
     images: [
       {
