@@ -5032,11 +5032,25 @@ export const saunas: Sauna[] = [
     website: "https://www.revivalounge.ca/",
     bookingUrl: "https://www.revivalounge.ca/buy",
     bookingPlatform: "mariana-tek",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "revivalounge",
+      locationId: "48717",
+      timezone: "America/Vancouver",
+      classTypes: [
+        {
+          classTypeId: "5955",
+          name: "75 Minute Standard",
+          price: 20,
+          durationMinutes: 75,
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/Yk7BdwXpcYgCdQ336",
     instagram: "revivalounge",
     sessionPrice: 20,
     currency: "CAD",
-    sessionLengthMinutes: 60,
+    sessionLengthMinutes: 75,
     steamRoom: false,
     coldPlunge: true, // 4 tubs ranging 2-12°C
     soakingTub: false,
@@ -5051,8 +5065,8 @@ export const saunas: Sauna[] = [
     clothingPolicy: "Swimsuit required",
     notes:
       "New cold plunge and sauna facility in Richmond, near YVR airport. Features a spacious 15-person cedar sauna and 4 temperature-controlled cold plunge tubs (2-12°C) with ambient and ultra-cold options. Drop-in $20 (promotional). Monthly unlimited membership available ($130 promotional). Also offers co-working space. Free parking. Founded by two brothers.",
-    lat: 49.1666,
-    lng: -123.1336,
+    lat: 49.17863,
+    lng: -123.100885,
     updatedAt: "2026-03-05",
     images: [
       {
