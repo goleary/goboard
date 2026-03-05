@@ -7263,7 +7263,6 @@ export const saunas: Sauna[] = [
     address: "122 Fifth Avenue, New York, NY 10011",
     website: "https://www.the-altar.com/",
     googleMapsUrl: "https://maps.app.goo.gl/De9oakLvuvgQMetR8",
-    bookingUrl: "https://www.the-altar.com/menu",
     sessionPrice: 65,
     steamRoom: false,
     coldPlunge: true,
