@@ -100,7 +100,11 @@ Mobile sauna rentals have special rules:
 - Set `seats` to the sauna capacity
 - Include delivery radius, add-on options, and additional night pricing in `notes`
 
-## 8. Quality Checklist
+## 8. Commit and Push
+
+After making any changes to sauna data, always commit and push immediately (unless on `main`). This keeps PRs up to date and avoids losing work.
+
+## 9. Quality Checklist
 
 Before submitting a new listing:
 
