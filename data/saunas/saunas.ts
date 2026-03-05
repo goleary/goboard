@@ -5329,6 +5329,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanfront at Sea Edge Beachside Hotel
     naturalPlunge: true, // Ocean access
+    tidal: true,
+    dfoTideStation: "5dd30650e0fdc4b9b4be6e1a", // French Creek
     waterTempProvider: {
       type: "cioos-erddap",
       stationId: "46131", // Sentry Shoal
@@ -5823,6 +5825,8 @@ export const saunas: Sauna[] = [
     soakingTub: false,
     waterfront: true, // Oceanside on the beach
     naturalPlunge: true, // Salish Sea cold plunge
+    tidal: true,
+    dfoTideStation: "5cebf1de3d0f4a073c4bb960", // Powell River
     waterTempProvider: {
       type: "cioos-erddap",
       stationId: "46131", // Sentry Shoal

@@ -217,7 +217,7 @@ export function SaunaDetailPanel({ sauna, availabilityDate, onAvailabilityDateCh
           <SaunaAvailability sauna={sauna} availabilityDate={availabilityDate} onAvailabilityDateChange={onAvailabilityDateChange} guests={guests} onGuestsChange={onGuestsChange} onHasAvailability={handleHasAvailability} onFirstAvailableDate={handleFirstAvailableDate} onLastAvailableDate={handleLastAvailableDate} onTideTimeClick={handleTideTimeClick} />
 
           {/* Tides */}
-          <SaunaTides sauna={sauna} date={firstAvailableDate} endDate={lastAvailableDate} waitForDate={!!sauna.bookingProvider} open={tideOpen} onOpenChange={setTideOpen} highlightTime={tideHighlightTime} highlightColor={tideHighlightColor} scrollNonce={tideScrollNonce} />
+          <SaunaTides sauna={sauna} date={firstAvailableDate} endDate={lastAvailableDate} open={tideOpen} onOpenChange={setTideOpen} highlightTime={tideHighlightTime} highlightColor={tideHighlightColor} scrollNonce={tideScrollNonce} />
 
           {/* Temperature */}
           {sauna.temperatureRangeF && (

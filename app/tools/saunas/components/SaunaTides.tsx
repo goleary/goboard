@@ -17,8 +17,6 @@ interface SaunaTidesProps {
   date?: string | null;
   /** YYYY-MM-DD end date. Defaults to date. */
   endDate?: string | null;
-  /** When true, wait for date to be provided before fetching. */
-  waitForDate?: boolean;
   /** Controlled open state for the collapsible section. */
   open?: boolean;
   /** Callback when open state changes. */
@@ -219,7 +217,7 @@ function TideChart({
   );
 }
 
-export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, open: controlledOpen, onOpenChange, highlightTime, highlightColor, scrollNonce }: SaunaTidesProps) {
+export function SaunaTides({ sauna, date, endDate: endDateProp, open: controlledOpen, onOpenChange, highlightTime, highlightColor, scrollNonce }: SaunaTidesProps) {
   const [predictions, setPredictions] = useState<TidePrediction[] | null>(null);
   const [hourly, setHourly] = useState<TideDataPoint[] | null>(null);
   const [unit, setUnit] = useState<"ft" | "m">("ft");
@@ -263,7 +261,7 @@ export function SaunaTides({ sauna, date, endDate: endDateProp, waitForDate, ope
   }, [highlightTime, open, scrollNonce]);
 
   const today = localDateStr(new Date());
-  const fetchStartDate = date || (waitForDate ? null : today);
+  const fetchStartDate = date || today;
   const fetchEndDate = endDateProp || fetchStartDate;
 
   const tideStation = sauna.noaaTideStation || sauna.dfoTideStation;
