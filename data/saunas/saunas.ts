@@ -9783,7 +9783,7 @@ export const saunas: Sauna[] = [
       ],
     },
     instagram: "sauna_valdez_ak",
-    googleMapsUrl: "https://maps.app.goo.gl/MtZN3yFQeQUmKrmj6",
+    googleMapsUrl: "https://maps.app.goo.gl/C8WAAfZJDXsokfXS8",
     sessionPrice: 400,
     sessionLengthMinutes: null,
     steamRoom: false,
