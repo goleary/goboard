@@ -39,7 +39,8 @@ export type LocationSlug =
   | "rhode-island"
   | "toronto"
   | "burlington"
-  | "vermont";
+  | "vermont"
+  | "kananaskis";
 
 /**
  * Location metadata for display and routing
@@ -398,6 +399,15 @@ export const locations: Location[] = [
       "Vermont's sauna culture features private outdoor pop-up saunas in stunning natural settings, from Lake Champlain's waterfront to Green Mountain views and waterfall plunges in the Mad River Valley.",
     center: { lat: 44.4, lng: -72.9 },
     zoom: 8,
+  },
+  {
+    slug: "kananaskis",
+    name: "Kananaskis",
+    state: "AB",
+    description:
+      "Discover Kananaskis Nordic Spa, a 50,000 sq ft alpine wellness sanctuary nestled in the Canadian Rockies featuring Finnish saunas, banya, steam rooms, hot and cold hydrotherapy pools, and mountain views.",
+    center: { lat: 50.9176, lng: -115.1459 },
+    zoom: 11,
   },
 ];
 
@@ -9116,6 +9126,41 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  {
+    slug: "kananaskis-nordic-spa",
+    name: "Kananaskis Nordic Spa",
+    address: "1 Centennial Dr, Kananaskis Village, AB T0L 2H0",
+    website: "https://knordicspa.com/",
+    bookingUrl: "https://klickbook.com/pomeroy/olb",
+    instagram: "knordicspa",
+    googleMapsUrl: "https://maps.app.goo.gl/UDWeLXEGoojt6TWC8",
+    sessionPrice: 145,
+    currency: "CAD",
+    sessionLengthMinutes: 720, // Full-day access 9AM-9PM
+    steamRoom: true, // Steam cabin with essential oils
+    coldPlunge: true, // Cold plunge pool and cold cascades
+    soakingTub: true, // Multiple hot pools (Gathering Pool, Reflections Pool, Elements Pool)
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true, // Two Trees Bistro on-site
+    isOutside: true,
+    hours: "Hydrotherapy 9AM-9PM daily",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "50,000 sq ft alpine spa at Pomeroy Kananaskis Mountain Lodge in the Canadian Rockies. Features Finnish sauna, cabin sauna, forest view sauna, Banya sauna, steam cabin, cold plunge, cold cascades, exfoliation cabin, and multiple hot pools. Twilight Soak access (5PM-9PM) from $129 CAD. Reservations required. ~1 hour drive from Calgary.",
+    lat: 50.9178653,
+    lng: -115.1462971,
+    updatedAt: "2026-03-06",
+    images: [
+      {
+        url: "/saunas/kananaskis-nordic-spa/hot-pools.jpg",
+        alt: "Outdoor hot pools surrounded by Rocky Mountain scenery at Kananaskis Nordic Spa",
+      },
+    ],
   },
 ];
 
