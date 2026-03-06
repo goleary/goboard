@@ -553,6 +553,7 @@ interface FareHarborItemResponse {
   is_archived: boolean;
   is_private: boolean;
   is_retail: boolean;
+  maximum_initial_party_size: number | null;
 }
 
 interface FareHarborAvailabilityResponse {
@@ -634,6 +635,7 @@ async function fetchFareHarborAvailability(
     durationMinutes: number;
     private?: boolean;
     seats?: number;
+    maxPartySize?: number;
   }>;
 
   if (provider.items && provider.items.length > 0) {
@@ -651,6 +653,7 @@ async function fetchFareHarborAvailability(
           configured.durationMinutes ?? parsed.durationMinutes ?? 60,
         private: configured.private,
         seats: configured.seats,
+        maxPartySize: apiItem?.maximum_initial_party_size ?? undefined,
       };
     });
   } else {
@@ -672,6 +675,7 @@ async function fetchFareHarborAvailability(
           name: item.name,
           price: parsed.price ?? undefined,
           durationMinutes: parsed.durationMinutes ?? 60,
+          maxPartySize: item.maximum_initial_party_size ?? undefined,
         };
       });
   }
@@ -727,7 +731,7 @@ async function fetchFareHarborAvailability(
           slotsAvailable:
             a.approximate_available_capacity > 0
               ? a.approximate_available_capacity
-              : null,
+              : item.maxPartySize ?? null,
         }));
       }
 
