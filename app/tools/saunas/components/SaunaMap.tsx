@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -8,6 +8,7 @@ import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 import type { LatLngBounds, PointTuple } from "leaflet";
 import { type Sauna } from "@/data/saunas/saunas";
+import { trackEvent } from "@/lib/analytics";
 import { SaunaMarker } from "./SaunaMarker";
 import { createClusterIcon } from "./createClusterIcon";
 
@@ -27,6 +28,7 @@ function BoundsTracker({
   onZoomChange?: (zoom: number) => void;
 }) {
   const map = useMap();
+  const viewportTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!onBoundsChange && !onZoomChange) return;
@@ -48,6 +50,19 @@ function BoundsTracker({
         onBoundsChange?.(bounds);
       }
       onZoomChange?.(map.getZoom());
+
+      // Debounced viewport tracking — fires 2s after the user stops panning/zooming
+      if (viewportTimerRef.current) clearTimeout(viewportTimerRef.current);
+      viewportTimerRef.current = setTimeout(() => {
+        if (bounds.isValid()) {
+          const center = bounds.getCenter();
+          trackEvent("map-viewport", {
+            zoom: String(map.getZoom()),
+            lat: center.lat.toFixed(2),
+            lng: center.lng.toFixed(2),
+          });
+        }
+      }, 2000);
     };
 
     // Listen for move/zoom events
@@ -63,6 +78,7 @@ function BoundsTracker({
     return () => {
       map.off("moveend", reportBounds);
       map.off("zoomend", reportBounds);
+      if (viewportTimerRef.current) clearTimeout(viewportTimerRef.current);
     };
   }, [map, onBoundsChange, onZoomChange]);
 

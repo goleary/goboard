@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import { CalendarIcon, Loader2, Minus, Plus, User, Users } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -103,6 +104,10 @@ export function SaunaFilters({
 
   const updateFilter = useCallback(
     <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+      trackEvent("filter-toggle", {
+        filter: key.replace("Only", ""),
+        enabled: String(value),
+      });
       onFiltersChange({ ...filters, [key]: value });
     },
     [filters, onFiltersChange]
@@ -118,6 +123,10 @@ export function SaunaFilters({
 
   const handleAvailabilityToggle = useCallback(
     (checked: boolean) => {
+      trackEvent("availability-toggle", {
+        enabled: String(checked),
+        date: checked ? defaultDate : "",
+      });
       onFiltersChange({
         ...filters,
         availabilityDate: checked ? defaultDate : null,
@@ -130,9 +139,11 @@ export function SaunaFilters({
   const handleDateSelect = useCallback(
     (date: Date | undefined) => {
       if (date) {
+        const dateStr = localDateStr(date);
+        trackEvent("availability-date-change", { date: dateStr });
         onFiltersChange({
           ...filters,
-          availabilityDate: localDateStr(date),
+          availabilityDate: dateStr,
         });
         setCalendarOpen(false);
       }
