@@ -676,8 +676,8 @@ export interface TrybeBookingProviderConfig {
   timezone: string;
   /** Display name for the session type */
   name: string;
-  /** Session duration in minutes */
-  durationMinutes: number;
+  /** Session duration in minutes (null for unlimited/day pass) */
+  durationMinutes: number | null;
 }
 
 /**
@@ -7546,7 +7546,7 @@ export const saunas: Sauna[] = [
       sessionTypeId: "65ef5c7dcac46924d705e25a",
       timezone: "America/New_York",
       name: "Day Pass",
-      durationMinutes: 30,
+      durationMinutes: null,
     },
     images: [
       {

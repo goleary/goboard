@@ -38,7 +38,7 @@ export interface AppointmentTypeAvailability {
   appointmentTypeId: string;
   name: string;
   price?: number;
-  durationMinutes: number;
+  durationMinutes: number | null;
   private?: boolean;
   seats?: number;
   dates: Record<string, AvailabilitySlot[]>;
