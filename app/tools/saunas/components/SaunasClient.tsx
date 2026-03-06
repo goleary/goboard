@@ -8,6 +8,7 @@ import { Sheet, type SheetRef } from "react-modal-sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, Mail } from "lucide-react";
 import { type Sauna } from "@/data/saunas/saunas";
+import { trackEvent } from "@/lib/analytics";
 import {
   SaunaFilters,
   FilterState,
@@ -98,9 +99,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   }, [searchParams, basePath, router]);
 
   const handleGuestsChange = useCallback((guests: number) => {
-    if (typeof window !== "undefined" && (window as any).umami) {
-      (window as any).umami.track("availability-guests-change", { guests: String(guests) });
-    }
+    trackEvent("availability-guests-change", { guests: String(guests) });
     setFilters((prev) => {
       const newFilters = { ...prev, guests };
       const params = new URLSearchParams(searchParams.toString());
@@ -254,10 +253,7 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
 
   // Handler for marker clicks on the map (no pan/zoom)
   const handleMarkerClick = (sauna: Sauna) => {
-    // Track map marker click (Leaflet markers aren't DOM elements, so we use umami.track())
-    if (typeof window !== "undefined" && (window as any).umami) {
-      (window as any).umami.track("map-marker-click", { sauna: sauna.slug });
-    }
+    trackEvent("map-marker-click", { sauna: sauna.slug });
     setPanToSelection(false);
     const params = new URLSearchParams(searchParams.toString());
     params.set("sauna", sauna.slug);

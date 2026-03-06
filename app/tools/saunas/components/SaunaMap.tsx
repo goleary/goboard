@@ -8,6 +8,7 @@ import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 import type { LatLngBounds, PointTuple } from "leaflet";
 import { type Sauna } from "@/data/saunas/saunas";
+import { trackEvent } from "@/lib/analytics";
 import { SaunaMarker } from "./SaunaMarker";
 import { createClusterIcon } from "./createClusterIcon";
 
@@ -53,9 +54,9 @@ function BoundsTracker({
       // Debounced viewport tracking — fires 2s after the user stops panning/zooming
       if (viewportTimerRef.current) clearTimeout(viewportTimerRef.current);
       viewportTimerRef.current = setTimeout(() => {
-        if (typeof window !== "undefined" && (window as any).umami && bounds.isValid()) {
+        if (bounds.isValid()) {
           const center = bounds.getCenter();
-          (window as any).umami.track("map-viewport", {
+          trackEvent("map-viewport", {
             zoom: String(map.getZoom()),
             lat: center.lat.toFixed(2),
             lng: center.lng.toFixed(2),
