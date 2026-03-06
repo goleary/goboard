@@ -71,14 +71,16 @@ function formatDateButton(dateStr: string): string {
 }
 
 function filterPastSlots(
-  dates: AppointmentTypeAvailability["dates"]
+  dates: AppointmentTypeAvailability["dates"],
+  allDay?: boolean
 ): AppointmentTypeAvailability["dates"] {
   const now = Date.now();
+  const todayStr = new Date().toLocaleDateString("en-CA");
   const filtered: AppointmentTypeAvailability["dates"] = {};
   for (const [dateStr, slots] of Object.entries(dates)) {
-    const futureSlots = slots.filter(
-      (slot) => new Date(slot.time).getTime() > now
-    );
+    const futureSlots = allDay
+      ? slots.filter((slot) => slot.time.slice(0, 10) >= todayStr)
+      : slots.filter((slot) => new Date(slot.time).getTime() > now);
     if (futureSlots.length > 0) {
       filtered[dateStr] = futureSlots;
     }
@@ -97,7 +99,7 @@ function groupByDate(appointmentTypes: AppointmentTypeAvailability[], minGuests:
     // For private sessions, skip if guest count exceeds seats
     if (apt.private && apt.seats != null && minGuests > apt.seats) continue;
 
-    const filteredDates = filterPastSlots(apt.dates);
+    const filteredDates = filterPastSlots(apt.dates, apt.allDay);
     for (const [dateStr, slots] of Object.entries(filteredDates)) {
       const available = slots.filter((s) => s.slotsAvailable === null || s.slotsAvailable >= minGuests);
       if (available.length === 0) continue;
@@ -289,7 +291,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   const singleTypePriceLabel = isSingleType && data?.appointmentTypes[0]
     ? [
         data.appointmentTypes[0].price != null && `${currencySymbol(sauna)}${data.appointmentTypes[0].price}`,
-        data.appointmentTypes[0].durationMinutes != null && `${data.appointmentTypes[0].durationMinutes}min`,
+        data.appointmentTypes[0].allDay ? "All Day" : data.appointmentTypes[0].durationMinutes != null && `${data.appointmentTypes[0].durationMinutes}min`,
       ].filter(Boolean).join(" / ")
     : null;
 
@@ -432,7 +434,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
                         )}
                       </p>
                       <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
-                        {appointmentType.price != null && `${currencySymbol(sauna)}${appointmentType.price}`}{appointmentType.price != null && appointmentType.durationMinutes != null && " / "}{appointmentType.durationMinutes != null && `${appointmentType.durationMinutes}min`}
+                        {appointmentType.price != null && `${currencySymbol(sauna)}${appointmentType.price}`}{appointmentType.price != null && (appointmentType.allDay || appointmentType.durationMinutes != null) && " / "}{appointmentType.allDay ? "All Day" : appointmentType.durationMinutes != null && `${appointmentType.durationMinutes}min`}
                       </span>
                     </div>
                   )}

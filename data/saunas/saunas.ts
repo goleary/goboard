@@ -1022,6 +1022,7 @@ export interface KlickBookBookingProviderConfig {
     name: string;
     price: number;
     durationMinutes: number;
+    allDay?: boolean;
     /** UUID filter for open/available appointment state */
     appointmentState: string;
     /** UUID filter for class-type appointments */
@@ -4412,6 +4413,7 @@ export const saunas: Sauna[] = [
           name: "Hydrotherapy: Full Day (10am-9pm)",
           price: 125,
           durationMinutes: 660,
+          allDay: true,
           appointmentState: "6750fe94-dbca-4e5e-9929-2712cf6be400",
           appointmentType: "15fcf0f7-5846-46a4-afbe-dd8eea798d6a",
         },
@@ -4419,7 +4421,7 @@ export const saunas: Sauna[] = [
     },
     googleMapsUrl: "https://maps.app.goo.gl/8VLZ8Y7VJvNPRzHR7",
     sessionPrice: 125,
-    sessionLengthMinutes: 660,
+    sessionLengthMinutes: null,
     steamRoom: true, // Aromatherapy-infused steam rooms
     coldPlunge: true, // Cold plunge pools and waterfall
     soakingTub: true, // Warm and hot hydrotherapy pools

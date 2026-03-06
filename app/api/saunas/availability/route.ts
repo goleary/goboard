@@ -42,6 +42,7 @@ export interface AppointmentTypeAvailability {
   name: string;
   price?: number;
   durationMinutes: number | null;
+  allDay?: boolean;
   private?: boolean;
   seats?: number;
   dates: Record<string, AvailabilitySlot[]>;
@@ -3615,6 +3616,7 @@ async function fetchKlickBookAvailability(
         name: service.name,
         price: service.price,
         durationMinutes: service.durationMinutes,
+        ...(service.allDay && { allDay: true }),
         dates,
       };
     })
