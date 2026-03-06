@@ -71,16 +71,22 @@ function formatDateButton(dateStr: string): string {
 }
 
 function filterPastSlots(
-  dates: AppointmentTypeAvailability["dates"]
+  dates: AppointmentTypeAvailability["dates"],
+  allDay?: boolean
 ): AppointmentTypeAvailability["dates"] {
   const now = Date.now();
+  const todayStr = localDateStr(new Date());
   const filtered: AppointmentTypeAvailability["dates"] = {};
   for (const [dateStr, slots] of Object.entries(dates)) {
-    const futureSlots = slots.filter(
-      (slot) => new Date(slot.time).getTime() > now
-    );
-    if (futureSlots.length > 0) {
-      filtered[dateStr] = futureSlots;
+    if (allDay) {
+      if (dateStr >= todayStr) filtered[dateStr] = slots;
+    } else {
+      const futureSlots = slots.filter(
+        (slot) => new Date(slot.time).getTime() > now
+      );
+      if (futureSlots.length > 0) {
+        filtered[dateStr] = futureSlots;
+      }
     }
   }
   return filtered;
@@ -97,7 +103,7 @@ function groupByDate(appointmentTypes: AppointmentTypeAvailability[], minGuests:
     // For private sessions, skip if guest count exceeds seats
     if (apt.private && apt.seats != null && minGuests > apt.seats) continue;
 
-    const filteredDates = filterPastSlots(apt.dates);
+    const filteredDates = filterPastSlots(apt.dates, apt.allDay);
     for (const [dateStr, slots] of Object.entries(filteredDates)) {
       const available = slots.filter((s) => s.slotsAvailable === null || s.slotsAvailable >= minGuests);
       if (available.length === 0) continue;
@@ -289,7 +295,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   const singleTypePriceLabel = isSingleType && data?.appointmentTypes[0]
     ? [
         data.appointmentTypes[0].price != null && `${currencySymbol(sauna)}${data.appointmentTypes[0].price}`,
-        `${data.appointmentTypes[0].durationMinutes}min`,
+        data.appointmentTypes[0].allDay ? "All Day" : data.appointmentTypes[0].durationMinutes != null && `${data.appointmentTypes[0].durationMinutes}min`,
       ].filter(Boolean).join(" / ")
     : null;
 
@@ -396,25 +402,20 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
           <p className="text-xs text-muted-foreground uppercase tracking-wide">
             Availability
           </p>
-          {availabilityDate && singleTypePriceLabel && (
-            <span className="text-xs text-muted-foreground">{singleTypePriceLabel}</span>
-          )}
         </div>
         {datePicker}
       </div>
       <div className="space-y-4">
         {displayDates.map((dateStr) => (
           <div key={dateStr}>
-            {!availabilityDate && (
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium">
-                  {formatDateLabel(dateStr)}
-                </p>
-                {singleTypePriceLabel && (
-                  <span className="text-xs text-muted-foreground shrink-0">{singleTypePriceLabel}</span>
-                )}
-              </div>
-            )}
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium">
+                {formatDateLabel(dateStr)}
+              </p>
+              {singleTypePriceLabel && (
+                <span className="text-xs text-muted-foreground shrink-0">{singleTypePriceLabel}</span>
+              )}
+            </div>
             <div className="space-y-2">
               {byDate[dateStr].map(({ appointmentType, slots }) => (
                 <div key={appointmentType.appointmentTypeId}>
@@ -432,7 +433,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
                         )}
                       </p>
                       <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
-                        {appointmentType.price != null && `${currencySymbol(sauna)}${appointmentType.price} / `}{appointmentType.durationMinutes}min
+                        {appointmentType.price != null && `${currencySymbol(sauna)}${appointmentType.price}`}{appointmentType.price != null && (appointmentType.allDay || appointmentType.durationMinutes != null) && " / "}{appointmentType.allDay ? "All Day" : appointmentType.durationMinutes != null && `${appointmentType.durationMinutes}min`}
                       </span>
                     </div>
                   )}

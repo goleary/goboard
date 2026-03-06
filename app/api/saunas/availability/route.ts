@@ -27,6 +27,9 @@ import {
   type SweatpalsBookingProviderConfig,
   type SpaTimeBookingProviderConfig,
   type RafaBookingProviderConfig,
+  type GroupeNordikBookingProviderConfig,
+  type ResortSuiteBookingProviderConfig,
+  type KlickBookBookingProviderConfig,
 } from "@/data/saunas/saunas";
 
 export interface AvailabilitySlot {
@@ -38,7 +41,8 @@ export interface AppointmentTypeAvailability {
   appointmentTypeId: string;
   name: string;
   price?: number;
-  durationMinutes: number;
+  durationMinutes: number | null;
+  allDay?: boolean;
   private?: boolean;
   seats?: number;
   dates: Record<string, AvailabilitySlot[]>;
@@ -1230,7 +1234,9 @@ async function fetchTrybeAvailability(
     {
       appointmentTypeId: provider.sessionTypeId,
       name: provider.name,
-      price: sessions[0] ? sessions[0].price / 100 : undefined,
+      price: sessions.length > 0
+        ? Math.min(...sessions.map((s) => s.price)) / 100
+        : undefined,
       durationMinutes: provider.durationMinutes,
       dates,
     },
@@ -2948,6 +2954,24 @@ export async function GET(request: NextRequest) {
       case "rafa":
         appointmentTypes = await fetchRafaAvailability(provider, startDate);
         break;
+      case "groupe-nordik":
+        appointmentTypes = await fetchGroupeNordikAvailability(
+          provider,
+          startDate
+        );
+        break;
+      case "resortsuite":
+        appointmentTypes = await fetchResortSuiteAvailability(
+          provider,
+          startDate
+        );
+        break;
+      case "klickbook":
+        appointmentTypes = await fetchKlickBookAvailability(
+          provider,
+          startDate
+        );
+        break;
     }
 
     return Response.json({ appointmentTypes } satisfies AvailabilityResponse);
@@ -3312,4 +3336,289 @@ async function fetchRafaAvailability(
     durationMinutes: session.durationMinutes,
     dates,
   }));
+}
+
+// ---------------------------------------------------------------------------
+// Groupe Nordik (Thermea Whitby — public REST API, no auth required)
+// ---------------------------------------------------------------------------
+
+interface GroupeNordikTimeSlot {
+  id: string;
+  time: number; // HHMM format, e.g. 800 = 8:00 AM
+  totalAvailable: number;
+}
+
+async function fetchGroupeNordikAvailability(
+  provider: GroupeNordikBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+
+  const dates: Record<string, AvailabilitySlot[]> = {};
+
+  // Fetch time slots for each day in the 7-day window
+  const dayPromises: Promise<void>[] = [];
+  for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
+    const dateStr = d.toISOString().split("T")[0];
+    dayPromises.push(
+      fetch(
+        `https://reservation-api.groupenordik.com/api/v1/availabilities/center/${provider.centerId}/availability/access/${dateStr}`,
+        { next: { revalidate: 300 } }
+      )
+        .then((res) => (res.ok ? (res.json() as Promise<GroupeNordikTimeSlot[]>) : []))
+        .then((slots) => {
+          const daySlots: AvailabilitySlot[] = [];
+          for (const slot of slots) {
+            if (slot.totalAvailable <= 0) continue;
+            const h = Math.floor(slot.time / 100);
+            const m = slot.time % 100;
+            daySlots.push({
+              time: `${dateStr}T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
+              slotsAvailable: slot.totalAvailable,
+            });
+          }
+          if (daySlots.length > 0) {
+            dates[dateStr] = daySlots;
+          }
+        })
+    );
+  }
+
+  await Promise.all(dayPromises);
+
+  return [
+    {
+      appointmentTypeId: `nordik-${provider.centerId}`,
+      name: provider.passName,
+      price: provider.price,
+      durationMinutes: 0, // All-day access
+      dates,
+    },
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// ResortSuite (Vetta Nordic Spa, Scandinave Blue Mountain — SOAP API)
+// ---------------------------------------------------------------------------
+
+async function fetchResortSuiteAvailability(
+  provider: ResortSuiteBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const from = new Date(startDate);
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+  const endDate = to.toISOString().split("T")[0];
+
+  const soapUrl = `${provider.baseUrl}/wso2wsas/services/RSWS`;
+
+  // Step 1: Warm up cookie with a GET request
+  const warmup = await fetch(soapUrl, { next: { revalidate: 300 } });
+  const cookies = warmup.headers.get("set-cookie");
+  const jsessionId = cookies?.match(/JSESSIONID=([^;]+)/)?.[1];
+
+  // Step 2: Fetch spa classes via SOAP
+  const soapBody = `<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:s="http://www.resortsuite.com/RSWS/v1/Spa/Types">
+  <soapenv:Body>
+    <s:FetchSpaClassesRequest>
+      <Location>${provider.locationId}</Location>
+      <StartDate>${startDate}</StartDate>
+      <EndDate>${endDate}</EndDate>
+      <WebFolioId></WebFolioId>
+      <Language>en-us</Language>
+    </s:FetchSpaClassesRequest>
+  </soapenv:Body>
+</soapenv:Envelope>`;
+
+  const headers: Record<string, string> = {
+    "Content-Type": "text/xml; charset=utf-8",
+    SOAPAction: "s:FetchSpaClassesRequest",
+  };
+  if (jsessionId) {
+    headers["Cookie"] = `JSESSIONID=${jsessionId}`;
+  }
+
+  const res = await fetch(`${soapUrl}?action=s:FetchSpaClassesRequest`, {
+    method: "POST",
+    headers,
+    body: soapBody,
+    next: { revalidate: 300 },
+  });
+
+  if (!res.ok) {
+    throw new Error(`ResortSuite API returned ${res.status}`);
+  }
+
+  const xml = await res.text();
+
+  // Parse the SOAP XML response for SpaClass entries
+  const itemIdFilter = provider.spaItemIds
+    ? new Set(provider.spaItemIds)
+    : null;
+  const dates: Record<string, AvailabilitySlot[]> = {};
+
+  // Match each SpaClass block
+  const classRegex = /<SpaClass>([\s\S]*?)<\/SpaClass>/g;
+  let classMatch;
+  while ((classMatch = classRegex.exec(xml)) !== null) {
+    const block = classMatch[1];
+
+    // Filter by item ID or name
+    if (itemIdFilter) {
+      const itemId = Number(
+        block.match(/<SpaItemId>(\d+)<\/SpaItemId>/)?.[1]
+      );
+      if (!itemIdFilter.has(itemId)) continue;
+    } else if (provider.nameFilter) {
+      const itemName =
+        block.match(/<SpaItemName>(.*?)<\/SpaItemName>/)?.[1] ?? "";
+      if (!itemName.includes(provider.nameFilter)) continue;
+    }
+
+    const availSlots = Number(
+      block.match(/<AvailSlots>(\d+)<\/AvailSlots>/)?.[1] ?? "0"
+    );
+    if (availSlots <= 0) continue;
+
+    // StartTime format: "2026-03-13090000"
+    const startTimeRaw = block.match(
+      /<StartTime>(\d{4}-\d{2}-\d{2})(\d{2})(\d{2})\d{2}<\/StartTime>/
+    );
+    if (!startTimeRaw) continue;
+
+    const dateStr = startTimeRaw[1];
+    const timeStr = `${dateStr}T${startTimeRaw[2]}:${startTimeRaw[3]}`;
+
+    if (!dates[dateStr]) {
+      dates[dateStr] = [];
+    }
+    dates[dateStr].push({ time: timeStr, slotsAvailable: availSlots });
+  }
+
+  // Sort slots within each date
+  for (const dateKey of Object.keys(dates)) {
+    dates[dateKey].sort((a, b) => a.time.localeCompare(b.time));
+  }
+
+  return [
+    {
+      appointmentTypeId: `rs-${provider.locationId}`,
+      name: provider.passName,
+      price: provider.price,
+      durationMinutes: 0, // All-day access
+      dates,
+    },
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// KlickBook (Milano Software)
+
+async function fetchKlickBookToken(tenantCode: string): Promise<string> {
+  const res = await fetch(`https://klickbook.com/api/olb/${tenantCode}`, {
+    next: { revalidate: 300 },
+  });
+  if (!res.ok) {
+    throw new Error(`KlickBook tenant config failed: ${res.status}`);
+  }
+  const data = await res.json();
+  if (!data.token) {
+    throw new Error("KlickBook tenant config did not return a token");
+  }
+  return data.token;
+}
+
+interface KlickBookClassInfo {
+  classinformation: {
+    servicename: string;
+    startDate: string;
+    endDate: string;
+    price: number;
+    restrictions: {
+      maxbooking: number;
+    };
+  };
+  attendees: unknown[];
+}
+
+async function fetchKlickBookAvailability(
+  provider: KlickBookBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const token = await fetchKlickBookToken(provider.tenantCode);
+
+  const from = new Date(startDate);
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: token,
+    headoffice: "false",
+    classic: "false",
+    pathname: `/${provider.tenantCode}/olb`,
+  };
+
+  return Promise.all(
+    provider.services.map(async (service) => {
+      const dates: Record<string, AvailabilitySlot[]> = {};
+      const fetches: Promise<void>[] = [];
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(from);
+        d.setDate(d.getDate() + i);
+        const dateStr = d.toISOString().slice(0, 10);
+
+        fetches.push(
+          fetch("https://klickbook.com/api/olb/appointment/class", {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              token: provider.tenantKey,
+              tenant: provider.tenantKey,
+              servicekey: service.serviceKey,
+              appointmentstate: service.appointmentState,
+              appointmenttype: service.appointmentType,
+              startDate: dateStr,
+              endDate: dateStr,
+            }),
+            next: { revalidate: 300 },
+          }).then(async (res) => {
+            if (!res.ok) return;
+            const data: KlickBookClassInfo[] = await res.json();
+            if (!data.length) return;
+
+            const daySlots: AvailabilitySlot[] = [];
+            for (const item of data) {
+              const info = item.classinformation;
+              const remaining =
+                info.restrictions.maxbooking - item.attendees.length;
+              daySlots.push({
+                time: info.startDate.replace(" ", "T"),
+                // When attendees exceed maxbooking the count is unreliable
+                // (likely includes cancelled entries) — treat as unknown
+                slotsAvailable: remaining < 0 ? null : remaining,
+              });
+            }
+
+            if (daySlots.length > 0) {
+              dates[dateStr] = daySlots;
+            }
+          })
+        );
+      }
+
+      await Promise.all(fetches);
+
+      return {
+        appointmentTypeId: service.serviceKey,
+        name: service.name,
+        price: service.price,
+        durationMinutes: service.durationMinutes,
+        ...(service.allDay && { allDay: true }),
+        dates,
+      };
+    })
+  );
 }
