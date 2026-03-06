@@ -2412,6 +2412,8 @@ async function fetchRollerAvailability(
       if (product.type !== "sessionpass") continue;
       const info = productMap.get(product.id);
       const displayName = info?.name ?? product.name;
+      // Some venues mark deprecated/internal products with "do not use" in the
+      // name (e.g. The Springs). Skip these so they don't show up in availability.
       if (displayName.toLowerCase().includes("do not use")) continue;
       if (product.name.toLowerCase().includes("do not use")) continue;
       const key = product.id;
