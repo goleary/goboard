@@ -4328,10 +4328,6 @@ export const saunas: Sauna[] = [
         alt: "Wooden soaking tub nestled among tall evergreens on the forest loop at Alyeska Nordic Spa",
       },
       {
-        url: "/saunas/alyeska-nordic-spa/cold-plunge.jpg",
-        alt: "Guest in the cold plunge pool with snow-covered buildings in the background at Alyeska Nordic Spa",
-      },
-      {
         url: "/saunas/alyeska-nordic-spa/sauna-winter.webp",
         alt: "Guest relaxing inside the cedar sauna with snow-covered trees visible through the window at Alyeska Nordic Spa",
       },
