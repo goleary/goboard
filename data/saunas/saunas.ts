@@ -1134,6 +1134,19 @@ export interface UsgsWaterTempProviderConfig {
 }
 
 /**
+ * NDBC (National Data Buoy Center) water temperature provider configuration.
+ * Uses the NDBC realtime2 text data files for buoy observations.
+ * Many Great Lakes buoys are seasonal (deployed ~May–Nov).
+ */
+export interface NdbcWaterTempProviderConfig {
+  type: "ndbc";
+  /** NDBC station ID (e.g. "45174" for Wilmette Buoy on Lake Michigan) */
+  stationId: string;
+  /** Fallback station IDs to try if the primary station has no data */
+  fallbackStationIds?: string[];
+}
+
+/**
  * Discriminated union of water temperature data providers.
  * Add new provider interfaces here and union them in to support additional data sources.
  */
@@ -1141,7 +1154,8 @@ export type WaterTempProviderConfig =
   | KingCountyBuoyWaterTempProviderConfig
   | NoaaWaterTempProviderConfig
   | CioosErddapWaterTempProviderConfig
-  | UsgsWaterTempProviderConfig;
+  | UsgsWaterTempProviderConfig
+  | NdbcWaterTempProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1204,7 +1218,8 @@ export interface Sauna {
     | "sweatpals"
     | "spatime"
     | "groupe-nordik"
-    | "resortsuite";
+    | "resortsuite"
+    | "wellnessliving"; // Unsupported: API requires HMAC signing with a server-side secret (no public API)
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -1242,6 +1257,8 @@ export interface Sauna {
   dfoTideStation?: string;
   /** Water temperature data provider for live plunge temperature display */
   waterTempProvider?: WaterTempProviderConfig;
+  /** Fallback provider tried when the primary waterTempProvider returns no data (e.g. seasonal buoy offline) */
+  fallbackWaterTempProvider?: WaterTempProviderConfig;
   /** Display unit for water temperature (defaults to "F") */
   waterTempUnit?: "F" | "C";
   /** Whether showers are available */
@@ -4379,6 +4396,28 @@ export const saunas: Sauna[] = [
     lat: 60.9706743,
     lng: -149.0959696,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/alyeska-nordic-spa/forest-loop-winter.jpg",
+        alt: "Snow-covered forest loop with barrel sauna and wooden soaking tub along a boardwalk at Alyeska Nordic Spa",
+      },
+      {
+        url: "/saunas/alyeska-nordic-spa/pools-aerial.jpg",
+        alt: "Guests relaxing in the outdoor hydrotherapy pool with timber pavilion and evergreen trees at Alyeska Nordic Spa",
+      },
+      {
+        url: "/saunas/alyeska-nordic-spa/cold-waterfall.jpg",
+        alt: "Cold plunge waterfall pool with mountain views and evergreen trees at Alyeska Nordic Spa",
+      },
+      {
+        url: "/saunas/alyeska-nordic-spa/wooden-tubs.webp",
+        alt: "Wooden soaking tub nestled among tall evergreens on the forest loop at Alyeska Nordic Spa",
+      },
+      {
+        url: "/saunas/alyeska-nordic-spa/sauna-winter.webp",
+        alt: "Guest relaxing inside the cedar sauna with snow-covered trees visible through the window at Alyeska Nordic Spa",
+      },
+    ],
   },
   {
     slug: "gather-sauna-house",
@@ -4648,6 +4687,46 @@ export const saunas: Sauna[] = [
     lat: 49.2815,
     lng: -123.0825,
     updatedAt: "2026-01-05",
+  },
+  {
+    slug: "orijin-restore",
+    name: "Orijin Restore",
+    address: "#150-3665 Kingsway, Vancouver, BC V5R 5W2, Canada",
+    website: "https://orijinrestore.com/",
+    bookingUrl:
+      "https://www.wellnessliving.com/catalog/orijin_yoga?a_shop_category%5B0%5D=1101903&is_filter=1",
+    instagram: "orijinyoga",
+    sessionPrice: 45,
+    currency: "CAD",
+    sessionLengthMinutes: 90,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true, // Covered patio
+    showers: true,
+    towelsIncluded: true, // Towels, bathrobe, slippers included
+    capacity: 8,
+    temperatureRangeF: { min: 176, max: 194 }, // Up to 90°C
+    hours: "Tue/Thu 6-7:30pm, Sat 10:30am-12pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Sauna and cold plunge on a covered patio with views of Vancouver and North Shore mountains, at the Orijin Yoga studio near Metrotown. Custom-built cedar sauna with Whistler Homecraft stones, cold plunge with dedicated chiller. 90 min ($45) and 45 min ($25) sessions available. Includes towels, bathrobe, slippers, water, and tea. Also offers cold plunge only sessions (30 min, $20).",
+    lat: 49.2327,
+    lng: -123.0242,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/orijin-restore/sauna.jpg",
+        alt: "Orijin Restore cedar sauna with Whistler Homecraft stones and wooden ladle",
+      },
+      {
+        url: "/saunas/orijin-restore/cold-plunge.jpg",
+        alt: "Guest in the Orijin Restore cedar cold plunge barrel on the patio",
+      },
+    ],
   },
   {
     slug: "mist-thermal-sanctuary",
@@ -5064,6 +5143,60 @@ export const saunas: Sauna[] = [
       {
         url: "/saunas/tality-secret/sauna-interior.jpg",
         alt: "Tality Wellness guests socializing inside the cedar sauna",
+      },
+    ],
+  },
+  {
+    slug: "reviva-lounge",
+    name: "Reviva Lounge",
+    address: "4888 Vanguard Rd #106, Richmond, BC V6X 2R4, Canada",
+    website: "https://www.revivalounge.ca/",
+    bookingUrl: "https://www.revivalounge.ca/buy",
+    bookingPlatform: "mariana-tek",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "revivalounge",
+      locationId: "48717",
+      timezone: "America/Vancouver",
+      classTypes: [
+        {
+          classTypeId: "5955",
+          name: "75 Minute Standard",
+          price: 20,
+          durationMinutes: 75,
+        },
+      ],
+    },
+    googleMapsUrl: "https://maps.app.goo.gl/Yk7BdwXpcYgCdQ336",
+    instagram: "revivalounge",
+    sessionPrice: 20,
+    currency: "CAD",
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true, // 4 tubs ranging 2-12°C
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true, // Small + large towel provided
+    capacity: 15,
+    temperatureRangeF: { min: 160, max: 195 }, // 70-90°C
+    hours: "Daily 6am-10pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "New cold plunge and sauna facility in Richmond, near YVR airport. Features a spacious 15-person cedar sauna and 4 temperature-controlled cold plunge tubs (2-12°C) with ambient and ultra-cold options. Drop-in $20 (promotional). Monthly unlimited membership available ($130 promotional). Also offers co-working space. Free parking. Founded by two brothers.",
+    lat: 49.17863,
+    lng: -123.100885,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/reviva-lounge/sauna.jpg",
+        alt: "Reviva Lounge cedar sauna interior with stone heater and ambient lighting",
+      },
+      {
+        url: "/saunas/reviva-lounge/tubs.png",
+        alt: "Reviva Lounge cold plunge tubs with blue ambient lighting",
       },
     ],
   },
@@ -6754,6 +6887,15 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "ndbc",
+      stationId: "45174", // Wilmette Buoy, IL (seasonal ~May-Nov)
+      fallbackStationIds: ["45198"], // Chicago Buoy
+    },
+    fallbackWaterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (year-round)
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Wed-Fri 7am-7:30am, Sun 9am-9:30am (quiet time); other times vary",
@@ -7040,6 +7182,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     isOutside: true,
     isFloating: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8418150", // Portland, ME
+      fallbackStationIds: ["8413320"], // Bar Harbor, ME
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Thu-Sun sunrise to sunset, Oct 2-May 8",
@@ -7389,6 +7536,213 @@ export const saunas: Sauna[] = [
   //   lng: -73.96838781492237,
   //   updatedAt: "2026-02-18",
   // },
+  {
+    slug: "othership-flatiron",
+    name: "Othership Flatiron",
+    heaterType: "electric",
+    address: "23 W 20th St, New York, NY 10011",
+    website: "https://www.othership.us/flatiron",
+    bookingUrl: "https://www.othership.us/schedule",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/fwm8MtWxMMuSzBxW6",
+    instagram: "othership",
+    sessionPrice: 67,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    temperatureRangeF: { min: 167, max: 185 },
+    capacity: 50,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Canadian-born guided sauna experience with breathwork and meditation. 75-min sessions including Free Flow (self-guided) and guided classes (Up, Down, All Around). Performance sauna up to 85°C (185°F) with aromatic snowballs. 8 custom two-person cold plunge tubs at 0-4°C (32-40°F). Non-gendered changing stalls. Barefoot space. Complimentary herbal tea lounge. Memberships from $333/mo for unlimited access. 18+.",
+    lat: 40.7404021,
+    lng: -73.9924415,
+    updatedAt: "2026-03-05",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "othership",
+      locationId: "48784",
+      timezone: "America/New_York",
+      classTypes: [
+        {
+          classTypeId: "5889",
+          name: "Free Flow",
+          price: 67,
+          durationMinutes: 75,
+        },
+        {
+          classTypeId: "6255",
+          name: "Lively Free Flow",
+          price: 67,
+          durationMinutes: 75,
+        },
+      ],
+    },
+    images: [
+      {
+        url: "/saunas/othership-flatiron/hero.avif",
+        alt: "Othership Flatiron lounge interior with comfortable couches",
+      },
+    ],
+  },
+  {
+    slug: "othership-williamsburg",
+    name: "Othership Williamsburg",
+    heaterType: "electric",
+    address: "25 Kent Ave, Brooklyn, NY 11249",
+    website: "https://www.othership.us/williamsburg",
+    bookingUrl: "https://www.othership.us/schedule",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/X9Z3rk1UnTfaCTvh6",
+    instagram: "othership",
+    sessionPrice: 67,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    temperatureRangeF: { min: 167, max: 185 },
+    capacity: 50,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Canadian-born guided sauna experience with breathwork and meditation. 75-min sessions including Free Flow (self-guided) and guided classes (Up, Down, All Around). Performance sauna up to 85°C (185°F) with aromatic snowballs. 8 cold plunge tubs at 0-4°C (32-40°F). Non-gendered changing stalls. Barefoot space. Complimentary herbal tea lounge. Memberships from $333/mo for unlimited access. 18+.",
+    lat: 40.7228975,
+    lng: -73.9577189,
+    updatedAt: "2026-03-05",
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "othership",
+      locationId: "48817",
+      timezone: "America/New_York",
+      classTypes: [
+        {
+          classTypeId: "5889",
+          name: "Free Flow",
+          price: 67,
+          durationMinutes: 75,
+        },
+        {
+          classTypeId: "6255",
+          name: "Lively Free Flow",
+          price: 67,
+          durationMinutes: 75,
+        },
+      ],
+    },
+    images: [
+      {
+        url: "/saunas/othership-williamsburg/hero.avif",
+        alt: "Othership Williamsburg sauna interior with benches and stove",
+      },
+    ],
+  },
+  {
+    slug: "akari-greenpoint",
+    name: "Akari Greenpoint",
+    address: "149 Franklin St, Brooklyn, NY 11222",
+    website: "https://www.akarisauna.com/",
+    bookingUrl:
+      "https://app.glofox.com/portal/#/branch/67cf4fe8ef346c3817003b8f/memberships",
+    instagram: "akarisauna",
+    sessionPrice: 35,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    hours: "Mon-Fri 8am-10pm, Sat-Sun 9am-8pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Japanese-inspired neighborhood sauna in Greenpoint, Brooklyn. Two communal dry saunas and cold plunge. Membership-only ($165/mo daytime, unlimited waitlist) with $35 guest passes available when accompanied by a member. 2-hour sessions. Towels and slippers provided. Inspired by traditional Japanese onsen and sentō bathing culture. Closed on the 10th of every month for maintenance. HSA/FSA accepted with documentation. 18+.",
+    lat: 40.7315348,
+    lng: -73.9580819,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/akari-greenpoint/hero.jpg",
+        alt: "Akari Sauna interior",
+      },
+    ],
+  },
+  {
+    slug: "akari-williamsburg",
+    name: "Akari Williamsburg",
+    address: "202 Grand St, Brooklyn, NY 11211",
+    website: "https://www.akarisauna.com/",
+    bookingUrl:
+      "https://app.glofox.com/portal/#/branch/64c9870292e260894f0247a4/memberships",
+    instagram: "akarisauna",
+    sessionPrice: 35,
+    sessionLengthMinutes: 120,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    hours: "Mon-Fri 8am-10pm, Sat-Sun 9am-8pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Japanese-inspired neighborhood sauna in Williamsburg, Brooklyn. Two communal dry saunas and cold plunge. Membership-only ($165/mo daytime, unlimited waitlist) with $35 guest passes available when accompanied by a member. 2-hour sessions. Towels and slippers provided. Inspired by traditional Japanese onsen and sentō bathing culture. Closed on the 10th of every month for maintenance. HSA/FSA accepted with documentation. 18+.",
+    lat: 40.7139869,
+    lng: -73.9604896,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/akari-williamsburg/hero.jpg",
+        alt: "Akari Sauna Williamsburg interior",
+      },
+    ],
+  },
+  {
+    slug: "world-spa",
+    name: "World Spa",
+    heaterType: "electric",
+    address: "1571 McDonald Ave, Brooklyn, NY 11230",
+    website: "https://worldspa.com/",
+    bookingUrl: "https://shop.worldspa.com/tickets/category/394/",
+    instagram: "worldspanyc",
+    sessionPrice: 99,
+    sessionLengthMinutes: null,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    hours: "Mon-Thu 10am-10pm, Fri-Sat 9am-11pm, Sun 10am-10pm",
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Massive 50,000 sq ft multi-room indoor spa spanning three floors. Features Grand Banya (largest in the US), Petite Banya, Finnish event sauna, clay & hay sauna, aroma sauna, infrared sauna, Moroccan and Turkish hammams, Himalayan salt room, snow room, cold plunge, hydrotherapy pool, vitality pool, and Japanese onsen pools. Mon-Fri admission ($99) includes unlimited access; Sat-Sun ($120) includes 4 hours with $25/hr overage. VIP experience available with unlimited weekend access. Robes and towels provided. 18+.",
+    lat: 40.6153156,
+    lng: -73.973829,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/world-spa/hero.jpg",
+        alt: "World Spa Grand Banya interior",
+      },
+    ],
+  },
   // New Jersey
   {
     slug: "sojo-spa-club",
@@ -7626,6 +7980,15 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "ndbc",
+      stationId: "45198", // Chicago Buoy (seasonal ~May-Nov)
+      fallbackStationIds: ["45174"], // Wilmette Buoy
+    },
+    fallbackWaterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (year-round)
+    },
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 185 },
@@ -7686,6 +8049,15 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "ndbc",
+      stationId: "45174", // Wilmette Buoy, IL (seasonal ~May-Nov)
+      fallbackStationIds: ["45198"], // Chicago Buoy
+    },
+    fallbackWaterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (year-round)
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -7796,6 +8168,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "usgs",
+      siteId: "01473500", // Schuylkill River at Norristown, PA
+      fallbackSiteIds: ["01474500"], // Schuylkill River at Philadelphia, PA
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -8842,6 +9219,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8452944", // Conimicut Light, Narragansett Bay
+      fallbackStationIds: ["8452660", "8454000"], // Newport, Providence
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -8897,6 +9279,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8452660", // Newport, RI
+      fallbackStationIds: ["8447930", "8449130"], // Woods Hole, Nantucket
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",

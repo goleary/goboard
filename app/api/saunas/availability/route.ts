@@ -555,6 +555,7 @@ interface FareHarborItemResponse {
   is_archived: boolean;
   is_private: boolean;
   is_retail: boolean;
+  maximum_initial_party_size: number | null;
 }
 
 interface FareHarborAvailabilityResponse {
@@ -636,6 +637,7 @@ async function fetchFareHarborAvailability(
     durationMinutes: number;
     private?: boolean;
     seats?: number;
+    maxPartySize?: number;
   }>;
 
   if (provider.items && provider.items.length > 0) {
@@ -653,6 +655,7 @@ async function fetchFareHarborAvailability(
           configured.durationMinutes ?? parsed.durationMinutes ?? 60,
         private: configured.private,
         seats: configured.seats,
+        maxPartySize: apiItem?.maximum_initial_party_size ?? undefined,
       };
     });
   } else {
@@ -674,6 +677,7 @@ async function fetchFareHarborAvailability(
           name: item.name,
           price: parsed.price ?? undefined,
           durationMinutes: parsed.durationMinutes ?? 60,
+          maxPartySize: item.maximum_initial_party_size ?? undefined,
         };
       });
   }
@@ -729,7 +733,7 @@ async function fetchFareHarborAvailability(
           slotsAvailable:
             a.approximate_available_capacity > 0
               ? a.approximate_available_capacity
-              : null,
+              : item.maxPartySize ?? null,
         }));
       }
 
@@ -2412,11 +2416,16 @@ async function fetchRollerAvailability(
   for (const dayProducts of dailyAvailability) {
     for (const product of dayProducts) {
       if (product.type !== "sessionpass") continue;
+      const info = productMap.get(product.id);
+      const displayName = info?.name ?? product.name;
+      // Some venues mark deprecated/internal products with "do not use" in the
+      // name (e.g. The Springs). Skip these so they don't show up in availability.
+      if (displayName.toLowerCase().includes("do not use")) continue;
+      if (product.name.toLowerCase().includes("do not use")) continue;
       const key = product.id;
       if (!productSessions.has(key)) {
-        const info = productMap.get(product.id);
         productSessions.set(key, {
-          name: info?.name ?? product.name,
+          name: displayName,
           price: info?.price ?? 0,
           durationMinutes: 60,
           dates: {},
