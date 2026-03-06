@@ -38,6 +38,10 @@ export type LocationSlug =
   | "grand-rapids"
   | "rhode-island"
   | "toronto"
+  | "whitby"
+  | "richmond-hill"
+  | "horseshoe-valley"
+  | "blue-mountain"
   | "burlington"
   | "vermont";
 
@@ -380,6 +384,42 @@ export const locations: Location[] = [
       "Toronto's emerging sauna scene brings contrast therapy and social wellness to Canada's largest city.",
     center: { lat: 43.6532, lng: -79.3832 },
     zoom: 11,
+  },
+  {
+    slug: "whitby",
+    name: "Whitby",
+    state: "ON",
+    description:
+      "Home to Thermea Spa Village, one of North America's largest thermal spa destinations with 25+ installations.",
+    center: { lat: 43.9145, lng: -78.9663 },
+    zoom: 13,
+  },
+  {
+    slug: "richmond-hill",
+    name: "Richmond Hill",
+    state: "ON",
+    description:
+      "Traditional Eastern European banya culture thrives in Richmond Hill, just north of Toronto.",
+    center: { lat: 43.9472, lng: -79.4555 },
+    zoom: 13,
+  },
+  {
+    slug: "horseshoe-valley",
+    name: "Horseshoe Valley",
+    state: "ON",
+    description:
+      "Horseshoe Valley is home to Vetta Nordic Spa, a certified authentic Finnish sauna experience set in the Ontario forest.",
+    center: { lat: 44.5415, lng: -79.6725 },
+    zoom: 13,
+  },
+  {
+    slug: "blue-mountain",
+    name: "Blue Mountain",
+    state: "ON",
+    description:
+      "Blue Mountain's Nordic spa scene offers outdoor thermal circuits surrounded by the Niagara Escarpment UNESCO World Biosphere Reserve.",
+    center: { lat: 44.5014, lng: -80.2885 },
+    zoom: 13,
   },
   {
     slug: "burlington",
@@ -1000,7 +1040,47 @@ export type BookingProviderConfig =
   | SojoBookingProviderConfig
   | SweatpalsBookingProviderConfig
   | SpaTimeBookingProviderConfig
-  | RafaBookingProviderConfig;
+  | RafaBookingProviderConfig
+  | GroupeNordikBookingProviderConfig
+  | ResortSuiteBookingProviderConfig;
+
+/**
+ * Groupe Nordik booking provider configuration.
+ * Uses the public reservation API at reservation-api.groupenordik.com.
+ */
+export interface GroupeNordikBookingProviderConfig {
+  type: "groupe-nordik";
+  /** Numeric center ID (e.g. 4 for Whitby) */
+  centerId: number;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Display name for the spa access pass */
+  passName: string;
+  /** Price in CAD */
+  price: number;
+}
+
+/**
+ * ResortSuite booking provider configuration.
+ * Uses the SOAP API at {baseUrl}/wso2wsas/services/RSWS.
+ */
+export interface ResortSuiteBookingProviderConfig {
+  type: "resortsuite";
+  /** Base URL of the ResortSuite shop (e.g. "https://shop.vettaspa.com") */
+  baseUrl: string;
+  /** ResortSuite location ID (e.g. "100" for Vetta, "999" for Scandinave BM) */
+  locationId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Display name for the pass type */
+  passName: string;
+  /** Price in the sauna's currency */
+  price: number;
+  /** Filter by specific SpaItemId values (use when IDs are stable, e.g. Vetta) */
+  spaItemIds?: number[];
+  /** Filter by substring in SpaItemName (use when IDs vary per slot, e.g. Scandinave) */
+  nameFilter?: string;
+}
 
 // --- Water Temperature Provider Types ---
 
@@ -1137,6 +1217,8 @@ export interface Sauna {
     | "sojo"
     | "sweatpals"
     | "spatime"
+    | "groupe-nordik"
+    | "resortsuite"
     | "wellnessliving"; // Unsupported: API requires HMAC signing with a server-side secret (no public API)
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
@@ -1167,6 +1249,8 @@ export interface Sauna {
   isOutside?: boolean;
   /** Whether this is a mobile sauna that delivers to your location */
   isDelivery?: boolean;
+  /** Whether the facility is walk-in only (no reservation required) */
+  isWalkIn?: boolean;
   /** Whether the sauna is on tidal water (e.g. Puget Sound) */
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
@@ -8738,6 +8822,434 @@ export const saunas: Sauna[] = [
         { dayPassTypeId: 6426824, name: "Contrast Therapy Experience", price: 39, durationMinutes: 90 },
         { dayPassTypeId: 5649296, name: "Haus Party", price: 49, durationMinutes: 120 },
       ],
+    },
+  },
+  {
+    slug: "othership-adelaide",
+    name: "Othership (Adelaide)",
+    address: "425 Adelaide St W, Toronto, ON M5V 3C1",
+    website: "https://www.othership.us/adelaide",
+    bookingUrl: "https://othership.marianaiframes.com/",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/SFeQjGssD45U14DD9",
+    instagram: "othership",
+    sessionPrice: 64,
+    currency: "CAD",
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Immersive social wellness bathhouse combining sauna, ice baths (0-4°C), and guided breathwork. Western Red Cedar performance sauna seats 50-90+ people. Guided classes include breathwork, towel waving, and curated soundscapes. Self-guided Free Flow (75 min, $64 CAD) and Social sessions (120 min). Sun Pass $46 for daytime weekday sessions. Complimentary herbal tea. Phone-free. 18+.",
+    lat: 43.6460984,
+    lng: -79.3977406,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/othership-adelaide/hero.jpg",
+        alt: "Othership Adelaide interior with warm amber-toned tile walls and rain shower stations",
+      },
+    ],
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "othership",
+      locationId: "48717",
+      timezone: "America/Toronto",
+      classTypes: [
+        { classTypeId: "5889", name: "Free Flow", price: 64, durationMinutes: 75 },
+        { classTypeId: "5930", name: "Quieter Free Flow", price: 64, durationMinutes: 75 },
+        { classTypeId: "5891", name: "Social", price: 64, durationMinutes: 120 },
+      ],
+    },
+  },
+  {
+    slug: "othership-yorkville",
+    name: "Othership (Yorkville)",
+    address: "110 Bloor St W, Toronto, ON M5S 2W7",
+    website: "https://www.othership.us/yorkville",
+    bookingUrl: "https://othership.marianaiframes.com/",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/yU6Pca5iXFCKTjsF6",
+    instagram: "othership",
+    sessionPrice: 64,
+    currency: "CAD",
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Othership's Yorkville location with performance sauna and individual ice bath tubs (0-4°C). Guided and self-guided sessions including Free Flow (75 min) and Social (120 min). Complimentary herbal tea and towels. Phone-free. 18+.",
+    lat: 43.6694504,
+    lng: -79.3922208,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/othership-yorkville/hero.jpg",
+        alt: "Othership Yorkville interior with moody ambient lighting, cedar sauna structures, and ice bath plunge pools",
+      },
+    ],
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "othership",
+      locationId: "48750",
+      timezone: "America/Toronto",
+      classTypes: [
+        { classTypeId: "5889", name: "Free Flow", price: 64, durationMinutes: 75 },
+        { classTypeId: "5930", name: "Quieter Free Flow", price: 64, durationMinutes: 75 },
+        { classTypeId: "5891", name: "Social", price: 64, durationMinutes: 120 },
+      ],
+    },
+  },
+  {
+    slug: "alter-college-west",
+    name: "Alter (College West)",
+    address: "860 College Street, Toronto, ON M6H 1A2",
+    website: "https://www.alterwellness.ca/",
+    bookingUrl: "https://alter.marianaiframes.com/",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/vau216eJHYwvMeQ76",
+    instagram: "alter.toronto",
+    heaterType: "electric",
+    sessionPrice: 45,
+    currency: "CAD",
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Finnish-style sauna and ice bath studio. Three-level sauna heated to 80-90°C with essential oils. Two cold plunges at 2°C and 10°C. Self-led drop-in sessions and guided classes (breathwork, stretching). $45 CAD drop-in. Pail shower for traditional cooling. Tea room with hydration.",
+    lat: 43.6543434,
+    lng: -79.4237508,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/alter-college-west/hero.jpg",
+        alt: "Alter Wellness reception area with warm natural wood paneling",
+      },
+    ],
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "alter",
+      locationId: "48717",
+      timezone: "America/Toronto",
+      classTypes: [
+        { classTypeId: "6541", name: "Self-Led", price: 45, durationMinutes: 60 },
+        { classTypeId: "6542", name: "Quieter Self-Led", price: 45, durationMinutes: 60 },
+      ],
+    },
+  },
+  {
+    slug: "alter-leslieville",
+    name: "Alter (Leslieville)",
+    address: "988 Queen Street East, Toronto, ON M4M 1K1",
+    website: "https://www.alterwellness.ca/",
+    bookingUrl: "https://alter.marianaiframes.com/",
+    bookingPlatform: "mariana-tek",
+    googleMapsUrl: "https://maps.app.goo.gl/X1ZFoJsqC95Q7GtP8",
+    instagram: "alter.toronto",
+    heaterType: "electric",
+    sessionPrice: 45,
+    currency: "CAD",
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: false,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Finnish-style sauna and ice bath studio in Leslieville. Three-level sauna heated to 80-90°C with essential oils. Two cold plunges at 2°C and 10°C. Self-led drop-in sessions and guided classes. $45 CAD drop-in. Tea room with hydration.",
+    lat: 43.6612695,
+    lng: -79.3396973,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/alter-leslieville/hero.jpg",
+        alt: "Alter Wellness reception area with warm natural wood paneling",
+      },
+    ],
+    bookingProvider: {
+      type: "mariana-tek",
+      tenant: "alter",
+      locationId: "48751",
+      timezone: "America/Toronto",
+      classTypes: [
+        { classTypeId: "6541", name: "Self-Led", price: 45, durationMinutes: 60 },
+        { classTypeId: "6542", name: "Quieter Self-Led", price: 45, durationMinutes: 60 },
+      ],
+    },
+  },
+  {
+    slug: "sana",
+    name: "SANA",
+    address: "211 Geary Avenue, Toronto, ON M6H 2C1",
+    website: "https://www.sanasana.ca/",
+    bookingUrl: "https://na.spatime.com/sna2468/4870999/schedule",
+    bookingPlatform: "spatime",
+    googleMapsUrl: "https://maps.app.goo.gl/Pj3vUZxjCYmzUxVx9",
+    instagram: "sanasana.ca",
+    sessionPrice: 60,
+    currency: "CAD",
+    sessionLengthMinutes: 180,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Modern banya-inspired bathhouse on Geary Avenue. Cedar dry sauna, infrared sauna, steam room, and two cold plunge pools (3°C and 7-10°C). Robes and towels included. Full restaurant and bar with Eastern European-inspired food and cocktails. Off-peak day pass $40 (Tue-Fri 10am-3pm). Quiet hours 7-11am weekdays. Sandals mandatory ($5 rental). No phones except dining room. 18+.",
+    lat: 43.6694771,
+    lng: -79.4382878,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/sana/hero.jpg",
+        alt: "Artistic green-tinted view through steam evoking the SANA spa atmosphere",
+      },
+    ],
+    bookingProvider: {
+      type: "spatime",
+      region: "na",
+      merchantCode: "sna2468",
+      locationId: "4870999",
+      timezone: "America/New_York",
+      dayPassTypes: [
+        { dayPassTypeId: 6518500, name: "Day Pass", price: 60, durationMinutes: 180 },
+      ],
+    },
+  },
+  {
+    slug: "south-western-bathhouse",
+    name: "South-Western Bathhouse",
+    address: "2200 Dundas St E, Mississauga, ON L4X 2V3",
+    website: "https://banya.ca/",
+    googleMapsUrl: "https://maps.app.goo.gl/KXv7GiN4DCyysTtg7",
+    instagram: "swbathhouse.tearoom",
+    heaterType: "wood",
+    isWalkIn: true,
+    sessionPrice: 65,
+    currency: "CAD",
+    sessionLengthMinutes: null,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Traditional Russian banya with wood-fired brick stove (parilka), Finnish sauna, Turkish hammam, cold plunge, hot tub, and Himalayan salt room. Full restaurant and bar. Walk-in only, no reservations. Unlimited stay. Robes, towels, slippers, and premium teas included. Venik (birch branch) massage available. Co-ed Wed/Fri/Sat/Sun, ladies-only Tue, men-only Thu. Closed Mondays. Seasonal summer closure.",
+    lat: 43.6252114,
+    lng: -79.5655796,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/south-western-bathhouse/hero.webp",
+        alt: "Traditional Russian banya brick oven with cedar wood benches and warm ambient lighting",
+      },
+    ],
+  },
+  // ============================================================================
+  // WHITBY, ON, CANADA
+  // ============================================================================
+  {
+    slug: "thermea-whitby",
+    name: "Thermea Spa Village",
+    address: "4015 Cochrane Street, Whitby, ON L1P 2A9",
+    website: "https://thermea.com/whitby",
+    bookingUrl: "https://reservations.groupenordik.com/whitby/en/guest",
+    bookingPlatform: "groupe-nordik",
+    googleMapsUrl: "https://maps.app.goo.gl/JFkq5UXFYij5FgKLA",
+    instagram: "thermeawhitby",
+    isOutside: true,
+    sessionPrice: 125,
+    currency: "CAD",
+    sessionLengthMinutes: null,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "One of North America's largest thermal spa villages with 25+ installations. 7 saunas including Finnish, aromatic, meditative, intense heat, Himalayan salt, and Aufguss ritual saunas. Steam hammam, cold baths with waterfall, hot jet bath, temperate bath, exfoliation station, campfires, and A-frame rest cottages. Daily Aufguss ceremonies included. All-day access, no time limit. Robe, towels, locker, and contactless payment band included. $125 CAD flat rate. 19+. Free parking. Open daily 8am-10pm.",
+    lat: 43.9145067,
+    lng: -78.966255,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/thermea-whitby/hero.jpg",
+        alt: "Guests relaxing in steaming outdoor thermal baths at Thermea Spa Village Whitby on a winter evening",
+      },
+    ],
+    bookingProvider: {
+      type: "groupe-nordik",
+      centerId: 4,
+      timezone: "America/Toronto",
+      passName: "Spa Village Access",
+      price: 125,
+    },
+  },
+  // ============================================================================
+  // RICHMOND HILL, ON, CANADA
+  // ============================================================================
+  {
+    slug: "banya-no-2",
+    name: "Banya No. 2",
+    address: "13110 Yonge Street, Unit 1, Richmond Hill, ON L4E 1A3",
+    website: "https://banyarichmondhill.ca/",
+    googleMapsUrl: "https://maps.app.goo.gl/DAYjzLy1EvhX6bCh8",
+    instagram: "banyarichmondhill",
+    isWalkIn: true,
+    sessionPrice: 65,
+    currency: "CAD",
+    sessionLengthMinutes: null,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Authentic Slavic banya and Finnish sauna (imported Finnish stove) with Turkish hammam, Himalayan salt room, cold plunge pool, traditional overhead cold bucket, and hot tub. Walk-in only, no reservations. Unlimited stay. Admission includes 3 towels, robe, slippers, locker, and unlimited herbal tea. Full Eastern European restaurant. Venik massage available. Co-ed all days. Closed Mondays. Average visit ~2 hours.",
+    lat: 43.9474124,
+    lng: -79.4557531,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/banya-no-2/hero.jpg",
+        alt: "Interior of Banya No. 2 sauna hall with traditional timber-frame architecture and brick accents",
+      },
+    ],
+  },
+  // ============================================================================
+  // HORSESHOE VALLEY, ON, CANADA
+  // ============================================================================
+  {
+    slug: "vetta-nordic-spa",
+    name: "Vetta Nordic Spa",
+    address: "3210 Line 3 North, Oro-Medonte, ON L0L 2L0",
+    website: "https://vettaspa.com/",
+    bookingUrl: "https://shop.vettaspa.com/#/spaBooking/eventcalendar/Location100",
+    bookingPlatform: "resortsuite",
+    googleMapsUrl: "https://maps.app.goo.gl/hBdBkEFwu3NxjXJLA",
+    instagram: "vettanordicspa",
+    isOutside: true,
+    sessionPrice: 105,
+    currency: "CAD",
+    sessionLengthMinutes: null,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Finnish-inspired Nordic spa in Horseshoe Valley, certified 'Authentic Finnish Sauna Experience' by Sauna from Finland. 4 saunas (2 wood-burning including 80+ person Sisu, 2 electric), 2 scented steam rooms, 2 cold plunge pools, 4 warm relaxation pools, hot stone room, and salt scrub station. $105 CAD weekday / $125 CAD weekend for all-day hydrotherapy access. No time limit. Two towels and robe included. 19+. ~1 hour north of Toronto.",
+    lat: 44.5421563,
+    lng: -79.6718504,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/vetta-nordic-spa/hero.jpg",
+        alt: "Exterior view of Vetta Nordic Spa at dusk showing the modern barn-style building with warm interior lighting",
+      },
+    ],
+    bookingProvider: {
+      type: "resortsuite",
+      baseUrl: "https://shop.vettaspa.com",
+      locationId: "100",
+      timezone: "America/Toronto",
+      passName: "Hydrotherapy Day Pass",
+      price: 105,
+      spaItemIds: [191, 192, 193],
+    },
+  },
+  // ============================================================================
+  // BLUE MOUNTAIN, ON, CANADA
+  // ============================================================================
+  {
+    slug: "scandinave-blue-mountain",
+    name: "Scandinave Spa Blue Mountain",
+    address: "152 Grey County Road 21, Blue Mountains, ON L9Y 0K8",
+    website: "https://www.scandinave.com/blue-mountain/",
+    bookingUrl: "https://store.scandinaveblue.com/#/spaBooking/eventcalendar/Location999",
+    bookingPlatform: "resortsuite",
+    googleMapsUrl: "https://maps.app.goo.gl/fPkrB7kbWe33P3tt8",
+    instagram: "scandinaveblue",
+    isOutside: true,
+    sessionPrice: 105,
+    currency: "CAD",
+    sessionLengthMinutes: null,
+    steamRoom: true,
+    coldPlunge: true,
+    soakingTub: true,
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Award-winning 25-acre outdoor Nordic spa nestled in forest with views of the Niagara Escarpment UNESCO World Biosphere Reserve. Finnish dry saunas, eucalyptus steam room, outdoor hot pools, cold plunges (12.5-15°C), Nordic waterfalls, and fireplaces. Silence and digital detox policy. No time limit. Walk-ins from CA$105 weekday / CA$115 weekend (regular season). Seasonal pricing up to CA$135 on special dates. Two towels and locker included. Min age 16 unaccompanied (14-15 with parent). Open daily 9am-9pm.",
+    lat: 44.5014206,
+    lng: -80.2885419,
+    updatedAt: "2026-03-05",
+    images: [
+      {
+        url: "/saunas/scandinave-blue-mountain/hero.jpg",
+        alt: "Guest walking toward a steaming outdoor thermal pool at Scandinave Spa Blue Mountain in winter",
+      },
+    ],
+    bookingProvider: {
+      type: "resortsuite",
+      baseUrl: "https://store.scandinaveblue.com",
+      locationId: "999",
+      timezone: "America/Toronto",
+      passName: "Thermal Journey",
+      price: 105,
+      nameFilter: "Thermal Journey",
     },
   },
   {
