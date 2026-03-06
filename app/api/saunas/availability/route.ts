@@ -29,6 +29,7 @@ import {
   type RafaBookingProviderConfig,
   type GroupeNordikBookingProviderConfig,
   type ResortSuiteBookingProviderConfig,
+  type KlickBookBookingProviderConfig,
 } from "@/data/saunas/saunas";
 
 export interface AvailabilitySlot {
@@ -2964,6 +2965,12 @@ export async function GET(request: NextRequest) {
           startDate
         );
         break;
+      case "klickbook":
+        appointmentTypes = await fetchKlickBookAvailability(
+          provider,
+          startDate
+        );
+        break;
     }
 
     return Response.json({ appointmentTypes } satisfies AvailabilityResponse);
@@ -3505,4 +3512,111 @@ async function fetchResortSuiteAvailability(
       dates,
     },
   ];
+}
+
+// ---------------------------------------------------------------------------
+// KlickBook (Milano Software)
+
+async function fetchKlickBookToken(tenantCode: string): Promise<string> {
+  const res = await fetch(`https://klickbook.com/api/olb/${tenantCode}`, {
+    next: { revalidate: 300 },
+  });
+  if (!res.ok) {
+    throw new Error(`KlickBook tenant config failed: ${res.status}`);
+  }
+  const data = await res.json();
+  if (!data.token) {
+    throw new Error("KlickBook tenant config did not return a token");
+  }
+  return data.token;
+}
+
+interface KlickBookClassInfo {
+  classinformation: {
+    servicename: string;
+    startDate: string;
+    endDate: string;
+    price: number;
+    restrictions: {
+      maxbooking: number;
+    };
+  };
+  attendees: unknown[];
+}
+
+async function fetchKlickBookAvailability(
+  provider: KlickBookBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const token = await fetchKlickBookToken(provider.tenantCode);
+
+  const from = new Date(startDate);
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: token,
+    headoffice: "false",
+    classic: "false",
+    pathname: `/${provider.tenantCode}/olb`,
+  };
+
+  return Promise.all(
+    provider.services.map(async (service) => {
+      const dates: Record<string, AvailabilitySlot[]> = {};
+      const fetches: Promise<void>[] = [];
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(from);
+        d.setDate(d.getDate() + i);
+        const dateStr = d.toISOString().slice(0, 10);
+
+        fetches.push(
+          fetch("https://klickbook.com/api/olb/appointment/class", {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              token: provider.tenantKey,
+              tenant: provider.tenantKey,
+              servicekey: service.serviceKey,
+              appointmentstate: service.appointmentState,
+              appointmenttype: service.appointmentType,
+              startDate: dateStr,
+              endDate: dateStr,
+            }),
+            next: { revalidate: 300 },
+          }).then(async (res) => {
+            if (!res.ok) return;
+            const data: KlickBookClassInfo[] = await res.json();
+            if (!data.length) return;
+
+            const daySlots: AvailabilitySlot[] = [];
+            for (const item of data) {
+              const info = item.classinformation;
+              const available = Math.max(
+                0,
+                info.restrictions.maxbooking - item.attendees.length
+              );
+              daySlots.push({
+                time: info.startDate.replace(" ", "T"),
+                slotsAvailable: available,
+              });
+            }
+
+            if (daySlots.length > 0) {
+              dates[dateStr] = daySlots;
+            }
+          })
+        );
+      }
+
+      await Promise.all(fetches);
+
+      return {
+        appointmentTypeId: service.serviceKey,
+        name: service.name,
+        price: service.price,
+        durationMinutes: service.durationMinutes,
+        dates,
+      };
+    })
+  );
 }

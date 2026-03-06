@@ -1010,6 +1010,25 @@ export interface RafaBookingProviderConfig {
   }[];
 }
 
+export interface KlickBookBookingProviderConfig {
+  type: "klickbook";
+  /** Tenant code used in the API URL path (e.g., "alyeska") */
+  tenantCode: string;
+  /** Tenant UUID, used in availability request bodies */
+  tenantKey: string;
+  timezone: string;
+  services: {
+    serviceKey: string;
+    name: string;
+    price: number;
+    durationMinutes: number;
+    /** UUID filter for open/available appointment state */
+    appointmentState: string;
+    /** UUID filter for class-type appointments */
+    appointmentType: string;
+  }[];
+}
+
 /**
  * Booking provider configuration for availability checking.
  * Uses a discriminated union so new providers can be added
@@ -1042,7 +1061,8 @@ export type BookingProviderConfig =
   | SpaTimeBookingProviderConfig
   | RafaBookingProviderConfig
   | GroupeNordikBookingProviderConfig
-  | ResortSuiteBookingProviderConfig;
+  | ResortSuiteBookingProviderConfig
+  | KlickBookBookingProviderConfig;
 
 /**
  * Groupe Nordik booking provider configuration.
@@ -1219,7 +1239,8 @@ export interface Sauna {
     | "spatime"
     | "groupe-nordik"
     | "resortsuite"
-    | "wellnessliving"; // Unsupported: API requires HMAC signing with a server-side secret (no public API)
+    | "wellnessliving" // Unsupported: API requires HMAC signing with a server-side secret (no public API)
+    | "klickbook";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -4378,10 +4399,27 @@ export const saunas: Sauna[] = [
     heaterType: "electric",
     address: "1000 Arlberg Avenue, Girdwood, AK 99587",
     website: "https://www.anordicspa.com/",
-    bookingUrl: "https://www.anordicspa.com/",
+    bookingUrl: "https://klickbook.com/alyeska/olb",
+    bookingPlatform: "klickbook",
+    bookingProvider: {
+      type: "klickbook",
+      tenantCode: "alyeska",
+      tenantKey: "f08ffff0-6833-42e4-9507-a2c7f834deec",
+      timezone: "America/Anchorage",
+      services: [
+        {
+          serviceKey: "a6bd605f-61dd-4246-8fa5-4f65033a7ff0",
+          name: "Hydrotherapy: Full Day (10am-9pm)",
+          price: 125,
+          durationMinutes: 660,
+          appointmentState: "6750fe94-dbca-4e5e-9929-2712cf6be400",
+          appointmentType: "15fcf0f7-5846-46a4-afbe-dd8eea798d6a",
+        },
+      ],
+    },
     googleMapsUrl: "https://maps.app.goo.gl/8VLZ8Y7VJvNPRzHR7",
-    sessionPrice: 85, // Hydrotherapy access; verify on website
-    sessionLengthMinutes: 180,
+    sessionPrice: 125,
+    sessionLengthMinutes: 660,
     steamRoom: true, // Aromatherapy-infused steam rooms
     coldPlunge: true, // Cold plunge pools and waterfall
     soakingTub: true, // Warm and hot hydrotherapy pools
@@ -4397,7 +4435,7 @@ export const saunas: Sauna[] = [
       "Alaska's first Nordic spa, a stunning 50,000 sq ft indoor-outdoor facility at Alyeska Resort in the Chugach Mountains. Features Finnish sauna, Halotherapy Signature sauna, two Banya saunas, two barrel saunas, aromatherapy steam rooms, hot/warm/cold hydrotherapy pools, cold plunge waterfall, and exfoliation cabin with Alaskan sea salt. On-site Two Trees Bistro. Reservations required. 45-min scenic drive from Anchorage.",
     lat: 60.9706743,
     lng: -149.0959696,
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-03-06",
     images: [
       {
         url: "/saunas/alyeska-nordic-spa/forest-loop-winter.jpg",
