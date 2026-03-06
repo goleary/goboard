@@ -9782,7 +9782,19 @@ export const saunas: Sauna[] = [
     images: [
       {
         url: "/saunas/kananaskis-nordic-spa/hot-pools.jpg",
-        alt: "Outdoor hot pools surrounded by Rocky Mountain scenery at Kananaskis Nordic Spa",
+        alt: "Steaming outdoor hot pool with snow-capped Rocky Mountain peaks and Adirondack chairs at Kananaskis Nordic Spa",
+      },
+      {
+        url: "/saunas/kananaskis-nordic-spa/gathering-pool.webp",
+        alt: "Gathering pool at sunrise with steam rising among evergreen trees at Kananaskis Nordic Spa",
+      },
+      {
+        url: "/saunas/kananaskis-nordic-spa/cold-plunge.jpg",
+        alt: "Guest under a wooden cold plunge waterfall with sunlight streaming through the trees at Kananaskis Nordic Spa",
+      },
+      {
+        url: "/saunas/kananaskis-nordic-spa/forest-sauna.webp",
+        alt: "Forest view sauna cabin glowing at twilight with cedar interior visible through large windows at Kananaskis Nordic Spa",
       },
     ],
   },
