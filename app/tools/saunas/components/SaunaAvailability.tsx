@@ -75,14 +75,18 @@ function filterPastSlots(
   allDay?: boolean
 ): AppointmentTypeAvailability["dates"] {
   const now = Date.now();
-  const todayStr = new Date().toLocaleDateString("en-CA");
+  const todayStr = localDateStr(new Date());
   const filtered: AppointmentTypeAvailability["dates"] = {};
   for (const [dateStr, slots] of Object.entries(dates)) {
-    const futureSlots = allDay
-      ? slots.filter((slot) => slot.time.slice(0, 10) >= todayStr)
-      : slots.filter((slot) => new Date(slot.time).getTime() > now);
-    if (futureSlots.length > 0) {
-      filtered[dateStr] = futureSlots;
+    if (allDay) {
+      if (dateStr >= todayStr) filtered[dateStr] = slots;
+    } else {
+      const futureSlots = slots.filter(
+        (slot) => new Date(slot.time).getTime() > now
+      );
+      if (futureSlots.length > 0) {
+        filtered[dateStr] = futureSlots;
+      }
     }
   }
   return filtered;

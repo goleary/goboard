@@ -4411,7 +4411,7 @@ export const saunas: Sauna[] = [
         {
           serviceKey: "a6bd605f-61dd-4246-8fa5-4f65033a7ff0",
           name: "Hydrotherapy: Full Day (10am-9pm)",
-          price: 125,
+          price: 139,
           durationMinutes: 660,
           allDay: true,
           appointmentState: "6750fe94-dbca-4e5e-9929-2712cf6be400",
@@ -4420,7 +4420,7 @@ export const saunas: Sauna[] = [
       ],
     },
     googleMapsUrl: "https://maps.app.goo.gl/8VLZ8Y7VJvNPRzHR7",
-    sessionPrice: 125,
+    sessionPrice: 139,
     sessionLengthMinutes: null,
     steamRoom: true, // Aromatherapy-infused steam rooms
     coldPlunge: true, // Cold plunge pools and waterfall
