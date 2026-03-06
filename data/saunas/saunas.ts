@@ -1054,6 +1054,19 @@ export interface UsgsWaterTempProviderConfig {
 }
 
 /**
+ * NDBC (National Data Buoy Center) water temperature provider configuration.
+ * Uses the NDBC realtime2 text data files for buoy observations.
+ * Many Great Lakes buoys are seasonal (deployed ~May–Nov).
+ */
+export interface NdbcWaterTempProviderConfig {
+  type: "ndbc";
+  /** NDBC station ID (e.g. "45174" for Wilmette Buoy on Lake Michigan) */
+  stationId: string;
+  /** Fallback station IDs to try if the primary station has no data */
+  fallbackStationIds?: string[];
+}
+
+/**
  * Discriminated union of water temperature data providers.
  * Add new provider interfaces here and union them in to support additional data sources.
  */
@@ -1061,7 +1074,8 @@ export type WaterTempProviderConfig =
   | KingCountyBuoyWaterTempProviderConfig
   | NoaaWaterTempProviderConfig
   | CioosErddapWaterTempProviderConfig
-  | UsgsWaterTempProviderConfig;
+  | UsgsWaterTempProviderConfig
+  | NdbcWaterTempProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1161,6 +1175,8 @@ export interface Sauna {
   dfoTideStation?: string;
   /** Water temperature data provider for live plunge temperature display */
   waterTempProvider?: WaterTempProviderConfig;
+  /** Fallback provider tried when the primary waterTempProvider returns no data (e.g. seasonal buoy offline) */
+  fallbackWaterTempProvider?: WaterTempProviderConfig;
   /** Display unit for water temperature (defaults to "F") */
   waterTempUnit?: "F" | "C";
   /** Whether showers are available */
@@ -6767,6 +6783,15 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "ndbc",
+      stationId: "45174", // Wilmette Buoy, IL (seasonal ~May-Nov)
+      fallbackStationIds: ["45198"], // Chicago Buoy
+    },
+    fallbackWaterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (year-round)
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Wed-Fri 7am-7:30am, Sun 9am-9:30am (quiet time); other times vary",
@@ -7053,6 +7078,11 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     isOutside: true,
     isFloating: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8418150", // Portland, ME
+      fallbackStationIds: ["8413320"], // Bar Harbor, ME
+    },
     showers: false,
     towelsIncluded: false,
     hours: "Thu-Sun sunrise to sunset, Oct 2-May 8",
@@ -7639,6 +7669,15 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "ndbc",
+      stationId: "45198", // Chicago Buoy (seasonal ~May-Nov)
+      fallbackStationIds: ["45174"], // Wilmette Buoy
+    },
+    fallbackWaterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (year-round)
+    },
     showers: false,
     towelsIncluded: false,
     temperatureRangeF: { min: 160, max: 185 },
@@ -7699,6 +7738,15 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "ndbc",
+      stationId: "45174", // Wilmette Buoy, IL (seasonal ~May-Nov)
+      fallbackStationIds: ["45198"], // Chicago Buoy
+    },
+    fallbackWaterTempProvider: {
+      type: "noaa",
+      stationId: "9087031", // Holland, MI (year-round)
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -7809,6 +7857,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "usgs",
+      siteId: "01473500", // Schuylkill River at Norristown, PA
+      fallbackSiteIds: ["01474500"], // Schuylkill River at Philadelphia, PA
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -8429,6 +8482,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8452944", // Conimicut Light, Narragansett Bay
+      fallbackStationIds: ["8452660", "8454000"], // Newport, Providence
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
@@ -8484,6 +8542,11 @@ export const saunas: Sauna[] = [
     waterfront: true,
     naturalPlunge: true,
     isOutside: true,
+    waterTempProvider: {
+      type: "noaa",
+      stationId: "8452660", // Newport, RI
+      fallbackStationIds: ["8447930", "8449130"], // Woods Hole, Nantucket
+    },
     showers: false,
     towelsIncluded: false,
     genderPolicy: "Co-ed",
