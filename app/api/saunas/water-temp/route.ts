@@ -1,17 +1,33 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { getSaunaBySlug } from "@/data/saunas/saunas";
+import { getSaunaBySlug, type WaterTempProviderConfig } from "@/data/saunas/saunas";
 import type { WaterTempResponse } from "./providers/types";
 import { fetchCioosErddapWaterTemp } from "./providers/cioos-erddap";
 import { fetchKingCountyBuoyWaterTemp } from "./providers/king-county-buoy";
 import { fetchNoaaWaterTemp } from "./providers/noaa";
 import { fetchUsgsWaterTemp } from "./providers/usgs";
+import { fetchNdbcWaterTemp } from "./providers/ndbc";
 
 export type { WaterTempResponse };
 
 const querySchema = z.object({
   slug: z.string().min(1),
 });
+
+function fetchProvider(provider: WaterTempProviderConfig): Promise<WaterTempResponse> {
+  switch (provider.type) {
+    case "cioos-erddap":
+      return fetchCioosErddapWaterTemp(provider);
+    case "king-county-buoy":
+      return fetchKingCountyBuoyWaterTemp(provider);
+    case "noaa":
+      return fetchNoaaWaterTemp(provider);
+    case "usgs":
+      return fetchUsgsWaterTemp(provider);
+    case "ndbc":
+      return fetchNdbcWaterTemp(provider);
+  }
+}
 
 export async function GET(request: NextRequest) {
   const parsed = querySchema.safeParse({
@@ -36,30 +52,26 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const provider = sauna.waterTempProvider;
-    let result: WaterTempResponse;
+    const providers = [
+      sauna.waterTempProvider,
+      ...(sauna.fallbackWaterTempProvider ? [sauna.fallbackWaterTempProvider] : []),
+    ];
 
-    switch (provider.type) {
-      case "cioos-erddap":
-        result = await fetchCioosErddapWaterTemp(provider);
-        break;
-      case "king-county-buoy":
-        result = await fetchKingCountyBuoyWaterTemp(provider);
-        break;
-      case "noaa":
-        result = await fetchNoaaWaterTemp(provider);
-        break;
-      case "usgs":
-        result = await fetchUsgsWaterTemp(provider);
-        break;
-      default:
-        return Response.json(
-          { error: "Unknown water temp provider type" },
-          { status: 400 }
-        );
+    for (const provider of providers) {
+      try {
+        const result = await fetchProvider(provider);
+        return Response.json(result);
+      } catch {
+        // If there's a fallback provider, try it next
+        if (provider !== providers[providers.length - 1]) continue;
+        throw new Error("All providers exhausted");
+      }
     }
 
-    return Response.json(result);
+    return Response.json(
+      { error: "Failed to fetch water temperature data" },
+      { status: 502 }
+    );
   } catch (err) {
     console.error("Water temp fetch error:", err);
     return Response.json(

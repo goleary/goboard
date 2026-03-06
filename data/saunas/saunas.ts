@@ -1054,6 +1054,19 @@ export interface UsgsWaterTempProviderConfig {
 }
 
 /**
+ * NDBC (National Data Buoy Center) water temperature provider configuration.
+ * Uses the NDBC realtime2 text data files for buoy observations.
+ * Many Great Lakes buoys are seasonal (deployed ~May–Nov).
+ */
+export interface NdbcWaterTempProviderConfig {
+  type: "ndbc";
+  /** NDBC station ID (e.g. "45174" for Wilmette Buoy on Lake Michigan) */
+  stationId: string;
+  /** Fallback station IDs to try if the primary station has no data */
+  fallbackStationIds?: string[];
+}
+
+/**
  * Discriminated union of water temperature data providers.
  * Add new provider interfaces here and union them in to support additional data sources.
  */
@@ -1061,7 +1074,8 @@ export type WaterTempProviderConfig =
   | KingCountyBuoyWaterTempProviderConfig
   | NoaaWaterTempProviderConfig
   | CioosErddapWaterTempProviderConfig
-  | UsgsWaterTempProviderConfig;
+  | UsgsWaterTempProviderConfig
+  | NdbcWaterTempProviderConfig;
 
 /**
  * Represents a sauna facility with its amenities and details.
@@ -1160,6 +1174,8 @@ export interface Sauna {
   dfoTideStation?: string;
   /** Water temperature data provider for live plunge temperature display */
   waterTempProvider?: WaterTempProviderConfig;
+  /** Fallback provider tried when the primary waterTempProvider returns no data (e.g. seasonal buoy offline) */
+  fallbackWaterTempProvider?: WaterTempProviderConfig;
   /** Display unit for water temperature (defaults to "F") */
   waterTempUnit?: "F" | "C";
   /** Whether showers are available */
@@ -6673,8 +6689,13 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     isOutside: true,
     waterTempProvider: {
+      type: "ndbc",
+      stationId: "45174", // Wilmette Buoy, IL (seasonal ~May-Nov)
+      fallbackStationIds: ["45198"], // Chicago Buoy
+    },
+    fallbackWaterTempProvider: {
       type: "noaa",
-      stationId: "9087031", // Holland, MI (Lake Michigan)
+      stationId: "9087031", // Holland, MI (year-round)
     },
     showers: false,
     towelsIncluded: false,
@@ -7554,8 +7575,13 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     isOutside: true,
     waterTempProvider: {
+      type: "ndbc",
+      stationId: "45198", // Chicago Buoy (seasonal ~May-Nov)
+      fallbackStationIds: ["45174"], // Wilmette Buoy
+    },
+    fallbackWaterTempProvider: {
       type: "noaa",
-      stationId: "9087031", // Holland, MI (Lake Michigan)
+      stationId: "9087031", // Holland, MI (year-round)
     },
     showers: false,
     towelsIncluded: false,
@@ -7618,8 +7644,13 @@ export const saunas: Sauna[] = [
     naturalPlunge: true,
     isOutside: true,
     waterTempProvider: {
+      type: "ndbc",
+      stationId: "45174", // Wilmette Buoy, IL (seasonal ~May-Nov)
+      fallbackStationIds: ["45198"], // Chicago Buoy
+    },
+    fallbackWaterTempProvider: {
       type: "noaa",
-      stationId: "9087031", // Holland, MI (Lake Michigan)
+      stationId: "9087031", // Holland, MI (year-round)
     },
     showers: false,
     towelsIncluded: false,
