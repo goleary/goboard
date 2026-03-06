@@ -1020,6 +1020,22 @@ export interface RafaBookingProviderConfig {
   }[];
 }
 
+export interface BooqableProduct {
+  productId: string;
+  name: string;
+  price: number;
+  private?: boolean;
+  seats?: number;
+}
+
+export interface BooqableBookingProviderConfig {
+  type: "booqable";
+  /** Booqable storefront API URL (e.g., "https://book.sewardsaunas.com") */
+  apiUrl: string;
+  timezone: string;
+  products: BooqableProduct[];
+}
+
 export interface KlickBookBookingProviderConfig {
   type: "klickbook";
   /** Tenant code used in the API URL path (e.g., "alyeska") */
@@ -1073,7 +1089,8 @@ export type BookingProviderConfig =
   | RafaBookingProviderConfig
   | GroupeNordikBookingProviderConfig
   | ResortSuiteBookingProviderConfig
-  | KlickBookBookingProviderConfig;
+  | KlickBookBookingProviderConfig
+  | BooqableBookingProviderConfig;
 
 /**
  * Groupe Nordik booking provider configuration.
@@ -9734,9 +9751,30 @@ export const saunas: Sauna[] = [
     website: "https://sewardsaunas.com/",
     bookingUrl: "https://sewardsaunas.com/book",
     bookingPlatform: "booqable",
+    bookingProvider: {
+      type: "booqable",
+      apiUrl: "https://book.sewardsaunas.com",
+      timezone: "America/Anchorage",
+      products: [
+        {
+          productId: "34608fa2-3b69-4f3e-9328-e52d565c6682",
+          name: "Godwin Sauna",
+          price: 400,
+          private: true,
+          seats: 8,
+        },
+        {
+          productId: "e98fb6bd-8caf-4a95-97d9-d3a9a805d9b6",
+          name: "Chenega Sauna",
+          price: 475,
+          private: true,
+          seats: 10,
+        },
+      ],
+    },
     instagram: "sauna_valdez_ak",
     googleMapsUrl: "https://maps.app.goo.gl/MtZN3yFQeQUmKrmj6",
-    sessionPrice: 375,
+    sessionPrice: 400,
     sessionLengthMinutes: null,
     steamRoom: false,
     coldPlunge: false,
@@ -9751,7 +9789,7 @@ export const saunas: Sauna[] = [
     genderPolicy: "Private booking",
     clothingPolicy: "Up to your group",
     notes:
-      "Luxury mobile wood-fired saunas delivered across the Kenai Peninsula. Three saunas available: Aialik (12', 10 guests, from $375), Godwin (16', 8 guests, cool down room, from $400), Chenega (20', 10 guests, cool down room, from $475). Delivered at 5pm, picked up at 9am. Optional add-ons include spa towels, campfire, craft chocolate/s'mores, herbal tea, and polar plunge packages. Also available in Valdez. Seasonal lodge-only availability Oct 1 – Dec 15.",
+      "Luxury mobile wood-fired saunas delivered across the Kenai Peninsula. Two saunas available in Seward: Godwin (16', 8 guests, cool down room, from $400) and Chenega (20', 10 guests, cool down room, from $475). Delivered at 5pm, picked up at 9am. Optional add-ons include spa towels, campfire, craft chocolate/s'mores, herbal tea, and polar plunge packages. Also available in Valdez. Seasonal lodge-only availability Oct 1 – Dec 15.",
     lat: 60.1047739,
     lng: -149.4421038,
     updatedAt: "2026-03-06",

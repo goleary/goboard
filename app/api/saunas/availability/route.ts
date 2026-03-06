@@ -30,6 +30,7 @@ import {
   type GroupeNordikBookingProviderConfig,
   type ResortSuiteBookingProviderConfig,
   type KlickBookBookingProviderConfig,
+  type BooqableBookingProviderConfig,
 } from "@/data/saunas/saunas";
 
 export interface AvailabilitySlot {
@@ -2972,6 +2973,12 @@ export async function GET(request: NextRequest) {
           startDate
         );
         break;
+      case "booqable":
+        appointmentTypes = await fetchBooqableAvailability(
+          provider,
+          startDate
+        );
+        break;
     }
 
     return Response.json({ appointmentTypes } satisfies AvailabilityResponse);
@@ -3621,4 +3628,130 @@ async function fetchKlickBookAvailability(
       };
     })
   );
+}
+
+// ---------------------------------------------------------------------------
+// Booqable (rental platform)
+// ---------------------------------------------------------------------------
+
+interface BooqableCartResponse {
+  cart: { id: string };
+}
+
+interface BooqableItem {
+  id: string;
+  type: string;
+  attributes: {
+    name: string;
+    available_quantity: number | null;
+    price_each_in_cents: number;
+    charge_label: string;
+  };
+}
+
+interface BooqableItemsResponse {
+  data: BooqableItem[];
+}
+
+async function fetchBooqableAvailability(
+  provider: BooqableBookingProviderConfig,
+  startDate: string
+): Promise<AppointmentTypeAvailability[]> {
+  const from = new Date(startDate);
+  const productIds = new Set(provider.products.map((p) => p.productId));
+
+  // Check each day in a 7-day window.
+  // Booqable uses a session-based cart: create cart → set dates → read items.
+  const dayChecks: Promise<{ date: string; available: Map<string, number> }>[] =
+    [];
+
+  for (let d = 0; d < 7; d++) {
+    const day = new Date(from);
+    day.setDate(day.getDate() + d);
+    const dateStr = day.toISOString().split("T")[0];
+
+    const pickup = `${dateStr}T00:00:00.000Z`;
+    const returnDate = new Date(day);
+    returnDate.setDate(returnDate.getDate() + 1);
+    const returnStr = `${returnDate.toISOString().split("T")[0]}T00:00:00.000Z`;
+
+    dayChecks.push(
+      (async () => {
+        // Step 1: Create a cart (gets session cookie)
+        const cartRes = await fetch(
+          `${provider.apiUrl}/api/1/cart?source=store&provider=api`,
+          {
+            headers: { Accept: "application/json" },
+            next: { revalidate: 300 },
+          }
+        );
+        if (!cartRes.ok)
+          return { date: dateStr, available: new Map<string, number>() };
+
+        const cookies = cartRes.headers.getSetCookie();
+        const sessionCookie = cookies
+          .find((c) => c.startsWith("_booqable_session="))
+          ?.split(";")[0];
+        if (!sessionCookie)
+          return { date: dateStr, available: new Map<string, number>() };
+
+        // Step 2: Set dates on the cart
+        await fetch(`${provider.apiUrl}/api/1/cart`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Cookie: sessionCookie,
+          },
+          body: JSON.stringify({
+            cart: { starts_at: pickup, stops_at: returnStr },
+          }),
+        });
+
+        // Step 3: Fetch items with availability
+        const itemsRes = await fetch(`${provider.apiUrl}/api/3/items`, {
+          headers: {
+            Accept: "application/json",
+            Cookie: sessionCookie,
+          },
+        });
+        if (!itemsRes.ok)
+          return { date: dateStr, available: new Map<string, number>() };
+
+        const items: BooqableItemsResponse = await itemsRes.json();
+        const available = new Map<string, number>();
+        for (const item of items.data) {
+          if (productIds.has(item.id) && item.attributes.available_quantity) {
+            available.set(item.id, item.attributes.available_quantity);
+          }
+        }
+        return { date: dateStr, available };
+      })()
+    );
+  }
+
+  const results = await Promise.all(dayChecks);
+
+  // Build response per product
+  return provider.products.map((product) => {
+    const dates: Record<string, AvailabilitySlot[]> = {};
+    for (const { date, available } of results) {
+      const qty = available.get(product.productId);
+      if (qty && qty > 0) {
+        // Rental products don't have time slots — use 17:00 (5pm delivery)
+        dates[date] = [
+          { time: `${date}T17:00:00`, slotsAvailable: qty },
+        ];
+      }
+    }
+    return {
+      appointmentTypeId: product.productId,
+      name: product.name,
+      price: product.price,
+      durationMinutes: null,
+      private: product.private,
+      seats: product.seats,
+      dates,
+    };
+  });
 }
