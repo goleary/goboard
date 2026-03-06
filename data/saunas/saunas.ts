@@ -43,7 +43,8 @@ export type LocationSlug =
   | "horseshoe-valley"
   | "blue-mountain"
   | "burlington"
-  | "vermont";
+  | "vermont"
+  | "kananaskis";
 
 /**
  * Location metadata for display and routing
@@ -438,6 +439,15 @@ export const locations: Location[] = [
       "Vermont's sauna culture features private outdoor pop-up saunas in stunning natural settings, from Lake Champlain's waterfront to Green Mountain views and waterfall plunges in the Mad River Valley.",
     center: { lat: 44.4, lng: -72.9 },
     zoom: 8,
+  },
+  {
+    slug: "kananaskis",
+    name: "Kananaskis",
+    state: "AB",
+    description:
+      "Discover Kananaskis Nordic Spa, a 50,000 sq ft alpine wellness sanctuary nestled in the Canadian Rockies featuring Finnish saunas, banya, steam rooms, hot and cold hydrotherapy pools, and mountain views.",
+    center: { lat: 50.9176, lng: -115.1459 },
+    zoom: 11,
   },
 ];
 
@@ -9714,6 +9724,79 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  {
+    slug: "kananaskis-nordic-spa",
+    name: "Kananaskis Nordic Spa",
+    address: "1 Centennial Dr, Kananaskis Village, AB T0L 2H0",
+    website: "https://knordicspa.com/",
+    bookingUrl: "https://klickbook.com/pomeroy/olb",
+    bookingPlatform: "klickbook",
+    bookingProvider: {
+      type: "klickbook",
+      tenantCode: "pomeroy",
+      tenantKey: "974aa905-5566-4523-883b-380b6fe33153",
+      timezone: "America/Edmonton",
+      services: [
+        {
+          serviceKey: "9c496185-642e-4583-abdc-715f1266dab8",
+          name: "Hydrotherapy: Full Day (9am-9pm)",
+          price: 145,
+          durationMinutes: 720,
+          allDay: true,
+          appointmentState: "6750fe94-dbca-4e5e-9929-2712cf6be400",
+          appointmentType: "15fcf0f7-5846-46a4-afbe-dd8eea798d6a",
+        },
+        {
+          serviceKey: "3221e776-c5c0-4918-a458-898766a5098e",
+          name: "Hydrotherapy: Twilight Soak (5pm-9pm)",
+          price: 129,
+          durationMinutes: 240,
+          appointmentState: "6750fe94-dbca-4e5e-9929-2712cf6be400",
+          appointmentType: "15fcf0f7-5846-46a4-afbe-dd8eea798d6a",
+        },
+      ],
+    },
+    instagram: "knordicspa",
+    googleMapsUrl: "https://maps.app.goo.gl/UDWeLXEGoojt6TWC8",
+    sessionPrice: 145,
+    currency: "CAD",
+    sessionLengthMinutes: null, // Full-day access
+    steamRoom: true, // Steam cabin with essential oils
+    coldPlunge: true, // Cold plunge pool and cold cascades
+    soakingTub: true, // Multiple hot pools (Gathering Pool, Reflections Pool, Elements Pool)
+    waterfront: false,
+    naturalPlunge: false,
+    showers: true,
+    towelsIncluded: true,
+    servesFood: true, // Two Trees Bistro on-site
+    isOutside: true,
+    hours: "Hydrotherapy 9AM-9PM daily",
+    genderPolicy: "Co-ed (18+)",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "50,000 sq ft alpine spa at Pomeroy Kananaskis Mountain Lodge in the Canadian Rockies. Features Finnish sauna, cabin sauna, forest view sauna, Banya sauna, steam cabin, cold plunge, cold cascades, exfoliation cabin, and multiple hot pools. Twilight Soak access (5PM-9PM) from $129 CAD. Reservations required. ~1 hour drive from Calgary.",
+    lat: 50.9178653,
+    lng: -115.1462971,
+    updatedAt: "2026-03-06",
+    images: [
+      {
+        url: "/saunas/kananaskis-nordic-spa/hot-pools.jpg",
+        alt: "Steaming outdoor hot pool with snow-capped Rocky Mountain peaks and Adirondack chairs at Kananaskis Nordic Spa",
+      },
+      {
+        url: "/saunas/kananaskis-nordic-spa/gathering-pool.webp",
+        alt: "Gathering pool at sunrise with steam rising among evergreen trees at Kananaskis Nordic Spa",
+      },
+      {
+        url: "/saunas/kananaskis-nordic-spa/cold-plunge.jpg",
+        alt: "Guest under a wooden cold plunge waterfall with sunlight streaming through the trees at Kananaskis Nordic Spa",
+      },
+      {
+        url: "/saunas/kananaskis-nordic-spa/forest-sauna.webp",
+        alt: "Forest view sauna cabin glowing at twilight with cedar interior visible through large windows at Kananaskis Nordic Spa",
+      },
+    ],
   },
 ];
 
