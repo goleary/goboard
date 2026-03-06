@@ -4314,6 +4314,28 @@ export const saunas: Sauna[] = [
     lat: 60.9706743,
     lng: -149.0959696,
     updatedAt: "2026-01-05",
+    images: [
+      {
+        url: "/saunas/alyeska-nordic-spa/forest-loop-winter.jpg",
+        alt: "Snow-covered forest loop with barrel sauna and wooden soaking tub along a boardwalk at Alyeska Nordic Spa",
+      },
+      {
+        url: "/saunas/alyeska-nordic-spa/pools-aerial.jpg",
+        alt: "Guests relaxing in the outdoor hydrotherapy pool with timber pavilion and evergreen trees at Alyeska Nordic Spa",
+      },
+      {
+        url: "/saunas/alyeska-nordic-spa/cold-waterfall.jpg",
+        alt: "Cold plunge waterfall pool with mountain views and evergreen trees at Alyeska Nordic Spa",
+      },
+      {
+        url: "/saunas/alyeska-nordic-spa/wooden-tubs.webp",
+        alt: "Wooden soaking tub nestled among tall evergreens on the forest loop at Alyeska Nordic Spa",
+      },
+      {
+        url: "/saunas/alyeska-nordic-spa/sauna-winter.webp",
+        alt: "Guest relaxing inside the cedar sauna with snow-covered trees visible through the window at Alyeska Nordic Spa",
+      },
+    ],
   },
   {
     slug: "gather-sauna-house",
