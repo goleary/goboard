@@ -4316,8 +4316,8 @@ export const saunas: Sauna[] = [
     updatedAt: "2026-01-05",
     images: [
       {
-        url: "/saunas/alyeska-nordic-spa/forest-sauna.webp",
-        alt: "Cedar sauna cabin along a wooden boardwalk through the Alaskan rainforest at Alyeska Nordic Spa",
+        url: "/saunas/alyeska-nordic-spa/forest-loop-winter.jpg",
+        alt: "Snow-covered forest loop with barrel sauna and wooden soaking tub along a boardwalk at Alyeska Nordic Spa",
       },
       {
         url: "/saunas/alyeska-nordic-spa/hot-pools.jpg",
