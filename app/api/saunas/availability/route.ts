@@ -38,7 +38,7 @@ export interface AppointmentTypeAvailability {
   appointmentTypeId: string;
   name: string;
   price?: number;
-  durationMinutes: number;
+  durationMinutes: number | null;
   private?: boolean;
   seats?: number;
   dates: Record<string, AvailabilitySlot[]>;
@@ -1230,7 +1230,9 @@ async function fetchTrybeAvailability(
     {
       appointmentTypeId: provider.sessionTypeId,
       name: provider.name,
-      price: sessions[0] ? sessions[0].price / 100 : undefined,
+      price: sessions.length > 0
+        ? Math.min(...sessions.map((s) => s.price)) / 100
+        : undefined,
       durationMinutes: provider.durationMinutes,
       dates,
     },

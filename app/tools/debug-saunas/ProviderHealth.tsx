@@ -450,7 +450,7 @@ function SlotDetails({ types }: { types: TypeData[] }) {
             <div className="font-medium text-gray-700 mb-1">
               {t.name}
               <span className="ml-2 font-normal text-gray-400">
-                {t.price != null && `$${t.price} / `}{t.durationMinutes}min
+                {t.price != null && `$${t.price}`}{t.price != null && t.durationMinutes != null && " / "}{t.durationMinutes != null && `${t.durationMinutes}min`}
                 {t.private && " / private"}
                 {t.seats && ` / ${t.seats} seats`}
                 {" — "}

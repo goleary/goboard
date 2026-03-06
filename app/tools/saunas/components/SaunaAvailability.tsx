@@ -289,7 +289,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
   const singleTypePriceLabel = isSingleType && data?.appointmentTypes[0]
     ? [
         data.appointmentTypes[0].price != null && `${currencySymbol(sauna)}${data.appointmentTypes[0].price}`,
-        `${data.appointmentTypes[0].durationMinutes}min`,
+        data.appointmentTypes[0].durationMinutes != null && `${data.appointmentTypes[0].durationMinutes}min`,
       ].filter(Boolean).join(" / ")
     : null;
 
@@ -432,7 +432,7 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
                         )}
                       </p>
                       <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
-                        {appointmentType.price != null && `${currencySymbol(sauna)}${appointmentType.price} / `}{appointmentType.durationMinutes}min
+                        {appointmentType.price != null && `${currencySymbol(sauna)}${appointmentType.price}`}{appointmentType.price != null && appointmentType.durationMinutes != null && " / "}{appointmentType.durationMinutes != null && `${appointmentType.durationMinutes}min`}
                       </span>
                     </div>
                   )}
