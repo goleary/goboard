@@ -1040,7 +1040,47 @@ export type BookingProviderConfig =
   | SojoBookingProviderConfig
   | SweatpalsBookingProviderConfig
   | SpaTimeBookingProviderConfig
-  | RafaBookingProviderConfig;
+  | RafaBookingProviderConfig
+  | GroupeNordikBookingProviderConfig
+  | ResortSuiteBookingProviderConfig;
+
+/**
+ * Groupe Nordik booking provider configuration.
+ * Uses the public reservation API at reservation-api.groupenordik.com.
+ */
+export interface GroupeNordikBookingProviderConfig {
+  type: "groupe-nordik";
+  /** Numeric center ID (e.g. 4 for Whitby) */
+  centerId: number;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Display name for the spa access pass */
+  passName: string;
+  /** Price in CAD */
+  price: number;
+}
+
+/**
+ * ResortSuite booking provider configuration.
+ * Uses the SOAP API at {baseUrl}/wso2wsas/services/RSWS.
+ */
+export interface ResortSuiteBookingProviderConfig {
+  type: "resortsuite";
+  /** Base URL of the ResortSuite shop (e.g. "https://shop.vettaspa.com") */
+  baseUrl: string;
+  /** ResortSuite location ID (e.g. "100" for Vetta, "999" for Scandinave BM) */
+  locationId: string;
+  /** IANA timezone for availability display */
+  timezone: string;
+  /** Display name for the pass type */
+  passName: string;
+  /** Price in the sauna's currency */
+  price: number;
+  /** Filter by specific SpaItemId values (use when IDs are stable, e.g. Vetta) */
+  spaItemIds?: number[];
+  /** Filter by substring in SpaItemName (use when IDs vary per slot, e.g. Scandinave) */
+  nameFilter?: string;
+}
 
 // --- Water Temperature Provider Types ---
 
@@ -1162,7 +1202,9 @@ export interface Sauna {
     | "arketa"
     | "sojo"
     | "sweatpals"
-    | "spatime";
+    | "spatime"
+    | "groupe-nordik"
+    | "resortsuite";
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -8619,6 +8661,7 @@ export const saunas: Sauna[] = [
     address: "4015 Cochrane Street, Whitby, ON L1P 2A9",
     website: "https://thermea.com/whitby",
     bookingUrl: "https://reservations.groupenordik.com/whitby/en/guest",
+    bookingPlatform: "groupe-nordik",
     googleMapsUrl: "https://maps.app.goo.gl/JFkq5UXFYij5FgKLA",
     instagram: "thermeawhitby",
     isOutside: true,
@@ -8646,6 +8689,13 @@ export const saunas: Sauna[] = [
         alt: "Guests relaxing in steaming outdoor thermal baths at Thermea Spa Village Whitby on a winter evening",
       },
     ],
+    bookingProvider: {
+      type: "groupe-nordik",
+      centerId: 4,
+      timezone: "America/Toronto",
+      passName: "Spa Village Access",
+      price: 125,
+    },
   },
   // ============================================================================
   // RICHMOND HILL, ON, CANADA
@@ -8691,6 +8741,7 @@ export const saunas: Sauna[] = [
     address: "3210 Line 3 North, Oro-Medonte, ON L0L 2L0",
     website: "https://vettaspa.com/",
     bookingUrl: "https://shop.vettaspa.com/#/spaBooking/eventcalendar/Location100",
+    bookingPlatform: "resortsuite",
     googleMapsUrl: "https://maps.app.goo.gl/hBdBkEFwu3NxjXJLA",
     instagram: "vettanordicspa",
     isOutside: true,
@@ -8718,6 +8769,15 @@ export const saunas: Sauna[] = [
         alt: "Exterior view of Vetta Nordic Spa at dusk showing the modern barn-style building with warm interior lighting",
       },
     ],
+    bookingProvider: {
+      type: "resortsuite",
+      baseUrl: "https://shop.vettaspa.com",
+      locationId: "100",
+      timezone: "America/Toronto",
+      passName: "Hydrotherapy Day Pass",
+      price: 105,
+      spaItemIds: [191, 192, 193],
+    },
   },
   // ============================================================================
   // BLUE MOUNTAIN, ON, CANADA
@@ -8727,7 +8787,8 @@ export const saunas: Sauna[] = [
     name: "Scandinave Spa Blue Mountain",
     address: "152 Grey County Road 21, Blue Mountains, ON L9Y 0K8",
     website: "https://www.scandinave.com/blue-mountain/",
-    bookingUrl: "https://www.scandinave.com/blue-mountain/rates/",
+    bookingUrl: "https://store.scandinaveblue.com/#/spaBooking/eventcalendar/Location999",
+    bookingPlatform: "resortsuite",
     googleMapsUrl: "https://maps.app.goo.gl/fPkrB7kbWe33P3tt8",
     instagram: "scandinaveblue",
     isOutside: true,
@@ -8754,6 +8815,15 @@ export const saunas: Sauna[] = [
         alt: "Guest walking toward a steaming outdoor thermal pool at Scandinave Spa Blue Mountain in winter",
       },
     ],
+    bookingProvider: {
+      type: "resortsuite",
+      baseUrl: "https://store.scandinaveblue.com",
+      locationId: "999",
+      timezone: "America/Toronto",
+      passName: "Thermal Journey",
+      price: 105,
+      nameFilter: "Thermal Journey",
+    },
   },
   {
     slug: "altaer-sauna-warren",
