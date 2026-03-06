@@ -3592,13 +3592,14 @@ async function fetchKlickBookAvailability(
             const daySlots: AvailabilitySlot[] = [];
             for (const item of data) {
               const info = item.classinformation;
-              const available = Math.max(
-                0,
-                info.restrictions.maxbooking - item.attendees.length
-              );
               daySlots.push({
                 time: info.startDate.replace(" ", "T"),
-                slotsAvailable: available,
+                slotsAvailable: service.allDay
+                  ? null
+                  : Math.max(
+                      0,
+                      info.restrictions.maxbooking - item.attendees.length
+                    ),
               });
             }
 
