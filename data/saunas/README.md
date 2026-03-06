@@ -358,6 +358,44 @@ https://www.joinblvd.com/b/<businessId>/widget
 | `price` | booking page | Price per session |
 | `durationMinutes` | booking page | Session duration |
 
+## Adding Booqable Availability
+
+Booqable is a rental/equipment booking platform. The storefront API is public (no auth required) and uses a session-based cart to check availability.
+
+### Detection
+
+Look for `booqableOptions` in the page source or network requests to `*.booqable.com`. The `apiURL` field in `booqableOptions` is the storefront API base URL.
+
+### Setup steps
+
+1. **Find the API URL**: In the page source, look for `booqableOptions = { company: '...', apiURL: '...' }`. The `apiURL` is the Booqable storefront base (e.g., `https://book.sewardsaunas.com`).
+
+2. **Get product IDs**: Call `GET {apiURL}/api/3/items` to list all products. Filter to sauna/rental products (ignore add-ons like towels, s'mores).
+
+3. **Verify availability works**: Create a cart session and check availability:
+   ```bash
+   # Create cart (saves session cookie)
+   curl -c cookies.txt "{apiURL}/api/1/cart?source=store&provider=api"
+   # Set dates
+   curl -b cookies.txt -X PATCH "{apiURL}/api/1/cart" \
+     -H "Content-Type: application/json" \
+     -d '{"cart":{"starts_at":"2026-03-15T00:00:00.000Z","stops_at":"2026-03-16T00:00:00.000Z"}}'
+   # Check items - available_quantity should now be populated
+   curl -b cookies.txt "{apiURL}/api/3/items"
+   ```
+
+### Config
+
+| Field | Source | Description |
+|---|---|---|
+| `bookingProvider.type` | — | `"booqable"` |
+| `bookingProvider.apiUrl` | `booqableOptions.apiURL` | Storefront API base URL |
+| `bookingProvider.timezone` | — | IANA timezone (e.g. `America/Anchorage`) |
+| `productId` | `/api/3/items` response | Product group UUID |
+| `name` | `/api/3/items` response | Product display name |
+| `price` | booking page | Price per rental (first day) |
+| `seats` | product description | Max guests |
+
 ## How it works
 
 The availability API (`/api/saunas/availability`) reads the `bookingProvider` config and calls the appropriate provider API to fetch available time slots. Results are cached for 5 minutes. The `BookingProviderConfig` type is a discriminated union, so new providers can be added by extending the union in `saunas.ts` and adding a corresponding case in the API route.

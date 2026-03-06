@@ -44,6 +44,7 @@ export type LocationSlug =
   | "blue-mountain"
   | "burlington"
   | "vermont"
+  | "alaska"
   | "kananaskis";
 
 /**
@@ -439,6 +440,15 @@ export const locations: Location[] = [
       "Vermont's sauna culture features private outdoor pop-up saunas in stunning natural settings, from Lake Champlain's waterfront to Green Mountain views and waterfall plunges in the Mad River Valley.",
     center: { lat: 44.4, lng: -72.9 },
     zoom: 8,
+  },
+  {
+    slug: "alaska",
+    name: "Alaska",
+    state: "AK",
+    description:
+      "Alaska's sauna scene features Nordic spas in the Chugach Mountains and mobile wood-fired saunas delivered to stunning Kenai Peninsula locations.",
+    center: { lat: 60.5, lng: -149.3 },
+    zoom: 7,
   },
   {
     slug: "kananaskis",
@@ -1020,6 +1030,22 @@ export interface RafaBookingProviderConfig {
   }[];
 }
 
+export interface BooqableProduct {
+  productId: string;
+  name: string;
+  price: number;
+  private?: boolean;
+  seats?: number;
+}
+
+export interface BooqableBookingProviderConfig {
+  type: "booqable";
+  /** Booqable storefront API URL (e.g., "https://book.sewardsaunas.com") */
+  apiUrl: string;
+  timezone: string;
+  products: BooqableProduct[];
+}
+
 export interface KlickBookBookingProviderConfig {
   type: "klickbook";
   /** Tenant code used in the API URL path (e.g., "alyeska") */
@@ -1073,7 +1099,8 @@ export type BookingProviderConfig =
   | RafaBookingProviderConfig
   | GroupeNordikBookingProviderConfig
   | ResortSuiteBookingProviderConfig
-  | KlickBookBookingProviderConfig;
+  | KlickBookBookingProviderConfig
+  | BooqableBookingProviderConfig;
 
 /**
  * Groupe Nordik booking provider configuration.
@@ -1251,7 +1278,8 @@ export interface Sauna {
     | "groupe-nordik"
     | "resortsuite"
     | "wellnessliving" // Unsupported: API requires HMAC signing with a server-side secret (no public API)
-    | "klickbook";
+    | "klickbook"
+    | "booqable"; // Unsupported: rental/equipment booking platform
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -9724,6 +9752,130 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  {
+    slug: "seward-saunas",
+    name: "Seward Saunas",
+    heaterType: "wood",
+    address: "Seward, AK 99664",
+    website: "https://sewardsaunas.com/",
+    bookingUrl: "https://sewardsaunas.com/book",
+    bookingPlatform: "booqable",
+    bookingProvider: {
+      type: "booqable",
+      apiUrl: "https://book.sewardsaunas.com",
+      timezone: "America/Anchorage",
+      products: [
+        {
+          productId: "34608fa2-3b69-4f3e-9328-e52d565c6682",
+          name: "Godwin Sauna",
+          price: 400,
+          private: true,
+          seats: 8,
+        },
+        {
+          productId: "e98fb6bd-8caf-4a95-97d9-d3a9a805d9b6",
+          name: "Chenega Sauna",
+          price: 475,
+          private: true,
+          seats: 10,
+        },
+      ],
+    },
+    instagram: "sauna_valdez_ak",
+    googleMapsUrl: "https://maps.app.goo.gl/C8WAAfZJDXsokfXS8",
+    sessionPrice: 400,
+    sessionLengthMinutes: null,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true,
+    isDelivery: true,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 10,
+    genderPolicy: "Private booking",
+    clothingPolicy: "Up to your group",
+    notes:
+      "Luxury mobile wood-fired saunas delivered across the Kenai Peninsula. Two saunas available in Seward: Godwin (16', 8 guests, cool down room, from $400) and Chenega (20', 10 guests, cool down room, from $475). Delivered at 5pm, picked up at 9am. Optional add-ons include spa towels, campfire, craft chocolate/s'mores, herbal tea, and polar plunge packages. Also available in Valdez. Seasonal lodge-only availability Oct 1 – Dec 15.",
+    lat: 60.1047739,
+    lng: -149.4421038,
+    updatedAt: "2026-03-06",
+    images: [
+      {
+        url: "/saunas/seward-saunas/aialik-sauna.webp",
+        alt: "Interior of the Aialik mobile sauna with wooden bucket and sauna accessories on a cedar bench",
+      },
+    ],
+  },
+  {
+    slug: "sauna-valdez",
+    name: "Sauna Valdez",
+    heaterType: "wood",
+    address: "Eagles Rest RV Park, Valdez, AK 99686",
+    website: "https://sewardsaunas.com/valdez",
+    bookingUrl: "https://sewardsaunas.as.me/",
+    bookingPlatform: "acuity",
+    bookingProvider: {
+      type: "acuity",
+      owner: "220c7d10",
+      timezone: "America/Anchorage",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 85230754,
+          acuityCalendarId: 12260037,
+          name: "Community Sauna",
+          price: 35,
+          durationMinutes: 75,
+        },
+        {
+          acuityAppointmentId: 85230690,
+          acuityCalendarId: 12260037,
+          name: "Standard Session - Private 75 Minutes",
+          price: 175,
+          durationMinutes: 75,
+          private: true,
+          seats: 10,
+        },
+        {
+          acuityAppointmentId: 89129588,
+          acuityCalendarId: 12260037,
+          name: "Platinum Session - Private 75 Minutes",
+          price: 250,
+          durationMinutes: 75,
+          private: true,
+          seats: 10,
+        },
+      ],
+    },
+    instagram: "sauna_valdez_ak",
+    googleMapsUrl: "https://maps.app.goo.gl/jowhLdKWsFkT4aVL8",
+    sessionPrice: 35,
+    sessionLengthMinutes: 75,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true,
+    showers: true,
+    towelsIncluded: false,
+    capacity: 10,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimwear required",
+    notes:
+      "Wood-fired sauna at Eagles Rest RV Park in Valdez. Community sessions (MWF 4:30pm, 6pm, 7:30pm; Sat & Sun 6pm) from $35/person. Private sessions from $175 for up to 10 guests. Indoor bathrooms and showers available Nov–May.",
+    lat: 61.1311695,
+    lng: -146.3455963,
+    updatedAt: "2026-03-06",
+    images: [
+      {
+        url: "/saunas/sauna-valdez/sauna-exterior.webp",
+        alt: "Two people relaxing inside the wood-fired Sauna Valdez with trees visible through the window",
+      },
+    ],
   },
   {
     slug: "kananaskis-nordic-spa",

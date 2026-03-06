@@ -44,7 +44,7 @@ Supported platforms: Acuity, Wix, Glofox, Periode, Boulevard, Mariana Tek, Vagar
 - **Query the platform's API** to get the required IDs (class type IDs, appointment IDs, service IDs, etc.) — do not leave these for later
 - Follow platform-specific setup guides in [`README.md`](./README.md)
 - Only include services representing facility access (not personal services like massage)
-- If the sauna uses an unsupported platform, check if it has a public API comparable in complexity to existing integrations — if so, integrate it; if not, note it in the listing and move on
+- If the sauna uses an unsupported platform, **integrate it**. Investigate the platform's storefront/booking widget (inspect network requests, page source, embedded scripts) to discover the API endpoints it uses. If the integration is no more complex than existing providers, add full support: type definition in `saunas.ts`, availability fetcher in the API route, switch case, and README docs. Do not skip this step or mark the platform as unsupported without first attempting the integration
 - A listing with a supported booking platform but no `bookingProvider` config is incomplete and should not be merged
 
 ## 4. SEO Locations
