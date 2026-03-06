@@ -396,25 +396,20 @@ export function SaunaAvailability({ sauna, availabilityDate, onAvailabilityDateC
           <p className="text-xs text-muted-foreground uppercase tracking-wide">
             Availability
           </p>
-          {availabilityDate && singleTypePriceLabel && (
-            <span className="text-xs text-muted-foreground">{singleTypePriceLabel}</span>
-          )}
         </div>
         {datePicker}
       </div>
       <div className="space-y-4">
         {displayDates.map((dateStr) => (
           <div key={dateStr}>
-            {!availabilityDate && (
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium">
-                  {formatDateLabel(dateStr)}
-                </p>
-                {singleTypePriceLabel && (
-                  <span className="text-xs text-muted-foreground shrink-0">{singleTypePriceLabel}</span>
-                )}
-              </div>
-            )}
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium">
+                {formatDateLabel(dateStr)}
+              </p>
+              {singleTypePriceLabel && (
+                <span className="text-xs text-muted-foreground shrink-0">{singleTypePriceLabel}</span>
+              )}
+            </div>
             <div className="space-y-2">
               {byDate[dateStr].map(({ appointmentType, slots }) => (
                 <div key={appointmentType.appointmentTypeId}>
