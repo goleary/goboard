@@ -103,6 +103,12 @@ export function SaunaFilters({
 
   const updateFilter = useCallback(
     <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+      if (typeof window !== "undefined" && (window as any).umami) {
+        (window as any).umami.track("filter-toggle", {
+          filter: key.replace("Only", ""),
+          enabled: String(value),
+        });
+      }
       onFiltersChange({ ...filters, [key]: value });
     },
     [filters, onFiltersChange]
@@ -118,6 +124,12 @@ export function SaunaFilters({
 
   const handleAvailabilityToggle = useCallback(
     (checked: boolean) => {
+      if (typeof window !== "undefined" && (window as any).umami) {
+        (window as any).umami.track("availability-toggle", {
+          enabled: String(checked),
+          date: checked ? defaultDate : "",
+        });
+      }
       onFiltersChange({
         ...filters,
         availabilityDate: checked ? defaultDate : null,
@@ -130,9 +142,13 @@ export function SaunaFilters({
   const handleDateSelect = useCallback(
     (date: Date | undefined) => {
       if (date) {
+        const dateStr = localDateStr(date);
+        if (typeof window !== "undefined" && (window as any).umami) {
+          (window as any).umami.track("availability-date-change", { date: dateStr });
+        }
         onFiltersChange({
           ...filters,
-          availabilityDate: localDateStr(date),
+          availabilityDate: dateStr,
         });
         setCalendarOpen(false);
       }

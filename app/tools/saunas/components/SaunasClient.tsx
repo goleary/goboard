@@ -98,6 +98,9 @@ export function SaunasClient({ saunas, title, basePath, center, zoom }: SaunasCl
   }, [searchParams, basePath, router]);
 
   const handleGuestsChange = useCallback((guests: number) => {
+    if (typeof window !== "undefined" && (window as any).umami) {
+      (window as any).umami.track("availability-guests-change", { guests: String(guests) });
+    }
     setFilters((prev) => {
       const newFilters = { ...prev, guests };
       const params = new URLSearchParams(searchParams.toString());
