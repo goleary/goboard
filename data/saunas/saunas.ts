@@ -4339,6 +4339,10 @@ export const saunas: Sauna[] = [
         url: "/saunas/alyeska-nordic-spa/pools-aerial.jpg",
         alt: "Guests relaxing in the outdoor hydrotherapy pool with timber pavilion and evergreen trees at Alyeska Nordic Spa",
       },
+      {
+        url: "/saunas/alyeska-nordic-spa/cold-waterfall.jpg",
+        alt: "Cold plunge waterfall pool with mountain views and evergreen trees at Alyeska Nordic Spa",
+      },
     ],
   },
   {
