@@ -1249,6 +1249,8 @@ export interface Sauna {
   isOutside?: boolean;
   /** Whether this is a mobile sauna that delivers to your location */
   isDelivery?: boolean;
+  /** Whether the facility is walk-in only (no reservation required) */
+  isWalkIn?: boolean;
   /** Whether the sauna is on tidal water (e.g. Puget Sound) */
   tidal?: boolean;
   /** NOAA tide station ID for fetching tide predictions */
@@ -9004,6 +9006,7 @@ export const saunas: Sauna[] = [
     googleMapsUrl: "https://maps.app.goo.gl/KXv7GiN4DCyysTtg7",
     instagram: "swbathhouse.tearoom",
     heaterType: "wood",
+    isWalkIn: true,
     sessionPrice: 65,
     currency: "CAD",
     sessionLengthMinutes: null,
@@ -9084,6 +9087,7 @@ export const saunas: Sauna[] = [
     website: "https://banyarichmondhill.ca/",
     googleMapsUrl: "https://maps.app.goo.gl/DAYjzLy1EvhX6bCh8",
     instagram: "banyarichmondhill",
+    isWalkIn: true,
     sessionPrice: 65,
     currency: "CAD",
     sessionLengthMinutes: null,
