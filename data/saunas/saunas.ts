@@ -9731,11 +9731,37 @@ export const saunas: Sauna[] = [
     address: "1 Centennial Dr, Kananaskis Village, AB T0L 2H0",
     website: "https://knordicspa.com/",
     bookingUrl: "https://klickbook.com/pomeroy/olb",
+    bookingPlatform: "klickbook",
+    bookingProvider: {
+      type: "klickbook",
+      tenantCode: "pomeroy",
+      tenantKey: "974aa905-5566-4523-883b-380b6fe33153",
+      timezone: "America/Edmonton",
+      services: [
+        {
+          serviceKey: "9c496185-642e-4583-abdc-715f1266dab8",
+          name: "Hydrotherapy: Full Day (9am-9pm)",
+          price: 145,
+          durationMinutes: 720,
+          allDay: true,
+          appointmentState: "6750fe94-dbca-4e5e-9929-2712cf6be400",
+          appointmentType: "15fcf0f7-5846-46a4-afbe-dd8eea798d6a",
+        },
+        {
+          serviceKey: "3221e776-c5c0-4918-a458-898766a5098e",
+          name: "Hydrotherapy: Twilight Soak (5pm-9pm)",
+          price: 129,
+          durationMinutes: 240,
+          appointmentState: "6750fe94-dbca-4e5e-9929-2712cf6be400",
+          appointmentType: "15fcf0f7-5846-46a4-afbe-dd8eea798d6a",
+        },
+      ],
+    },
     instagram: "knordicspa",
     googleMapsUrl: "https://maps.app.goo.gl/UDWeLXEGoojt6TWC8",
     sessionPrice: 145,
     currency: "CAD",
-    sessionLengthMinutes: 720, // Full-day access 9AM-9PM
+    sessionLengthMinutes: null, // Full-day access
     steamRoom: true, // Steam cabin with essential oils
     coldPlunge: true, // Cold plunge pool and cold cascades
     soakingTub: true, // Multiple hot pools (Gathering Pool, Reflections Pool, Elements Pool)
