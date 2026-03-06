@@ -43,7 +43,8 @@ export type LocationSlug =
   | "horseshoe-valley"
   | "blue-mountain"
   | "burlington"
-  | "vermont";
+  | "vermont"
+  | "alaska";
 
 /**
  * Location metadata for display and routing
@@ -438,6 +439,15 @@ export const locations: Location[] = [
       "Vermont's sauna culture features private outdoor pop-up saunas in stunning natural settings, from Lake Champlain's waterfront to Green Mountain views and waterfall plunges in the Mad River Valley.",
     center: { lat: 44.4, lng: -72.9 },
     zoom: 8,
+  },
+  {
+    slug: "alaska",
+    name: "Alaska",
+    state: "AK",
+    description:
+      "Alaska's sauna scene features Nordic spas in the Chugach Mountains and mobile wood-fired saunas delivered to stunning Kenai Peninsula locations.",
+    center: { lat: 60.5, lng: -149.3 },
+    zoom: 7,
   },
 ];
 
@@ -1241,7 +1251,8 @@ export interface Sauna {
     | "groupe-nordik"
     | "resortsuite"
     | "wellnessliving" // Unsupported: API requires HMAC signing with a server-side secret (no public API)
-    | "klickbook";
+    | "klickbook"
+    | "booqable"; // Unsupported: rental/equipment booking platform
   /**
    * Google Maps short link. Use the maps.app.goo.gl format.
    * @example "https://maps.app.goo.gl/FQ1MFyyV8vXXAhnF8"
@@ -9714,6 +9725,42 @@ export const saunas: Sauna[] = [
         },
       ],
     },
+  },
+  {
+    slug: "seward-saunas",
+    name: "Seward Saunas",
+    heaterType: "wood",
+    address: "Seward, AK 99664",
+    website: "https://sewardsaunas.com/",
+    bookingUrl: "https://sewardsaunas.com/book",
+    bookingPlatform: "booqable",
+    instagram: "sauna_valdez_ak",
+    googleMapsUrl: "https://maps.app.goo.gl/MtZN3yFQeQUmKrmj6",
+    sessionPrice: 375,
+    sessionLengthMinutes: null,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: false,
+    naturalPlunge: false,
+    isOutside: true,
+    isDelivery: true,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 10,
+    genderPolicy: "Private booking",
+    clothingPolicy: "Up to your group",
+    notes:
+      "Luxury mobile wood-fired saunas delivered across the Kenai Peninsula. Three saunas available: Aialik (12', 10 guests, from $375), Godwin (16', 8 guests, cool down room, from $400), Chenega (20', 10 guests, cool down room, from $475). Delivered at 5pm, picked up at 9am. Optional add-ons include spa towels, campfire, craft chocolate/s'mores, herbal tea, and polar plunge packages. Also available in Valdez. Seasonal lodge-only availability Oct 1 – Dec 15.",
+    lat: 60.1047739,
+    lng: -149.4421038,
+    updatedAt: "2026-03-06",
+    images: [
+      {
+        url: "/saunas/seward-saunas/aialik-sauna.webp",
+        alt: "Interior of the Aialik mobile sauna with wooden bucket and sauna accessories on a cedar bench",
+      },
+    ],
   },
 ];
 
