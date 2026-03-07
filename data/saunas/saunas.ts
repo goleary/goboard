@@ -7496,6 +7496,74 @@ export const saunas: Sauna[] = [
     ],
     // Periode publishNightly=false — no pre-generated slot data in Firestore
   },
+  {
+    slug: "lets-sauna",
+    name: "Let's Sauna",
+    heaterType: "wood",
+    markerIconOverride: "caravan",
+    address: "North Shore, MA",
+    website: "https://yesletssauna.com/",
+    instagram: "lets_sauna",
+    bookingUrl:
+      "https://app.acuityscheduling.com/schedule.php?owner=33904829",
+    bookingPlatform: "acuity",
+    sessionPrice: 40,
+    sessionLengthMinutes: 60,
+    steamRoom: false,
+    coldPlunge: false,
+    soakingTub: false,
+    waterfront: true,
+    naturalPlunge: true,
+    isOutside: true,
+    showers: false,
+    towelsIncluded: false,
+    capacity: 6,
+    genderPolicy: "Co-ed",
+    clothingPolicy: "Swimsuit required",
+    notes:
+      "Women-owned wood-fired mobile sauna on the North Shore of Massachusetts. Community sessions at rotating outdoor locations including Pavilion Beach in Ipswich, Hood Pond in Topsfield, and Fisherman's Beach in Swampscott. Private rentals also available ($650-$950/day). Seats 6. Must be 18+. Bring your own towel and water.",
+    lat: 42.6991812,
+    lng: -70.792131,
+    updatedAt: "2026-03-06",
+    images: [
+      {
+        url: "/saunas/lets-sauna/hero.jpg",
+        alt: "Let's Sauna wood-fired barrel sauna",
+      },
+      {
+        url: "/saunas/lets-sauna/interior.jpg",
+        alt: "Let's Sauna interior with wooden benches and heater",
+      },
+    ],
+    bookingProvider: {
+      type: "acuity",
+      owner: "478f18de",
+      timezone: "America/New_York",
+      appointmentTypes: [
+        {
+          acuityAppointmentId: 77002314,
+          acuityCalendarId: 11036998,
+          name: "Pavilion Beach Ipswich",
+          price: 40,
+          durationMinutes: 60,
+        },
+        {
+          acuityAppointmentId: 83684969,
+          acuityCalendarId: 11036998,
+          name: "Hood Pond in Topsfield",
+          price: 40,
+          durationMinutes: 60,
+        },
+        {
+          acuityAppointmentId: 88429524,
+          acuityCalendarId: 11036998,
+          name: "Fisherman's Beach in Swampscott",
+          price: 40,
+          durationMinutes: 60,
+        },
+      ],
+    },
+  },
   // New York City
   {
     slug: "lore-bathing-club",
