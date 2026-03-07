@@ -1,6 +1,6 @@
 "use client";
 
-import { TimeSlotBadge } from "@/app/tools/saunas/components/TimeSlotBadge";
+import { TimeSlotBadge } from "@/app/tools/saunas-backup/components/TimeSlotBadge";
 import { useCallback, useEffect, useState } from "react";
 
 interface SlotData {

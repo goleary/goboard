@@ -2,7 +2,7 @@ import {
   getMarkerPinHtml,
   getMarkerPinHtmlWithCustomGlyph,
   type MarkerIconOverride,
-} from "../saunas/components/markerHtml";
+} from "../saunas-backup/components/markerHtml";
 
 const variants: {
   label: string;
