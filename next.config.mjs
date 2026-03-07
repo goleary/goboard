@@ -56,7 +56,7 @@ const nextConfig = {
     return [
       {
         source: "/tools/saunas/:path*",
-        destination: "https://etsauna-production-2c54.up.railway.app/:path*",
+        destination: "https://etsauna-production-2c54.up.railway.app/tools/saunas/:path*",
       },
     ];
   },
