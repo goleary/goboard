@@ -52,6 +52,14 @@ const nextConfig = {
     ],
   },
 
+  rewrites: async () => {
+    return [
+      {
+        source: "/tools/saunas/:path*",
+        destination: "https://etsauna-production-2c54.up.railway.app/:path*",
+      },
+    ];
+  },
   // Configure `pageExtensions` to include markdown and MDX files
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   // Optionally, add any other Next.js config below
