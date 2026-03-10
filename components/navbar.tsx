@@ -40,9 +40,9 @@ export default async function Navbar() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/tools/saunas">
+              <a href="https://etsauna.com" target="_blank" rel="noopener noreferrer">
                 Sauna Map
-              </Link>
+              </a>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/tools/current-map">
