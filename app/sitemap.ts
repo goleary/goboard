@@ -1,5 +1,4 @@
 import { MetadataRoute } from "next";
-import { saunas, locations, getLatestUpdateDate } from "@/data/saunas/saunas";
 import {
   getSortedWorksData,
   getSortedPostsData,
@@ -71,35 +70,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Saunas pages - use the latest sauna update date for accurate lastModified
-  const latestSaunaUpdate = new Date(getLatestUpdateDate());
-
-  const saunaIndexPage: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/tools/saunas`,
-      lastModified: latestSaunaUpdate,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-  ];
-
-  // Location-specific sauna pages with SEO-optimized metadata
-  const saunaLocationPages: MetadataRoute.Sitemap = locations.map(
-    (location) => ({
-      url: `${baseUrl}/tools/saunas/${location.slug}`,
-      lastModified: latestSaunaUpdate,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    })
-  );
-
-  const saunaDetailPages: MetadataRoute.Sitemap = saunas.map((sauna) => ({
-    url: `${baseUrl}/tools/saunas?sauna=${sauna.slug}`,
-    lastModified: new Date(sauna.updatedAt),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
   // Dynamic content pages
   const works = getSortedWorksData();
   const workPages: MetadataRoute.Sitemap = works.map((work) => ({
@@ -128,10 +98,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticPages,
     ...toolPages,
-    ...saunaIndexPage,
-    ...saunaLocationPages,
-    ...saunaDetailPages,
-    ...workPages,
+...workPages,
     ...postPages,
     ...travelPages,
   ];
