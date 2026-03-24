@@ -30,15 +30,25 @@ const nextConfig = {
           "/posts/2022-05-04-segment-custom-domain-proxy-on-cloudflare",
         permanent: true,
       },
-      // Redirect old seattle-saunas routes to new tools/saunas/seattle
+      // Redirect sauna pages to etsauna.com
+      {
+        source: "/tools/saunas",
+        destination: "https://etsauna.com",
+        permanent: true,
+      },
+      {
+        source: "/tools/saunas/:location",
+        destination: "https://etsauna.com/l/:location",
+        permanent: true,
+      },
       {
         source: "/seattle-saunas",
-        destination: "/tools/saunas/seattle",
+        destination: "https://etsauna.com/l/seattle",
         permanent: true,
       },
       {
         source: "/seattle-saunas/:path*",
-        destination: "/tools/saunas/seattle",
+        destination: "https://etsauna.com/l/seattle",
         permanent: true,
       },
     ];
