@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { SECONDARY_CURRENT_STATIONS, SecondaryCurrentStation } from "./secondary-stations";
 
 const CHS_API_BASE = "https://api-iwls.dfo-mpo.gc.ca/api/v1";
 
@@ -89,13 +90,15 @@ const GET = async (request: NextRequest) => {
 
   const stationsWithPredictions: StationWithPrediction[] = [];
 
+  const filteredStations = CHS_CURRENT_STATIONS;
+
   // Process stations in batches to avoid CHS API rate limits (429)
   const BATCH_SIZE = 3;
   const BATCH_DELAY_MS = 300;
   const results: PromiseSettledResult<StationWithPrediction | null>[] = [];
 
-  for (let i = 0; i < CHS_CURRENT_STATIONS.length; i += BATCH_SIZE) {
-    const batch = CHS_CURRENT_STATIONS.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < filteredStations.length; i += BATCH_SIZE) {
+    const batch = filteredStations.slice(i, i + BATCH_SIZE);
     const batchResults = await Promise.allSettled(
       batch.map(async (station) => {
         const [speedData, directionData] = await Promise.all([
@@ -200,7 +203,7 @@ const GET = async (request: NextRequest) => {
       })
     );
     results.push(...batchResults);
-    if (i + BATCH_SIZE < CHS_CURRENT_STATIONS.length) {
+    if (i + BATCH_SIZE < filteredStations.length) {
       await new Promise((r) => setTimeout(r, BATCH_DELAY_MS));
     }
   }
@@ -221,6 +224,76 @@ const GET = async (request: NextRequest) => {
     }
 
     stationsWithPredictions.push(station);
+  }
+
+  // Compute secondary station predictions from reference stations
+  const refByCode = new Map<string, StationWithPrediction>();
+  for (const s of stationsWithPredictions) {
+    // id is "chs-{code}"
+    const code = s.id.replace("chs-", "");
+    refByCode.set(code, s);
+  }
+
+  for (const sec of SECONDARY_CURRENT_STATIONS) {
+    const ref = refByCode.get(sec.referenceStation);
+    if (!ref || !ref.predictions.length) continue;
+
+    // Average time shift in minutes (average of the 4 time differences)
+    const td = sec.timeDifferences;
+    const avgShiftMs =
+      ((td.turnToFlood + td.maxFlood + td.turnToEbb + td.maxEbb) / 4) *
+      60 *
+      1000;
+
+    const ebbDir = (sec.floodDir + 180) % 360;
+
+    const predictions: StationWithPrediction["predictions"] = ref.predictions.map((p) => {
+      // Shift time
+      const shiftedTime = new Date(
+        new Date(p.Time).getTime() + avgShiftMs
+      );
+      const rounded = roundTo30Min(shiftedTime)
+        .replace("Z", "")
+        .replace(".000", "");
+
+      // Scale velocity
+      let velocity: number;
+      const isFlood = p.Velocity_Major >= 0;
+      if (sec.speed.percentRate) {
+        const pct = isFlood ? sec.speed.flood : sec.speed.ebb;
+        velocity = p.Velocity_Major * (pct / 100);
+      } else {
+        // Absolute max rate — scale proportionally
+        const refMax = Math.max(
+          ...ref.predictions.map((rp) => Math.abs(rp.Velocity_Major))
+        );
+        const maxRate = isFlood ? sec.speed.flood : sec.speed.ebb;
+        velocity =
+          refMax > 0
+            ? p.Velocity_Major * (maxRate / refMax)
+            : 0;
+      }
+
+      return {
+        Time: rounded,
+        Velocity_Major: velocity,
+        meanFloodDir: sec.floodDir,
+        meanEbbDir: ebbDir,
+        Bin: "1",
+        Depth: "0",
+      };
+    });
+
+    if (predictions.length === expectedLen) {
+      stationsWithPredictions.push({
+        id: `chs-${sec.code}`,
+        name: sec.name,
+        lat: sec.lat,
+        lng: sec.lng,
+        source: "chs",
+        predictions,
+      });
+    }
   }
 
   return Response.json(stationsWithPredictions);
