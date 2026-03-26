@@ -22,7 +22,7 @@ const Title: React.FC = () => {
       }}
     >
       <div style={{ fontSize: 18, fontWeight: "bold" }}>
-        Salish Sea Current Predictions
+        Salish Sea Current Map
       </div>
     </div>
   );

@@ -46,7 +46,7 @@ export default async function Navbar() {
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/tools/current-map">
-                PNW Current Map
+                Salish Sea Current Map
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
