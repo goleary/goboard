@@ -90,35 +90,47 @@ const GET = async (request: NextRequest) => {
   const from = `${beginDate.slice(0, 4)}-${beginDate.slice(4, 6)}-${beginDate.slice(6, 8)}T00:00:00Z`;
   const to = `${endDate.slice(0, 4)}-${endDate.slice(4, 6)}-${endDate.slice(6, 8)}T00:00:00Z`;
 
-  const results = await Promise.allSettled(
-    CHS_TIDE_STATIONS.map(async (station) => {
-      const data = await fetchWaterLevel(station.id, from, to);
-      if (!data.length) return null;
+  // Process stations in batches to avoid CHS API rate limits (429)
+  const BATCH_SIZE = 3;
+  const BATCH_DELAY_MS = 300;
+  const results: PromiseSettledResult<TideStationWithPrediction | null>[] = [];
 
-      const seen = new Set<string>();
-      const predictions: TideStationWithPrediction["predictions"] = [];
+  for (let i = 0; i < CHS_TIDE_STATIONS.length; i += BATCH_SIZE) {
+    const batch = CHS_TIDE_STATIONS.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.allSettled(
+      batch.map(async (station) => {
+        const data = await fetchWaterLevel(station.id, from, to);
+        if (!data.length) return null;
 
-      for (const dp of data) {
-        const rounded = roundTo30Min(new Date(dp.eventDate));
-        if (seen.has(rounded)) continue;
-        seen.add(rounded);
+        const seen = new Set<string>();
+        const predictions: TideStationWithPrediction["predictions"] = [];
 
-        predictions.push({
-          Time: rounded.replace("Z", "").replace(".000", ""),
-          waterLevel: dp.value,
-        });
-      }
+        for (const dp of data) {
+          const rounded = roundTo30Min(new Date(dp.eventDate));
+          if (seen.has(rounded)) continue;
+          seen.add(rounded);
 
-      return {
-        id: `chs-tide-${station.code}`,
-        name: station.name,
-        lat: station.lat,
-        lng: station.lng,
-        source: "chs-tide" as const,
-        predictions,
-      };
-    })
-  );
+          predictions.push({
+            Time: rounded.replace("Z", "").replace(".000", ""),
+            waterLevel: dp.value,
+          });
+        }
+
+        return {
+          id: `chs-tide-${station.code}`,
+          name: station.name,
+          lat: station.lat,
+          lng: station.lng,
+          source: "chs-tide" as const,
+          predictions,
+        };
+      })
+    );
+    results.push(...batchResults);
+    if (i + BATCH_SIZE < CHS_TIDE_STATIONS.length) {
+      await new Promise((r) => setTimeout(r, BATCH_DELAY_MS));
+    }
+  }
 
   const stations: TideStationWithPrediction[] = [];
   let expectedLen: number | undefined;

@@ -89,55 +89,121 @@ const GET = async (request: NextRequest) => {
 
   const stationsWithPredictions: StationWithPrediction[] = [];
 
-  const results = await Promise.allSettled(
-    CHS_CURRENT_STATIONS.map(async (station) => {
-      const [speedData, directionData] = await Promise.all([
-        fetchTimeSeries(station.id, "wcsp1", from, to),
-        fetchTimeSeries(station.id, "wcdp1", from, to),
-      ]);
+  // Process stations in batches to avoid CHS API rate limits (429)
+  const BATCH_SIZE = 3;
+  const BATCH_DELAY_MS = 300;
+  const results: PromiseSettledResult<StationWithPrediction | null>[] = [];
 
-      if (!speedData.length || !directionData.length) {
-        return null;
-      }
+  for (let i = 0; i < CHS_CURRENT_STATIONS.length; i += BATCH_SIZE) {
+    const batch = CHS_CURRENT_STATIONS.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.allSettled(
+      batch.map(async (station) => {
+        const [speedData, directionData] = await Promise.all([
+          fetchTimeSeries(station.id, "wcsp1", from, to),
+          fetchTimeSeries(station.id, "wcdp1", from, to),
+        ]);
 
-      // Index direction data by rounded time for quick lookup
-      const dirByTime = new Map<string, number>();
-      for (const d of directionData) {
-        dirByTime.set(roundTo30Min(new Date(d.eventDate)), d.value);
-      }
+        if (!speedData.length || !directionData.length) {
+          return null;
+        }
 
-      // Filter speed data to 30-minute intervals and pair with direction
-      const seen = new Set<string>();
-      const predictions: StationWithPrediction["predictions"] = [];
+        // Index direction data by rounded time for quick lookup
+        const dirByTime = new Map<string, number>();
+        for (const d of directionData) {
+          dirByTime.set(roundTo30Min(new Date(d.eventDate)), d.value);
+        }
 
-      for (const sp of speedData) {
-        const rounded = roundTo30Min(new Date(sp.eventDate));
-        if (seen.has(rounded)) continue;
-        seen.add(rounded);
+        // Determine flood vs ebb direction.
+        // CHS gives speed (always positive) + direction. Direction alternates
+        // between two ~opposite bearings. We identify the two clusters and
+        // pick the one associated with the first speed peak as "flood".
+        const allDirs = directionData.map((d) => d.value);
+        // Find two dominant direction clusters using the first direction as seed
+        if (!allDirs.length) return null;
+        const ref = allDirs[0];
+        const cluster1: number[] = [];
+        const cluster2: number[] = [];
+        for (const dir of allDirs) {
+          // Angular difference
+          let diff = Math.abs(dir - ref);
+          if (diff > 180) diff = 360 - diff;
+          if (diff < 90) {
+            cluster1.push(dir);
+          } else {
+            cluster2.push(dir);
+          }
+        }
+        // Circular mean for each cluster
+        const circularMean = (angles: number[]) => {
+          if (!angles.length) return 0;
+          let sinSum = 0, cosSum = 0;
+          for (const a of angles) {
+            sinSum += Math.sin((a * Math.PI) / 180);
+            cosSum += Math.cos((a * Math.PI) / 180);
+          }
+          let mean = (Math.atan2(sinSum, cosSum) * 180) / Math.PI;
+          if (mean < 0) mean += 360;
+          return mean;
+        };
+        const dir1 = circularMean(cluster1);
+        const dir2 = circularMean(cluster2.length ? cluster2 : cluster1);
 
-        const direction = dirByTime.get(rounded);
-        if (direction === undefined) continue;
+        // Find first speed peak to determine which direction is flood
+        let maxSpeedIdx = 0;
+        for (let si = 1; si < speedData.length && si < speedData.length / 2; si++) {
+          if (speedData[si].value > speedData[maxSpeedIdx].value) {
+            maxSpeedIdx = si;
+          }
+        }
+        const peakTime = roundTo30Min(new Date(speedData[maxSpeedIdx].eventDate));
+        const peakDir = dirByTime.get(peakTime) ?? dir1;
+        let diffToDir1 = Math.abs(peakDir - dir1);
+        if (diffToDir1 > 180) diffToDir1 = 360 - diffToDir1;
+        const floodDir = diffToDir1 < 90 ? dir1 : dir2;
+        const ebbDir = diffToDir1 < 90 ? dir2 : dir1;
 
-        predictions.push({
-          Time: rounded.replace("Z", "").replace(".000", ""),
-          Velocity_Major: sp.value,
-          meanFloodDir: direction,
-          meanEbbDir: direction,
-          Bin: "1",
-          Depth: "0",
-        });
-      }
+        // Filter speed data to 30-minute intervals and pair with direction
+        const seen = new Set<string>();
+        const predictions: StationWithPrediction["predictions"] = [];
 
-      return {
-        id: `chs-${station.code}`,
-        name: station.name,
-        lat: station.lat,
-        lng: station.lng,
-        source: "chs" as const,
-        predictions,
-      };
-    })
-  );
+        for (const sp of speedData) {
+          const rounded = roundTo30Min(new Date(sp.eventDate));
+          if (seen.has(rounded)) continue;
+          seen.add(rounded);
+
+          const direction = dirByTime.get(rounded);
+          if (direction === undefined) continue;
+
+          // Determine if this is flood or ebb based on direction
+          let diffToFlood = Math.abs(direction - floodDir);
+          if (diffToFlood > 180) diffToFlood = 360 - diffToFlood;
+          const isFlood = diffToFlood < 90;
+
+          predictions.push({
+            Time: rounded.replace("Z", "").replace(".000", ""),
+            Velocity_Major: isFlood ? sp.value : -sp.value,
+            meanFloodDir: floodDir,
+            meanEbbDir: ebbDir,
+            Bin: "1",
+            Depth: "0",
+          });
+        }
+
+        return {
+          id: `chs-${station.code}`,
+          name: station.name,
+          lat: station.lat,
+          lng: station.lng,
+          source: "chs" as const,
+          predictions,
+        };
+      })
+    );
+    results.push(...batchResults);
+    if (i + BATCH_SIZE < CHS_CURRENT_STATIONS.length) {
+      await new Promise((r) => setTimeout(r, BATCH_DELAY_MS));
+    }
+  }
 
   let expectedLen: number | undefined;
   for (const result of results) {
