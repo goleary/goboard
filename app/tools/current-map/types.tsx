@@ -12,5 +12,20 @@ export type StationWithPrediction = {
   name: string;
   lat: number;
   lng: number;
+  source?: "noaa" | "chs";
   predictions: CurrentPrediction[];
+};
+
+export interface TidePrediction {
+  Time: string;
+  waterLevel: number;
+}
+
+export type TideStationWithPrediction = {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  source: "chs-tide";
+  predictions: TidePrediction[];
 };

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import dateFormat from "dateformat";
 
-import { StationWithPrediction } from "./types";
+import { StationWithPrediction, TideStationWithPrediction } from "./types";
 import Controls from "./components/Controls";
 import Legend from "./components/Legend";
 import Title from "./components/Title";
@@ -15,8 +15,14 @@ const Map = dynamic(() => import("./components/Map"), {
 const StationMarker = dynamic(() => import("./components/StationMarker"), {
   ssr: false,
 });
+const TideMarker = dynamic(() => import("./components/TideMarker"), {
+  ssr: false,
+});
 function App() {
   const [stations, setStations] = useState<StationWithPrediction[]>([]);
+  const [tideStations, setTideStations] = useState<
+    TideStationWithPrediction[]
+  >([]);
 
   const [sliderValue, setSliderValue] = useState(0);
 
@@ -34,11 +40,29 @@ function App() {
         end_date: dateFormat(threeDaysInTheFuture, mask),
         interval: "30",
       });
-      const response = await fetch("/api/predictions?" + params.toString(), {});
-      const stationsResult = (await response.json()) as StationWithPrediction[];
-      setStations(stationsResult);
 
-      setDates(stationsResult[0].predictions.map(({ Time }) => new Date(Time)));
+      const [noaaResponse, chsResponse, tideResponse] = await Promise.all([
+        fetch("/api/predictions?" + params.toString()),
+        fetch("/api/predictions/chs?" + params.toString()),
+        fetch("/api/predictions/chs-tides?" + params.toString()),
+      ]);
+
+      const noaaStations =
+        (await noaaResponse.json()) as StationWithPrediction[];
+      const chsStations =
+        (await chsResponse.json()) as StationWithPrediction[];
+      const chsTideStations =
+        (await tideResponse.json()) as TideStationWithPrediction[];
+
+      const allCurrentStations = [...noaaStations, ...chsStations];
+      setStations(allCurrentStations);
+      setTideStations(chsTideStations);
+
+      if (allCurrentStations.length > 0) {
+        setDates(
+          allCurrentStations[0].predictions.map(({ Time }) => new Date(Time))
+        );
+      }
     };
     fetchStationData();
   }, []);
@@ -49,6 +73,9 @@ function App() {
         {/* TODO: could memoize this or the stations themselves */}
         {stations.map((s) => (
           <StationMarker key={s.id} {...s} index={sliderValue} />
+        ))}
+        {tideStations.map((s) => (
+          <TideMarker key={s.id} {...s} index={sliderValue} />
         ))}
       </Map>
       <Title />

@@ -28,7 +28,9 @@ const StationMarker: React.FC<StationWithPrediction & { index: number }> = ({
   predictions,
   index,
 }) => {
-  const prediction = predictions[index];
+  const clampedIndex = Math.min(index, predictions.length - 1);
+  const prediction = predictions[clampedIndex];
+  if (!prediction) return null;
   const rotation =
     prediction.Velocity_Major > 0
       ? prediction.meanFloodDir
@@ -55,7 +57,11 @@ const StationMarker: React.FC<StationWithPrediction & { index: number }> = ({
     >
       <Popup>
         <a
-          href={`https://tidesandcurrents.noaa.gov/noaacurrents/Predictions?id=${id}`}
+          href={
+            id.startsWith("chs-")
+              ? `https://www.tides.gc.ca/en/stations/${id.replace("chs-", "")}`
+              : `https://tidesandcurrents.noaa.gov/noaacurrents/Predictions?id=${id}`
+          }
           rel="noreferrer"
           target="_blank"
         >

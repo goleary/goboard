@@ -18,11 +18,11 @@ const Legend: React.FC = () => {
         borderRadius: 8,
         display: "flex",
         flexDirection: "column",
-        maxWidth: 120,
+        maxWidth: 140,
       }}
     >
-      <div style={{ fontSize: 18, padding: "12px 0 8px", textAlign: "center" }}>
-        Predicted current speed
+      <div style={{ fontSize: 14, padding: "8px 0 4px", textAlign: "center", fontWeight: "bold" }}>
+        Current speed
       </div>
       {LEGEND_COLORS.map((color, i) => (
         <div
@@ -30,8 +30,9 @@ const Legend: React.FC = () => {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            fontSize: 12,
           }}
-          key={i}
+          key={`current-${i}`}
         >
           <div
             style={{
@@ -47,7 +48,38 @@ const Legend: React.FC = () => {
           {` knots`}
         </div>
       ))}
-      <div style={{ fontSize: 16, padding: "12px 0 8px", textAlign: "center" }}>
+      <div
+        style={{
+          borderTop: "1px solid #ddd",
+          marginTop: 8,
+          paddingTop: 4,
+          fontSize: 14,
+          textAlign: "center",
+          fontWeight: "bold",
+        }}
+      >
+        Tide level
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          fontSize: 12,
+          gap: 8,
+          padding: "4px 0",
+        }}
+      >
+        <svg width="24" height="12" viewBox="0 0 24 12">
+          <circle cx="6" cy="6" r="5" fill="#d1e5f0" stroke="white" strokeWidth="1" />
+          <circle cx="18" cy="6" r="5" fill="#d1e5f0" stroke="white" strokeWidth="1" />
+          <clipPath id="legend-fill">
+            <rect x="13" y="0" width="10" height="12" />
+          </clipPath>
+          <circle cx="18" cy="6" r="5" fill="#2166ac" clipPath="url(#legend-fill)" />
+        </svg>
+        low — high
+      </div>
+      <div style={{ fontSize: 12, padding: "8px 0 4px", textAlign: "center" }}>
         built by{" "}
         <a href="/" className="underline text-nowrap">
           {"Gabe O'Leary"}
