@@ -2,64 +2,40 @@ import { NextRequest } from "next/server";
 
 const CHS_API_BASE = "https://api-iwls.dfo-mpo.gc.ca/api/v1";
 
-// Tide stations near Desolation Sound / Copeland Islands / Okeover Arm / Curme Islands
+// Tide stations across the Salish Sea (curated for coverage)
 const CHS_TIDE_STATIONS = [
-  {
-    id: "5dd3064ee0fdc4b9b4be688e",
-    code: "08006",
-    name: "Okeover Inlet",
-    lat: 49.98,
-    lng: -124.7,
-  },
-  {
-    id: "5cebf1de3d0f4a073c4bb962",
-    code: "07885",
-    name: "Lund",
-    lat: 49.9833,
-    lng: -124.7667,
-  },
-  {
-    id: "5cebf1e23d0f4a073c4bbfbd",
-    code: "08008",
-    name: "Prideaux Haven",
-    lat: 50.15,
-    lng: -124.67,
-  },
-  {
-    id: "5cebf1de3d0f4a073c4bb964",
-    code: "07892",
-    name: "Twin Islands",
-    lat: 50.03,
-    lng: -124.93,
-  },
-  {
-    id: "5cebf1de3d0f4a073c4bb985",
-    code: "08037",
-    name: "Gorge Harbour",
-    lat: 50.092,
-    lng: -124.989,
-  },
-  {
-    id: "5cebf1de3d0f4a073c4bb983",
-    code: "08025",
-    name: "Redonda Bay",
-    lat: 50.2605,
-    lng: -124.9553,
-  },
-  {
-    id: "5cebf1de3d0f4a073c4bb981",
-    code: "08015",
-    name: "Channel Island",
-    lat: 50.3167,
-    lng: -124.75,
-  },
-  {
-    id: "5cebf1de3d0f4a073c4bb960",
-    code: "07880",
-    name: "Powell River",
-    lat: 49.8667,
-    lng: -124.55,
-  },
+  // Juan de Fuca / Victoria
+  { id: "5cebf1df3d0f4a073c4bbd1e", code: "07120", name: "Victoria Harbour", lat: 48.424363, lng: -123.370828 },
+  { id: "5cebf1df3d0f4a073c4bbd0d", code: "07013", name: "Sheringham Point", lat: 48.377, lng: -123.921 },
+  { id: "5cebf1df3d0f4a073c4bbd0f", code: "07020", name: "Sooke", lat: 48.3695, lng: -123.726 },
+  // Gulf Islands
+  { id: "5cebf1df3d0f4a073c4bbd35", code: "07330", name: "Fulford Harbour", lat: 48.769, lng: -123.451 },
+  { id: "5cebf1e03d0f4a073c4bbd3d", code: "07407", name: "Ganges", lat: 48.8534, lng: -123.4973 },
+  // Nanaimo / Mid-Island
+  { id: "5cebf1de3d0f4a073c4bb96d", code: "07917", name: "Nanaimo Harbour", lat: 49.1628, lng: -123.9235 },
+  // Vancouver / Fraser
+  { id: "5cebf1de3d0f4a073c4bb943", code: "07735", name: "Vancouver", lat: 49.2863, lng: -123.0997 },
+  { id: "5cebf1de3d0f4a073c4bb94c", code: "07795", name: "Point Atkinson", lat: 49.3375, lng: -123.2536 },
+  { id: "5cebf1de3d0f4a073c4bb935", code: "07590", name: "Tsawwassen", lat: 49.0068, lng: -123.1293 },
+  // Sunshine Coast
+  { id: "5cebf1de3d0f4a073c4bb950", code: "07820", name: "Gibsons", lat: 49.402, lng: -123.505 },
+  { id: "5cebf1de3d0f4a073c4bb952", code: "07830", name: "Halfmoon Bay", lat: 49.511, lng: -123.912 },
+  // Comox / Denman
+  { id: "5cebf1de3d0f4a073c4bb979", code: "07965", name: "Comox", lat: 49.67, lng: -124.928 },
+  // Powell River / Desolation Sound
+  { id: "5cebf1de3d0f4a073c4bb960", code: "07880", name: "Powell River", lat: 49.8667, lng: -124.55 },
+  { id: "5dd3064ee0fdc4b9b4be688e", code: "08006", name: "Okeover Inlet", lat: 49.98, lng: -124.7 },
+  { id: "5cebf1de3d0f4a073c4bb962", code: "07885", name: "Lund", lat: 49.9833, lng: -124.7667 },
+  { id: "5cebf1e23d0f4a073c4bbfbd", code: "08008", name: "Prideaux Haven", lat: 50.15, lng: -124.67 },
+  { id: "5cebf1de3d0f4a073c4bb985", code: "08037", name: "Gorge Harbour", lat: 50.092, lng: -124.989 },
+  { id: "5cebf1de3d0f4a073c4bb983", code: "08025", name: "Redonda Bay", lat: 50.2605, lng: -124.9553 },
+  { id: "5cebf1de3d0f4a073c4bb981", code: "08015", name: "Channel Island", lat: 50.3167, lng: -124.75 },
+  // Discovery Islands / Campbell River
+  { id: "5cebf1de3d0f4a073c4bb996", code: "08074", name: "Campbell River", lat: 50.042, lng: -125.247 },
+  { id: "5cebf1de3d0f4a073c4bb989", code: "08045", name: "Surge Narrows", lat: 50.2272, lng: -125.112 },
+  { id: "5cebf1de3d0f4a073c4bb99a", code: "08120", name: "Owen Bay", lat: 50.3105, lng: -125.2234 },
+  // Howe Sound
+  { id: "5cebf1de3d0f4a073c4bb94e", code: "07811", name: "Squamish", lat: 49.695, lng: -123.155 },
 ];
 
 interface CHSDataPoint {
