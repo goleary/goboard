@@ -47,7 +47,7 @@ class CurrentApi {
     const defaultParams = {
       station: stationId,
       product: "currents_predictions",
-      time_zone: "lst",
+      time_zone: "gmt",
       interval: 30,
       units: "english",
       format: "json",

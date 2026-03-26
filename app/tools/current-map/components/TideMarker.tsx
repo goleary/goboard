@@ -154,6 +154,7 @@ const TideMarker: React.FC<TideStationWithPrediction & { index: number }> = ({
   id,
   lat,
   lng,
+  source,
   predictions,
   index,
 }) => {
@@ -176,7 +177,10 @@ const TideMarker: React.FC<TideStationWithPrediction & { index: number }> = ({
 
   const level = prediction.waterLevel;
   const date = new Date(prediction.Time);
-  const stationCode = id.replace("chs-tide-", "");
+  const isNoaa = source === "noaa-tide";
+  const stationCode = isNoaa
+    ? id.replace("noaa-tide-", "")
+    : id.replace("chs-tide-", "");
 
   const chartSvg = useMemo(
     () => buildChartSvg(predictions, clampedIndex),
@@ -196,7 +200,11 @@ const TideMarker: React.FC<TideStationWithPrediction & { index: number }> = ({
       <Popup minWidth={330}>
         <div>
           <a
-            href={`https://www.tides.gc.ca/en/stations/${stationCode}`}
+            href={
+              isNoaa
+                ? `https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=${stationCode}`
+                : `https://www.tides.gc.ca/en/stations/${stationCode}`
+            }
             rel="noreferrer"
             target="_blank"
             style={{ fontWeight: "bold" }}

@@ -26,6 +26,6 @@ export type TideStationWithPrediction = {
   name: string;
   lat: number;
   lng: number;
-  source: "chs-tide";
+  source: "chs-tide" | "noaa-tide";
   predictions: TidePrediction[];
 };

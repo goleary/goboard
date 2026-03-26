@@ -60,22 +60,26 @@ function App() {
       interval: "30",
     });
 
-    const [noaaResponse, chsResponse, tideResponse] = await Promise.all([
-      fetch("/api/predictions?" + params.toString()),
-      fetch("/api/predictions/chs?" + params.toString()),
-      fetch("/api/predictions/chs-tides?" + params.toString()),
-    ]);
+    const [noaaResponse, chsResponse, chsTideResponse, noaaTideResponse] =
+      await Promise.all([
+        fetch("/api/predictions?" + params.toString()),
+        fetch("/api/predictions/chs?" + params.toString()),
+        fetch("/api/predictions/chs-tides?" + params.toString()),
+        fetch("/api/predictions/noaa-tides?" + params.toString()),
+      ]);
 
     const noaaStations =
       (await noaaResponse.json()) as StationWithPrediction[];
     const chsStations =
       (await chsResponse.json()) as StationWithPrediction[];
     const chsTideStations =
-      (await tideResponse.json()) as TideStationWithPrediction[];
+      (await chsTideResponse.json()) as TideStationWithPrediction[];
+    const noaaTideStations =
+      (await noaaTideResponse.json()) as TideStationWithPrediction[];
 
     const allCurrentStations = [...noaaStations, ...chsStations];
     setAllStations(allCurrentStations);
-    setAllTideStations(chsTideStations);
+    setAllTideStations([...chsTideStations, ...noaaTideStations]);
 
     if (allCurrentStations.length > 0) {
       setDates(

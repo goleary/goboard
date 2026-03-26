@@ -238,44 +238,44 @@ const GET = async (request: NextRequest) => {
     const ref = refByCode.get(sec.referenceStation);
     if (!ref || !ref.predictions.length) continue;
 
-    // Average time shift in minutes (average of the 4 time differences)
+    // Average time shift in 30-min intervals (negative = secondary leads reference)
     const td = sec.timeDifferences;
-    const avgShiftMs =
-      ((td.turnToFlood + td.maxFlood + td.turnToEbb + td.maxEbb) / 4) *
-      60 *
-      1000;
+    const avgShiftMin =
+      (td.turnToFlood + td.maxFlood + td.turnToEbb + td.maxEbb) / 4;
+    // Convert to index offset (predictions are at 30-min intervals)
+    const indexOffset = Math.round(avgShiftMin / 30);
 
     const ebbDir = (sec.floodDir + 180) % 360;
 
-    const predictions: StationWithPrediction["predictions"] = ref.predictions.map((p) => {
-      // Shift time
-      const shiftedTime = new Date(
-        new Date(p.Time).getTime() + avgShiftMs
-      );
-      const rounded = roundTo30Min(shiftedTime)
-        .replace("Z", "")
-        .replace(".000", "");
+    // Precompute ref max for absolute rate stations
+    const refMax = sec.speed.percentRate
+      ? 0
+      : Math.max(...ref.predictions.map((rp) => Math.abs(rp.Velocity_Major)));
+
+    // For each output time slot, sample the reference at the shifted index
+    const predictions: StationWithPrediction["predictions"] = ref.predictions.map((p, i) => {
+      // The secondary station's event at time T corresponds to the reference
+      // station's event at time T - offset. So to find the secondary's value
+      // at index i, we look at the reference at index i - offset.
+      const srcIdx = Math.max(0, Math.min(ref.predictions.length - 1, i - indexOffset));
+      const srcPred = ref.predictions[srcIdx];
 
       // Scale velocity
       let velocity: number;
-      const isFlood = p.Velocity_Major >= 0;
+      const isFlood = srcPred.Velocity_Major >= 0;
       if (sec.speed.percentRate) {
         const pct = isFlood ? sec.speed.flood : sec.speed.ebb;
-        velocity = p.Velocity_Major * (pct / 100);
+        velocity = srcPred.Velocity_Major * (pct / 100);
       } else {
-        // Absolute max rate — scale proportionally
-        const refMax = Math.max(
-          ...ref.predictions.map((rp) => Math.abs(rp.Velocity_Major))
-        );
         const maxRate = isFlood ? sec.speed.flood : sec.speed.ebb;
         velocity =
           refMax > 0
-            ? p.Velocity_Major * (maxRate / refMax)
+            ? srcPred.Velocity_Major * (maxRate / refMax)
             : 0;
       }
 
       return {
-        Time: rounded,
+        Time: p.Time, // Keep same timestamps as reference
         Velocity_Major: velocity,
         meanFloodDir: sec.floodDir,
         meanEbbDir: ebbDir,
