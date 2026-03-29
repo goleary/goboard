@@ -117,6 +117,12 @@ function App() {
     window.history.replaceState(null, "", newUrl);
 
     fetchStationData(startDate);
+
+    // Auto-hide water temp when viewing more than 1 week in the future
+    const oneWeekFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    if (startDate > oneWeekFromNow) {
+      setShowWaterTemp(false);
+    }
   }, [startDate, fetchStationData]);
 
   // Fetch water temperature once on mount (real-time, independent of date/time slider)
