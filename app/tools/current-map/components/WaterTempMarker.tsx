@@ -25,12 +25,10 @@ export function getTempColor(tempF: number): string {
 
 function getIconHtml(tempF: number) {
   const color = getTempColor(tempF);
-  const r = SIZE / 2;
   const displayTemp = Math.round(tempF);
   return `
     <svg width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}">
-      <circle cx="${r}" cy="${r}" r="${r - 1}" fill="${color}" stroke="white" stroke-width="2" opacity="0.9"/>
-      <text x="${r}" y="${r + 4}" text-anchor="middle" font-size="10" font-weight="bold" fill="white">${displayTemp}</text>
+      <text x="${SIZE / 2}" y="${SIZE / 2 + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="${color}" stroke="white" stroke-width="3" paint-order="stroke" stroke-linejoin="round">${displayTemp}°</text>
     </svg>
   `;
 }
@@ -74,8 +72,8 @@ const WaterTempMarker: React.FC<WaterTempStation> = ({
             {name}
           </a>
           <p style={{ margin: "4px 0" }}>
-            {waterTempF.toFixed(1)}&deg;F &middot;{" "}
-            {source === "noaa-temp" ? "NOAA" : "ECCC"}
+            <span style={{ color: getTempColor(waterTempF), fontWeight: "bold" }}>{waterTempF.toFixed(1)}&deg;F</span>
+            {" "}&middot; {source === "noaa-temp" ? "NOAA" : "ECCC"}
           </p>
           <p style={{ margin: 0, fontSize: "11px", color: "#888" }}>
             Measured {formatRelativeTime(measuredAt)}

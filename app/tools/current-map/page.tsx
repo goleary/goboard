@@ -152,14 +152,13 @@ function App() {
 
   // Map from raw NOAA station ID to water temp for co-located tide stations
   const waterTempByStationId = useMemo(() => {
-    const map = new Map<string, number>();
+    const lookup = new globalThis.Map<string, number>();
     for (const s of allWaterTempStations) {
       if (s.source === "noaa-temp") {
-        // Extract raw ID: "noaa-temp-9447130" -> "9447130"
-        map.set(s.id.replace("noaa-temp-", ""), s.waterTempF);
+        lookup.set(s.id.replace("noaa-temp-", ""), s.waterTempF);
       }
     }
-    return map;
+    return lookup;
   }, [allWaterTempStations]);
 
   // IDs of tide stations that have co-located temp data

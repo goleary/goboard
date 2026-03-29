@@ -11,10 +11,13 @@ const SIZE = 28;
 const DEFAULT_FILL_COLOR = "#2166ac";
 const EMPTY_COLOR = "#d1e5f0";
 
-function getIconHtml(fillPercent: number, stationId: string, fillColor: string) {
+function getIconHtml(fillPercent: number, stationId: string, fillColor: string, tempF?: number) {
   const r = SIZE / 2;
   const clipY = SIZE * (1 - fillPercent);
   const clipId = `tide-fill-${stationId}`;
+  const tempLabel = tempF != null
+    ? `<text x="${r}" y="${r + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="white" stroke="${fillColor}" stroke-width="3" paint-order="stroke" stroke-linejoin="round">${Math.round(tempF)}</text>`
+    : "";
   return `
     <svg width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}">
       <defs>
@@ -25,6 +28,7 @@ function getIconHtml(fillPercent: number, stationId: string, fillColor: string) 
       <circle cx="${r}" cy="${r}" r="${r - 1}" fill="${EMPTY_COLOR}" stroke="white" stroke-width="2" />
       <circle cx="${r}" cy="${r}" r="${r - 1}" fill="${fillColor}" clip-path="url(#${clipId})" />
       <circle cx="${r}" cy="${r}" r="${r - 1}" fill="none" stroke="white" stroke-width="2" />
+      ${tempLabel}
     </svg>
   `;
 }
@@ -193,7 +197,7 @@ const TideMarker: React.FC<TideStationWithPrediction & { index: number; waterTem
       icon={L.divIcon({
         iconSize: [SIZE, SIZE],
         iconAnchor: [SIZE / 2, SIZE / 2],
-        html: getIconHtml(fillPercent, id, waterTempF != null ? getTempColor(waterTempF) : DEFAULT_FILL_COLOR),
+        html: getIconHtml(fillPercent, id, waterTempF != null ? getTempColor(waterTempF) : DEFAULT_FILL_COLOR, waterTempF),
         className: "",
       })}
     >
@@ -223,7 +227,7 @@ const TideMarker: React.FC<TideStationWithPrediction & { index: number; waterTem
           {waterTempF != null && (
             <div className="station-popup__row">
               <div className="station-popup__reading">
-                <span className="station-popup__value">{waterTempF.toFixed(1)}</span>
+                <span className="station-popup__value" style={{ color: getTempColor(waterTempF) }}>{waterTempF.toFixed(1)}</span>
                 <span className="station-popup__unit">&deg;F water temp</span>
               </div>
             </div>
