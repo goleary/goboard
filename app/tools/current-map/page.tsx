@@ -5,10 +5,13 @@ import dateFormat from "dateformat";
 
 import { StationWithPrediction, TideStationWithPrediction } from "./types";
 import Controls from "./components/Controls";
+const LayerPicker = dynamic(() => import("./components/LayerPicker"), {
+  ssr: false,
+});
 import Legend from "./components/Legend";
 import Title from "./components/Title";
 import dynamic from "next/dynamic";
-import type { Bounds } from "./components/Map";
+import type { Bounds, BasemapId } from "./components/Map";
 
 const Map = dynamic(() => import("./components/Map"), {
   ssr: false,
@@ -33,6 +36,8 @@ function App() {
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [showCurrents, setShowCurrents] = useState(true);
   const [showTides, setShowTides] = useState(true);
+  const [basemap, setBasemap] = useState<BasemapId>("voyager");
+  const [showSeaMarks, setShowSeaMarks] = useState(false);
 
   // Initialize start date on client only to avoid hydration mismatch
   useEffect(() => {
@@ -128,7 +133,7 @@ function App() {
 
   return (
     <div className="App" style={{ width: "100%", height: "100%" }}>
-      <Map onBoundsChange={setBounds}>
+      <Map onBoundsChange={setBounds} basemap={basemap} showSeaMarks={showSeaMarks}>
         {showCurrents && stations.map((s) => (
           <StationMarker key={s.id} {...s} index={sliderValue} />
         ))}
@@ -137,6 +142,12 @@ function App() {
         ))}
       </Map>
       <Title />
+      <LayerPicker
+        basemap={basemap}
+        onBasemapChange={setBasemap}
+        showSeaMarks={showSeaMarks}
+        onShowSeaMarksChange={setShowSeaMarks}
+      />
       <Legend />
       {startDate && (
         <Controls
