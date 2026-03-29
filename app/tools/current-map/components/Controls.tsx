@@ -25,6 +25,8 @@ type ControlsProps = {
   onShowCurrentsChange: (val: boolean) => void;
   showTides: boolean;
   onShowTidesChange: (val: boolean) => void;
+  showWaterTemp: boolean;
+  onShowWaterTempChange: (val: boolean) => void;
 };
 
 const Controls: React.FC<ControlsProps> = ({
@@ -38,6 +40,8 @@ const Controls: React.FC<ControlsProps> = ({
   onShowCurrentsChange,
   showTides,
   onShowTidesChange,
+  showWaterTemp,
+  onShowWaterTempChange,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -110,6 +114,16 @@ const Controls: React.FC<ControlsProps> = ({
             />
             <Label htmlFor="show-tides" className="text-xs cursor-pointer">
               Tides
+            </Label>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Checkbox
+              id="show-water-temp"
+              checked={showWaterTemp}
+              onCheckedChange={(v) => onShowWaterTempChange(v === true)}
+            />
+            <Label htmlFor="show-water-temp" className="text-xs cursor-pointer">
+              Water Temp
             </Label>
           </div>
         </div>
