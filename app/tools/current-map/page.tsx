@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import dateFormat from "dateformat";
 
-import { StationWithPrediction, TideStationWithPrediction } from "./types";
+import { StationWithPrediction, TideStationWithPrediction, WaterTempStation } from "./types";
 import Controls from "./components/Controls";
 const LayerPicker = dynamic(() => import("./components/LayerPicker"), {
   ssr: false,
@@ -22,6 +22,9 @@ const StationMarker = dynamic(() => import("./components/StationMarker"), {
 const TideMarker = dynamic(() => import("./components/TideMarker"), {
   ssr: false,
 });
+const WaterTempMarker = dynamic(() => import("./components/WaterTempMarker"), {
+  ssr: false,
+});
 
 function App() {
   const [allStations, setAllStations] = useState<StationWithPrediction[]>([]);
@@ -38,6 +41,8 @@ function App() {
   const [showTides, setShowTides] = useState(true);
   const [basemap, setBasemap] = useState<BasemapId>("voyager");
   const [showSeaMarks, setShowSeaMarks] = useState(false);
+  const [allWaterTempStations, setAllWaterTempStations] = useState<WaterTempStation[]>([]);
+  const [showWaterTemp, setShowWaterTemp] = useState(true);
 
   // Initialize start date on client only to avoid hydration mismatch
   useEffect(() => {
@@ -114,6 +119,20 @@ function App() {
     fetchStationData(startDate);
   }, [startDate, fetchStationData]);
 
+  // Fetch water temperature once on mount (real-time, independent of date/time slider)
+  useEffect(() => {
+    async function fetchWaterTemp() {
+      const [noaaRes, cioosRes] = await Promise.all([
+        fetch("/api/predictions/noaa-water-temp"),
+        fetch("/api/predictions/cioos-water-temp"),
+      ]);
+      const noaaStations = (await noaaRes.json()) as WaterTempStation[];
+      const cioosStations = (await cioosRes.json()) as WaterTempStation[];
+      setAllWaterTempStations([...noaaStations, ...cioosStations]);
+    }
+    fetchWaterTemp();
+  }, []);
+
   // Filter stations by viewport bounds client-side
   const stations = useMemo(() => {
     if (!bounds) return allStations;
@@ -131,6 +150,14 @@ function App() {
     );
   }, [allTideStations, bounds]);
 
+  const waterTempStations = useMemo(() => {
+    if (!bounds) return allWaterTempStations;
+    return allWaterTempStations.filter(
+      (s) => s.lat >= bounds.south && s.lat <= bounds.north &&
+             s.lng >= bounds.west && s.lng <= bounds.east
+    );
+  }, [allWaterTempStations, bounds]);
+
   return (
     <div className="App" style={{ width: "100%", height: "100%" }}>
       <Map onBoundsChange={setBounds} basemap={basemap} showSeaMarks={showSeaMarks}>
@@ -139,6 +166,9 @@ function App() {
         ))}
         {showTides && tideStations.map((s) => (
           <TideMarker key={s.id} {...s} index={sliderValue} />
+        ))}
+        {showWaterTemp && waterTempStations.map((s) => (
+          <WaterTempMarker key={s.id} {...s} />
         ))}
       </Map>
       <Title />
@@ -161,6 +191,8 @@ function App() {
           onShowCurrentsChange={setShowCurrents}
           showTides={showTides}
           onShowTidesChange={setShowTides}
+          showWaterTemp={showWaterTemp}
+          onShowWaterTempChange={setShowWaterTemp}
         />
       )}
     </div>
