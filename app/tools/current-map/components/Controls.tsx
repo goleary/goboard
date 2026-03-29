@@ -123,7 +123,7 @@ const Controls: React.FC<ControlsProps> = ({
               onCheckedChange={(v) => onShowWaterTempChange(v === true)}
             />
             <Label htmlFor="show-water-temp" className="text-xs cursor-pointer">
-              Water Temp
+              Current Water Temp
             </Label>
           </div>
         </div>
