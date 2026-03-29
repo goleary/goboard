@@ -150,13 +150,45 @@ function App() {
     );
   }, [allTideStations, bounds]);
 
+  // Map from raw NOAA station ID to water temp for co-located tide stations
+  const waterTempByStationId = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const s of allWaterTempStations) {
+      if (s.source === "noaa-temp") {
+        // Extract raw ID: "noaa-temp-9447130" -> "9447130"
+        map.set(s.id.replace("noaa-temp-", ""), s.waterTempF);
+      }
+    }
+    return map;
+  }, [allWaterTempStations]);
+
+  // IDs of tide stations that have co-located temp data
+  const tideStationTempIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const s of allTideStations) {
+      if (s.source === "noaa-tide") {
+        const rawId = s.id.replace("noaa-tide-", "");
+        if (waterTempByStationId.has(rawId)) ids.add(rawId);
+      }
+    }
+    return ids;
+  }, [allTideStations, waterTempByStationId]);
+
+  // Standalone temp stations (not co-located with a tide station)
   const waterTempStations = useMemo(() => {
-    if (!bounds) return allWaterTempStations;
-    return allWaterTempStations.filter(
+    const filtered = allWaterTempStations.filter((s) => {
+      if (s.source === "noaa-temp") {
+        const rawId = s.id.replace("noaa-temp-", "");
+        return !tideStationTempIds.has(rawId);
+      }
+      return true;
+    });
+    if (!bounds) return filtered;
+    return filtered.filter(
       (s) => s.lat >= bounds.south && s.lat <= bounds.north &&
              s.lng >= bounds.west && s.lng <= bounds.east
     );
-  }, [allWaterTempStations, bounds]);
+  }, [allWaterTempStations, tideStationTempIds, bounds]);
 
   return (
     <div className="App" style={{ width: "100%", height: "100%" }}>
@@ -164,9 +196,13 @@ function App() {
         {showCurrents && stations.map((s) => (
           <StationMarker key={s.id} {...s} index={sliderValue} />
         ))}
-        {showTides && tideStations.map((s) => (
-          <TideMarker key={s.id} {...s} index={sliderValue} />
-        ))}
+        {showTides && tideStations.map((s) => {
+          const rawId = s.source === "noaa-tide" ? s.id.replace("noaa-tide-", "") : undefined;
+          const tempF = rawId ? waterTempByStationId.get(rawId) : undefined;
+          return (
+            <TideMarker key={s.id} {...s} index={sliderValue} waterTempF={showWaterTemp ? tempF : undefined} />
+          );
+        })}
         {showWaterTemp && waterTempStations.map((s) => (
           <WaterTempMarker key={s.id} {...s} />
         ))}

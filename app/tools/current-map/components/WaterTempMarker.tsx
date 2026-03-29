@@ -16,7 +16,7 @@ const TEMP_COLORS = [
   { max: Infinity, color: "#f97316" },
 ];
 
-function getTempColor(tempF: number): string {
+export function getTempColor(tempF: number): string {
   for (const { max, color } of TEMP_COLORS) {
     if (tempF < max) return color;
   }
