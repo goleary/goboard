@@ -3,31 +3,33 @@ import { SECONDARY_CURRENT_STATIONS, SecondaryCurrentStation } from "./secondary
 
 const CHS_API_BASE = "https://api-iwls.dfo-mpo.gc.ca/api/v1";
 
-// Current stations across the Salish Sea
+// Current stations across the Salish Sea.
+// floodDir (degrees true) determined by cross-referencing CHS direction/speed
+// data with tide levels at nearby reference stations.
 const CHS_CURRENT_STATIONS = [
   // Juan de Fuca / Victoria
-  { id: "63aeee1d84e5432cd3b6c500", code: "07100", name: "Juan de Fuca - East", lat: 48.2317, lng: -123.53 },
-  { id: "63aeee896a2b9417c034d337", code: "07090", name: "Race Passage", lat: 48.3067, lng: -123.5367 },
+  { id: "63aeee1d84e5432cd3b6c500", code: "07100", name: "Juan de Fuca - East", lat: 48.2317, lng: -123.53, floodDir: 95 },
+  { id: "63aeee896a2b9417c034d337", code: "07090", name: "Race Passage", lat: 48.3067, lng: -123.5367, floodDir: 49 },
   // Gulf Islands
-  { id: "63aef09f84e5432cd3b6c509", code: "07527", name: "Active Pass", lat: 48.8604, lng: -123.3128 },
-  { id: "63aef0ed84e5432cd3b6c50b", code: "07438", name: "Porlier Pass", lat: 49.015, lng: -123.585 },
-  { id: "63aef12e84e5432cd3b6db8d", code: "07545", name: "Gabriola Passage", lat: 49.129, lng: -123.704 },
-  { id: "63aef1866a2b9417c035030f", code: "07487", name: "Dodd Narrows", lat: 49.1344, lng: -123.817 },
+  { id: "63aef09f84e5432cd3b6c509", code: "07527", name: "Active Pass", lat: 48.8604, lng: -123.3128, floodDir: 45 },
+  { id: "63aef0ed84e5432cd3b6c50b", code: "07438", name: "Porlier Pass", lat: 49.015, lng: -123.585, floodDir: 30 },
+  { id: "63aef12e84e5432cd3b6db8d", code: "07545", name: "Gabriola Passage", lat: 49.129, lng: -123.704, floodDir: 80 },
+  { id: "63aef1866a2b9417c035030f", code: "07487", name: "Dodd Narrows", lat: 49.1344, lng: -123.817, floodDir: 355 },
   // Vancouver / Burrard Inlet
-  { id: "5dd30650e0fdc4b9b4be6c2d", code: "07745", name: "Second Narrows", lat: 49.2947, lng: -123.0245 },
-  { id: "5cebf1e43d0f4a073c4bc434", code: "07724", name: "Calamity Point", lat: 49.3126, lng: -123.1277 },
-  { id: "5dd30650e0fdc4b9b4be6d24", code: "07721", name: "First Narrows", lat: 49.316, lng: -123.14 },
+  { id: "5dd30650e0fdc4b9b4be6c2d", code: "07745", name: "Second Narrows", lat: 49.2947, lng: -123.0245, floodDir: 86 },
+  { id: "5cebf1e43d0f4a073c4bc434", code: "07724", name: "Calamity Point", lat: 49.3126, lng: -123.1277, floodDir: 150 },
+  { id: "5dd30650e0fdc4b9b4be6d24", code: "07721", name: "First Narrows", lat: 49.316, lng: -123.14, floodDir: 135 },
   // Sunshine Coast
-  { id: "63aef40a6a2b9417c0350313", code: "07845", name: "Sechelt Rapids", lat: 49.7383, lng: -123.8983 },
+  { id: "63aef40a6a2b9417c0350313", code: "07845", name: "Sechelt Rapids", lat: 49.7383, lng: -123.8983, floodDir: 135 },
   // Discovery Islands / Desolation Sound
-  { id: "63aefc7784e5432cd3b6eb1e", code: "08108", name: "Seymour Narrows", lat: 50.1333, lng: -125.35 },
-  { id: "63aefe506a2b9417c0350720", code: "07840", name: "Beazley Passage", lat: 50.2263, lng: -125.142 },
-  { id: "63aefcb26a2b9417c035071e", code: "08052", name: "Hole in the Wall", lat: 50.3001, lng: -125.208 },
-  { id: "5dd3064fe0fdc4b9b4be6978", code: "08059", name: "Gillard Passage", lat: 50.3933, lng: -125.157 },
-  { id: "63aeff5884e5432cd3b71283", code: "08064", name: "Arran Rapids", lat: 50.42, lng: -125.14 },
-  { id: "63af06d56a2b9417c0353451", code: "08138", name: "Dent Rapids", lat: 50.41, lng: -125.212 },
+  { id: "63aefc7784e5432cd3b6eb1e", code: "08108", name: "Seymour Narrows", lat: 50.1333, lng: -125.35, floodDir: 180 },
+  { id: "63aefe506a2b9417c0350720", code: "07840", name: "Beazley Passage", lat: 50.2263, lng: -125.142, floodDir: 120 },
+  { id: "63aefcb26a2b9417c035071e", code: "08052", name: "Hole in the Wall", lat: 50.3001, lng: -125.208, floodDir: 40 },
+  { id: "5dd3064fe0fdc4b9b4be6978", code: "08059", name: "Gillard Passage", lat: 50.3933, lng: -125.157, floodDir: 95 },
+  { id: "63aeff5884e5432cd3b71283", code: "08064", name: "Arran Rapids", lat: 50.42, lng: -125.14, floodDir: 60 },
+  { id: "63af06d56a2b9417c0353451", code: "08138", name: "Dent Rapids", lat: 50.41, lng: -125.212, floodDir: 140 },
   // Victoria harbour
-  { id: "64960066ebd87908f1fcb787", code: "07129", name: "Tillicum Bridge", lat: 48.4464, lng: -123.4002 },
+  { id: "64960066ebd87908f1fcb787", code: "07129", name: "Tillicum Bridge", lat: 48.4464, lng: -123.4002, floodDir: 283 },
 ];
 
 interface CHSDataPoint {
@@ -41,6 +43,7 @@ type StationWithPrediction = {
   lat: number;
   lng: number;
   source: "chs";
+  referenceStation?: string;
   predictions: {
     meanFloodDir: number;
     Bin: string;
@@ -116,54 +119,11 @@ const GET = async (request: NextRequest) => {
           dirByTime.set(roundTo30Min(new Date(d.eventDate)), d.value);
         }
 
-        // Determine flood vs ebb direction.
-        // CHS gives speed (always positive) + direction. Direction alternates
-        // between two ~opposite bearings. We identify the two clusters and
-        // pick the one associated with the first speed peak as "flood".
-        const allDirs = directionData.map((d) => d.value);
-        // Find two dominant direction clusters using the first direction as seed
-        if (!allDirs.length) return null;
-        const ref = allDirs[0];
-        const cluster1: number[] = [];
-        const cluster2: number[] = [];
-        for (const dir of allDirs) {
-          // Angular difference
-          let diff = Math.abs(dir - ref);
-          if (diff > 180) diff = 360 - diff;
-          if (diff < 90) {
-            cluster1.push(dir);
-          } else {
-            cluster2.push(dir);
-          }
-        }
-        // Circular mean for each cluster
-        const circularMean = (angles: number[]) => {
-          if (!angles.length) return 0;
-          let sinSum = 0, cosSum = 0;
-          for (const a of angles) {
-            sinSum += Math.sin((a * Math.PI) / 180);
-            cosSum += Math.cos((a * Math.PI) / 180);
-          }
-          let mean = (Math.atan2(sinSum, cosSum) * 180) / Math.PI;
-          if (mean < 0) mean += 360;
-          return mean;
-        };
-        const dir1 = circularMean(cluster1);
-        const dir2 = circularMean(cluster2.length ? cluster2 : cluster1);
-
-        // Find first speed peak to determine which direction is flood
-        let maxSpeedIdx = 0;
-        for (let si = 1; si < speedData.length && si < speedData.length / 2; si++) {
-          if (speedData[si].value > speedData[maxSpeedIdx].value) {
-            maxSpeedIdx = si;
-          }
-        }
-        const peakTime = roundTo30Min(new Date(speedData[maxSpeedIdx].eventDate));
-        const peakDir = dirByTime.get(peakTime) ?? dir1;
-        let diffToDir1 = Math.abs(peakDir - dir1);
-        if (diffToDir1 > 180) diffToDir1 = 360 - diffToDir1;
-        const floodDir = diffToDir1 < 90 ? dir1 : dir2;
-        const ebbDir = diffToDir1 < 90 ? dir2 : dir1;
+        // Use the known flood direction for this station to determine
+        // flood vs ebb from the CHS direction data.
+        const knownFloodDir = station.floodDir;
+        const floodDir = knownFloodDir;
+        const ebbDir = (knownFloodDir + 180) % 360;
 
         // Filter speed data to 30-minute intervals and pair with direction
         const seen = new Set<string>();
@@ -291,6 +251,7 @@ const GET = async (request: NextRequest) => {
         lat: sec.lat,
         lng: sec.lng,
         source: "chs",
+        referenceStation: ref.name,
         predictions,
       });
     }

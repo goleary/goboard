@@ -8,8 +8,8 @@ import { CurrentPrediction, StationWithPrediction } from "../types";
 import "./station-icon.css";
 import { LEGEND_COLORS, VELOCITY_BREAK_POINTS } from "./Legend";
 
-const FLOOD_COLOR = "#2166ac";
-const EBB_COLOR = "#b2182b";
+const FLOOD_COLOR = "#3b82f6";
+const EBB_COLOR = "#ef4444";
 
 const getIconHtml = (rotation: number, fill = "black") => {
   return `
@@ -27,16 +27,15 @@ function buildCurrentChartSvg(
   predictions: CurrentPrediction[],
   currentIndex: number
 ) {
-  const w = 320;
-  const h = 140;
-  const pad = { top: 12, bottom: 28, left: 34, right: 8 };
+  const w = 340;
+  const h = 130;
+  const pad = { top: 22, bottom: 24, left: 32, right: 16 };
   const chartW = w - pad.left - pad.right;
   const chartH = h - pad.top - pad.bottom;
 
   const velocities = predictions.map((p) => p.Velocity_Major);
   const absMax =
     Math.max(Math.max(...velocities), Math.abs(Math.min(...velocities))) || 1;
-  // Symmetric y-axis around zero
   const yMax = absMax * 1.1;
   const yMin = -yMax;
   const yRange = yMax - yMin;
@@ -45,8 +44,7 @@ function buildCurrentChartSvg(
   const toY = (v: number) => pad.top + chartH - ((v - yMin) / yRange) * chartH;
   const zeroY = toY(0);
 
-  // Build flood (positive) and ebb (negative) filled areas
-  // We create separate polygons for segments above/below zero
+  // Build flood/ebb filled areas with gradient defs
   const floodParts: string[] = [];
   const ebbParts: string[] = [];
 
@@ -60,29 +58,28 @@ function buildCurrentChartSvg(
 
     if (v0 >= 0 && v1 >= 0) {
       floodParts.push(
-        `<polygon points="${x0.toFixed(1)},${zeroY.toFixed(1)} ${x0.toFixed(1)},${y0.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${zeroY.toFixed(1)}" fill="${FLOOD_COLOR}" opacity="0.15"/>`
+        `<polygon points="${x0.toFixed(1)},${zeroY.toFixed(1)} ${x0.toFixed(1)},${y0.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${zeroY.toFixed(1)}" fill="url(#flood-grad)" />`
       );
     } else if (v0 <= 0 && v1 <= 0) {
       ebbParts.push(
-        `<polygon points="${x0.toFixed(1)},${zeroY.toFixed(1)} ${x0.toFixed(1)},${y0.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${zeroY.toFixed(1)}" fill="${EBB_COLOR}" opacity="0.15"/>`
+        `<polygon points="${x0.toFixed(1)},${zeroY.toFixed(1)} ${x0.toFixed(1)},${y0.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${zeroY.toFixed(1)}" fill="url(#ebb-grad)" />`
       );
     } else {
-      // Crossing zero — split at the crossing point
       const t = v0 / (v0 - v1);
       const xCross = x0 + t * (x1 - x0);
       if (v0 >= 0) {
         floodParts.push(
-          `<polygon points="${x0.toFixed(1)},${zeroY.toFixed(1)} ${x0.toFixed(1)},${y0.toFixed(1)} ${xCross.toFixed(1)},${zeroY.toFixed(1)}" fill="${FLOOD_COLOR}" opacity="0.15"/>`
+          `<polygon points="${x0.toFixed(1)},${zeroY.toFixed(1)} ${x0.toFixed(1)},${y0.toFixed(1)} ${xCross.toFixed(1)},${zeroY.toFixed(1)}" fill="url(#flood-grad)" />`
         );
         ebbParts.push(
-          `<polygon points="${xCross.toFixed(1)},${zeroY.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${zeroY.toFixed(1)}" fill="${EBB_COLOR}" opacity="0.15"/>`
+          `<polygon points="${xCross.toFixed(1)},${zeroY.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${zeroY.toFixed(1)}" fill="url(#ebb-grad)" />`
         );
       } else {
         ebbParts.push(
-          `<polygon points="${x0.toFixed(1)},${zeroY.toFixed(1)} ${x0.toFixed(1)},${y0.toFixed(1)} ${xCross.toFixed(1)},${zeroY.toFixed(1)}" fill="${EBB_COLOR}" opacity="0.15"/>`
+          `<polygon points="${x0.toFixed(1)},${zeroY.toFixed(1)} ${x0.toFixed(1)},${y0.toFixed(1)} ${xCross.toFixed(1)},${zeroY.toFixed(1)}" fill="url(#ebb-grad)" />`
         );
         floodParts.push(
-          `<polygon points="${xCross.toFixed(1)},${zeroY.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${zeroY.toFixed(1)}" fill="${FLOOD_COLOR}" opacity="0.15"/>`
+          `<polygon points="${xCross.toFixed(1)},${zeroY.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${zeroY.toFixed(1)}" fill="url(#flood-grad)" />`
         );
       }
     }
@@ -96,77 +93,80 @@ function buildCurrentChartSvg(
   // Current position
   const cx = toX(currentIndex);
   const cy = toY(velocities[currentIndex]);
-  const nowLine = `<line x1="${cx.toFixed(1)}" y1="${pad.top}" x2="${cx.toFixed(1)}" y2="${pad.top + chartH}" stroke="#e04040" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>`;
+  const nowLine = `<line x1="${cx.toFixed(1)}" y1="${pad.top}" x2="${cx.toFixed(1)}" y2="${pad.top + chartH}" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>`;
 
   // Zero line
-  const zeroLine = `<line x1="${pad.left}" y1="${zeroY.toFixed(1)}" x2="${pad.left + chartW}" y2="${zeroY.toFixed(1)}" stroke="#999" stroke-width="0.75"/>`;
+  const zeroLine = `<line x1="${pad.left}" y1="${zeroY.toFixed(1)}" x2="${pad.left + chartW}" y2="${zeroY.toFixed(1)}" stroke="#cbd5e1" stroke-width="0.75"/>`;
 
   // Y-axis ticks
-  const tickValues = [
-    -Math.round(absMax),
-    0,
-    Math.round(absMax),
-  ];
-  // Use nicer values if absMax is small
   const niceMax = Math.ceil(absMax);
   const yTicks = [-niceMax, 0, niceMax]
     .map((val) => {
       const y = toY(val);
       return [
         val !== 0
-          ? `<line x1="${pad.left}" y1="${y.toFixed(1)}" x2="${pad.left + chartW}" y2="${y.toFixed(1)}" stroke="#e0e0e0" stroke-width="0.5"/>`
+          ? `<line x1="${pad.left}" y1="${y.toFixed(1)}" x2="${pad.left + chartW}" y2="${y.toFixed(1)}" stroke="#f1f5f9" stroke-width="0.5"/>`
           : "",
-        `<text x="${pad.left - 4}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="#888">${val}</text>`,
+        `<text x="${pad.left - 6}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" font-weight="500" fill="#94a3b8">${val}</text>`,
       ].join("");
     })
     .join("");
 
   // Flood/Ebb labels
-  const floodLabel = `<text x="${pad.left + 2}" y="${(pad.top + 10).toFixed(1)}" font-size="8" fill="${FLOOD_COLOR}" opacity="0.7">Flood ↑</text>`;
-  const ebbLabel = `<text x="${pad.left + 2}" y="${(pad.top + chartH - 3).toFixed(1)}" font-size="8" fill="${EBB_COLOR}" opacity="0.7">Ebb ↓</text>`;
+  const floodLabel = `<text x="${pad.left + chartW - 2}" y="${(pad.top + 10).toFixed(1)}" font-size="9" font-weight="600" fill="${FLOOD_COLOR}" opacity="0.5" text-anchor="end">FLOOD</text>`;
+  const ebbLabel = `<text x="${pad.left + chartW - 2}" y="${(pad.top + chartH - 3).toFixed(1)}" font-size="9" font-weight="600" fill="${EBB_COLOR}" opacity="0.5" text-anchor="end">EBB</text>`;
 
-  // X-axis time labels
+  // X-axis time labels (12h intervals to avoid crowding)
   const xLabels: string[] = [];
   const seenLabels = new Set<string>();
   for (let i = 0; i < predictions.length; i++) {
     const d = new Date(predictions[i].Time);
     const hour = d.getHours();
-    if (hour === 0 || hour === 6 || hour === 12 || hour === 18) {
+    if (hour === 0 || hour === 12) {
       const key = `${d.getDate()}-${hour}`;
       if (seenLabels.has(key)) continue;
       seenLabels.add(key);
       const x = toX(i);
       if (x < pad.left + 10 || x > pad.left + chartW - 10) continue;
       const label =
-        hour === 0 ? dateFormat(d, "mmm d") : dateFormat(d, "HH:MM");
+        hour === 0 ? dateFormat(d, "mmm d") : dateFormat(d, "h TT");
       xLabels.push(
-        `<line x1="${x.toFixed(1)}" y1="${pad.top + chartH}" x2="${x.toFixed(1)}" y2="${pad.top + chartH + 4}" stroke="#aaa" stroke-width="0.5"/>`
+        `<line x1="${x.toFixed(1)}" y1="${pad.top + chartH}" x2="${x.toFixed(1)}" y2="${pad.top + chartH + 3}" stroke="#cbd5e1" stroke-width="0.5"/>`
       );
       if (hour === 0) {
         xLabels.push(
-          `<line x1="${x.toFixed(1)}" y1="${pad.top}" x2="${x.toFixed(1)}" y2="${pad.top + chartH}" stroke="#ddd" stroke-width="0.5"/>`
+          `<line x1="${x.toFixed(1)}" y1="${pad.top}" x2="${x.toFixed(1)}" y2="${pad.top + chartH}" stroke="#f1f5f9" stroke-width="0.5"/>`
         );
       }
       xLabels.push(
-        `<text x="${x.toFixed(1)}" y="${h - 6}" text-anchor="middle" font-size="8" fill="#888">${label}</text>`
+        `<text x="${x.toFixed(1)}" y="${h - 4}" text-anchor="middle" font-size="9" font-weight="500" fill="#94a3b8">${label}</text>`
       );
     }
   }
 
-  return `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
-    <rect width="${w}" height="${h}" fill="white" rx="4"/>
-    <rect x="${pad.left}" y="${pad.top}" width="${chartW}" height="${chartH}" fill="#fafafa" rx="2"/>
+  return `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif">
+    <defs>
+      <linearGradient id="flood-grad" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="${FLOOD_COLOR}" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="${FLOOD_COLOR}" stop-opacity="0.04"/>
+      </linearGradient>
+      <linearGradient id="ebb-grad" x1="0" x2="0" y1="1" y2="0">
+        <stop offset="0%" stop-color="${EBB_COLOR}" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="${EBB_COLOR}" stop-opacity="0.04"/>
+      </linearGradient>
+    </defs>
+    <rect width="${w}" height="${h}" fill="#f8fafc" />
     ${yTicks}
     ${zeroLine}
     ${floodParts.join("")}
     ${ebbParts.join("")}
-    <polyline points="${linePoints}" fill="none" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/>
+    <polyline points="${linePoints}" fill="none" stroke="#334155" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
     ${floodLabel}
     ${ebbLabel}
     ${nowLine}
-    <circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4" fill="#e04040" stroke="white" stroke-width="1.5"/>
+    <circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4.5" fill="#ef4444" stroke="white" stroke-width="2"/>
     ${xLabels.join("")}
-    <text x="${pad.left}" y="${h - 6}" text-anchor="start" font-size="8" fill="#aaa">kn</text>
+    <text x="${pad.left}" y="${h - 4}" text-anchor="start" font-size="9" font-weight="500" fill="#cbd5e1">kn</text>
   </svg>`;
 }
 
@@ -175,6 +175,8 @@ const StationMarker: React.FC<StationWithPrediction & { index: number }> = ({
   id,
   lat,
   lng,
+  source,
+  referenceStation,
   predictions,
   index,
 }) => {
@@ -187,6 +189,7 @@ const StationMarker: React.FC<StationWithPrediction & { index: number }> = ({
       : prediction.meanEbbDir;
   const velocity = Math.abs(prediction.Velocity_Major);
   const date = new Date(prediction.Time);
+  const isFlood = prediction.Velocity_Major > 0;
 
   let color = LEGEND_COLORS[3];
   if (velocity < VELOCITY_BREAK_POINTS[1]) {
@@ -202,6 +205,8 @@ const StationMarker: React.FC<StationWithPrediction & { index: number }> = ({
     [predictions, clampedIndex]
   );
 
+  const isChs = id.startsWith("chs-");
+
   return (
     <Marker
       position={[lat, lng]}
@@ -211,25 +216,49 @@ const StationMarker: React.FC<StationWithPrediction & { index: number }> = ({
         html: getIconHtml(rotation, color),
       })}
     >
-      <Popup minWidth={330}>
-        <div>
+      <Popup minWidth={340} closeButton={true}>
+        <div className="station-popup">
           <a
             href={
-              id.startsWith("chs-")
+              isChs
                 ? `https://www.tides.gc.ca/en/stations/${id.replace("chs-", "")}`
                 : `https://tidesandcurrents.noaa.gov/noaacurrents/predictions?id=${id}`
             }
             rel="noreferrer"
             target="_blank"
-            style={{ fontWeight: "bold" }}
+            className="station-popup__name"
           >
             {name}
           </a>
-          <p style={{ margin: "4px 0" }}>
-            {velocity.toFixed(1)} knots at{" "}
-            {dateFormat(date, "ddd, mmm dS, h:MM TT")}
-          </p>
-          <div dangerouslySetInnerHTML={{ __html: chartSvg }} />
+          <div className="station-popup__row">
+            <div className="station-popup__reading">
+              <span className="station-popup__value">{velocity.toFixed(1)}</span>
+              <span className="station-popup__unit">
+                kn {isFlood ? "flood" : "ebb"}
+              </span>
+            </div>
+            <div className="station-popup__time">
+              {dateFormat(date, "ddd, mmm dS, h:MM TT")}
+            </div>
+          </div>
+          <div className="station-popup__meta">
+            <a
+              href={source === "chs" ? "https://www.tides.gc.ca" : "https://tidesandcurrents.noaa.gov"}
+              rel="noreferrer"
+              target="_blank"
+              className={`station-popup__badge station-popup__badge--${source === "chs" ? "chs" : "noaa"}`}
+            >
+              {source === "chs" ? "CHS" : "NOAA"}
+            </a>
+            {referenceStation && (
+              <span className="station-popup__derived">
+                Derived from {referenceStation}
+              </span>
+            )}
+          </div>
+          <div className="station-popup__chart">
+            <div dangerouslySetInnerHTML={{ __html: chartSvg }} />
+          </div>
         </div>
       </Popup>
     </Marker>
