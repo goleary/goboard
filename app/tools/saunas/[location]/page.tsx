@@ -36,14 +36,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
         openGraph: {
           title,
           description,
-          url: `https://goleary.com/tools/saunas/${location.slug}?sauna=${sauna.slug}`,
+          url: `https://etsauna.com/s/${sauna.slug}`,
           type: "website",
           ...(sauna.images?.[0] && {
-            images: [{ url: `https://goleary.com${sauna.images[0].url}`, alt: sauna.images[0].alt }],
+            images: [{ url: `https://etsauna.com${sauna.images[0].url}`, alt: sauna.images[0].alt }],
           }),
         },
         alternates: {
-          canonical: `https://goleary.com/tools/saunas/${location.slug}?sauna=${sauna.slug}`,
+          canonical: `https://etsauna.com/s/${sauna.slug}`,
         },
       };
     }
@@ -61,14 +61,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     openGraph: {
       title,
       description,
-      url: `https://goleary.com/tools/saunas/${location.slug}`,
+      url: `https://etsauna.com/l/${location.slug}`,
       type: "website",
       ...(location.image && {
-        images: [{ url: `https://goleary.com${location.image}` }],
+        images: [{ url: `https://etsauna.com${location.image}` }],
       }),
     },
     alternates: {
-      canonical: `https://goleary.com/tools/saunas/${location.slug}`,
+      canonical: `https://etsauna.com/l/${location.slug}`,
     },
   };
 }
@@ -83,7 +83,7 @@ function generateItemListSchema(locationName: string, locationSlug: string) {
     itemListElement: saunas.map((sauna, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      url: `https://goleary.com/tools/saunas/${locationSlug}?sauna=${sauna.slug}`,
+      url: `https://etsauna.com/s/${sauna.slug}`,
       name: sauna.name,
       description: buildSaunaSchemaDescription(sauna),
     })),

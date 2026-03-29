@@ -22,14 +22,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
         openGraph: {
           title,
           description,
-          url: `https://goleary.com/tools/saunas?sauna=${sauna.slug}`,
+          url: `https://etsauna.com/s/${sauna.slug}`,
           type: "website",
           ...(sauna.images?.[0] && {
-            images: [{ url: `https://goleary.com${sauna.images[0].url}`, alt: sauna.images[0].alt }],
+            images: [{ url: `https://etsauna.com${sauna.images[0].url}`, alt: sauna.images[0].alt }],
           }),
         },
         alternates: {
-          canonical: `https://goleary.com/tools/saunas?sauna=${sauna.slug}`,
+          canonical: `https://etsauna.com/s/${sauna.slug}`,
         },
       };
     }
@@ -43,11 +43,11 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       title: `North American Saunas - Compare${saunas.length >= 4 ? ` ${saunas.length}` : ""} Saunas & Bathhouses`,
       description:
         "Compare saunas and bathhouses across North America by price, amenities, and location.",
-      url: "https://goleary.com/tools/saunas",
+      url: "https://etsauna.com",
       type: "website",
     },
     alternates: {
-      canonical: "https://goleary.com/tools/saunas",
+      canonical: "https://etsauna.com",
     },
   };
 }
@@ -62,7 +62,7 @@ function generateItemListSchema() {
     itemListElement: saunas.map((sauna, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      url: `https://goleary.com/tools/saunas?sauna=${sauna.slug}`,
+      url: `https://etsauna.com/s/${sauna.slug}`,
       name: sauna.name,
       description: buildSaunaSchemaDescription(sauna),
     })),
