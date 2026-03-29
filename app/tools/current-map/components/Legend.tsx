@@ -79,6 +79,48 @@ const Legend: React.FC = () => {
         </svg>
         low — high
       </div>
+      <div
+        style={{
+          borderTop: "1px solid #ddd",
+          marginTop: 8,
+          paddingTop: 4,
+          fontSize: 14,
+          textAlign: "center",
+          fontWeight: "bold",
+        }}
+      >
+        Water temp
+      </div>
+      {[
+        { color: "#3b82f6", label: "< 45°F" },
+        { color: "#0ea5e9", label: "45-50°F" },
+        { color: "#06b6d4", label: "50-55°F" },
+        { color: "#14b8a6", label: "55-60°F" },
+        { color: "#22c55e", label: "60-65°F" },
+        { color: "#eab308", label: "65-70°F" },
+        { color: "#f97316", label: "> 70°F" },
+      ].map(({ color, label }) => (
+        <div
+          key={label}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            fontSize: 12,
+            gap: 8,
+            padding: "1px 0",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: color,
+              width: 12,
+              height: 12,
+              borderRadius: "50%",
+            }}
+          />
+          {label}
+        </div>
+      ))}
       <div style={{ fontSize: 12, padding: "8px 0 4px", textAlign: "center" }}>
         built by{" "}
         <a href="/" className="underline text-nowrap">
