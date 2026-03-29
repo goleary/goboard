@@ -13,6 +13,7 @@ export type StationWithPrediction = {
   lat: number;
   lng: number;
   source?: "noaa" | "chs";
+  referenceStation?: string;
   predictions: CurrentPrediction[];
 };
 
@@ -28,4 +29,15 @@ export type TideStationWithPrediction = {
   lng: number;
   source: "chs-tide" | "noaa-tide";
   predictions: TidePrediction[];
+};
+
+export type WaterTempStation = {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  source: "noaa-temp" | "cioos-temp";
+  waterTempF: number;
+  measuredAt: string;
+  sourceUrl: string;
 };
