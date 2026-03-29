@@ -1,5 +1,12 @@
 import React, { PropsWithChildren, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import {
+  LayersControl,
+  MapContainer,
+  TileLayer,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 const DEFAULT_CENTER: [number, number] = [48, -123];
@@ -25,6 +32,31 @@ function getInitialParams(): { center: [number, number]; zoom: number } {
       !isNaN(lat) && !isNaN(lng) ? [lat, lng] : DEFAULT_CENTER,
     zoom: !isNaN(zoom) ? zoom : DEFAULT_ZOOM,
   };
+}
+
+function ContextMenu() {
+  const map = useMap();
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+
+    const handler = (e: L.LeafletMouseEvent) => {
+      e.originalEvent.preventDefault();
+      const { lat, lng } = e.latlng;
+      const text = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      L.popup()
+        .setLatLng(e.latlng)
+        .setContent(
+          `<div style="font-family:monospace;cursor:pointer" onclick="navigator.clipboard.writeText('${text}')">${text}<br><small>click to copy</small></div>`
+        )
+        .openOn(map);
+    };
+
+    map.on("contextmenu", handler);
+    return () => { map.off("contextmenu", handler); };
+  }, [map]);
+
+  return null;
 }
 
 function MapSync({ onBoundsChange }: { onBoundsChange?: (bounds: Bounds) => void }) {
@@ -82,12 +114,35 @@ const Map: React.FC<MapProps> = ({ children, onBoundsChange }) => {
   const { center, zoom } = getInitialParams();
   return (
     <MapContainer center={center} zoom={zoom} style={{ height: "100%" }}>
-      <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-        attribution={`&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>,
-      &copy;<a href="https://carto.com/attributions" target="_blank">CARTO</a>`}
-      />
+      <LayersControl position="topright">
+        <LayersControl.BaseLayer checked name="CARTO Voyager">
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            attribution='&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, &copy;<a href="https://carto.com/attributions" target="_blank">CARTO</a>'
+          />
+        </LayersControl.BaseLayer>
+        <LayersControl.BaseLayer name="ESRI Ocean">
+          <TileLayer
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}"
+            attribution='Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri'
+            maxZoom={13}
+          />
+        </LayersControl.BaseLayer>
+        <LayersControl.BaseLayer name="ESRI Satellite">
+          <TileLayer
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+          />
+        </LayersControl.BaseLayer>
+        <LayersControl.Overlay name="Sea Marks">
+          <TileLayer
+            url="https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
+            attribution='Map data: &copy; <a href="http://www.openseamap.org" target="_blank">OpenSeaMap</a> contributors'
+          />
+        </LayersControl.Overlay>
+      </LayersControl>
       <MapSync onBoundsChange={onBoundsChange} />
+      <ContextMenu />
       {children}
     </MapContainer>
   );

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
-import { SECONDARY_CURRENT_STATIONS, SecondaryCurrentStation } from "./secondary-stations";
+import { SECONDARY_CURRENT_STATIONS, SecondaryCurrentStation, DHDT_CURRENT_STATIONS } from "./secondary-stations";
+import { TideStationWithPrediction } from "../chs-tides/route";
 
 const CHS_API_BASE = "https://api-iwls.dfo-mpo.gc.ca/api/v1";
 
@@ -293,6 +294,58 @@ const GET = async (request: NextRequest) => {
         source: "chs",
         predictions,
       });
+    }
+  }
+
+  // Compute dh/dt-derived current stations from tide rate of change
+  if (DHDT_CURRENT_STATIONS.length > 0) {
+    const baseUrl = request.nextUrl.origin;
+    const tideUrl = `${baseUrl}/api/predictions/chs-tides?begin_date=${beginDate}&end_date=${endDate}`;
+    const tideRes = await fetch(tideUrl, { next: { revalidate: 3600 } });
+    if (tideRes.ok) {
+      const tideStations: TideStationWithPrediction[] = await tideRes.json();
+      const tideByCode = new Map<string, TideStationWithPrediction>();
+      for (const ts of tideStations) {
+        tideByCode.set(ts.id.replace("chs-tide-", ""), ts);
+      }
+
+      for (const dd of DHDT_CURRENT_STATIONS) {
+        const tide = tideByCode.get(dd.tideStation);
+        if (!tide || tide.predictions.length < 2) continue;
+
+        const ebbDir = (dd.floodDir + 180) % 360;
+        const preds = tide.predictions;
+        const predictions: StationWithPrediction["predictions"] = preds.map((p, i) => {
+          // Central difference for interior points, forward/backward at edges
+          const dhdt = i === 0
+            ? preds[1].waterLevel - preds[0].waterLevel
+            : i === preds.length - 1
+              ? preds[i].waterLevel - preds[i - 1].waterLevel
+              : (preds[i + 1].waterLevel - preds[i - 1].waterLevel) / 2;
+
+          // Positive dhdt = rising tide = flood
+          const velocity = dd.kFactor * dhdt;
+          return {
+            Time: p.Time,
+            Velocity_Major: velocity,
+            meanFloodDir: dd.floodDir,
+            meanEbbDir: ebbDir,
+            Bin: "1",
+            Depth: "0",
+          };
+        });
+
+        if (predictions.length === expectedLen) {
+          stationsWithPredictions.push({
+            id: `chs-${dd.code}`,
+            name: dd.name,
+            lat: dd.lat,
+            lng: dd.lng,
+            source: "chs",
+            predictions,
+          });
+        }
+      }
     }
   }
 

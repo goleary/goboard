@@ -24,6 +24,31 @@ export interface SecondaryCurrentStation {
   };
 }
 
+// dh/dt-derived current stations: current is proportional to the rate of
+// water level change at a tide station. v(t) = k × dh/dt
+// Positive dh/dt (rising tide) = flood direction; negative = ebb.
+export interface DhDtCurrentStation {
+  code: string;
+  name: string;
+  lat: number;
+  lng: number;
+  floodDir: number; // degrees true — direction of flow when tide is rising
+  tideStation: string; // CHS tide station code
+  kFactor: number; // knots per (meter / 30min)
+}
+
+export const DHDT_CURRENT_STATIONS: DhDtCurrentStation[] = [
+  {
+    code: "synth-okeover-channel",
+    name: "Okeover Channel (synthetic)",
+    lat: 50.04094,
+    lng: -124.76709,
+    floodDir: 150, // SE into Okeover Arm (flood = rising tide at Okeover)
+    tideStation: "08006", // Okeover Inlet
+    kFactor: 8.0, // ~3kn at peak dh/dt of ~0.39 m/30min
+  },
+];
+
 // Reference station codes for lookup:
 // 07100 = Juan de Fuca - East
 // 07090 = Race Passage
