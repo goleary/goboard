@@ -1,7 +1,14 @@
 import React from "react";
+import { interpolateInferno } from "d3-scale-chromatic";
 
-export const LEGEND_COLORS = ["#0d0887", "#7e03a8", "#cc4778", "#f89540"];
-export const VELOCITY_BREAK_POINTS = [0, 1, 3, 5];
+export const MAX_VELOCITY = 7;
+
+// Generate CSS gradient stops from inferno scale (same 0.15–0.85 range as StationMarker)
+const GRADIENT_STOPS = Array.from({ length: 10 }, (_, i) => {
+  const t = i / 9;
+  const color = interpolateInferno(t * 0.7 + 0.15);
+  return `${color} ${(t * 100).toFixed(0)}%`;
+}).join(", ");
 
 const Legend: React.FC = () => {
   return (
@@ -24,30 +31,45 @@ const Legend: React.FC = () => {
       <div style={{ fontSize: 14, padding: "8px 0 4px", textAlign: "center", fontWeight: "bold" }}>
         Current speed
       </div>
-      {LEGEND_COLORS.map((color, i) => (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          fontSize: 12,
+        }}
+      >
         <div
           style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            fontSize: 12,
+            backgroundColor: "#94a3b8",
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            marginRight: 10,
+            marginLeft: 2,
           }}
-          key={`current-${i}`}
-        >
-          <div
-            style={{
-              backgroundColor: color,
-              width: 12,
-              height: 12,
-              marginRight: 8,
-            }}
-          ></div>
-          {i < LEGEND_COLORS.length - 1
-            ? `${VELOCITY_BREAK_POINTS[i]}-${VELOCITY_BREAK_POINTS[i + 1]}`
-            : `${VELOCITY_BREAK_POINTS[i]}+ `}
-          {` knots`}
-        </div>
-      ))}
+        ></div>
+        {"< 0.3 kn (slack)"}
+      </div>
+      <div
+        style={{
+          height: 12,
+          borderRadius: 3,
+          margin: "4px 0",
+          background: `linear-gradient(to right, ${GRADIENT_STOPS})`,
+        }}
+      />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          fontSize: 10,
+          color: "#666",
+        }}
+      >
+        <span>0 kn</span>
+        <span>{MAX_VELOCITY}+ kn</span>
+      </div>
       <div
         style={{
           borderTop: "1px solid #ddd",
