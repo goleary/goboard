@@ -118,7 +118,11 @@ const GET = async (request: NextRequest) => {
   }
 
   const from = `${beginDate.slice(0, 4)}-${beginDate.slice(4, 6)}-${beginDate.slice(6, 8)}T00:00:00Z`;
-  const to = `${endDate.slice(0, 4)}-${endDate.slice(4, 6)}-${endDate.slice(6, 8)}T00:00:00Z`;
+  // NOAA treats end_date as inclusive (through end of day), but CHS `to` is exclusive,
+  // so add one day to match NOAA's behavior
+  const endDateObj = new Date(`${endDate.slice(0, 4)}-${endDate.slice(4, 6)}-${endDate.slice(6, 8)}T00:00:00Z`);
+  endDateObj.setUTCDate(endDateObj.getUTCDate() + 1);
+  const to = endDateObj.toISOString();
 
   const filteredStations = CHS_TIDE_STATIONS;
 
