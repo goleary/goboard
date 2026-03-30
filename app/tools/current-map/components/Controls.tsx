@@ -60,8 +60,8 @@ const Controls: React.FC<ControlsProps> = ({
   }, [dates.length, isPlaying, setSliderValue]);
 
   return (
-    <div className="absolute bottom-10 left-0 right-0 z-[400] mx-auto w-[80%] rounded-lg border bg-background/95 backdrop-blur-sm shadow-lg p-3 flex flex-col gap-2">
-      <div className="flex items-center gap-2">
+    <div className="absolute bottom-4 sm:bottom-10 left-0 right-0 z-[400] mx-auto w-[92%] sm:w-[80%] rounded-lg border bg-background/95 backdrop-blur-sm shadow-lg p-2 sm:p-3 flex flex-col gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -87,7 +87,7 @@ const Controls: React.FC<ControlsProps> = ({
             />
           </PopoverContent>
         </Popover>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-xs sm:text-sm text-muted-foreground truncate min-w-0">
           {dates[sliderValue]
             ? dateFormat(dates[sliderValue], "ddd, mmm dS, h:MM TT")
             : ""}
@@ -95,38 +95,6 @@ const Controls: React.FC<ControlsProps> = ({
         {loading && (
           <Loader2 className="size-3.5 animate-spin text-muted-foreground shrink-0" />
         )}
-        <div className="flex items-center gap-3 ml-auto shrink-0">
-          <div className="flex items-center gap-1.5">
-            <Checkbox
-              id="show-currents"
-              checked={showCurrents}
-              onCheckedChange={(v) => onShowCurrentsChange(v === true)}
-            />
-            <Label htmlFor="show-currents" className="text-xs cursor-pointer">
-              Currents
-            </Label>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Checkbox
-              id="show-tides"
-              checked={showTides}
-              onCheckedChange={(v) => onShowTidesChange(v === true)}
-            />
-            <Label htmlFor="show-tides" className="text-xs cursor-pointer">
-              Tides
-            </Label>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Checkbox
-              id="show-water-temp"
-              checked={showWaterTemp}
-              onCheckedChange={(v) => onShowWaterTempChange(v === true)}
-            />
-            <Label htmlFor="show-water-temp" className="text-xs cursor-pointer">
-              Current Water Temp
-            </Label>
-          </div>
-        </div>
       </div>
       <div className="flex items-center gap-2">
         <Button
@@ -148,6 +116,38 @@ const Controls: React.FC<ControlsProps> = ({
           onValueChange={([val]) => setSliderValue(val)}
           className="flex-1"
         />
+      </div>
+      <div className="flex items-center gap-3 border-t pt-1.5 sm:pt-0 sm:border-t-0">
+        <div className="flex items-center gap-1.5">
+          <Checkbox
+            id="show-currents"
+            checked={showCurrents}
+            onCheckedChange={(v) => onShowCurrentsChange(v === true)}
+          />
+          <Label htmlFor="show-currents" className="text-xs cursor-pointer">
+            Currents
+          </Label>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Checkbox
+            id="show-tides"
+            checked={showTides}
+            onCheckedChange={(v) => onShowTidesChange(v === true)}
+          />
+          <Label htmlFor="show-tides" className="text-xs cursor-pointer">
+            Tides
+          </Label>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Checkbox
+            id="show-water-temp"
+            checked={showWaterTemp}
+            onCheckedChange={(v) => onShowWaterTempChange(v === true)}
+          />
+          <Label htmlFor="show-water-temp" className="text-xs cursor-pointer">
+            Current Water Temp
+          </Label>
+        </div>
       </div>
     </div>
   );
