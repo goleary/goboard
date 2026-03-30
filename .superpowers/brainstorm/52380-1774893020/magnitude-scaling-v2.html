@@ -1,0 +1,67 @@
+<h2>How should arrows scale with current speed?</h2>
+<p class="subtitle">Currently all arrows are 30×30px regardless of velocity. Here are some approaches to magnitude-based sizing.</p>
+
+<div style="margin: 1.5rem 0; padding: 1.5rem; background: #e8f0f8; border-radius: 12px; border: 1px solid #94a3b8;">
+  <div style="display: flex; align-items: flex-end; gap: 2rem; justify-content: center; padding: 1rem 0;">
+    <!-- Near zero -->
+    <div style="text-align: center;">
+      <div style="opacity: 0.15; margin-bottom: 8px; height: 36px; display: flex; align-items: flex-end; justify-content: center;">
+        <svg width="8" height="8" viewBox="0 0 490 490" fill="#7e03a8"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+      </div>
+      <div style="font-size: 11px; color: #334155;">~0 kn</div>
+      <div style="font-size: 10px; color: #64748b;">hidden?</div>
+    </div>
+    <!-- 0.3 kn -->
+    <div style="text-align: center;">
+      <div style="opacity: 0.4; margin-bottom: 8px; height: 36px; display: flex; align-items: flex-end; justify-content: center;">
+        <svg width="12" height="12" viewBox="0 0 490 490" fill="#0d0887"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+      </div>
+      <div style="font-size: 11px; color: #334155;">0.3 kn</div>
+    </div>
+    <!-- 1 kn -->
+    <div style="text-align: center;">
+      <div style="opacity: 0.7; margin-bottom: 8px; height: 36px; display: flex; align-items: flex-end; justify-content: center;">
+        <svg width="20" height="20" viewBox="0 0 490 490" fill="#7e03a8"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+      </div>
+      <div style="font-size: 11px; color: #334155;">1 kn</div>
+    </div>
+    <!-- 3 kn -->
+    <div style="text-align: center;">
+      <div style="opacity: 0.9; margin-bottom: 8px; height: 36px; display: flex; align-items: flex-end; justify-content: center;">
+        <svg width="28" height="28" viewBox="0 0 490 490" fill="#cc4778"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+      </div>
+      <div style="font-size: 11px; color: #334155;">3 kn</div>
+    </div>
+    <!-- 5+ kn -->
+    <div style="text-align: center;">
+      <div style="margin-bottom: 8px; height: 36px; display: flex; align-items: flex-end; justify-content: center;">
+        <svg width="36" height="36" viewBox="0 0 490 490" fill="#f89540"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+      </div>
+      <div style="font-size: 11px; color: #334155;">5+ kn</div>
+    </div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Size + opacity scaling, hide below threshold</h3>
+      <p>Arrow size scales from ~10px to ~36px based on velocity. Opacity fades too (faster currents are bolder). Below ~0.1 kn, hide the arrow entirely — it's basically slack.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Size scaling only, hide below threshold</h3>
+      <p>Scale arrow size with velocity but keep all arrows fully opaque. Simpler visually — color already encodes speed, so opacity might be redundant. Hide below ~0.1 kn.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Replace near-slack arrows with dots</h3>
+      <p>Below ~0.3 kn, swap the arrow for a small neutral dot (slack indicator). Above that, arrows scale with velocity. This preserves station locations on the map even at slack.</p>
+    </div>
+  </div>
+</div>

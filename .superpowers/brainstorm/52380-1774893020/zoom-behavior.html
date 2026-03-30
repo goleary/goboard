@@ -1,0 +1,33 @@
+<h2>How should it behave as you zoom out?</h2>
+<p class="subtitle">The current map shows every station at every zoom level. What would you prefer?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Cluster nearby stations into summary markers</h3>
+      <p>Group overlapping arrows into a single marker showing the dominant direction and average speed. Click to expand. (react-leaflet-cluster is already in your deps.)</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Thin out to "important" stations only</h3>
+      <p>At low zoom, show only a curated subset of high-traffic or representative stations. As you zoom in, progressively reveal more stations.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Replace arrows with a flow field / streamlines</h3>
+      <p>At low zoom, switch from individual station arrows to interpolated flow lines or a particle animation that shows the general current pattern across the water. Zoom in to see individual stations.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="d" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Just make the arrows smaller and less opaque</h3>
+      <p>Keep showing everything, but scale arrow size and opacity based on zoom level so they don't visually collide as much.</p>
+    </div>
+  </div>
+</div>
