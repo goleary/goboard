@@ -11,6 +11,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const work = await getWorkData(slug);
   return {
     title: `${work.title} | Gabe O'Leary`,
+    description: work.description,
   };
 }
 
