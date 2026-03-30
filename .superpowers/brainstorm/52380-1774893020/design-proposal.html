@@ -1,0 +1,83 @@
+<h2>Proposed Design: Magnitude-Scaled Current Arrows</h2>
+<p class="subtitle">Changes to StationMarker.tsx and Legend.tsx</p>
+
+<div class="section">
+  <h3>Behavior</h3>
+  <div style="margin: 1rem 0; padding: 1.5rem; background: #e8f0f8; border-radius: 12px; border: 1px solid #cbd5e1;">
+    <div style="display: flex; align-items: flex-end; gap: 2.5rem; justify-content: center; padding: 1rem 0;">
+      <!-- Slack dot -->
+      <div style="text-align: center;">
+        <div style="margin-bottom: 8px; height: 40px; display: flex; align-items: center; justify-content: center;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #94a3b8;"></div>
+        </div>
+        <div style="font-size: 12px; color: #334155; font-weight: 600;">< 0.3 kn</div>
+        <div style="font-size: 11px; color: #64748b;">slack dot</div>
+      </div>
+      <!-- 0.3 kn -->
+      <div style="text-align: center;">
+        <div style="margin-bottom: 8px; height: 40px; display: flex; align-items: flex-end; justify-content: center;">
+          <svg width="14" height="14" viewBox="0 0 490 490" fill="#0d0887"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+        </div>
+        <div style="font-size: 12px; color: #334155; font-weight: 600;">0.3 kn</div>
+        <div style="font-size: 11px; color: #64748b;">min arrow</div>
+      </div>
+      <!-- 1 kn -->
+      <div style="text-align: center;">
+        <div style="margin-bottom: 8px; height: 40px; display: flex; align-items: flex-end; justify-content: center;">
+          <svg width="18" height="18" viewBox="0 0 490 490" fill="#0d0887"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+        </div>
+        <div style="font-size: 12px; color: #334155; font-weight: 600;">1 kn</div>
+      </div>
+      <!-- 3 kn -->
+      <div style="text-align: center;">
+        <div style="margin-bottom: 8px; height: 40px; display: flex; align-items: flex-end; justify-content: center;">
+          <svg width="26" height="26" viewBox="0 0 490 490" fill="#cc4778"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+        </div>
+        <div style="font-size: 12px; color: #334155; font-weight: 600;">3 kn</div>
+      </div>
+      <!-- 5+ kn -->
+      <div style="text-align: center;">
+        <div style="margin-bottom: 8px; height: 40px; display: flex; align-items: flex-end; justify-content: center;">
+          <svg width="34" height="34" viewBox="0 0 490 490" fill="#f89540"><path d="M480.086,490L245,339.229L9.914,490L245,0L480.086,490z"/></svg>
+        </div>
+        <div style="font-size: 12px; color: #334155; font-weight: 600;">5+ kn</div>
+        <div style="font-size: 11px; color: #64748b;">max arrow</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Rules</h3>
+  <ul style="line-height: 1.8; color: #e2e8f0;">
+    <li><strong>Below 0.3 kn</strong> → replace arrow with a small gray dot (8px). Station is still clickable for the popup.</li>
+    <li><strong>0.3 – 5+ kn</strong> → arrow scales linearly from 14px to 34px based on velocity.</li>
+    <li><strong>Color</strong> stays the same 4-tier system (already encodes speed).</li>
+    <li><strong>Rotation</strong> unchanged — still uses flood/ebb direction.</li>
+    <li><strong>Legend</strong> updated to show the slack dot indicator.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>Files Changed</h3>
+  <ul style="line-height: 1.8; color: #e2e8f0;">
+    <li><code>StationMarker.tsx</code> — add size calculation, add slack dot icon variant</li>
+    <li><code>Legend.tsx</code> — add slack dot entry to the current speed section</li>
+  </ul>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">&#10003;</div>
+    <div class="content">
+      <h3>Looks good, let's build it</h3>
+    </div>
+  </div>
+  <div class="option" data-choice="tweak" onclick="toggleSelect(this)">
+    <div class="letter">~</div>
+    <div class="content">
+      <h3>Needs tweaks</h3>
+      <p>I'll describe what to change in the terminal</p>
+    </div>
+  </div>
+</div>

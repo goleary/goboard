@@ -1,5 +1,6 @@
 import React from "react";
 import { InfoIcon } from "lucide-react";
+import { interpolateInferno } from "d3-scale-chromatic";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -8,26 +9,33 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export const LEGEND_COLORS = ["#0d0887", "#7e03a8", "#cc4778", "#f89540"];
-export const VELOCITY_BREAK_POINTS = [0, 1, 3, 5];
+export const MAX_VELOCITY = 7;
+
+// Generate CSS gradient stops from inferno scale (same 0.15–0.85 range as StationMarker)
+const GRADIENT_STOPS = Array.from({ length: 10 }, (_, i) => {
+  const t = i / 9;
+  const color = interpolateInferno(t * 0.7 + 0.15);
+  return `${color} ${(t * 100).toFixed(0)}%`;
+}).join(", ");
 
 const LegendContent: React.FC = () => (
   <div className="flex flex-col text-xs">
     <div className="text-sm font-bold text-center pb-1">Current speed</div>
-    {LEGEND_COLORS.map((color, i) => (
-      <div className="flex items-center gap-2 py-px" key={`current-${i}`}>
-        <div
-          className="w-3 h-3 shrink-0"
-          style={{ backgroundColor: color }}
-        />
-        <span>
-          {i < LEGEND_COLORS.length - 1
-            ? `${VELOCITY_BREAK_POINTS[i]}-${VELOCITY_BREAK_POINTS[i + 1]}`
-            : `${VELOCITY_BREAK_POINTS[i]}+`}{" "}
-          knots
-        </span>
-      </div>
-    ))}
+    <div className="flex items-center gap-2 py-px">
+      <div
+        className="w-2 h-2 rounded-full shrink-0"
+        style={{ backgroundColor: "#94a3b8" }}
+      />
+      <span>{"< 0.3 kn (slack)"}</span>
+    </div>
+    <div
+      className="h-3 rounded my-1"
+      style={{ background: `linear-gradient(to right, ${GRADIENT_STOPS})` }}
+    />
+    <div className="flex justify-between text-[10px] text-gray-500">
+      <span>0 kn</span>
+      <span>{MAX_VELOCITY}+ kn</span>
+    </div>
     <div className="border-t border-gray-200 mt-2 pt-1 text-sm font-bold text-center">
       Tide level
     </div>

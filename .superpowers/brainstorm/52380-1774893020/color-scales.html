@@ -1,0 +1,72 @@
+<h2>Which continuous color scale?</h2>
+<p class="subtitle">Each ramp shown from 0 kn (left) to 5+ kn (right). These are d3-scale-chromatic scales.</p>
+
+<div class="section">
+  <!-- Plasma (closest to current palette) -->
+  <div style="margin-bottom: 1.5rem;">
+    <div style="font-weight: 600; margin-bottom: 6px; color: #e2e8f0;">Plasma <span style="font-weight: 400; color: #94a3b8;">(closest to your current 4-tier colors)</span></div>
+    <div style="height: 32px; border-radius: 8px; background: linear-gradient(to right, #0d0887, #5b02a3, #9a179b, #cb4678, #eb7852, #f0f921); border: 1px solid #475569;"></div>
+  </div>
+
+  <!-- Inferno -->
+  <div style="margin-bottom: 1.5rem;">
+    <div style="font-weight: 600; margin-bottom: 6px; color: #e2e8f0;">Inferno</div>
+    <div style="height: 32px; border-radius: 8px; background: linear-gradient(to right, #000004, #420a68, #932667, #dd513a, #fca50a, #fcffa4); border: 1px solid #475569;"></div>
+  </div>
+
+  <!-- Viridis -->
+  <div style="margin-bottom: 1.5rem;">
+    <div style="font-weight: 600; margin-bottom: 6px; color: #e2e8f0;">Viridis</div>
+    <div style="height: 32px; border-radius: 8px; background: linear-gradient(to right, #440154, #46327e, #365c8d, #277f8e, #1fa187, #4ac16d, #9fda3a, #fde725); border: 1px solid #475569;"></div>
+  </div>
+
+  <!-- Turbo -->
+  <div style="margin-bottom: 1.5rem;">
+    <div style="font-weight: 600; margin-bottom: 6px; color: #e2e8f0;">Turbo</div>
+    <div style="height: 32px; border-radius: 8px; background: linear-gradient(to right, #30123b, #4662d7, #35aaf8, #1ae4b6, #72fe5e, #c8ef34, #faba39, #f66b19, #ca2a04); border: 1px solid #475569;"></div>
+  </div>
+
+  <!-- YlOrRd -->
+  <div style="margin-bottom: 1.5rem;">
+    <div style="font-weight: 600; margin-bottom: 6px; color: #e2e8f0;">YlOrRd <span style="font-weight: 400; color: #94a3b8;">(yellow → orange → red, intuitive "heat")</span></div>
+    <div style="height: 32px; border-radius: 8px; background: linear-gradient(to right, #ffffb2, #fed976, #feb24c, #fd8d3c, #fc4e2a, #e31a1c, #b10026); border: 1px solid #475569;"></div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="plasma" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Plasma</h3>
+      <p>Smooth transition of your existing palette. Dark purple → magenta → coral → yellow.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="inferno" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Inferno</h3>
+      <p>Similar warmth but starts nearly black — very dramatic contrast.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="viridis" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Viridis</h3>
+      <p>Purple → teal → green → yellow. Great perceptual uniformity, very accessible.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="turbo" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Turbo</h3>
+      <p>Rainbow-like but perceptually improved. Maximum visual distinction across the range.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="ylorrd" onclick="toggleSelect(this)">
+    <div class="letter">E</div>
+    <div class="content">
+      <h3>YlOrRd</h3>
+      <p>Intuitive "heat map" feel — calm yellow for slow, alarming red for fast.</p>
+    </div>
+  </div>
+</div>

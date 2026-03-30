@@ -3,13 +3,37 @@ import L from "leaflet";
 import { Marker, Popup } from "react-leaflet";
 
 import dateFormat from "dateformat";
+import { scaleSequential } from "d3-scale";
+import { interpolateInferno } from "d3-scale-chromatic";
 
 import { CurrentPrediction, StationWithPrediction } from "../types";
 import "./station-icon.css";
-import { LEGEND_COLORS, VELOCITY_BREAK_POINTS } from "./Legend";
+import { MAX_VELOCITY } from "./Legend";
 
 const FLOOD_COLOR = "#3b82f6";
 const EBB_COLOR = "#ef4444";
+
+const SLACK_THRESHOLD = 0.3;
+const MIN_ARROW_SIZE = 14;
+const MAX_ARROW_SIZE = 30;
+
+// Map velocity to inferno color scale, using 0.15–0.85 range to avoid near-black and near-white ends
+const getVelocityColor = (velocity: number): string => {
+  const t = Math.min(velocity / MAX_VELOCITY, 1);
+  return interpolateInferno(t * 0.7 + 0.15);
+};
+
+const getArrowSize = (velocity: number): number => {
+  const clamped = Math.min(velocity, MAX_VELOCITY);
+  const t = (clamped - SLACK_THRESHOLD) / (MAX_VELOCITY - SLACK_THRESHOLD);
+  return MIN_ARROW_SIZE + t * (MAX_ARROW_SIZE - MIN_ARROW_SIZE);
+};
+
+const getSlackDotHtml = () => {
+  return `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+    <div style="width:8px;height:8px;border-radius:50%;background:#94a3b8;"></div>
+  </div>`;
+};
 
 const getIconHtml = (rotation: number, fill = "black") => {
   return `
@@ -191,14 +215,10 @@ const StationMarker: React.FC<StationWithPrediction & { index: number }> = ({
   const date = new Date(prediction.Time);
   const isFlood = prediction.Velocity_Major > 0;
 
-  let color = LEGEND_COLORS[3];
-  if (velocity < VELOCITY_BREAK_POINTS[1]) {
-    color = LEGEND_COLORS[0];
-  } else if (velocity < VELOCITY_BREAK_POINTS[2]) {
-    color = LEGEND_COLORS[1];
-  } else if (velocity < VELOCITY_BREAK_POINTS[3]) {
-    color = LEGEND_COLORS[2];
-  }
+  const color = getVelocityColor(velocity);
+
+  const isSlack = velocity < SLACK_THRESHOLD;
+  const arrowSize = isSlack ? 16 : getArrowSize(velocity);
 
   const chartSvg = useMemo(
     () => buildCurrentChartSvg(predictions, clampedIndex),
@@ -211,9 +231,9 @@ const StationMarker: React.FC<StationWithPrediction & { index: number }> = ({
     <Marker
       position={[lat, lng]}
       icon={L.divIcon({
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
-        html: getIconHtml(rotation, color),
+        iconSize: [arrowSize, arrowSize],
+        iconAnchor: [arrowSize / 2, arrowSize / 2],
+        html: isSlack ? getSlackDotHtml() : getIconHtml(rotation, color),
       })}
     >
       <Popup minWidth={340} closeButton={true}>
