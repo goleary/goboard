@@ -67,20 +67,27 @@ export default async function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
         {(process.env.NODE_ENV === "development" || loggedIn) && (
-          <DropdownMenu>
-            <DropdownMenuTrigger>Debug</DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <Link href="/tools/debug-saunas">Saunas</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/tools/debug-icons">Icons</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/tools/debug-seo">SEO</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <>
+            <li>
+              <Link className="hover:text-blue-500" href="/private/travel">
+                Trips
+              </Link>
+            </li>
+            <DropdownMenu>
+              <DropdownMenuTrigger>Debug</DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link href="/tools/debug-saunas">Saunas</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/tools/debug-icons">Icons</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/tools/debug-seo">SEO</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
         )}
       </ul>
     </>
