@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
-// SSA 2022 Period Life Table — male expected remaining years by age (0–119)
+// SSA 2022 Period Life Table — expected remaining years by age (0–119)
 // Source: https://www.ssa.gov/oact/STATS/table4c6.html
 const MALE_REMAINING = [
   74.74, 74.2, 73.23, 72.25, 71.27, 70.29, 69.3, 68.31, 67.32, 66.32, 65.33,
@@ -34,11 +34,9 @@ const FEMALE_REMAINING = [
 
 type Sex = "male" | "female";
 
-function getExpectedLifespan(
-  birthdate: Date,
-  now: Date,
-  sex: Sex
-): number {
+const STORAGE_KEY = "lifespan-settings";
+
+function getExpectedLifespan(birthdate: Date, now: Date, sex: Sex): number {
   const ageMs = now.getTime() - birthdate.getTime();
   const age = Math.floor(ageMs / (365.25 * 24 * 60 * 60 * 1000));
   const table = sex === "male" ? MALE_REMAINING : FEMALE_REMAINING;
@@ -54,7 +52,30 @@ function weeksLived(birthdate: Date, now: Date): number {
 export default function LifespanClient() {
   const [birthdateStr, setBirthdateStr] = useState("");
   const [sex, setSex] = useState<Sex>("male");
-  const [submitted, setSubmitted] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const { birthdate, sex: savedSex } = JSON.parse(saved);
+        if (birthdate) setBirthdateStr(birthdate);
+        if (savedSex) setSex(savedSex);
+      }
+    } catch {}
+    setLoaded(true);
+  }, []);
+
+  // Save to localStorage when settings change
+  const save = useCallback(
+    (bd: string, s: Sex) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ birthdate: bd, sex: s }));
+      } catch {}
+    },
+    []
+  );
 
   const now = useMemo(() => new Date(), []);
 
@@ -65,7 +86,7 @@ export default function LifespanClient() {
   }, [birthdateStr]);
 
   const data = useMemo(() => {
-    if (!birthdate || !submitted) return null;
+    if (!birthdate) return null;
     const lived = weeksLived(birthdate, now);
     const lifespan = getExpectedLifespan(birthdate, now, sex);
     const total = Math.round(lifespan * 52);
@@ -73,11 +94,35 @@ export default function LifespanClient() {
     const ageMs = now.getTime() - birthdate.getTime();
     const age = Math.floor(ageMs / (365.25 * 24 * 60 * 60 * 1000));
     return { lived, total, remaining, lifespan, age };
-  }, [birthdate, now, sex, submitted]);
+  }, [birthdate, now, sex]);
+
+  const handleSubmit = () => {
+    if (birthdateStr) save(birthdateStr, sex);
+  };
+
+  const handleReset = () => {
+    setBirthdateStr("");
+    setSex("male");
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {}
+  };
+
+  // Show nothing until localStorage is checked (avoids flash)
+  if (!loaded) {
+    return (
+      <div className="min-h-screen bg-[#f8f5ee] flex items-center justify-center">
+        <div className="w-2 h-2 rounded-full bg-[#c4bdb2] animate-pulse" />
+      </div>
+    );
+  }
+
+  // If we have saved data, show grid immediately
+  const showGrid = loaded && data && localStorage.getItem(STORAGE_KEY);
 
   return (
     <div className="min-h-screen bg-[#f8f5ee] text-[#3d3731]">
-      <div className="max-w-4xl mx-auto px-5 py-12">
+      <div className="max-w-5xl mx-auto px-5 py-12">
         <h1 className="font-[family-name:var(--font-fraunces)] text-2xl text-[#5a5347] text-center mb-2">
           Your Life in Weeks
         </h1>
@@ -85,7 +130,7 @@ export default function LifespanClient() {
           Each square is one week. Based on SSA actuarial life tables.
         </p>
 
-        {!data ? (
+        {!showGrid ? (
           <div className="space-y-6 max-w-xs mx-auto">
             <div>
               <label
@@ -123,7 +168,7 @@ export default function LifespanClient() {
               </div>
             </div>
             <button
-              onClick={() => birthdateStr && setSubmitted(true)}
+              onClick={handleSubmit}
               disabled={!birthdateStr}
               className="w-full py-2 rounded-md text-sm font-medium transition-colors bg-[#5a5347] text-[#f8f5ee] hover:bg-[#4a4439] disabled:opacity-40 disabled:cursor-not-allowed"
             >
@@ -134,44 +179,46 @@ export default function LifespanClient() {
           <div>
             <div className="flex justify-between items-baseline mb-4">
               <p className="text-xs text-[#8a8479]">
-                Age {data.age} &middot; Expected lifespan{" "}
-                {Math.round(data.lifespan)} years
+                Age {data!.age} &middot; Expected lifespan{" "}
+                {Math.round(data!.lifespan)} years
               </p>
               <button
-                onClick={() => setSubmitted(false)}
+                onClick={handleReset}
                 className="text-xs text-[#8a8479] underline hover:text-[#5a5347]"
               >
                 Change
               </button>
             </div>
 
-            {/* Weeks grid */}
+            {/* Weeks grid — each row = 1 year (52 weeks) */}
             <div
-              className="mx-auto w-full"
+              className="mx-auto"
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(52, 1fr)",
-                gap: "2px",
+                gridTemplateColumns: "repeat(52, 10px)",
+                gap: "3px",
+                justifyContent: "center",
               }}
             >
-              {Array.from({ length: data.total }, (_, i) => (
+              {Array.from({ length: data!.total }, (_, i) => (
                 <div
                   key={i}
-                  className={`aspect-square rounded-[1px] ${
-                    i < data.lived
-                      ? i === data.lived - 1
+                  className={`rounded-[1.5px] ${
+                    i < data!.lived
+                      ? i === data!.lived - 1
                         ? "bg-[#6b5c4c]"
                         : "bg-[#c4bdb2]"
                       : "bg-[#ece8e0]"
                   }`}
+                  style={{ width: 10, height: 10 }}
                 />
               ))}
             </div>
 
-            <p className="text-center text-xs text-[#8a8479] mt-3 leading-relaxed">
-              {data.lived.toLocaleString()} weeks lived &middot;{" "}
-              {data.remaining.toLocaleString()} remaining &middot; This is week{" "}
-              {(data.lived + 1).toLocaleString()}
+            <p className="text-center text-xs text-[#8a8479] mt-4 leading-relaxed">
+              {data!.lived.toLocaleString()} weeks lived &middot;{" "}
+              {data!.remaining.toLocaleString()} remaining &middot; This is week{" "}
+              {(data!.lived + 1).toLocaleString()}
             </p>
 
             <p className="text-center text-xs text-[#b0a99e] mt-6 font-[family-name:var(--font-newsreader)] italic">
