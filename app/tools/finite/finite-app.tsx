@@ -43,8 +43,31 @@ interface FiniteState {
 // ── Constants ──────────────────────────────────────────────────
 
 const BIRTHDATE = new Date(1991, 7, 22); // Aug 22, 1991
-const EXPECTED_LIFESPAN = 80;
 const STORAGE_KEY = "finite-state";
+
+// SSA 2022 Period Life Table — male expected remaining years by age (0–119)
+// Source: https://www.ssa.gov/oact/STATS/table4c6.html
+const MALE_LIFE_EXPECTANCY_REMAINING = [
+  74.74, 74.20, 73.23, 72.25, 71.27, 70.29, 69.30, 68.31, 67.32, 66.32,
+  65.33, 64.34, 63.35, 62.36, 61.37, 60.39, 59.42, 58.46, 57.50, 56.56,
+  55.63, 54.70, 53.78, 52.86, 51.94, 51.03, 50.12, 49.21, 48.31, 47.41,
+  46.51, 45.62, 44.73, 43.84, 42.96, 42.08, 41.19, 40.31, 39.43, 38.55,
+  37.67, 36.80, 35.93, 35.05, 34.19, 33.32, 32.46, 31.60, 30.75, 29.90,
+  29.05, 28.22, 27.39, 26.56, 25.75, 24.94, 24.15, 23.37, 22.59, 21.83,
+  21.08, 20.34, 19.61, 18.89, 18.18, 17.48, 16.79, 16.11, 15.43, 14.76,
+  14.09, 13.44, 12.80, 12.16, 11.53, 10.92, 10.32, 9.74, 9.18, 8.64,
+  8.11, 7.60, 7.11, 6.64, 6.18, 5.75, 5.34, 4.94, 4.58, 4.23,
+  3.91, 3.60, 3.32, 3.06, 2.83, 2.63, 2.44, 2.28, 2.13, 2.00,
+  1.88, 1.76, 1.66, 1.56, 1.47, 1.39, 1.31, 1.23, 1.15, 1.08,
+  1.01, 0.94, 0.87, 0.81, 0.75, 0.70, 0.64, 0.59, 0.54, 0.50,
+] as const;
+
+function conditionalLifeExpectancy(birthdate: Date, now: Date): number {
+  const ageMs = now.getTime() - birthdate.getTime();
+  const age = Math.floor(ageMs / (365.25 * 24 * 60 * 60 * 1000));
+  const clampedAge = Math.min(age, MALE_LIFE_EXPECTANCY_REMAINING.length - 1);
+  return age + MALE_LIFE_EXPECTANCY_REMAINING[clampedAge];
+}
 
 const OPEN_LIST_MESSAGES = [
   "You can't do them all and you were never going to.",
@@ -377,7 +400,11 @@ export default function FiniteApp() {
 
   const now = useMemo(() => new Date(), []);
   const lived = useMemo(() => weeksLived(BIRTHDATE, now), [now]);
-  const total = totalWeeks(EXPECTED_LIFESPAN);
+  const expectedLifespan = useMemo(
+    () => conditionalLifeExpectancy(BIRTHDATE, now),
+    [now]
+  );
+  const total = totalWeeks(expectedLifespan);
   const remaining = total - lived;
   const meditationIndex = dayOfYear(now) % 28;
 
