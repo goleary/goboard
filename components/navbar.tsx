@@ -60,6 +60,11 @@ export default async function Navbar() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
+              <Link href="/tools/lifespan">
+                Lifespan in Weeks
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link href="/tools/seattle-transit">
                 Seattle Transit
               </Link>
