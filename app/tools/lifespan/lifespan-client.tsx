@@ -77,11 +77,11 @@ export default function LifespanClient() {
 
   return (
     <div className="min-h-screen bg-[#f8f5ee] text-[#3d3731]">
-      <div className="max-w-lg mx-auto px-5 py-12">
+      <div className="max-w-4xl mx-auto px-5 py-12">
         <h1 className="font-[family-name:var(--font-fraunces)] text-2xl text-[#5a5347] text-center mb-2">
           Your Life in Weeks
         </h1>
-        <p className="text-center text-sm text-[#8a8479] mb-10 font-[family-name:var(--font-newsreader)]">
+        <p className="text-center text-sm text-[#8a8479] mb-8 font-[family-name:var(--font-newsreader)]">
           Each square is one week. Based on SSA actuarial life tables.
         </p>
 
@@ -147,12 +147,11 @@ export default function LifespanClient() {
 
             {/* Weeks grid */}
             <div
-              className="mx-auto"
+              className="mx-auto w-full"
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(52, 1fr)",
-                gap: "1.5px",
-                maxWidth: "320px",
+                gap: "2px",
               }}
             >
               {Array.from({ length: data.total }, (_, i) => (
