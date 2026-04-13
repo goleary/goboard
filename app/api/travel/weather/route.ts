@@ -12,7 +12,7 @@ export interface DailyWeather {
   precipSum: number; // mm
   windSpeedMax: number; // km/h
   weatherCode: number;
-  source: "forecast" | "historical";
+  source: "forecast" | "seasonal_forecast" | "historical";
 }
 
 function weatherCodeLabel(code: number): string {
@@ -59,6 +59,93 @@ async function fetchForecast(
     weatherCode: daily.weather_code[i],
     source: "forecast" as const,
   }));
+}
+
+async function fetchSeasonalForecast(
+  startDate: string,
+  endDate: string,
+  lat: number,
+  lon: number
+): Promise<DailyWeather[]> {
+  // Open-Meteo seasonal API — ensemble members averaged for consensus forecast
+  const url = `https://seasonal-api.open-meteo.com/v1/seasonal?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&start_date=${startDate}&end_date=${endDate}&temperature_unit=fahrenheit&timezone=auto`;
+
+  const res = await fetch(url, { next: { revalidate: 21600 } }); // 6-hour cache
+  if (!res.ok) return [];
+
+  const data = await res.json();
+  const daily = data.daily;
+  if (!daily?.time) return [];
+
+  // Seasonal API returns per-member data (e.g. temperature_2m_max_member01, _member02, ...)
+  // Average across all members for a consensus forecast
+  const memberKeys = (prefix: string) =>
+    Object.keys(daily).filter((k) => k.startsWith(prefix + "_member"));
+
+  const maxTempKeys = memberKeys("temperature_2m_max");
+  const minTempKeys = memberKeys("temperature_2m_min");
+  const precipKeys = memberKeys("precipitation_sum");
+  const windKeys = memberKeys("wind_speed_10m_max");
+
+  // If no member keys found, try non-member format as fallback
+  if (maxTempKeys.length === 0 && daily.temperature_2m_max) {
+    return daily.time.map((date: string, i: number) => ({
+      date,
+      tempMax: daily.temperature_2m_max[i],
+      tempMin: daily.temperature_2m_min?.[i] ?? daily.temperature_2m_max[i] - 10,
+      precipProbability: 0,
+      precipSum: daily.precipitation_sum?.[i] ?? 0,
+      windSpeedMax: daily.wind_speed_10m_max?.[i] ?? 0,
+      weatherCode: deriveWeatherCode(daily.precipitation_sum?.[i] ?? 0),
+      source: "seasonal_forecast" as const,
+    }));
+  }
+
+  if (maxTempKeys.length === 0) return [];
+
+  const avg = (arr: number[]) =>
+    arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+
+  return daily.time.map((date: string, i: number) => {
+    const maxTemps = maxTempKeys
+      .map((k) => daily[k][i])
+      .filter((v: number | null): v is number => v != null);
+    const minTemps = minTempKeys
+      .map((k) => daily[k][i])
+      .filter((v: number | null): v is number => v != null);
+    const precips = precipKeys
+      .map((k) => daily[k][i])
+      .filter((v: number | null): v is number => v != null);
+    const winds = windKeys
+      .map((k) => daily[k][i])
+      .filter((v: number | null): v is number => v != null);
+
+    const avgPrecip = avg(precips);
+    const precipProb =
+      precips.length > 0
+        ? Math.round(
+            (precips.filter((p) => p > 0.5).length / precips.length) * 100
+          )
+        : 0;
+
+    return {
+      date,
+      tempMax: Math.round(avg(maxTemps) * 10) / 10,
+      tempMin: Math.round(avg(minTemps) * 10) / 10,
+      precipProbability: precipProb,
+      precipSum: Math.round(avgPrecip * 10) / 10,
+      windSpeedMax: Math.round(avg(winds) * 10) / 10,
+      weatherCode: deriveWeatherCode(avgPrecip),
+      source: "seasonal_forecast" as const,
+    };
+  });
+}
+
+function deriveWeatherCode(precipMm: number): number {
+  if (precipMm > 5) return 63; // moderate rain
+  if (precipMm > 1) return 61; // slight rain
+  if (precipMm > 0.3) return 51; // drizzle
+  return 1; // mainly clear
 }
 
 async function fetchHistoricalAverages(
@@ -168,20 +255,48 @@ export async function GET(request: Request) {
   let days: DailyWeather[] = [];
 
   if (startDate <= forecastLimitStr) {
+    // Some or all dates within the 16-day forecast window
     const forecastEnd =
       endDate <= forecastLimitStr ? endDate : forecastLimitStr;
-    const forecastDays = await fetchForecast(startDate, forecastEnd, lat, lon);
-    days = [...forecastDays];
+    days = await fetchForecast(startDate, forecastEnd, lat, lon);
 
     if (endDate > forecastLimitStr) {
       const nextDay = new Date(forecastLimitStr + "T12:00:00");
       nextDay.setDate(nextDay.getDate() + 1);
-      const histStart = nextDay.toISOString().split("T")[0];
-      const histDays = await fetchHistoricalAverages(histStart, endDate, lat, lon);
-      days = [...days, ...histDays];
+      const remainStart = nextDay.toISOString().split("T")[0];
+
+      // Try seasonal forecast first, fall back to historical averages
+      const seasonalDays = await fetchSeasonalForecast(
+        remainStart,
+        endDate,
+        lat,
+        lon
+      );
+      if (seasonalDays.length > 0) {
+        days = [...days, ...seasonalDays];
+      } else {
+        const histDays = await fetchHistoricalAverages(
+          remainStart,
+          endDate,
+          lat,
+          lon
+        );
+        days = [...days, ...histDays];
+      }
     }
   } else {
-    days = await fetchHistoricalAverages(startDate, endDate, lat, lon);
+    // All dates beyond 16-day forecast — try seasonal, then historical
+    const seasonalDays = await fetchSeasonalForecast(
+      startDate,
+      endDate,
+      lat,
+      lon
+    );
+    if (seasonalDays.length > 0) {
+      days = seasonalDays;
+    } else {
+      days = await fetchHistoricalAverages(startDate, endDate, lat, lon);
+    }
   }
 
   return NextResponse.json({

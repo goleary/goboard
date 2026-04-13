@@ -218,13 +218,24 @@ function WeatherCalendar({ days }: { days: DailyWeather[] }) {
             const isFirstOfMonth = dayNum === 1;
             const isRainy = day.precipProbability >= 50;
 
+            const sourceLabel =
+              day.source === "forecast"
+                ? null
+                : day.source === "seasonal_forecast"
+                  ? "seasonal"
+                  : "avg";
+
             return (
               <div
                 key={day.date}
                 className={`rounded-lg border p-2 text-center ${
-                  isRainy ? "bg-blue-50 border-blue-200" : "bg-amber-50 border-amber-200"
+                  isRainy
+                    ? "bg-blue-50 border-blue-200"
+                    : day.source === "historical"
+                      ? "bg-gray-50 border-gray-200"
+                      : "bg-amber-50 border-amber-200"
                 }`}
-                title={`${weatherCodeLabel(day.weatherCode)} | Wind: ${day.windSpeedMax} km/h`}
+                title={`${weatherCodeLabel(day.weatherCode)} | Wind: ${day.windSpeedMax} km/h | Source: ${day.source}`}
               >
                 <div className="text-xs text-muted-foreground">
                   {isFirstOfMonth || (di === 0 && wi === 0) ? monthStr + " " : ""}
@@ -237,6 +248,13 @@ function WeatherCalendar({ days }: { days: DailyWeather[] }) {
                 <div className={`text-[10px] leading-tight ${isRainy ? "text-blue-600" : "text-muted-foreground"}`}>
                   {day.precipProbability}% rain
                 </div>
+                {sourceLabel && (
+                  <div className={`text-[9px] leading-tight mt-0.5 ${
+                    day.source === "seasonal_forecast" ? "text-purple-500" : "text-gray-400"
+                  }`}>
+                    {sourceLabel}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -352,7 +370,15 @@ export default function TravelDashboard() {
         <CardHeader>
           <CardTitle className="text-lg">Weather</CardTitle>
           <CardDescription>
-            Lund, BC — {weather?.days[0]?.source === "historical" ? "historical averages (2020-2025)" : "forecast"} — temps in °F
+            Lund, BC — temps in °F
+            {weather && (() => {
+              const sources = new Set(weather.days.map((d) => d.source));
+              const parts: string[] = [];
+              if (sources.has("forecast")) parts.push("forecast");
+              if (sources.has("seasonal_forecast")) parts.push("seasonal forecast");
+              if (sources.has("historical")) parts.push("historical avg");
+              return parts.length > 0 ? ` — ${parts.join(" + ")}` : "";
+            })()}
           </CardDescription>
         </CardHeader>
         <CardContent>
