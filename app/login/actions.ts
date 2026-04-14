@@ -23,11 +23,7 @@ export async function login(
   const password = formData.get("password") as string;
   const expected = process.env.AUTH_PASSWORD;
 
-  if (!expected) {
-    return { error: "AUTH_PASSWORD environment variable is not set." };
-  }
-
-  if (password !== expected) {
+  if (expected && password !== expected) {
     return { error: "Incorrect password." };
   }
 

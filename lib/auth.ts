@@ -12,6 +12,9 @@ function computeToken(): string {
 }
 
 export async function isAuthenticated(): Promise<boolean> {
+  if (!process.env.AUTH_PASSWORD && !process.env.AUTH_SECRET) {
+    return true;
+  }
   const cookieStore = await cookies();
   const token = cookieStore.get("auth-token")?.value;
   if (!token) return false;

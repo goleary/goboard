@@ -20,6 +20,10 @@ async function computeToken(secret: string): Promise<string> {
 }
 
 export async function middleware(request: NextRequest) {
+  if (!process.env.AUTH_PASSWORD && !process.env.AUTH_SECRET) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get("auth-token")?.value;
   if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
