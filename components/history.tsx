@@ -1,5 +1,5 @@
 import React from "react";
-import { cacheLife } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { celsiusToFahrenheit } from "@/lib/utils";
 
 import HistoryChart from "./chart";
@@ -9,12 +9,10 @@ type HistoricalRecord = {
   waterTemperature: number;
 };
 
-async function getHistoricalData(
+async function fetchHistoricalData(
   buoy: string,
   year: number = new Date().getFullYear()
 ): Promise<HistoricalRecord[]> {
-  "use cache";
-  cacheLife("hours");
 
   const res = await fetch(
     "https://green2.kingcounty.gov/lake-buoy/HistoricalTemperature.aspx/GetData",
@@ -46,6 +44,12 @@ async function getHistoricalData(
     waterTemperature: celsiusToFahrenheit(Value),
   }));
 }
+
+const getHistoricalData = unstable_cache(
+  fetchHistoricalData,
+  ["lake-historical-data"],
+  { revalidate: 3600 }
+);
 
 type HistoryProps = {
   location: string;
