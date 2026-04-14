@@ -258,46 +258,46 @@ export async function GET(request: Request) {
     // Some or all dates within the 16-day forecast window
     const forecastEnd =
       endDate <= forecastLimitStr ? endDate : forecastLimitStr;
-    days = await fetchForecast(startDate, forecastEnd, lat, lon);
+    const forecastDays = await fetchForecast(startDate, forecastEnd, lat, lon);
+    days = forecastDays;
 
-    if (endDate > forecastLimitStr) {
-      const nextDay = new Date(forecastLimitStr + "T12:00:00");
-      nextDay.setDate(nextDay.getDate() + 1);
-      const remainStart = nextDay.toISOString().split("T")[0];
+    // Determine where we still need data: either forecast failed (gap) or beyond forecast window
+    const coveredDates = new Set(forecastDays.map((d) => d.date));
+    const remainStart = forecastDays.length > 0
+      ? (() => {
+          const next = new Date(forecastLimitStr + "T12:00:00");
+          next.setDate(next.getDate() + 1);
+          return next.toISOString().split("T")[0];
+        })()
+      : startDate;
+    const needsRemaining = endDate >= remainStart;
 
-      // Try seasonal forecast first, fall back to historical averages
-      const seasonalDays = await fetchSeasonalForecast(
-        remainStart,
-        endDate,
-        lat,
-        lon
-      );
+    // Fill any gaps where forecast returned nothing + dates beyond forecast window
+    if (forecastDays.length === 0 || needsRemaining) {
+      const fillStart = forecastDays.length === 0 ? startDate : remainStart;
+      const seasonalDays = await fetchSeasonalForecast(fillStart, endDate, lat, lon);
       if (seasonalDays.length > 0) {
-        days = [...days, ...seasonalDays];
+        // Only add seasonal days that aren't already covered by forecast
+        const newDays = seasonalDays.filter((d) => !coveredDates.has(d.date));
+        days = [...days, ...newDays];
       } else {
-        const histDays = await fetchHistoricalAverages(
-          remainStart,
-          endDate,
-          lat,
-          lon
-        );
-        days = [...days, ...histDays];
+        const histDays = await fetchHistoricalAverages(fillStart, endDate, lat, lon);
+        const newDays = histDays.filter((d) => !coveredDates.has(d.date));
+        days = [...days, ...newDays];
       }
     }
   } else {
     // All dates beyond 16-day forecast — try seasonal, then historical
-    const seasonalDays = await fetchSeasonalForecast(
-      startDate,
-      endDate,
-      lat,
-      lon
-    );
+    const seasonalDays = await fetchSeasonalForecast(startDate, endDate, lat, lon);
     if (seasonalDays.length > 0) {
       days = seasonalDays;
     } else {
       days = await fetchHistoricalAverages(startDate, endDate, lat, lon);
     }
   }
+
+  // Sort by date to ensure correct order
+  days.sort((a, b) => a.date.localeCompare(b.date));
 
   return NextResponse.json({
     days,

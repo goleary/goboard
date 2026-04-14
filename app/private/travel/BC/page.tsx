@@ -216,6 +216,7 @@ function WeatherCalendar({ days }: { days: DailyWeather[] }) {
             const dayNum = d.getDate();
             const monthStr = d.toLocaleDateString("en-US", { month: "short" });
             const isFirstOfMonth = dayNum === 1;
+            const isFirstInRow = di === 0 || week.slice(0, di).every((c) => c === null);
             const isRainy = day.precipProbability >= 50;
 
             const sourceLabel =
@@ -238,7 +239,7 @@ function WeatherCalendar({ days }: { days: DailyWeather[] }) {
                 title={`${weatherCodeLabel(day.weatherCode)} | Wind: ${day.windSpeedMax} km/h | Source: ${day.source}`}
               >
                 <div className="text-xs text-muted-foreground">
-                  {isFirstOfMonth || (di === 0 && wi === 0) ? monthStr + " " : ""}
+                  {isFirstOfMonth || isFirstInRow ? monthStr + " " : ""}
                   {dayNum}
                 </div>
                 <div className="text-lg leading-tight">{weatherIcon(day.weatherCode)}</div>
