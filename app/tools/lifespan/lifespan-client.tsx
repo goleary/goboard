@@ -53,15 +53,17 @@ export default function LifespanClient() {
   const [birthdateStr, setBirthdateStr] = useState("");
   const [sex, setSex] = useState<Sex>("male");
   const [loaded, setLoaded] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const { birthdate, sex: savedSex } = JSON.parse(saved);
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const { birthdate, sex: savedSex } = JSON.parse(stored);
         if (birthdate) setBirthdateStr(birthdate);
         if (savedSex) setSex(savedSex);
+        setSaved(true);
       }
     } catch {}
     setLoaded(true);
@@ -97,12 +99,16 @@ export default function LifespanClient() {
   }, [birthdate, now, sex]);
 
   const handleSubmit = () => {
-    if (birthdateStr) save(birthdateStr, sex);
+    if (birthdateStr) {
+      save(birthdateStr, sex);
+      setSaved(true);
+    }
   };
 
   const handleReset = () => {
     setBirthdateStr("");
     setSex("male");
+    setSaved(false);
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {}
@@ -117,8 +123,7 @@ export default function LifespanClient() {
     );
   }
 
-  // If we have saved data, show grid immediately
-  const showGrid = loaded && data && localStorage.getItem(STORAGE_KEY);
+  const showGrid = loaded && data && saved;
 
   return (
     <div className="min-h-screen bg-[#f8f5ee] text-[#3d3731]">
