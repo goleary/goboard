@@ -1,4 +1,5 @@
 import React from "react";
+import { cacheLife } from "next/cache";
 import { celsiusToFahrenheit } from "@/lib/utils";
 
 import HistoryChart from "./chart";
@@ -12,6 +13,9 @@ async function getHistoricalData(
   buoy: string,
   year: number = new Date().getFullYear()
 ): Promise<HistoricalRecord[]> {
+  "use cache";
+  cacheLife("hours");
+
   const res = await fetch(
     "https://green2.kingcounty.gov/lake-buoy/HistoricalTemperature.aspx/GetData",
     {
@@ -22,10 +26,7 @@ async function getHistoricalData(
       },
       body: `{ buoy: '${buoy}' }`,
       method: "POST",
-      next: {
-        // This only updates a couple times a day
-        revalidate: 60 * 60 * 12,
-      },
+      cache: "no-store",
     }
   );
 
