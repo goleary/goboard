@@ -278,7 +278,7 @@ export default function TravelDashboard() {
     try {
       const [kayakRes, weatherRes] = await Promise.all([
         fetch(`/api/travel/kayak-availability?start_date=${KAYAK_START}&days=${kayakDays}`),
-        fetch(`/api/travel/weather?start_date=${TRIP_START}&end_date=${TRIP_END}`),
+        fetch(`/api/travel/weather?start_date=${new Date().toISOString().split("T")[0]}&end_date=${TRIP_END}`),
       ]);
       if (!kayakRes.ok) throw new Error(`Kayak API failed: ${kayakRes.status}`);
       setData(await kayakRes.json());
