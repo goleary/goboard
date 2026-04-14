@@ -246,58 +246,32 @@ export async function GET(request: Request) {
   const lat = parseFloat(searchParams.get("lat") ?? String(LAT));
   const lon = parseFloat(searchParams.get("lon") ?? String(LON));
 
-  // Check if dates are within forecast range (16 days from now)
-  const now = new Date();
-  const forecastLimit = new Date(now);
-  forecastLimit.setDate(forecastLimit.getDate() + 16);
-  const forecastLimitStr = forecastLimit.toISOString().split("T")[0];
+  // Try the standard 16-day forecast API first for the full range.
+  // It will return data for whatever dates it can (up to ~16 days out)
+  // and return [] for dates beyond its range.
+  const forecastDays = await fetchForecast(startDate, endDate, lat, lon);
+  const coveredDates = new Set(forecastDays.map((d) => d.date));
 
-  let days: DailyWeather[] = [];
-
-  if (startDate <= forecastLimitStr) {
-    // Some or all dates within the 16-day forecast window
-    const forecastEnd =
-      endDate <= forecastLimitStr ? endDate : forecastLimitStr;
-    const forecastDays = await fetchForecast(startDate, forecastEnd, lat, lon);
-    days = forecastDays;
-
-    // Determine where we still need data: either forecast failed (gap) or beyond forecast window
-    const coveredDates = new Set(forecastDays.map((d) => d.date));
-    const remainStart = forecastDays.length > 0
-      ? (() => {
-          const next = new Date(forecastLimitStr + "T12:00:00");
-          next.setDate(next.getDate() + 1);
-          return next.toISOString().split("T")[0];
-        })()
-      : startDate;
-    const needsRemaining = endDate >= remainStart;
-
-    // Fill any gaps where forecast returned nothing + dates beyond forecast window
-    if (forecastDays.length === 0 || needsRemaining) {
-      const fillStart = forecastDays.length === 0 ? startDate : remainStart;
-      const seasonalDays = await fetchSeasonalForecast(fillStart, endDate, lat, lon);
-      if (seasonalDays.length > 0) {
-        // Only add seasonal days that aren't already covered by forecast
-        const newDays = seasonalDays.filter((d) => !coveredDates.has(d.date));
-        days = [...days, ...newDays];
-      } else {
-        const histDays = await fetchHistoricalAverages(fillStart, endDate, lat, lon);
-        const newDays = histDays.filter((d) => !coveredDates.has(d.date));
-        days = [...days, ...newDays];
-      }
-    }
-  } else {
-    // All dates beyond 16-day forecast — try seasonal, then historical
+  // Fill any uncovered dates with seasonal forecast, then historical as fallback
+  let fillDays: DailyWeather[] = [];
+  if (coveredDates.size === 0) {
+    // Forecast returned nothing — try seasonal for entire range
     const seasonalDays = await fetchSeasonalForecast(startDate, endDate, lat, lon);
-    if (seasonalDays.length > 0) {
-      days = seasonalDays;
-    } else {
-      days = await fetchHistoricalAverages(startDate, endDate, lat, lon);
-    }
+    fillDays = seasonalDays.length > 0
+      ? seasonalDays
+      : await fetchHistoricalAverages(startDate, endDate, lat, lon);
+  } else {
+    // Forecast covered some dates — fill the rest with seasonal/historical
+    const seasonalDays = await fetchSeasonalForecast(startDate, endDate, lat, lon);
+    const fallbackDays = seasonalDays.length > 0
+      ? seasonalDays
+      : await fetchHistoricalAverages(startDate, endDate, lat, lon);
+    fillDays = fallbackDays.filter((d) => !coveredDates.has(d.date));
   }
 
-  // Sort by date to ensure correct order
-  days.sort((a, b) => a.date.localeCompare(b.date));
+  const days = [...forecastDays, ...fillDays].sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
 
   return NextResponse.json({
     days,
