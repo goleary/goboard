@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-// Lund, BC — near Desolation Sound
-const LAT = 49.98;
-const LON = -124.77;
+// Desolation Sound Marine Provincial Park
+const LAT = 50.09847377690354;
+const LON = -124.74442448664045;
 
 export interface DailyWeather {
   date: string;
@@ -10,7 +10,13 @@ export interface DailyWeather {
   tempMin: number; // °F
   precipProbability: number; // 0-100
   precipSum: number; // mm
+  windSpeedMean: number; // km/h
   windSpeedMax: number; // km/h
+  windGustsMax: number; // km/h
+  windDirection: number; // degrees
+  cloudCover: number; // 0-100 %
+  sunrise: string; // HH:MM
+  sunset: string; // HH:MM
   weatherCode: number;
   source: "forecast" | "seasonal_forecast" | "historical";
 }
@@ -40,7 +46,7 @@ async function fetchForecast(
   lat: number,
   lon: number
 ): Promise<DailyWeather[]> {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,weather_code&start_date=${startDate}&end_date=${endDate}&temperature_unit=fahrenheit&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,cloud_cover_mean,sunrise,sunset,weather_code&start_date=${startDate}&end_date=${endDate}&temperature_unit=fahrenheit&timezone=auto`;
 
   const res = await fetch(url, { next: { revalidate: 3600 } });
   if (!res.ok) return [];
@@ -55,7 +61,13 @@ async function fetchForecast(
     tempMin: daily.temperature_2m_min[i],
     precipProbability: daily.precipitation_probability_max?.[i] ?? 0,
     precipSum: daily.precipitation_sum[i],
+    windSpeedMean: daily.wind_speed_10m_mean?.[i] ?? 0,
     windSpeedMax: daily.wind_speed_10m_max[i],
+    windGustsMax: daily.wind_gusts_10m_max?.[i] ?? 0,
+    windDirection: daily.wind_direction_10m_dominant?.[i] ?? 0,
+    cloudCover: daily.cloud_cover_mean?.[i] ?? 0,
+    sunrise: daily.sunrise?.[i]?.slice(11) ?? "",
+    sunset: daily.sunset?.[i]?.slice(11) ?? "",
     weatherCode: daily.weather_code[i],
     source: "forecast" as const,
   }));
@@ -68,7 +80,7 @@ async function fetchSeasonalForecast(
   lon: number
 ): Promise<DailyWeather[]> {
   // Open-Meteo seasonal API — ensemble members averaged for consensus forecast
-  const url = `https://seasonal-api.open-meteo.com/v1/seasonal?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&start_date=${startDate}&end_date=${endDate}&temperature_unit=fahrenheit&timezone=auto`;
+  const url = `https://seasonal-api.open-meteo.com/v1/seasonal?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_mean,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,cloud_cover_mean&start_date=${startDate}&end_date=${endDate}&temperature_unit=fahrenheit&timezone=auto`;
 
   const res = await fetch(url, { next: { revalidate: 21600 } }); // 6-hour cache
   if (!res.ok) return [];
@@ -86,6 +98,9 @@ async function fetchSeasonalForecast(
   const minTempKeys = memberKeys("temperature_2m_min");
   const precipKeys = memberKeys("precipitation_sum");
   const windKeys = memberKeys("wind_speed_10m_max");
+  const windMeanKeys = memberKeys("wind_speed_10m_mean");
+  const gustKeys = memberKeys("wind_gusts_10m_max");
+  const windDirKeys = memberKeys("wind_direction_10m_dominant");
 
   // If no member keys found, try non-member format as fallback
   if (maxTempKeys.length === 0 && daily.temperature_2m_max) {
@@ -95,7 +110,13 @@ async function fetchSeasonalForecast(
       tempMin: daily.temperature_2m_min?.[i] ?? daily.temperature_2m_max[i] - 10,
       precipProbability: 0,
       precipSum: daily.precipitation_sum?.[i] ?? 0,
+      windSpeedMean: daily.wind_speed_10m_mean?.[i] ?? 0,
       windSpeedMax: daily.wind_speed_10m_max?.[i] ?? 0,
+      windGustsMax: daily.wind_gusts_10m_max?.[i] ?? 0,
+      windDirection: daily.wind_direction_10m_dominant?.[i] ?? 0,
+      cloudCover: daily.cloud_cover_mean?.[i] ?? 0,
+      sunrise: "",
+      sunset: "",
       weatherCode: deriveWeatherCode(daily.precipitation_sum?.[i] ?? 0),
       source: "seasonal_forecast" as const,
     }));
@@ -105,6 +126,8 @@ async function fetchSeasonalForecast(
 
   const avg = (arr: number[]) =>
     arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+
+  const cloudKeys = memberKeys("cloud_cover_mean");
 
   return daily.time.map((date: string, i: number) => {
     const maxTemps = maxTempKeys
@@ -117,6 +140,18 @@ async function fetchSeasonalForecast(
       .map((k) => daily[k][i])
       .filter((v: number | null): v is number => v != null);
     const winds = windKeys
+      .map((k) => daily[k][i])
+      .filter((v: number | null): v is number => v != null);
+    const windMeans = windMeanKeys
+      .map((k) => daily[k][i])
+      .filter((v: number | null): v is number => v != null);
+    const gusts = gustKeys
+      .map((k) => daily[k][i])
+      .filter((v: number | null): v is number => v != null);
+    const windDirs = windDirKeys
+      .map((k) => daily[k][i])
+      .filter((v: number | null): v is number => v != null);
+    const clouds = cloudKeys
       .map((k) => daily[k][i])
       .filter((v: number | null): v is number => v != null);
 
@@ -134,7 +169,13 @@ async function fetchSeasonalForecast(
       tempMin: Math.round(avg(minTemps) * 10) / 10,
       precipProbability: precipProb,
       precipSum: Math.round(avgPrecip * 10) / 10,
+      windSpeedMean: Math.round(avg(windMeans) * 10) / 10,
       windSpeedMax: Math.round(avg(winds) * 10) / 10,
+      windGustsMax: Math.round(avg(gusts) * 10) / 10,
+      windDirection: Math.round(avg(windDirs)),
+      cloudCover: Math.round(avg(clouds)),
+      sunrise: "",
+      sunset: "",
       weatherCode: deriveWeatherCode(avgPrecip),
       source: "seasonal_forecast" as const,
     };
@@ -165,7 +206,7 @@ async function fetchHistoricalAverages(
       const year = startYear + i;
       const s = `${year}-${startMd}`;
       const e = `${year}-${endMd}`;
-      const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,weather_code&start_date=${s}&end_date=${e}&temperature_unit=fahrenheit&timezone=auto`;
+      const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_mean,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,cloud_cover_mean,weather_code&start_date=${s}&end_date=${e}&temperature_unit=fahrenheit&timezone=auto`;
       return fetch(url, { next: { revalidate: 86400 } })
         .then((r) => (r.ok ? r.json() : null))
         .catch(() => null);
@@ -175,7 +216,7 @@ async function fetchHistoricalAverages(
   // Group by day-of-year and average
   const dayMap = new Map<
     string,
-    { temps: number[]; mins: number[]; precip: number[]; wind: number[]; codes: number[] }
+    { temps: number[]; mins: number[]; precip: number[]; windMean: number[]; wind: number[]; gusts: number[]; windDir: number[]; clouds: number[]; codes: number[] }
   >();
 
   for (const result of yearResults) {
@@ -184,13 +225,17 @@ async function fetchHistoricalAverages(
     for (let i = 0; i < d.time.length; i++) {
       const md = (d.time[i] as string).slice(5); // MM-DD
       if (!dayMap.has(md)) {
-        dayMap.set(md, { temps: [], mins: [], precip: [], wind: [], codes: [] });
+        dayMap.set(md, { temps: [], mins: [], precip: [], windMean: [], wind: [], gusts: [], windDir: [], clouds: [], codes: [] });
       }
       const entry = dayMap.get(md)!;
       if (d.temperature_2m_max[i] != null) entry.temps.push(d.temperature_2m_max[i]);
       if (d.temperature_2m_min[i] != null) entry.mins.push(d.temperature_2m_min[i]);
       if (d.precipitation_sum[i] != null) entry.precip.push(d.precipitation_sum[i]);
+      if (d.wind_speed_10m_mean?.[i] != null) entry.windMean.push(d.wind_speed_10m_mean[i]);
       if (d.wind_speed_10m_max[i] != null) entry.wind.push(d.wind_speed_10m_max[i]);
+      if (d.wind_gusts_10m_max?.[i] != null) entry.gusts.push(d.wind_gusts_10m_max[i]);
+      if (d.wind_direction_10m_dominant?.[i] != null) entry.windDir.push(d.wind_direction_10m_dominant[i]);
+      if (d.cloud_cover_mean?.[i] != null) entry.clouds.push(d.cloud_cover_mean[i]);
       if (d.weather_code[i] != null) entry.codes.push(d.weather_code[i]);
     }
   }
@@ -227,7 +272,13 @@ async function fetchHistoricalAverages(
         tempMin: avg(entry.mins),
         precipProbability: precipProb,
         precipSum: avg(entry.precip),
+        windSpeedMean: avg(entry.windMean),
         windSpeedMax: avg(entry.wind),
+        windGustsMax: avg(entry.gusts),
+        windDirection: entry.windDir.length > 0 ? Math.round(avg(entry.windDir)) : 0,
+        cloudCover: entry.clouds.length > 0 ? Math.round(avg(entry.clouds)) : 0,
+        sunrise: "",
+        sunset: "",
         weatherCode: modeCode,
         source: "historical",
       });
@@ -246,10 +297,17 @@ export async function GET(request: Request) {
   const lat = parseFloat(searchParams.get("lat") ?? String(LAT));
   const lon = parseFloat(searchParams.get("lon") ?? String(LON));
 
-  // Try the standard 16-day forecast API first for the full range.
-  // It will return data for whatever dates it can (up to ~16 days out)
-  // and return [] for dates beyond its range.
-  const forecastDays = await fetchForecast(startDate, endDate, lat, lon);
+  // Open-Meteo forecast API errors if end_date exceeds its ~16-day window,
+  // so cap the request at 16 days from start_date.
+  const forecastCap = new Date(startDate + "T12:00:00");
+  forecastCap.setDate(forecastCap.getDate() + 15);
+  const forecastEndDate = forecastCap.toISOString().split("T")[0];
+  const forecastDays = await fetchForecast(
+    startDate,
+    endDate <= forecastEndDate ? endDate : forecastEndDate,
+    lat,
+    lon
+  );
   const coveredDates = new Set(forecastDays.map((d) => d.date));
 
   // Fill any uncovered dates with seasonal forecast, then historical as fallback
@@ -276,6 +334,6 @@ export async function GET(request: Request) {
   return NextResponse.json({
     days,
     checkedAt: new Date().toISOString(),
-    location: { name: "Lund, BC", lat: LAT, lon: LON },
+    location: { name: "Desolation Sound", lat: LAT, lon: LON },
   });
 }

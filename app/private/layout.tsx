@@ -7,7 +7,7 @@ export default function PrivateLayout({
   // by using a wider container for private/admin pages
   return (
     <div className="w-screen relative left-1/2 -translate-x-1/2 px-4">
-      <div className="max-w-4xl mx-auto">{children}</div>
+      <div className="max-w-7xl mx-auto">{children}</div>
     </div>
   );
 }
