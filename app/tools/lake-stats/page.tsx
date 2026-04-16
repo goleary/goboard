@@ -15,6 +15,8 @@ import {
 } from "@/lib/utils";
 import { ThermometerIcon, WavesIcon, WindIcon } from "lucide-react";
 import History from "@/components/history";
+import { ForecastGrid, DaylightCard, type DayForecast, type PeriodRating, type HourlyWind } from "./forecast-grid";
+import Navbar from "@/components/navbar";
 
 type BuoyStats = {
   location: string;
@@ -92,12 +94,29 @@ const LakeTemp: React.FC = async () => {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
-      <div className="max-w-[400px]">
-        <h1 className="text-4xl font-bold text-slate-800 mb-6">
-          Seattle Lake Stats
-        </h1>
-        <p className="text-md text-slate-700 mb-6">
+    <main className="min-h-screen max-w-6xl mx-auto px-4 py-6">
+      <div className="flex flex-col items-center gap-4 mb-6">
+        <Navbar />
+      </div>
+      <h1 className="text-4xl font-bold text-slate-800 mb-6">
+        Seattle Lake Stats
+      </h1>
+
+      <div className="space-y-6">
+        <WeatherForecast />
+        <div className="grid grid-cols-2 gap-6">
+          <StatCard
+            title="Lake Washington"
+            stats={lakeStats.washington}
+          ></StatCard>
+          <StatCard
+            title="Lake Sammamish"
+            stats={lakeStats.sammamish}
+          ></StatCard>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mt-6 text-sm text-muted-foreground">
+        <p>
           Data sourced from{" "}
           <a
             href="https://green2.kingcounty.gov/lake-buoy/default.aspx"
@@ -108,18 +127,7 @@ const LakeTemp: React.FC = async () => {
             King County Lake Buoy data
           </a>
         </p>
-
-        <div className="flex flex-col justify-start gap-4 my-6">
-          <StatCard
-            title="Lake Washington"
-            stats={lakeStats.washington}
-          ></StatCard>
-          <StatCard
-            title="Lake Sammamish"
-            stats={lakeStats.sammamish}
-          ></StatCard>
-        </div>
-        <p className="">
+        <p>
           Created by{" "}
           <a className="text-blue-600 hover:text-blue-500" href="/">
             {"Gabe O'Leary"}
@@ -183,6 +191,129 @@ const StatCard = ({ title, stats }: StatCardProps): React.ReactElement => {
     </Card>
   );
 };
+
+const LAKE_WA_LAT = 47.6275;
+const LAKE_WA_LON = -122.2417;
+
+function ratePeriod(maxWindKph: number): "excellent" | "great" | "good" | "fair" | "poor" {
+  const mph = Math.round(maxWindKph * 0.621371);
+  if (mph >= 15) return "poor";
+  if (mph >= 10) return "fair";
+  if (mph >= 5) return "good";
+  if (mph >= 3) return "great";
+  return "excellent";
+}
+
+async function getForecast(): Promise<DayForecast[]> {
+  // Use Pacific time for "today" since the forecast is for Seattle
+  const now = new Date();
+  const pacific = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+  const today = `${pacific.getFullYear()}-${String(pacific.getMonth() + 1).padStart(2, "0")}-${String(pacific.getDate()).padStart(2, "0")}`;
+  const end = new Date(pacific);
+  end.setDate(end.getDate() + 13);
+  const endDate = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`;
+
+  // Fetch daily + hourly in parallel — no-store to always get fresh data
+  const [dailyRes, hourlyRes] = await Promise.all([
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAKE_WA_LAT}&longitude=${LAKE_WA_LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,cloud_cover_mean,sunrise,sunset,weather_code&start_date=${today}&end_date=${endDate}&temperature_unit=fahrenheit&timezone=auto`, { cache: "no-store" }),
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAKE_WA_LAT}&longitude=${LAKE_WA_LON}&hourly=wind_speed_10m,wind_gusts_10m,precipitation_probability&start_date=${today}&end_date=${endDate}&timezone=auto`, { cache: "no-store" }),
+  ]);
+
+  if (!dailyRes.ok) return [];
+  const data = await dailyRes.json();
+  const daily = data.daily;
+  if (!daily?.time) return [];
+
+  // Parse hourly data for period bucketing
+  const hourly = hourlyRes.ok ? (await hourlyRes.json()).hourly : null;
+
+  // Build maps of date -> period ratings and hourly wind
+  const periodMap = new Map<string, PeriodRating[]>();
+  const hourlyWindMap = new Map<string, HourlyWind[]>();
+  if (hourly?.time) {
+    // Group hourly data by date
+    const byDate = new Map<string, { hour: number; windKph: number; gustKph: number; precipProb: number }[]>();
+    for (let i = 0; i < hourly.time.length; i++) {
+      const dateStr = (hourly.time[i] as string).slice(0, 10);
+      const hour = parseInt((hourly.time[i] as string).slice(11, 13));
+      if (!byDate.has(dateStr)) byDate.set(dateStr, []);
+      byDate.get(dateStr)!.push({
+        hour,
+        windKph: hourly.wind_speed_10m[i] ?? 0,
+        gustKph: hourly.wind_gusts_10m?.[i] ?? 0,
+        precipProb: hourly.precipitation_probability[i] ?? 0,
+      });
+    }
+
+    for (const [dateStr, hours] of byDate) {
+      // Get sunrise hour for this date (default 6am)
+      const dayIdx = daily.time.indexOf(dateStr);
+      const sunriseStr = dayIdx >= 0 ? daily.sunrise?.[dayIdx] ?? "" : "";
+      const dawnHour = sunriseStr ? parseInt(sunriseStr.slice(11, 13)) : 6;
+
+      const buckets = [
+        { label: `Dawn–11am`, startHour: dawnHour, endHour: 11 },
+        { label: `11am–3pm`, startHour: 11, endHour: 15 },
+        { label: `3pm–Dusk`, startHour: 15, endHour: 21 },
+      ];
+
+      const periods: PeriodRating[] = buckets.map((b) => {
+        const bucketHours = hours.filter((h) => h.hour >= b.startHour && h.hour < b.endHour);
+        const maxWind = bucketHours.length > 0 ? Math.max(...bucketHours.map((h) => h.windKph)) : 0;
+        const maxPrecip = bucketHours.length > 0 ? Math.max(...bucketHours.map((h) => h.precipProb)) : 0;
+        return {
+          label: b.label,
+          level: ratePeriod(maxWind),
+          maxSustainedMph: Math.round(maxWind * 0.621371),
+          precipProbability: maxPrecip,
+        };
+      });
+
+      periodMap.set(dateStr, periods);
+
+      hourlyWindMap.set(dateStr, hours.map((h) => {
+        const wind = Math.round(h.windKph * 0.621371);
+        const gust = Math.round(h.gustKph * 0.621371);
+        return {
+          hour: h.hour,
+          windMph: wind,
+          gustMph: Math.max(gust, wind),
+        };
+      }));
+    }
+  }
+
+  return daily.time.map((date: string, i: number) => ({
+    date,
+    tempMax: daily.temperature_2m_max[i],
+    tempMin: daily.temperature_2m_min[i],
+    precipProbability: daily.precipitation_probability_max?.[i] ?? 0,
+    precipSum: daily.precipitation_sum[i],
+    windSpeedMean: daily.wind_speed_10m_mean?.[i] ?? 0,
+    windSpeedMax: daily.wind_speed_10m_max[i],
+    windGustsMax: daily.wind_gusts_10m_max?.[i] ?? 0,
+    windDirection: daily.wind_direction_10m_dominant?.[i] ?? 0,
+    cloudCover: daily.cloud_cover_mean?.[i] ?? 0,
+    sunrise: daily.sunrise?.[i]?.slice(11) ?? "",
+    sunset: daily.sunset?.[i]?.slice(11) ?? "",
+    weatherCode: daily.weather_code[i],
+    periods: periodMap.get(date),
+    hourlyWind: hourlyWindMap.get(date),
+  }));
+}
+
+async function WeatherForecast() {
+  const days = await getForecast();
+  if (days.length === 0) return null;
+
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <ForecastGrid days={days} />
+      </CardContent>
+    </Card>
+  );
+}
 
 export default LakeTemp;
 

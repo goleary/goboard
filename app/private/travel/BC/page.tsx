@@ -184,7 +184,8 @@ function windDirLabel(deg: number): string {
 function WeatherIcon({ code }: { code: number }) {
   const cls = "w-5 h-5";
   if (code === 0) return <Sun className={`${cls} text-amber-500`} />;
-  if (code <= 3) return <CloudSun className={`${cls} text-amber-400`} />;
+  if (code <= 2) return <CloudSun className={`${cls} text-amber-400`} />;
+  if (code === 3) return <Cloud className={`${cls} text-gray-400`} />;
   if (code <= 48) return <CloudFog className={`${cls} text-gray-400`} />;
   if (code <= 55) return <CloudDrizzle className={`${cls} text-blue-400`} />;
   if (code <= 67) return <CloudRain className={`${cls} text-blue-500`} />;
