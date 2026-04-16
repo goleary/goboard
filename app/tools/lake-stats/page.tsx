@@ -205,21 +205,24 @@ function ratePeriod(maxWindKph: number): "excellent" | "great" | "good" | "fair"
 }
 
 async function getForecast(): Promise<DayForecast[]> {
-  // Use Pacific time for "today" since the forecast is for Seattle
+  // Let Open-Meteo determine "today" via timezone=America/Los_Angeles param
+  // Just compute date range relative to UTC (off by a day at most, API handles it)
   const now = new Date();
-  const pacific = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
-  const today = `${pacific.getFullYear()}-${String(pacific.getMonth() + 1).padStart(2, "0")}-${String(pacific.getDate()).padStart(2, "0")}`;
-  const end = new Date(pacific);
-  end.setDate(end.getDate() + 13);
-  const endDate = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`;
+  const today = now.toISOString().split("T")[0];
+  const end = new Date(now);
+  end.setDate(end.getDate() + 15); // request extra days to account for timezone offset
+  const endDate = end.toISOString().split("T")[0];
 
   // Fetch daily + hourly in parallel — no-store to always get fresh data
   const [dailyRes, hourlyRes] = await Promise.all([
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAKE_WA_LAT}&longitude=${LAKE_WA_LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,cloud_cover_mean,sunrise,sunset,weather_code&start_date=${today}&end_date=${endDate}&temperature_unit=fahrenheit&timezone=auto`, { cache: "no-store" }),
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAKE_WA_LAT}&longitude=${LAKE_WA_LON}&hourly=wind_speed_10m,wind_gusts_10m,precipitation_probability&start_date=${today}&end_date=${endDate}&timezone=auto`, { cache: "no-store" }),
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAKE_WA_LAT}&longitude=${LAKE_WA_LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_mean,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,cloud_cover_mean,sunrise,sunset,weather_code&start_date=${today}&end_date=${endDate}&temperature_unit=fahrenheit&timezone=America/Los_Angeles`, { cache: "no-store" }),
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAKE_WA_LAT}&longitude=${LAKE_WA_LON}&hourly=wind_speed_10m,wind_gusts_10m,precipitation_probability&start_date=${today}&end_date=${endDate}&timezone=America/Los_Angeles`, { cache: "no-store" }),
   ]);
 
-  if (!dailyRes.ok) return [];
+  if (!dailyRes.ok) {
+    console.error("Forecast API failed:", dailyRes.status, await dailyRes.text().catch(() => ""));
+    return [];
+  }
   const data = await dailyRes.json();
   const daily = data.daily;
   if (!daily?.time) return [];
