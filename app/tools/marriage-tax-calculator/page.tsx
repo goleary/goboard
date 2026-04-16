@@ -18,8 +18,9 @@ const Index = () => {
             >
               lovable
             </a>
-            , an AI &quot;superhuman full stack engineer&quot;. You can read a
-            bit about my experience using it{" "}
+            , an AI &quot;superhuman full stack engineer&quot;, in February 2025
+            (and updated periodically since). You can read a bit about my
+            experience using it{" "}
             <a
               className="text-blue-600 hover:text-blue-500"
               href="https://www.threads.net/@gabeoleary/post/DGmpGpDxjVX"
