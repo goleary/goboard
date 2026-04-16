@@ -74,6 +74,11 @@ export default async function Navbar() {
         {(process.env.NODE_ENV === "development" || loggedIn) && (
           <>
             <li>
+              <Link className="hover:text-blue-500" href="/dashboard">
+                Dashboard
+              </Link>
+            </li>
+            <li>
               <Link className="hover:text-blue-500" href="/private/travel">
                 Trips
               </Link>
