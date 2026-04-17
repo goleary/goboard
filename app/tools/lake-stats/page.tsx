@@ -104,7 +104,7 @@ const LakeTemp: React.FC = async () => {
 
       <div className="space-y-6">
         <WeatherForecast />
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <StatCard
             title="Lake Washington"
             stats={lakeStats.washington}
@@ -151,11 +151,11 @@ type StatCardProps = {
 
 const StatCard = ({ title, stats }: StatCardProps): React.ReactElement => {
   return (
-    <Card>
-      <CardHeader className="pb-2">
+    <Card className="-mx-4 md:mx-0 border-x-0 md:border-x shadow-none md:shadow-sm rounded-none md:rounded-lg">
+      <CardHeader className="pb-2 px-4 md:px-6">
         <CardDescription></CardDescription>
         <CardTitle className="text-slate-800">{title}</CardTitle>
-        <CardContent>
+        <CardContent className="px-0 md:p-6 md:pt-0">
           <div className={"text-4x flex justify-start gap-4 pt-4"}>
             <div className="flex gap-2 items-center">
               <WavesIcon className="inline-block w-8 h-8 " />{" "}
@@ -184,7 +184,7 @@ const StatCard = ({ title, stats }: StatCardProps): React.ReactElement => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="p-0 -mx-6">
+        <CardFooter className="p-0 -mx-4 md:-mx-6">
           <History location={stats.location} />
         </CardFooter>
       </CardHeader>
@@ -310,8 +310,8 @@ async function WeatherForecast() {
   if (days.length === 0) return null;
 
   return (
-    <Card>
-      <CardContent className="pt-6">
+    <Card className="-mx-4 md:mx-0 border-x-0 md:border-x shadow-none md:shadow-sm rounded-none md:rounded-lg">
+      <CardContent className="px-4 pt-6 md:p-6 md:pt-6">
         <ForecastGrid days={days} />
       </CardContent>
     </Card>

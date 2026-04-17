@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Area, AreaChart, CartesianGrid, ReferenceArea, Tooltip as RechartsTooltip, XAxis, YAxis } from "recharts";
@@ -70,6 +70,30 @@ function WeatherIcon({ code }: { code: number }) {
   return <Cloud className={`${cls} text-gray-400`} />;
 }
 
+const WIND_COLOR_STOPS: Array<{ mph: number; rgb: [number, number, number] }> = [
+  { mph: 1.5, rgb: [59, 130, 246] },
+  { mph: 4, rgb: [34, 197, 94] },
+  { mph: 7.5, rgb: [234, 179, 8] },
+  { mph: 12.5, rgb: [249, 115, 22] },
+  { mph: 17.5, rgb: [239, 68, 68] },
+];
+
+function mphToColor(mph: number): string {
+  const s = WIND_COLOR_STOPS;
+  if (mph <= s[0].mph) return `rgb(${s[0].rgb.join(",")})`;
+  if (mph >= s[s.length - 1].mph) return `rgb(${s[s.length - 1].rgb.join(",")})`;
+  for (let i = 0; i < s.length - 1; i++) {
+    if (mph <= s[i + 1].mph) {
+      const t = (mph - s[i].mph) / (s[i + 1].mph - s[i].mph);
+      const r = Math.round(s[i].rgb[0] + (s[i + 1].rgb[0] - s[i].rgb[0]) * t);
+      const g = Math.round(s[i].rgb[1] + (s[i + 1].rgb[1] - s[i].rgb[1]) * t);
+      const b = Math.round(s[i].rgb[2] + (s[i + 1].rgb[2] - s[i].rgb[2]) * t);
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+  return `rgb(${s[0].rgb.join(",")})`;
+}
+
 function windDirLabel(deg: number): string {
   const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
   return dirs[Math.round(deg / 45) % 8];
@@ -119,6 +143,19 @@ function DayDetail({ day }: { day: DayForecast }) {
   const dateLabel = d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
   const level = rateDay(day);
   const styles = conditionStyles[level];
+
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [chartWidth, setChartWidth] = useState(0);
+  useEffect(() => {
+    const el = chartRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width ?? 0;
+      setChartWidth(Math.floor(w));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const daylightMinutes = day.sunrise && day.sunset
     ? (() => {
@@ -187,30 +224,50 @@ function DayDetail({ day }: { day: DayForecast }) {
         {day.hourlyWind && day.hourlyWind.length > 0 && (() => {
           const sunriseHour = day.sunrise ? parseInt(day.sunrise.split(":")[0]) : null;
           const sunsetHour = day.sunset ? parseInt(day.sunset.split(":")[0]) : null;
+          const maxData = Math.max(...day.hourlyWind.map((h) => Math.max(h.windMph, h.gustMph)));
+          const maxY = Math.max(16, Math.ceil(maxData / 4) * 4);
+          const sortedHours = [...day.hourlyWind].sort((a, b) => a.hour - b.hour);
+          const minHour = sortedHours[0]?.hour ?? 0;
+          const maxHour = sortedHours[sortedHours.length - 1]?.hour ?? 23;
+          const hourSpan = Math.max(1, maxHour - minHour);
+          const gradId = `windGrad-${day.date}`;
           return (
-          <div>
+          <div ref={chartRef}>
             <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium mb-1">Wind Speed (mph)</div>
-            <AreaChart width={280} height={120} data={day.hourlyWind} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
-              {sunriseHour != null && <ReferenceArea x1={0} x2={sunriseHour - 1} fill="#1e293b" fillOpacity={0.1} />}
-              {sunriseHour != null && <ReferenceArea x1={sunriseHour - 1} x2={sunriseHour} fill="#1e293b" fillOpacity={0.04} />}
-              {sunsetHour != null && <ReferenceArea x1={sunsetHour} x2={sunsetHour + 1} fill="#1e293b" fillOpacity={0.04} />}
-              {sunsetHour != null && <ReferenceArea x1={sunsetHour + 1} x2={23} fill="#1e293b" fillOpacity={0.1} />}
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis
-                dataKey="hour"
-                tick={{ fontSize: 10 }}
-                tickFormatter={(h) => `${h % 12 || 12}${h < 12 ? "a" : "p"}`}
-                interval={3}
-              />
-              <YAxis tick={{ fontSize: 10 }} />
-              <RechartsTooltip
-                contentStyle={{ fontSize: 12, borderRadius: 8 }}
-                labelFormatter={(h) => `${Number(h) % 12 || 12}:00 ${Number(h) < 12 ? "AM" : "PM"}`}
-                formatter={(value: number, name: string) => [`${value} mph`, name === "windMph" ? "Wind" : "Gusts"]}
-              />
-              <Area type="monotone" dataKey="gustMph" stroke="#3b82f6" strokeOpacity={0.35} fill="none" strokeWidth={1.5} dot={false} name="gustMph" />
-              <Area type="monotone" dataKey="windMph" stroke="#3b82f6" fill="#dbeafe" strokeWidth={2} dot={false} name="windMph" />
-            </AreaChart>
+            {chartWidth > 0 && (
+              <AreaChart width={chartWidth} height={120} data={day.hourlyWind} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+                <defs>
+                  <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
+                    {sortedHours.map((h) => (
+                      <stop
+                        key={h.hour}
+                        offset={`${((h.hour - minHour) / hourSpan) * 100}%`}
+                        stopColor={mphToColor(h.windMph)}
+                      />
+                    ))}
+                  </linearGradient>
+                </defs>
+                {sunriseHour != null && <ReferenceArea x1={0} x2={sunriseHour - 1} fill="#1e293b" fillOpacity={0.1} />}
+                {sunriseHour != null && <ReferenceArea x1={sunriseHour - 1} x2={sunriseHour} fill="#1e293b" fillOpacity={0.04} />}
+                {sunsetHour != null && <ReferenceArea x1={sunsetHour} x2={sunsetHour + 1} fill="#1e293b" fillOpacity={0.04} />}
+                {sunsetHour != null && <ReferenceArea x1={sunsetHour + 1} x2={23} fill="#1e293b" fillOpacity={0.1} />}
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="hour"
+                  tick={{ fontSize: 10 }}
+                  tickFormatter={(h) => `${h % 12 || 12}${h < 12 ? "a" : "p"}`}
+                  interval={3}
+                />
+                <YAxis tick={{ fontSize: 10 }} domain={[0, maxY]} />
+                <RechartsTooltip
+                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                  labelFormatter={(h) => `${Number(h) % 12 || 12}:00 ${Number(h) < 12 ? "AM" : "PM"}`}
+                  formatter={(value: number, name: string) => [`${value} mph`, name === "windMph" ? "Wind" : "Gusts"]}
+                />
+                <Area type="monotone" dataKey="gustMph" stroke={`url(#${gradId})`} strokeOpacity={0.35} fill="none" strokeWidth={1.5} dot={false} name="gustMph" />
+                <Area type="monotone" dataKey="windMph" stroke={`url(#${gradId})`} fill={`url(#${gradId})`} fillOpacity={0.25} strokeWidth={2.5} dot={false} name="windMph" />
+              </AreaChart>
+            )}
           </div>
           );
         })()}
@@ -255,8 +312,8 @@ function DayDetail({ day }: { day: DayForecast }) {
 
 export function ForecastGrid({ days }: { days: DayForecast[] }) {
   const [expanded, setExpanded] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const visibleDays = expanded ? days : days.slice(0, 7);
+  const [selectedDate, setSelectedDate] = useState<string | null>(days[0]?.date ?? null);
+  const visibleDays = expanded ? days.slice(0, 14) : days.slice(0, 7);
   const selectedDay = days.find((d) => d.date === selectedDate) ?? null;
   const cols = 7;
   const kphToMph = (v: number) => Math.round(v * 0.621371);
@@ -277,14 +334,18 @@ export function ForecastGrid({ days }: { days: DayForecast[] }) {
       </div>
       <div className="text-sm text-muted-foreground -mt-2">Lake Washington area — temps in °F</div>
 
-      <div className="flex gap-4">
-      <div className="flex-1 min-w-0">
+      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex-1 min-w-0 order-2 md:order-1">
       <TooltipProvider delayDuration={100}>
       {Array.from({ length: Math.ceil(visibleDays.length / 7) }, (_, wi) => {
         const week = visibleDays.slice(wi * 7, wi * 7 + 7);
         const weekOffset = wi * 7;
         return (
-          <div key={wi} className={`grid gap-0 divide-x divide-gray-200 ${wi > 0 ? "mt-4 pt-4 border-t border-gray-200" : ""}`} style={{ gridTemplateColumns: `repeat(${week.length}, 1fr)` }}>
+          <div
+            key={wi}
+            className={`gap-0 divide-x divide-gray-200 flex overflow-x-auto md:grid md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0 ${wi > 0 ? "mt-4 pt-4 border-t border-gray-200" : ""}`}
+            style={{ gridTemplateColumns: `repeat(${week.length}, 1fr)` }}
+          >
             {week.map((day, i) => {
               const globalIdx = weekOffset + i;
               const d = new Date(day.date + "T12:00:00");
@@ -295,20 +356,20 @@ export function ForecastGrid({ days }: { days: DayForecast[] }) {
               return (
                 <div
                   key={day.date}
-                  className={`cursor-pointer transition-colors ${isSelected ? "bg-blue-50" : "hover:bg-gray-50"}`}
+                  className={`cursor-pointer transition-colors shrink-0 basis-[72px] md:basis-auto md:shrink ${isSelected ? "bg-blue-50" : "hover:bg-gray-50"}`}
                   onClick={() => setSelectedDate(isSelected ? null : day.date)}
                 >
-                  <div className={`text-center text-xs font-medium py-2 ${isSelected ? "text-blue-600 font-bold" : "text-muted-foreground"}`}>
+                  <div className={`text-center text-xs font-medium py-2 whitespace-nowrap ${isSelected ? "text-blue-600 font-bold" : "text-muted-foreground"}`}>
                     {dayLabel}
                   </div>
                   <div className="flex justify-center py-1">
                     <WeatherIcon code={day.weatherCode} />
                   </div>
-                  <div className="text-center py-1">
+                  <div className="text-center py-1 whitespace-nowrap">
                     <span className="text-lg font-bold">{Math.round(day.tempMax)}°</span>
                     <span className="text-xs text-muted-foreground"> / {Math.round(day.tempMin)}°</span>
                   </div>
-                  <div className={`text-center text-xs py-1 ${day.precipProbability >= 50 ? "text-blue-600" : "text-muted-foreground"}`}>
+                  <div className={`text-center text-xs py-1 whitespace-nowrap ${day.precipProbability >= 50 ? "text-blue-600" : "text-muted-foreground"}`}>
                     {day.precipProbability > 0 ? (
                       <span className="flex items-center justify-center gap-0.5">
                         <Droplets className="w-3 h-3 shrink-0" />
@@ -316,7 +377,7 @@ export function ForecastGrid({ days }: { days: DayForecast[] }) {
                       </span>
                     ) : <span className="text-muted-foreground">—</span>}
                   </div>
-                  <div className="text-center text-xs text-muted-foreground py-1">
+                  <div className="text-center text-xs text-muted-foreground py-1 whitespace-nowrap">
                     <span className="flex items-center justify-center gap-0.5">
                       <Wind className="w-3 h-3 shrink-0" />
                       {kphToMph(day.windSpeedMax)}{day.windGustsMax > 0 ? `/${kphToMph(day.windGustsMax)}` : ""} {windDirLabel(day.windDirection)}
@@ -357,13 +418,13 @@ export function ForecastGrid({ days }: { days: DayForecast[] }) {
       </TooltipProvider>
       </div>
       {selectedDay ? (
-        <div className="w-80 shrink-0">
+        <div className="w-full md:w-80 md:shrink-0 order-1 md:order-2">
           <div className="sticky top-6">
             <DayDetail day={selectedDay} />
           </div>
         </div>
       ) : (
-        <div className="w-80 shrink-0">
+        <div className="w-full md:w-80 md:shrink-0 order-1 md:order-2">
           <div className="rounded-lg border border-dashed border-gray-300 p-6 text-center text-sm text-muted-foreground">
             Select a day to see details
           </div>
